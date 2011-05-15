@@ -25,11 +25,13 @@ function start()
 	var angle;
 	for (i=0; i<numstars; i++)
 	{
-	angle=Math.random()*2*Math.PI;
-	rad=Math.pow(Math.random()*10000000,0.5);
-	xjit=Math.random()*0.2*c;
-	yjit=Math.random()*0.2*c;
-	carray[i] = new inertialObject(Math.cos(angle)*rad,Math.sin(angle)*rad,5,0.1*Math.cos(angle)+xjit,0.1*Math.sin(angle)+yjit);
+	    angle=Math.random()*2*Math.PI;
+	    rad=Math.pow(Math.random()*10000000,0.5);
+	    xjit=Math.random()*0.2*c;
+	    yjit=Math.random()*0.2*c;
+	    carray[i] = new inertialObject(Math.cos(angle) * rad, Math.sin(angle) * rad,
+	                                   5, 0.1 * Math.cos(angle) + xjit,
+	                                   0.1 * Math.sin(angle) + yjit);
 	}
 	carray[numstars]=new inertialObject(0,0,20,0,0);
 	boostVel=vec3.create([0,0.05,0]);	
@@ -61,9 +63,9 @@ function draw()
 }
 function clear() 
 {
-	g.fillStyle = "#fff";
-	g.fillRect(0, 0, WIDTH, HEIGHT);
 	g.fillStyle = "#000";
+	g.fillRect(0, 0, WIDTH, HEIGHT);
+	g.fillStyle = "#fff";
 }
 
 // Use JQuery to wait for document load
