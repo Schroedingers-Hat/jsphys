@@ -4,9 +4,17 @@ function inertialObject(x,y,r,px,py)
 {
     this.init = function()
     {
+<<<<<<< HEAD
         this.X0 = vec3.create([0,x,y]);
 	    this.XView = vec3.create([0,x,y]);
         this.V = vec3.create([0,px,py]); //Relativistic velocity, or momentum/mass.
+=======
+        // Start off with a neutral color temperature
+        this.colorTemp = 7000;
+        this.X0=vec3.create([0,x,y]);
+	    this.XView=vec3.create([0,x,y]);
+        this.V=vec3.create([0,px,py]); //Relativistic velocity, or momentum/mass.
+>>>>>>> 07bc2de0d99384166bdc25533950df2f2ed61746
         genEnergy(this.V,c);
         this.displace = vec3.create();
         vec3.scale(this.V,timestep/this.V[0], this.displace);
