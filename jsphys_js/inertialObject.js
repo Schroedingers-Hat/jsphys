@@ -79,15 +79,24 @@ function mainSequenceStar(x,y,Lum,px,py)
 {
 
     this.r = Math.sqrt(Lum); //Aesthetic reasons only.
-    this.temp = Math.pow(10,(3.45+Lum/10)); //Very rough approximation of main sequence lum/temp relation.
+    
+    //Very rough approximation of main sequence lum/temp relation.
+    this.temp = Math.pow(10,(3.45 + Lum / 10)); 
     
     this.draw = function()
     {
-        if(this.COM.XView[1]/zoom<(HWIDTH+10) & this.COM.XView[2]/zoom<(HHEIGHT+10) & this.COM.XView[1]/zoom>(-HWIDTH-10) & this.COM.XView[2]/zoom>(-HHEIGHT-10))
+        if(this.COM.XView[1]/zoom < (HWIDTH + 10) &&
+           this.COM.XView[2]/zoom < (HHEIGHT + 10) &&
+           this.COM.XView[1]/zoom > (-HWIDTH - 10) &&
+           this.COM.XView[2]/zoom > (-HHEIGHT - 10))
         {
-            g.fillStyle = tempToColor(dopplerShiftColor(this.temp,this.COM.radialVPast,this.COM.V[0]));
+            g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                        this.COM.radialVPast,
+                                                        this.COM.V[0]));
             g.beginPath();
-            g.arc(this.COM.XView[1]/zoom+HWIDTH, this.COM.XView[2]/zoom+HHEIGHT, this.r/zoom, 0, twopi, true);
+            g.arc(this.COM.XView[1]/zoom+HWIDTH, 
+                  this.COM.XView[2]/zoom+HHEIGHT, 
+                  this.r/zoom, 0, twopi, true);
             g.closePath();
             g.fill();
 //            g.fillText(Lum, (this.COM.X0[1]+10+HWIDTH),(this.COM.X0[2]+HHEIGHT));
