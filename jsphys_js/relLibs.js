@@ -10,7 +10,7 @@ vToGamma = function(V){
  return Math.pow((1-V[1]*V[1]-V[2]*V[2]),-0.5)
 };
 
-genEnergy = function(P){
+genEnergy = function(P,c){
  P[0]=c*Math.pow((Math.pow(c,2)+P[1]*P[1]+P[2]*P[2]),0.5)
 };
 
