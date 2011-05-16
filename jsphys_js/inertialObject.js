@@ -4,14 +4,14 @@ function inertialObject(x,y,r,px,py)
 {
     this.init = function()
     {
-        this.X0=vec3.create([0,x,y]);
-	this.XView=vec3.create([0,x,y]);
-        this.V=vec3.create([0,px,py]); //Relativistic velocity, or momentum/mass.
+        this.X0 = vec3.create([0,x,y]);
+	    this.XView = vec3.create([0,x,y]);
+        this.V = vec3.create([0,px,py]); //Relativistic velocity, or momentum/mass.
         genEnergy(this.V,c);
-        this.displace=vec3.create();
-        vec3.scale(this.V,timestep/this.V[0],this.displace);
-        this.tau=0;
-        this.uDisplacement=vec3.create();
+        this.displace = vec3.create();
+        vec3.scale(this.V,timestep/this.V[0], this.displace);
+        this.tau = 0;
+        this.uDisplacement = vec3.create();
     }
 
     
@@ -25,19 +25,26 @@ function inertialObject(x,y,r,px,py)
 
     this.updateX0 = function()
     {    
-	//Increase proper time.
+	    //Increase proper time.
         this.tau += c*timestep/this.V[0];
-	//Bring it to now.
+	    //Bring it to now.
         vec3.add(this.X0,this.displace);
         this.X0[0]=this.X0[0]-1;        
-	this.radialV=(-this.X0[1]*this.V[1]-this.X0[2]*this.V[2])/Math.sqrt(Math.pow(this.X0[1],2)+Math.pow(this.X0[2],2))/this.V[0];
-	this.radialDist=Math.sqrt(Math.pow(this.X0[1],2)+Math.pow(this.X0[2],2));
-	this.viewTime=this.radialDist/(c-this.radialV);
-	vec3.scale(this.V,this.viewTime/this.V[0],this.uDisplacement);
-	vec3.subtract(this.X0,this.uDisplacement,this.XView);
-
-	this.radialVPast=(this.XView[1]*this.V[1]+this.XView[2]*this.V[2])/Math.sqrt(Math.pow(this.XView[1],2)+Math.pow(this.XView[2],2))/this.V[0];
-        //Can't decide what to do with this last line, it /is/ moving forward 1 unit in time, but so is the frame.
+        this.radialV=(-this.X0[1] * this.V[1] - this.X0[2] * this.V[2]) /
+                     Math.sqrt(Math.pow(this.X0[1],2) + 
+                     Math.pow(this.X0[2],2)) / this.V[0];
+        
+        this.radialDist = Math.sqrt(Math.pow(this.X0[1], 2) + 
+                          Math.pow(this.X0[2],2));
+        this.viewTime = this.radialDist / (c - this.radialV);
+        vec3.scale(this.V, this.viewTime / this.V[0], this.uDisplacement);
+        vec3.subtract(this.X0, this.uDisplacement, this.XView);
+    
+        this.radialVPast=(this.XView[1] * this.V[1] + this.XView[2] * this.V[2]) / 
+                         Math.sqrt(Math.pow(this.XView[1], 2) + 
+                         Math.pow(this.XView[2],2)) / this.V[0];
+        // Can't decide what to do with this last line, it /is/ moving forward 1 
+        // unit in time, but so is the frame.
     }
     
     //Note that translation can include time, and rotation can include boost.
@@ -55,15 +62,15 @@ function inertialObject(x,y,r,px,py)
         this.tau+=this.uDisplacement[0]/this.V[0];
         //Find the new velocity.
         vec3.scale(this.V,timestep/this.V[0],this.displace);
-	//Need to stop duplicating code. Write some methods that both update and changeframe call.
+	    
+	    //Need to stop duplicating code. Write some methods that both update and changeframe call.
 
-
-	this.radialV=(-this.X0[1]*this.V[1]-this.X0[2]*this.V[2])/Math.sqrt(Math.pow(this.X0[1],2)+Math.pow(this.X0[2],2))/this.V[0];
-	this.radialDist=Math.sqrt(Math.pow(this.X0[1],2)+Math.pow(this.X0[2],2));
-	this.viewTime=this.radialDist/(c-this.radialV);
-	vec3.scale(this.V,this.viewTime/this.V[0],this.uDisplacement);
-	vec3.subtract(this.X0,this.uDisplacement,this.XView);
-	this.radialVPast=(this.XView[1]*this.V[1]+this.XView[2]*this.V[2])/Math.sqrt(Math.pow(this.XView[1],2)+Math.pow(this.XView[2],2))/this.V[0];
+        this.radialV=(-this.X0[1]*this.V[1]-this.X0[2]*this.V[2])/Math.sqrt(Math.pow(this.X0[1],2)+Math.pow(this.X0[2],2))/this.V[0];
+        this.radialDist=Math.sqrt(Math.pow(this.X0[1],2)+Math.pow(this.X0[2],2));
+        this.viewTime=this.radialDist/(c-this.radialV);
+        vec3.scale(this.V,this.viewTime/this.V[0],this.uDisplacement);
+        vec3.subtract(this.X0,this.uDisplacement,this.XView);
+        this.radialVPast=(this.XView[1]*this.V[1]+this.XView[2]*this.V[2])/Math.sqrt(Math.pow(this.XView[1],2)+Math.pow(this.XView[2],2))/this.V[0];
     }
 }
 
@@ -86,7 +93,7 @@ function mainSequenceStar(x,y,Lum,px,py)
 //            g.fillText(Lum, (this.COM.X0[1]+10+HWIDTH),(this.COM.X0[2]+HHEIGHT));
         }
     }
-    this.COM=new inertialObject(x,y,Lum,px,py);
+    this.COM = new inertialObject(x,y,Lum,px,py);
 }
 
 
