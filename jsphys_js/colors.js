@@ -1,7 +1,7 @@
-function dopplerShiftColor(colorTemp, velocity)
+function dopplerShiftColor(colorTemp, velocity, gamma)
 {
     //Assuming this is accurate for transverse doppler, too.
-    var dopplerFactor = 1/(1+(velocity/c))/vToGamma(velocity);
+    var dopplerFactor = 1/(1+(velocity/c))/gamma;
     return colorTemp * dopplerFactor;
 }
 
