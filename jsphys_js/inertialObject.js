@@ -2,6 +2,9 @@
 // inertialObject Class	
 function inertialObject(x,y,r,px,py)
 {
+    // Start off with a neutral color temperature
+    this.colorTemp = 7000;
+    
 	this.X0=vec3.create([0,x,y]);
 	this.r = r;
 	this.V=vec3.create([0,px,py]); //Relativistic velocity, or momentum/mass.
