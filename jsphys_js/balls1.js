@@ -71,6 +71,8 @@ function clear()
 // Use JQuery to wait for document load
 $(document).ready(function()
 {
+    var viewportWidth = $('body').width() - 16;
+    $("#canvas").attr('width', viewportWidth);
     start();
     $("#canvas").click(clickHandler);
 });
