@@ -62,7 +62,7 @@ function onKeyDown(evt)
 	{
 		for (i = 0; i < carray.length; i++)
 		{
-			carray[i].COM.changeFrame(0, boostRight);
+			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostRight);
 			carray[i].draw();
 		}
 	}
@@ -70,7 +70,7 @@ function onKeyDown(evt)
 	{
 		for (i = 0; i < carray.length; i++)
 		{
-			carray[i].COM.changeFrame(0, boostLeft);
+			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostLeft);
 			carray[i].draw();
 		}
 	}
@@ -78,7 +78,7 @@ function onKeyDown(evt)
 	{
 		for (i = 0; i < carray.length; i++)
 		{
-			carray[i].COM.changeFrame(0, boostUp);
+			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostUp);
 			carray[i].draw();
 		}
 	}
@@ -86,7 +86,7 @@ function onKeyDown(evt)
 	{
 		for (i = 0; i < carray.length; i++)
 		{
-			carray[i].COM.changeFrame(0, boostDown);
+			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostDown);
 			carray[i].draw();
 		}
 	}
@@ -123,6 +123,16 @@ function clickHandler(e)
     
     if (minDist < 30)
     {
+        var Xshift=carray[minElement].COM.X0;
+        var shift=vec3.create([0,Xshift[1],Xshift[2]]);
+        var deltaV=carray[minElement].COM.V;
+        var newFrameBoost=cBoostMat(vec3.scale(deltaV,1/deltaV[0]),c);
+        for (i = 0; i < carray.length; i++)
+        {
+            carray[i].COM.changeFrame(shift, newFrameBoost);
+            carray[i].draw();
+        }
+
         // shiftToFrameOfObject(carray[minElement])
     }
 }
