@@ -111,9 +111,9 @@ function onKeyUp(evt)
 
 function clickHandler(e)
 {
-    // FIXME: We should adjust for the location of the <canvas> element on the current page
-    var x = e.pageX;
-    var y = e.pageY;
+    var offset = $('#canvas').offset();
+    var x = e.pageX - offset.left;
+    var y = e.pageY - offset.top;
     
     var i = 0;
     var minDist = WIDTH;
@@ -121,7 +121,8 @@ function clickHandler(e)
 
     for (i = 0; i < carray.length; i++)
     {
-        var dist = getDistance([x,y], [carray[i].COM.XView[1], carray[i].COM.XView[2]]);
+        var dist = getDistance([x,y], [carray[i].COM.XView[1] / zoom + HWIDTH, 
+                                       carray[i].COM.XView[2] / zoom + HHEIGHT]);
         if (dist < minDist)
         {
             minDist = dist;
@@ -131,6 +132,7 @@ function clickHandler(e)
     
     if (minDist < 30)
     {
+        alert(minDist);
         // shiftToFrameOfObject(carray[minElement])
     }
 }
