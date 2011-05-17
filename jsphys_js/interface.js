@@ -132,7 +132,6 @@ function clickHandler(e)
     
     if (minDist < 30)
     {
-        alert(minDist);
         // shiftToFrameOfObject(carray[minElement])
     }
 }
