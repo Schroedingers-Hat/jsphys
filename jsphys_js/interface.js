@@ -107,5 +107,36 @@ function onKeyUp(evt)
 	else if (evt.keyCode == 37) leftDown = false;
 	else if(evt.keyCode == 38) upDown = false;
 	else if(evt.keyCode == 40) downDown = false;
+}
 
+function clickHandler(e)
+{
+    // FIXME: We should adjust for the location of the <canvas> element on the current page
+    var x = e.pageX;
+    var y = e.pageY;
+    
+    var i = 0;
+    var minDist = WIDTH;
+    var minElement = -1;
+
+    for (i = 0; i < carray.length; i++)
+    {
+        var dist = getDistance([x,y], [carray[i].COM.XView[1], carray[i].COM.XView[2]]);
+        if (dist < minDist)
+        {
+            minDist = dist;
+            minElement = i;
+        }
+    }
+    
+    if (minDist < 30)
+    {
+        // shiftToFrameOfObject(carray[minElement])
+    }
+}
+
+// Take two points [x,y] and return the distance between them.
+function getDistance(pt1, pt2)
+{
+    return Math.sqrt(Math.pow(pt1[0] - pt2[0], 2) + Math.pow(pt1[1] - pt2[1], 2));
 }

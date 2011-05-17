@@ -72,6 +72,7 @@ function clear()
 $(document).ready(function()
 {
     start();
+    $("#canvas").click(clickHandler);
 });
 
 $(document).keydown(onKeyDown);
