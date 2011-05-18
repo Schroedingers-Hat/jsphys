@@ -39,7 +39,6 @@ function inertialObject(X,P,m)
     //Note that translation can include time, and rotation can include boost.
     this.changeFrame = function(translation,rotation)
     {
-        vec3.subtract(this.X0,translation);
         //Boost both velocity and position vectors using the boost matrix.
         mat3.multiplyVec3(rotation, this.X0);
         mat3.multiplyVec3(rotation, this.V);
@@ -52,6 +51,7 @@ function inertialObject(X,P,m)
         vec3.add(this.X0,this.uDisplacement);
         this.tau+=this.uDisplacement[0]/this.V[0];
         
+//        vec3.subtract(this.X0,translation);
         //Find the new displacement vector.
         vec3.scale(this.V,timestep/this.V[0],this.displace);
     
@@ -68,13 +68,13 @@ function inertialObject(X,P,m)
     this.calcPast = function()
     {
         this.radialDist = vec3.spaceDot(this.X0,this.X0);
-        this.radialV = (- vec3.spaceDot(this.V,this.X0) / 
+        this.radialV = (0 - vec3.spaceDot(this.V,this.X0) / 
                         this.radialDist / 
                         this.V[0]);
         this.viewTime = this.radialDist / (c - this.radialV);
         
-        vec3.scale(this.V, this.viewTime / this.V[0], this.uDisplacement);
-        vec3.subtract(this.X0, this.uDisplacement, this.XView);
+        this.uDisplacement=vec3.scale(this.V, this.viewTime / this.V[0], this.uDisplacement);
+        this.Xview=vec3.subtract(this.X0, this.uDisplacement, this.XView);
         
         this.radialVPast = (vec3.spaceDot(this.XView,this.V) /
                             vec3.spaceDot(this.XView,this.XView) / 
@@ -113,7 +113,7 @@ function mainSequenceStar(X,P,Lum)
                   this.r / zoom, 0, twopi, true);
             g.closePath();
             g.fill();
-//            g.fillText(Lum, (this.COM.X0[1]+10+HWIDTH),(this.COM.X0[2]+HHEIGHT));
+            g.fillText(this.COM.V[0],(this.COM.XView[1]+10+HWIDTH),(this.COM.XView[2]+HHEIGHT));
         }
     }
       this.COM = new inertialObject(X,P,1);

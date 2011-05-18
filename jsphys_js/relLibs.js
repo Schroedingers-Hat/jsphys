@@ -13,7 +13,8 @@ vToGamma = function(V){
 //Takes a momentum (0th element Energy) and re-generates the energy
 //From the spacial elements.
 genEnergy = function(P,c){
- P[0]=c*Math.pow((c*c+P[1]*P[1]+P[2]*P[2]),0.5)
+ P[0]=c*Math.pow((c*c+P[1]*P[1]+P[2]*P[2]),0.5);
+ return P;
 };
 
 /*
@@ -46,7 +47,7 @@ mat3.multiplyVec3 = function(mat, vec, dest) {
 
 //Projection of spacial elements of vec onto vec2.
 vec3.spaceDot = function(vec,vec2){
-return Math.sqrt(vec[1]*vec2[1]+vec[2]*vec2[2]);
+return Math.sqrt(Math.abs(vec[1]*vec2[1]+vec[2]*vec2[2]));
 }
 
 /*
