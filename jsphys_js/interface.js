@@ -2,102 +2,61 @@
  * User interface event handling -- mouse and keyboard input
  */
 
-function inputInit()
-{
-    boostRight  = cBoostMat(vec3.create([0, 0.05, 0]), c);
-    boostLeft   = cBoostMat(vec3.create([0, -0.05, 0]), c);
-    boostUp     = cBoostMat(vec3.create([0, 0, -0.05]), c);
-    boostDown   = cBoostMat(vec3.create([0, 0, 0.05]), c);
-    
-    rotLeft  = mat3.create([1, 0, 0,
-                            0, Math.cos(0.1), Math.sin(0.1),
-                            0, Math.sin(-0.1), Math.cos(0.1)]);
-    rotRight = mat3.create([1, 0, 0,
-                            0, Math.cos(0.1), Math.sin(-0.1),
-                            0, Math.sin(0.1), Math.cos(0.1)]);
-}
+
+//TODO: Pull all the keycodes out of here and put them in an array or something.
+//Will allow changing the controls to boot.
 
 // Get Key Input
 function onKeyDown(evt) 
 {
-	clear();
-	if (evt.keyCode == 65)
-	{
-        for (i = 0; i < carray.length; i++)
+    	if (evt.keyCode == 81) rotLeftDown = true;
+    	else if (evt.keyCode == 69) rotRightDown = true;
+        else if (evt.keyCode == 68) rightDown = true;
+    	else if (evt.keyCode == 65) leftDown = true;
+    	else if (evt.keyCode == 87) upDown = true;
+    	else if (evt.keyCode == 83) downDown = true;
+
+        else if (evt.keyCode == 84) displayTime = !displayTime;
+        else if (evt.keyCode == 90)
         {
-            carray[i].COM.changeFrame(0, rotLeft);
-            carray[i].draw();
+            showDoppler = !showDoppler;
         }
-	}
-	else if (evt.keyCode == 66)
-	{
-        for (i = 0; i < carray.length; i++)
+        else if (evt.keyCode == 88)
         {
-            carray[i].COM.changeFrame(0, rotRight);
-            carray[i].draw();
+            showFramePos = !showFramePos;
         }
-	}
-    else if (evt.keyCode == 39) rightDown = true;
-	else if (evt.keyCode == 37) leftDown = true;
-	else if (evt.keyCode == 38) upDown = true;
-	else if (evt.keyCode == 40) downDown = true;
-	else if (evt.keyCode == 109) 
-	{
-        boostRight  = cBoostMat(vec3.create([0, 0.05 / zoom, 0]), c);
-        boostLeft   = cBoostMat(vec3.create([0, -0.05 / zoom, 0]), c);
-        boostUp     = cBoostMat(vec3.create([0, 0, -0.05 / zoom]), c);
-        boostDown   = cBoostMat(vec3.create([0, 0, 0.05 / zoom]), c);
-	    zoom = zoom / 2;
-	}
-	else if (evt.keyCode == 61) 
-	{
-        boostRight  = cBoostMat(vec3.create([0, 0.05 * zoom,0]), c);
-        boostLeft   = cBoostMat(vec3.create([0, -0.05 * zoom,0]), c);
-        boostUp     = cBoostMat(vec3.create([0, 0, -0.05 * zoom]), c);
-        boostDown   = cBoostMat(vec3.create([0, 0, 0.05 * zoom]), c);
-	    zoom = zoom * 2;
-	}
-	
-	if (rightDown == true)
-	{
-		for (i = 0; i < carray.length; i++)
-		{
-			carray[i].COM.changeFrame(0, boostRight);
-			carray[i].draw();
-		}
-	}
-	if (leftDown == true)
-	{
-		for (i = 0; i < carray.length; i++)
-		{
-			carray[i].COM.changeFrame(0, boostLeft);
-			carray[i].draw();
-		}
-	}
-	if (upDown == true)
-	{
-		for (i = 0; i < carray.length; i++)
-		{
-			carray[i].COM.changeFrame(0, boostUp);
-			carray[i].draw();
-		}
-	}
-	if (downDown == true)
-	{
-		for (i = 0; i < carray.length; i++)
-		{
-			carray[i].COM.changeFrame(0, boostDown);
-			carray[i].draw();
-		}
-	}
+        else if (evt.keyCode == 67)
+        {
+            showVisualPos = !showVisualPos;
+        }
+    	else if (evt.keyCode == 61) 
+    	{
+    	    zoom = zoom / 2;
+            if (zoom < 0.06 ) zoom = 0.6;
+            boostRight  = cBoostMat(vec3.create([0, 0.02 / zoom, 0]), c);
+            boostLeft   = cBoostMat(vec3.create([0, -0.02 / zoom, 0]), c);
+            boostUp     = cBoostMat(vec3.create([0, 0, -0.02 / zoom]), c);
+            boostDown   = cBoostMat(vec3.create([0, 0, 0.02 / zoom]), c);
+    	}
+    	else if (evt.keyCode == 109) 
+    	{
+    	    zoom = zoom * 2;
+            if (zoom > 40) zoom = 40;
+            boostRight  = cBoostMat(vec3.create([0, 0.02 * zoom,0]), c);
+            boostLeft   = cBoostMat(vec3.create([0, -0.02 * zoom,0]), c);
+            boostUp     = cBoostMat(vec3.create([0, 0, -0.02 * zoom]), c);
+            boostDown   = cBoostMat(vec3.create([0, 0, 0.02 * zoom]), c);
+    	}
 }
 
 function onKeyUp(evt) 
 {
-	if (evt.keyCode == 39) rightDown = false;
-	else if (evt.keyCode == 37) leftDown = false;
-	else if(evt.keyCode == 38) upDown = false;
-	else if(evt.keyCode == 40) downDown = false;
+	if (evt.keyCode == 68) rightDown = false;
+	else if (evt.keyCode == 65) leftDown = false;
+	else if(evt.keyCode == 87) upDown = false;
+	else if(evt.keyCode == 83) downDown = false;
+	else if (evt.keyCode == 69) rotRightDown = false;
+	else if (evt.keyCode == 81) rotLeftDown = false;  
 }
 
 function clickHandler(e)
@@ -123,6 +82,21 @@ function clickHandler(e)
     
     if (minDist < 30)
     {
+        //Should probably take this out of here.
+        newFrameBoost=cBoostMat(vec3.scale(carray[minElement].COM.V,
+                                           1 / carray[minElement].COM.V[0],tempVec3),c);
+        carray[minElement].COM.changeFrame([0,0,0], newFrameBoost);
+        XShift=carray[minElement].COM.X0;
+        carray[minElement].COM.X0=vec3.create([0,0,0]);
+        for (i = 0; i < carray.length; i++)
+        {
+            if (i != minElement)
+            {
+                carray[i].COM.changeFrame(XShift, newFrameBoost);
+                carray[i].draw();
+            }
+        }
+
         // shiftToFrameOfObject(carray[minElement])
     }
 }
