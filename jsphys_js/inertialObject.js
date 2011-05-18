@@ -10,7 +10,7 @@ function inertialObject(X,P,m)
         //Relativistic velocity, or momentum/mass.
         genEnergy(this.V, c);
         this.displace = vec3.create();
-        vec3.scale(this.V,timestep / this.V[0], this.displace);
+        vec3.scale(this.V,timeStep / this.V[0], this.displace);
         this.tau = 0;
         this.uDisplacement = vec3.create();
     }
@@ -20,19 +20,19 @@ function inertialObject(X,P,m)
     {
         return this.X0;
     }
-    //TODO: Make it handle timestep.
+    //TODO: Make it handle timeStep.
     //TODO: Make sure all the Cs are in the right place.
     //Find out if the modulo command is as/more efficient.
 
     this.updateX0 = function()
     {    
 	    //Increase proper time.
-        this.tau += c * timestep / this.V[0];
+        this.tau += c * timeStep / this.V[0];
 	    //Bring it to now.
         vec3.add(this.X0, this.displace);
-        this.X0[0]=this.X0[0]-1;
+        this.X0[0]=this.X0[0]-timeStep;
         // Can't decide what to do with this last line, it /is/ moving forward 1 
-        // unit in time, but so is the frame.
+        // unit in time, but so is the frame. Should I move the -1 into this.displace?
         this.calcPast();
     }
     
@@ -53,7 +53,7 @@ function inertialObject(X,P,m)
         
         vec3.subtract(this.X0,translation);
         //Find the new displacement vector.
-        vec3.scale(this.V,timestep/this.V[0],this.displace);
+        vec3.scale(this.V,timeStep/this.V[0],this.displace);
     
         this.calcPast();
     }
@@ -73,7 +73,7 @@ function inertialObject(X,P,m)
                         this.V[0]);
         this.viewTime = this.radialDist / (c - this.radialV);
         
-        this.uDisplacement=vec3.scale(this.V, this.viewTime / this.V[0] * timeStep, this.uDisplacement);
+        this.uDisplacement=vec3.scale(this.V, this.viewTime / this.V[0], this.uDisplacement);
         this.Xview=vec3.subtract(this.X0, this.uDisplacement, this.XView);
         
         this.radialVPast = (vec3.spaceDot(this.XView,this.V) /
@@ -114,7 +114,7 @@ function inertialObject(X,P,m)
         //(although I don't know why as it won't really point to anything unless you're in
         //the frame of this.
         //also, bear in mind that distance from A to B in A's frame is not the distance from B to A in B's frame (in general).
-   {
+   } 
 
 }
 
@@ -155,7 +155,10 @@ function mainSequenceStar(X,P,Lum)
                   this.r / zoom, 0, twopi, true);
             g.closePath();
             g.fill();
-           // g.fillText(this.COM.V[0],(this.COM.XView[1]+10+HWIDTH),(this.COM.XView[2]+HHEIGHT));
+            
+            g.fillText(Math.floor(this.COM.tau/20),
+                       this.COM.XView[1] / zoom + HWIDTH + 10,
+                       this.COM.XView[2] / zoom + HHEIGHT);
         }
         if(showFramePos &&
            this.COM.X0[1]/zoom < (HWIDTH + 10) &&
@@ -171,7 +174,6 @@ function mainSequenceStar(X,P,Lum)
                   this.r / zoom, 0, twopi, true);
             g.closePath();
             g.fill();
-           // g.fillText(this.COM.V[0],(this.COM.X0[1]+10+HWIDTH),(this.COM.XView[2]+HHEIGHT));
         }
  
     }

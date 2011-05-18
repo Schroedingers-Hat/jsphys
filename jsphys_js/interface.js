@@ -3,7 +3,8 @@
  */
 
 
-
+//TODO: Pull all the keycodes out of here and put them in an array or something.
+//Will allow changing the controls to boot.
 function inputInit()
 {
     boostRight  = cBoostMat(vec3.create([0, 0.05, 0]), c);
@@ -58,8 +59,6 @@ function onKeyDown(evt)
             boostUp     = cBoostMat(vec3.create([0, 0, -0.02 * zoom]), c);
             boostDown   = cBoostMat(vec3.create([0, 0, 0.02 * zoom]), c);
     	}
-    	
-   
 }
 
 function onKeyUp(evt) 
@@ -103,7 +102,7 @@ function clickHandler(e)
         carray[minElement].COM.X0=vec3.create([0,0,0]);
         for (i = 0; i < carray.length; i++)
         {
-            if (i!=minElement)
+            if (i != minElement)
             {
                 carray[i].COM.changeFrame(XShift, newFrameBoost);
                 carray[i].draw();
