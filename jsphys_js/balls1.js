@@ -15,7 +15,6 @@ var c = 1; //Do not change, not fully implemented
 var twopi = Math.PI*2;
 var tempVec3 = vec3.create();
 var initialTime = new Date().getTime();
-var oldTime = new Date().getTime();
 var newTime = new Date().getTime();
 var showDoppler = true;
 var showFramePos = false;
@@ -78,9 +77,8 @@ function changeArrayFrame(translation,boost,objectArray)
 function draw()
 {
 //    console.profile();
-    oldTime=newTime;
-    newTime=new Date().getTime();
-    timeStep=(newTime - oldTime)*timeScale;
+    newTime  = new Date().getTime();
+    timeStep = (newTime - initialTime)*timeScale-t;
     keySinceLastFrame = false;
     clear();
     var i;
