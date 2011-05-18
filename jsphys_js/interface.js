@@ -103,7 +103,7 @@ function clickHandler(e)
         carray[minElement].COM.X0=vec3.create([0,0,0]);
         for (i = 0; i < carray.length; i++)
         {
-            if (!(i==minElement))
+            if (i!=minElement)
             {
                 carray[i].COM.changeFrame(XShift, newFrameBoost);
                 carray[i].draw();
