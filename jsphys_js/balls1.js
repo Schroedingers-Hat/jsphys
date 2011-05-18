@@ -89,7 +89,7 @@ function draw()
     }
 
     g.fillStyle = "#f0f";
-    g.fillText("FPS: " + Math.floor(1000/(newTime-oldTime)),250,250); 
+    g.fillText("FPS: " + Math.floor(1000/(timeStep/timeScale)),250,250); 
     g.fillText("Home System Gamma: " +  Math.floor(carray[carray.length-1].COM.V[0]),250,280); 
     g.fillText("Game Clock: " + Math.floor(t/timeScale/1000),250,300); 
     g.fillText("Real Time: " + Math.floor((newTime - initialTime)/1000),250,320); 
