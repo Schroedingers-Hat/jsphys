@@ -47,7 +47,7 @@ mat3.multiplyVec3 = function(mat, vec, dest) {
 
 //Projection of spacial elements of vec onto vec2.
 vec3.spaceDot = function(vec,vec2){
-return Math.sqrt(Math.abs(vec[1]*vec2[1]+vec[2]*vec2[2]));
+return vec[1]*vec2[1]+vec[2]*vec2[2];
 }
 
 /*
@@ -65,7 +65,6 @@ return Math.sqrt(Math.abs(vec[1]*vec2[1]+vec[2]*vec2[2]));
  *I plan to make a demo of this some time.
  */
 function cBoostMat(boostV,c) {
-//	var boostMagSq=Math.pow(vec3.length(boostV),2);
     var boostMagSq=boostV[1]*boostV[1]+boostV[2]*boostV[2];
 	var gamma=vToGamma(boostV);
 	return (mat3.create([gamma,            -boostV[1]*gamma,                            -boostV[2]*gamma,

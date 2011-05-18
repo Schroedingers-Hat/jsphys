@@ -7,12 +7,17 @@ var rightDown = false;
 var leftDown = false;
 var upDown = false;
 var downDown = false;
+var rotLeftDown = false;
+var rotRightDown = false;
 var carray = new Array();
 var c = 1; //Do not change, not fully implemented
 var twopi = Math.PI*2;
 var tempVec3 = vec3.create();
 var oldTime = new Date().getTime();
 var newTime = new Date().getTime();
+var showDoppler = true;
+var showFramePos = false;
+var showVisualPos = true;
 zoom = 1;
 //TODO: Decide if we're using increments of ct or t.
 var timestep=1; //Not wholly implemented yet, need some scale calls. Do not change from 1.
@@ -25,19 +30,17 @@ function start()
     HEIGHT = $("#canvas").height();
     HWIDTH=WIDTH/2;
     HHEIGHT=HEIGHT/2;
-    var numstars = 50;
+    var numstars = 500;
     var angle;
     for (i=0; i<numstars; i++)
     {
         angle=Math.random()*2*Math.PI;
-//        rad=Math.pow(Math.random()*10000000,0.5);
-        rad=100;
+        rad=Math.pow(Math.random()*100000000,0.5);
         xjit=Math.random()*0.2*c;
         yjit=Math.random()*0.2*c;
         lum=Math.pow(1000,Math.random())/100;
         carray[i] = new mainSequenceStar(vec3.create([0,Math.cos(angle) * rad, Math.sin(angle) * rad]),
-//                                         vec3.create([0,c*0.1 * Math.cos(angle) + xjit,c*0.1 * Math.sin(angle) + yjit]),
-                                         vec3.create([0,0,0]),
+                                         vec3.create([0,c*0.1 * Math.cos(angle) + xjit,c*0.1 * Math.sin(angle) + yjit]),
                                          lum);
         carray[i].COM.init();
     

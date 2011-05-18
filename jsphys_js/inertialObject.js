@@ -67,7 +67,7 @@ function inertialObject(X,P,m)
     //Then we project the particle back into its past and draw it there.
     this.calcPast = function()
     {
-        this.radialDist = vec3.spaceDot(this.X0,this.X0);
+        this.radialDist = Math.sqrt(vec3.spaceDot(this.X0,this.X0));
         this.radialV = (0 - vec3.spaceDot(this.V,this.X0) / 
                         this.radialDist / 
                         this.V[0]);
@@ -77,7 +77,7 @@ function inertialObject(X,P,m)
         this.Xview=vec3.subtract(this.X0, this.uDisplacement, this.XView);
         
         this.radialVPast = (vec3.spaceDot(this.XView,this.V) /
-                            vec3.spaceDot(this.XView,this.XView) / 
+                            Math.sqrt(Math.abs(vec3.spaceDot(this.XView,this.XView))) / 
                             this.V[0]);
  
    }
@@ -90,7 +90,7 @@ function mainSequenceStar(X,P,Lum)
 {
     //Aesthetic reasons only. 
     //If any 3D images are rendered Lum will be more useful
-    this.r = Math.sqrt(Lum); 
+    this.r = Math.sqrt(Lum)*10; 
     
     //Very rough approximation of main sequence lum/temp relation.
     //You can read this off of a HR diagram.
@@ -98,23 +98,48 @@ function mainSequenceStar(X,P,Lum)
     //TODO: Add the mass and radius relations here.
     this.draw = function()
     {
-        if(this.COM.XView[1]/zoom < (HWIDTH + 10) &&
+        if(showVisualPos &&
+           this.COM.XView[1]/zoom < (HWIDTH + 10) &&
            this.COM.XView[2]/zoom < (HHEIGHT + 10) &&
            this.COM.XView[1]/zoom > (-HWIDTH - 10) &&
            this.COM.XView[2]/zoom > (-HHEIGHT - 10)&&
            this.r / zoom > 0.3)
         {
-            g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                        this.COM.radialVPast,
-                                                        this.COM.V[0]));
+            if(showDoppler)
+            {
+                g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                            this.COM.radialVPast,
+                                                            this.COM.V[0]));
+            }
+            else
+            {
+                g.fillStyle = tempToColor(this.temp);
+            }
             g.beginPath();
             g.arc(this.COM.XView[1] / zoom + HWIDTH, 
                   this.COM.XView[2] / zoom + HHEIGHT, 
                   this.r / zoom, 0, twopi, true);
             g.closePath();
             g.fill();
-            g.fillText(this.COM.V[0],(this.COM.XView[1]+10+HWIDTH),(this.COM.XView[2]+HHEIGHT));
+           // g.fillText(this.COM.V[0],(this.COM.XView[1]+10+HWIDTH),(this.COM.XView[2]+HHEIGHT));
         }
+        if(showFramePos &&
+           this.COM.X0[1]/zoom < (HWIDTH + 10) &&
+           this.COM.X0[2]/zoom < (HHEIGHT + 10) &&
+           this.COM.X0[1]/zoom > (-HWIDTH - 10) &&
+           this.COM.X0[2]/zoom > (-HHEIGHT - 10)&&
+           this.r / zoom > 0.3)
+        {
+            g.fillStyle = "#0f0"; 
+            g.beginPath();
+            g.arc(this.COM.X0[1] / zoom + HWIDTH, 
+                  this.COM.X0[2] / zoom + HHEIGHT, 
+                  this.r / zoom, 0, twopi, true);
+            g.closePath();
+            g.fill();
+           // g.fillText(this.COM.V[0],(this.COM.X0[1]+10+HWIDTH),(this.COM.XView[2]+HHEIGHT));
+        }
+ 
     }
       this.COM = new inertialObject(X,P,1);
 }
