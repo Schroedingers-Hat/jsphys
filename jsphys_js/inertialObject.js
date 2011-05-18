@@ -51,7 +51,7 @@ function inertialObject(X,P,m)
         vec3.add(this.X0,this.uDisplacement);
         this.tau+=this.uDisplacement[0]/this.V[0];
         
-//        vec3.subtract(this.X0,translation);
+        vec3.subtract(this.X0,translation);
         //Find the new displacement vector.
         vec3.scale(this.V,timestep/this.V[0],this.displace);
     

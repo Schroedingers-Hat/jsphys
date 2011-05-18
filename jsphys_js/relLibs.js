@@ -65,7 +65,8 @@ return Math.sqrt(Math.abs(vec[1]*vec2[1]+vec[2]*vec2[2]));
  *I plan to make a demo of this some time.
  */
 function cBoostMat(boostV,c) {
-	var boostMagSq=Math.pow(vec3.length(boostV),2);
+//	var boostMagSq=Math.pow(vec3.length(boostV),2);
+    var boostMagSq=boostV[1]*boostV[1]+boostV[2]*boostV[2];
 	var gamma=vToGamma(boostV);
 	return (mat3.create([gamma,            -boostV[1]*gamma,                            -boostV[2]*gamma,
                          -boostV[1]*gamma, 1+(gamma-1)*boostV[1]*boostV[1]/boostMagSq, (gamma-1)*boostV[1]*boostV[2]/boostMagSq,	 

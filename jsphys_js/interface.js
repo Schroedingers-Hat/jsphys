@@ -126,11 +126,19 @@ function clickHandler(e)
         var Xshift=carray[minElement].COM.X0;
         var shift=vec3.create([0,Xshift[1],Xshift[2]]);
         var deltaV=carray[minElement].COM.V;
-        var newFrameBoost=cBoostMat(vec3.scale(deltaV,1/deltaV[0]),c);
+        var spaceV=vec3.scale(deltaV,1/deltaV[0],tempVec3);
+        var newFrameBoost=cBoostMat(spaceV,c);
+        ctemp=carray[minElement];
+        ctemp.COM.changeFrame([0,0,0], newFrameBoost);
+        var shift=ctemp.COM.X0;
+        ctemp.COM.X0=vec3.create([0,0,0]);
         for (i = 0; i < carray.length; i++)
         {
-            carray[i].COM.changeFrame(shift, newFrameBoost);
-            carray[i].draw();
+            if (!(i==minElement))
+            {
+                carray[i].COM.changeFrame(shift, newFrameBoost);
+                carray[i].draw();
+            }
         }
 
         // shiftToFrameOfObject(carray[minElement])
