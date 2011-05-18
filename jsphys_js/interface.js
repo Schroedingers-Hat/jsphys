@@ -22,8 +22,6 @@ function inputInit()
 // Get Key Input
 function onKeyDown(evt) 
 {
-    if (!keySinceLastFrame)
-    {
     	if (evt.keyCode == 81) rotLeftDown = true;
     	else if (evt.keyCode == 69) rotRightDown = true;
         else if (evt.keyCode == 68) rightDown = true;
@@ -61,53 +59,7 @@ function onKeyDown(evt)
             boostDown   = cBoostMat(vec3.create([0, 0, 0.02 * zoom]), c);
     	}
     	
-    	if (rightDown == true)
-    	{
-    		for (i = 0; i < carray.length; i++)
-    		{
-    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostRight);
-    		}
-    	}
-    	if (leftDown == true)
-    	{
-    		for (i = 0; i < carray.length; i++)
-    		{
-    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostLeft);
-    		}
-    	}
-    	if (upDown == true)
-    	{
-    		for (i = 0; i < carray.length; i++)
-    		{
-    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostUp);
-    		}
-    	}
-    	if (downDown == true)
-    	{
-    		for (i = 0; i < carray.length; i++)
-    		{
-    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostDown);
-    		}
-    	}
-        if (rotLeftDown == true)
-        {
-            for (i = 0; i < carray.length; i++)
-            {
-                carray[i].COM.changeFrame(vec3.create([0,0,0]), rotRight);
-            }
-            rotRightDown = false;
-    	}
-        if (rotRightDown == true)
-        {
-            for (i = 0; i < carray.length; i++)
-            {
-                carray[i].COM.changeFrame(vec3.create([0,0,0]), rotLeft);
-            }
-            rotRightDown = false;
-    	}
-    
-    }
-    keySinceLastFrame=true;
+   
 }
 
 function onKeyUp(evt) 

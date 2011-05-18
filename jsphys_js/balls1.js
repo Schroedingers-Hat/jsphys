@@ -32,7 +32,7 @@ function start()
     HEIGHT = $("#canvas").height();
     HWIDTH=WIDTH/2;
     HHEIGHT=HEIGHT/2;
-    var numstars = 5000;
+    var numstars = 500;
     var angle;
     for (i=0; i<numstars; i++)
     {
@@ -50,7 +50,7 @@ function start()
     inputInit();
     carray[numstars]=new mainSequenceStar(vec3.create([0,0,0]),vec3.create([0,0,0]),20);
     carray[numstars].COM.init();
-    return setInterval(draw, 41);
+    return setInterval(draw, 20);
 }
 
 
@@ -74,6 +74,52 @@ function draw()
     g.fillStyle = "#f0f";
     g.fillText(Math.floor(1000/(newTime-oldTime)),250,250); 
 //    console.profileEnd();
+
+
+    	if (leftDown == true)
+    	{
+    		for (i = 0; i < carray.length; i++)
+    		{
+    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostLeft);
+    		}
+    	}
+    	if (upDown == true)
+    	{
+    		for (i = 0; i < carray.length; i++)
+    		{
+    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostUp);
+    		}
+    	}
+    	if (downDown == true)
+    	{
+    		for (i = 0; i < carray.length; i++)
+    		{
+    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostDown);
+    		}
+    	}
+        if (rotLeftDown == true)
+        {
+            for (i = 0; i < carray.length; i++)
+            {
+                carray[i].COM.changeFrame(vec3.create([0,0,0]), rotRight);
+            }
+    	}
+        if (rotRightDown == true)
+        {
+            for (i = 0; i < carray.length; i++)
+            {
+                carray[i].COM.changeFrame(vec3.create([0,0,0]), rotLeft);
+            }
+    	}
+    	if (rightDown == true)
+    	{
+    		for (i = 0; i < carray.length; i++)
+    		{
+    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostRight);
+    		}
+    	}
+ 
+
 }
 function clear() 
 {
