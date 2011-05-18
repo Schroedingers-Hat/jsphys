@@ -22,94 +22,92 @@ function inputInit()
 // Get Key Input
 function onKeyDown(evt) 
 {
-	clear();
-	if (evt.keyCode == 81) rotLeftDown = true;
-	else if (evt.keyCode == 69) rotRightDown = true;
-    else if (evt.keyCode == 68) rightDown = true;
-	else if (evt.keyCode == 65) leftDown = true;
-	else if (evt.keyCode == 87) upDown = true;
-	else if (evt.keyCode == 83) downDown = true;
-    else if (evt.keyCode == 90)
+    if (!keySinceLastFrame)
     {
-        showDoppler = !showDoppler;
-    }
-    else if (evt.keyCode == 88)
-    {
-        showFramePos = !showFramePos;
-    }
-    else if (evt.keyCode == 67)
-    {
-        showVisualPos = !showVisualPos;
-    }
-	else if (evt.keyCode == 61) 
-	{
-	    zoom = zoom / 2;
-        if (zoom < 1/10) zoom = 1/10;
-        boostRight  = cBoostMat(vec3.create([0, 0.05 / zoom, 0]), c);
-        boostLeft   = cBoostMat(vec3.create([0, -0.05 / zoom, 0]), c);
-        boostUp     = cBoostMat(vec3.create([0, 0, -0.05 / zoom]), c);
-        boostDown   = cBoostMat(vec3.create([0, 0, 0.05 / zoom]), c);
-	}
-	else if (evt.keyCode == 109) 
-	{
-	    zoom = zoom * 2;
-        if (zoom > 10) zoom = 10;
-        boostRight  = cBoostMat(vec3.create([0, 0.05 * zoom,0]), c);
-        boostLeft   = cBoostMat(vec3.create([0, -0.05 * zoom,0]), c);
-        boostUp     = cBoostMat(vec3.create([0, 0, -0.05 * zoom]), c);
-        boostDown   = cBoostMat(vec3.create([0, 0, 0.05 * zoom]), c);
-	}
-	
-	if (rightDown == true)
-	{
-		for (i = 0; i < carray.length; i++)
-		{
-			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostRight);
-			carray[i].draw();
-		}
-	}
-	if (leftDown == true)
-	{
-		for (i = 0; i < carray.length; i++)
-		{
-			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostLeft);
-			carray[i].draw();
-		}
-	}
-	if (upDown == true)
-	{
-		for (i = 0; i < carray.length; i++)
-		{
-			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostUp);
-			carray[i].draw();
-		}
-	}
-	if (downDown == true)
-	{
-		for (i = 0; i < carray.length; i++)
-		{
-			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostDown);
-			carray[i].draw();
-		}
-	}
-    if (rotLeftDown == true)
-    {
-        for (i = 0; i < carray.length; i++)
+    	if (evt.keyCode == 81) rotLeftDown = true;
+    	else if (evt.keyCode == 69) rotRightDown = true;
+        else if (evt.keyCode == 68) rightDown = true;
+    	else if (evt.keyCode == 65) leftDown = true;
+    	else if (evt.keyCode == 87) upDown = true;
+    	else if (evt.keyCode == 83) downDown = true;
+        else if (evt.keyCode == 90)
         {
-            carray[i].COM.changeFrame(vec3.create([0,0,0]), rotRight);
-            carray[i].draw();
+            showDoppler = !showDoppler;
         }
-        rotRightDown = false;
-	}
-    if (rotRightDown == true)
-    {
-        for (i = 0; i < carray.length; i++)
+        else if (evt.keyCode == 88)
         {
-            carray[i].COM.changeFrame(vec3.create([0,0,0]), rotLeft);
-            carray[i].draw();
+            showFramePos = !showFramePos;
         }
-        rotRightDown = false;
-	}
+        else if (evt.keyCode == 67)
+        {
+            showVisualPos = !showVisualPos;
+        }
+    	else if (evt.keyCode == 61) 
+    	{
+    	    zoom = zoom / 2;
+            if (zoom < 0.06 ) zoom = 0.6;
+            boostRight  = cBoostMat(vec3.create([0, 0.02 / zoom, 0]), c);
+            boostLeft   = cBoostMat(vec3.create([0, -0.02 / zoom, 0]), c);
+            boostUp     = cBoostMat(vec3.create([0, 0, -0.02 / zoom]), c);
+            boostDown   = cBoostMat(vec3.create([0, 0, 0.02 / zoom]), c);
+    	}
+    	else if (evt.keyCode == 109) 
+    	{
+    	    zoom = zoom * 2;
+            if (zoom > 40) zoom = 40;
+            boostRight  = cBoostMat(vec3.create([0, 0.02 * zoom,0]), c);
+            boostLeft   = cBoostMat(vec3.create([0, -0.02 * zoom,0]), c);
+            boostUp     = cBoostMat(vec3.create([0, 0, -0.02 * zoom]), c);
+            boostDown   = cBoostMat(vec3.create([0, 0, 0.02 * zoom]), c);
+    	}
+    	
+    	if (rightDown == true)
+    	{
+    		for (i = 0; i < carray.length; i++)
+    		{
+    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostRight);
+    		}
+    	}
+    	if (leftDown == true)
+    	{
+    		for (i = 0; i < carray.length; i++)
+    		{
+    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostLeft);
+    		}
+    	}
+    	if (upDown == true)
+    	{
+    		for (i = 0; i < carray.length; i++)
+    		{
+    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostUp);
+    		}
+    	}
+    	if (downDown == true)
+    	{
+    		for (i = 0; i < carray.length; i++)
+    		{
+    			carray[i].COM.changeFrame(vec3.create([0,0,0]), boostDown);
+    		}
+    	}
+        if (rotLeftDown == true)
+        {
+            for (i = 0; i < carray.length; i++)
+            {
+                carray[i].COM.changeFrame(vec3.create([0,0,0]), rotRight);
+            }
+            rotRightDown = false;
+    	}
+        if (rotRightDown == true)
+        {
+            for (i = 0; i < carray.length; i++)
+            {
+                carray[i].COM.changeFrame(vec3.create([0,0,0]), rotLeft);
+            }
+            rotRightDown = false;
+    	}
+    
+    }
+    keySinceLastFrame=true;
 }
 
 function onKeyUp(evt) 

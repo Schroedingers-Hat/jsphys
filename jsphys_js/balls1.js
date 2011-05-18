@@ -18,6 +18,7 @@ var newTime = new Date().getTime();
 var showDoppler = true;
 var showFramePos = false;
 var showVisualPos = true;
+var keySinceLastFrame = false;
 zoom = 1;
 //TODO: Decide if we're using increments of ct or t.
 var timestep=1; //Not wholly implemented yet, need some scale calls. Do not change from 1.
@@ -25,12 +26,13 @@ var t = 0;
 // Main Function To Start
 function start()
 {
+    keySinceLastFrame = false;
     g = $('#canvas')[0].getContext("2d");
     WIDTH = $("#canvas").width();
     HEIGHT = $("#canvas").height();
     HWIDTH=WIDTH/2;
     HHEIGHT=HEIGHT/2;
-    var numstars = 500;
+    var numstars = 5000;
     var angle;
     for (i=0; i<numstars; i++)
     {
@@ -48,7 +50,7 @@ function start()
     inputInit();
     carray[numstars]=new mainSequenceStar(vec3.create([0,0,0]),vec3.create([0,0,0]),20);
     carray[numstars].COM.init();
-    return setInterval(draw, 10);
+    return setInterval(draw, 41);
 }
 
 
@@ -57,6 +59,7 @@ function start()
 function draw()
 {
 //    console.profile();
+    keySinceLastFrame = false;
     oldTime=newTime;
     newTime=new Date().getTime();
     clear();
