@@ -156,7 +156,7 @@ function mainSequenceStar(X,P,Lum)
             g.closePath();
             g.fill();
             
-            g.fillText(Math.floor(this.COM.tau/20),
+            if (displayTime) g.fillText(Math.floor((this.COM.tau - (this.COM.viewTime)) / timeScale / 1000),
                        this.COM.XView[1] / zoom + HWIDTH + 10,
                        this.COM.XView[2] / zoom + HHEIGHT);
         }
@@ -174,6 +174,10 @@ function mainSequenceStar(X,P,Lum)
                   this.r / zoom, 0, twopi, true);
             g.closePath();
             g.fill();
+            if (displayTime) g.fillText(Math.floor(this.COM.tau / timeScale / 1000),
+                       this.COM.X0[1] / zoom + HWIDTH + 10,
+                       this.COM.X0[2] / zoom + HHEIGHT);
+
         }
  
     }

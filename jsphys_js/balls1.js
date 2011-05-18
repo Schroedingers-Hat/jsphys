@@ -9,6 +9,7 @@ var upDown = false;
 var downDown = false;
 var rotLeftDown = false;
 var rotRightDown = false;
+var displayTime = false;
 var carray = new Array();
 var c = 1; //Do not change, not fully implemented
 var twopi = Math.PI*2;
@@ -24,7 +25,7 @@ var boostRight  = cBoostMat(vec3.create([0, 0.05, 0]), c);
 var boostLeft   = cBoostMat(vec3.create([0, -0.05, 0]), c);
 var boostUp     = cBoostMat(vec3.create([0, 0, -0.05]), c);
 var boostDown   = cBoostMat(vec3.create([0, 0, 0.05]), c);
-
+var timeScale   = 0.02;
 var rotLeft  = mat3.create([1, 0, 0,
                         0, Math.cos(0.1), Math.sin(0.1),
                         0, Math.sin(-0.1), Math.cos(0.1)]);
@@ -60,7 +61,6 @@ function start()
         carray[i].COM.init();
     
     }
-    inputInit();
     carray[numstars]=new mainSequenceStar(vec3.create([0,0,0]),vec3.create([0,0,0]),20);
     carray[numstars].COM.init();
     return setInterval(draw, 20);
@@ -80,7 +80,7 @@ function draw()
 //    console.profile();
     oldTime=newTime;
     newTime=new Date().getTime();
-    timeStep=(newTime - oldTime)/50;
+    timeStep=(newTime - oldTime)*timeScale;
     keySinceLastFrame = false;
     clear();
     var i;
@@ -93,7 +93,7 @@ function draw()
     g.fillStyle = "#f0f";
     g.fillText("FPS: " + Math.floor(1000/(newTime-oldTime)),250,250); 
     g.fillText("Home System Gamma: " +  Math.floor(carray[carray.length-1].COM.V[0]),250,280); 
-    g.fillText("Game Clock: " + Math.floor(t/20),250,300); 
+    g.fillText("Game Clock: " + Math.floor(t/timeScale/1000),250,300); 
     g.fillText("Real Time: " + Math.floor((newTime - initialTime)/1000),250,320); 
 //    console.profileEnd();
 

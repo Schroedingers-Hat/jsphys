@@ -5,20 +5,6 @@
 
 //TODO: Pull all the keycodes out of here and put them in an array or something.
 //Will allow changing the controls to boot.
-function inputInit()
-{
-    boostRight  = cBoostMat(vec3.create([0, 0.05, 0]), c);
-    boostLeft   = cBoostMat(vec3.create([0, -0.05, 0]), c);
-    boostUp     = cBoostMat(vec3.create([0, 0, -0.05]), c);
-    boostDown   = cBoostMat(vec3.create([0, 0, 0.05]), c);
-    
-    rotLeft  = mat3.create([1, 0, 0,
-                            0, Math.cos(0.1), Math.sin(0.1),
-                            0, Math.sin(-0.1), Math.cos(0.1)]);
-    rotRight = mat3.create([1, 0, 0,
-                            0, Math.cos(0.1), Math.sin(-0.1),
-                            0, Math.sin(0.1), Math.cos(0.1)]);
-}
 
 // Get Key Input
 function onKeyDown(evt) 
@@ -29,6 +15,8 @@ function onKeyDown(evt)
     	else if (evt.keyCode == 65) leftDown = true;
     	else if (evt.keyCode == 87) upDown = true;
     	else if (evt.keyCode == 83) downDown = true;
+
+        else if (evt.keyCode == 84) displayTime = !displayTime;
         else if (evt.keyCode == 90)
         {
             showDoppler = !showDoppler;
