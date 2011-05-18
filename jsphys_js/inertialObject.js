@@ -73,7 +73,7 @@ function inertialObject(X,P,m)
                         this.V[0]);
         this.viewTime = this.radialDist / (c - this.radialV);
         
-        this.uDisplacement=vec3.scale(this.V, this.viewTime / this.V[0], this.uDisplacement);
+        this.uDisplacement=vec3.scale(this.V, this.viewTime / this.V[0] * timeStep, this.uDisplacement);
         this.Xview=vec3.subtract(this.X0, this.uDisplacement, this.XView);
         
         this.radialVPast = (vec3.spaceDot(this.XView,this.V) /
@@ -81,6 +81,40 @@ function inertialObject(X,P,m)
                             this.V[0]);
  
    }
+    
+
+    //MeasureDisplacementTo.
+    //Also measures the apparent distance to, radial velocities and a number of other things.
+    //Reproduces a lot of code from calcPast and updateX0.
+    //@Capn, if you can follow what I'm doing maybe you can rework this in a way that
+    //Inherits and/or copies things from the other constructs?
+    this.measureDisplacementTo = function(particle)
+    {
+        displacement=vec3.create();
+        measureXIncrement=vec3.create();
+        measureV=vec3.create();
+        boostBetween=cBoostMat(vec3.scale(this.V,1/this.V[0],tempVec3));
+        //Find the displacement between them in current frame.
+        vec3.subtract(particle.X0,this.X0,displacement);
+        //Transform that to the frame of this.
+        mat3.multiply(boostBetween,displacement);
+        //Find out the relative velocity in the frame of this.
+        vec3.subtract(particle.V,this.V,measureV);
+        mat3.multiply(boostBetween,measureV);
+
+        //Lost my train of thought and didn't want to create more spaghetti.
+        //@Capn
+        //What needs to go here to finish the function is to add a constant times
+        //MeasureV (remember this is a 3-velocity) to displacement such that 
+        // the time component: displacement[0]==0
+        //At that point you /should/ have a displacement vector in the frame of
+        //this, which points to particle to do with as you wish 
+        //I'd recommend returning the displacement and possibly this.X0 and/or this.XView
+        //To facilitate drawing things. If you so desire. 
+        //(although I don't know why as it won't really point to anything unless you're in
+        //the frame of this.
+        //also, bear in mind that distance from A to B in A's frame is not the distance from B to A in B's frame (in general).
+   {
 
 }
 
