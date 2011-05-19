@@ -87,12 +87,12 @@ function draw()
         carray[i].COM.updateX0();
         carray[i].draw();
     }
-
-    g.fillStyle = "#f0f";
-    g.fillText("FPS: " + Math.floor(1000/(timeStep/timeScale)),250,250); 
-    g.fillText("Home System Gamma: " +  Math.floor(carray[carray.length-1].COM.V[0]),250,280); 
-    g.fillText("Game Clock: " + Math.floor(t/timeScale/1000),250,300); 
-    g.fillText("Real Time: " + Math.floor((newTime - initialTime)/1000),250,320); 
+    
+    $("#fps").html(Math.floor(1000/(timeStep/timeScale)));
+    $("#hsg").html(Math.floor(carray[carray.length-1].COM.V[0]));
+    $("#gameclock").html(Math.floor(t/timeScale/1000));
+    $("#time").html(Math.floor((newTime - initialTime)/1000));
+    
 //    console.profileEnd();
 
   	if (leftDown == true)    changeArrayFrame(vec3.create([0,0,0]), boostLeft, carray);
@@ -105,7 +105,7 @@ function draw()
 }
 function clear() 
 {
-    g.fillStyle = "#000";
+    g.fillStyle = "#212124";
     g.fillRect(0, 0, WIDTH, HEIGHT);
     g.fillStyle = "#fff";
 }

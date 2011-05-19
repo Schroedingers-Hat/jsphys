@@ -1,16 +1,47 @@
 <!DOCTYPE html>
-<html><head>
-<title>Relativity Simulator</title>
-<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
- 	<script type="text/javascript" src="jsphys_js/jquery.js"></script>
-	<script type="text/javascript" src="jsphys_js/glMatrix-0.9.5.min.js"></script>
-	<script type="text/javascript" src="jsphys_js/inertialObject.js"></script>
-	<script type="text/javascript" src="jsphys_js/interface.js"></script>
-	<script type="text/javascript" src="jsphys_js/relLibs.js"></script>
-	<script type="text/javascript" src="jsphys_js/colors.js"></script>
-	<script type="text/javascript" src="jsphys_js/balls1.js"></script>
- </head>
+<html>
+    <head>
+        <title>Relativity Simulator</title>
+        <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+        <script type="text/javascript" src="jsphys_js/jquery.js"></script>
+        <script type="text/javascript" src="jsphys_js/glMatrix-0.9.5.min.js"></script>
+        <script type="text/javascript" src="jsphys_js/inertialObject.js"></script>
+        <script type="text/javascript" src="jsphys_js/interface.js"></script>
+        <script type="text/javascript" src="jsphys_js/relLibs.js"></script>
+        <script type="text/javascript" src="jsphys_js/colors.js"></script>
+        <script type="text/javascript" src="jsphys_js/balls1.js"></script>
+        <style type="text/css">
+            #infobox 
+            {
+                width: 150px;
+                position: absolute;
+                top: 0.5em;
+                left: 0.5em;
+                color: #f0f;
+                font-size: 9pt;
+                font-family: sans-serif;
+                background-color: #333;
+                opacity: 0.8;
+                padding: 0.5em;
+            }
+            
+            #infobox p
+            {
+                padding: 0;
+                margin: 0;
+            }
+        </style>
+    </head>
  
- <body bgcolor="#000">
-   <canvas id="canvas" height="500"></canvas>
-</body></html>
+    <body bgcolor="#212124">
+        <div style="position:relative">
+            <canvas id="canvas" height="500"></canvas>
+            <div id="infobox">
+                <p>FPS: <span id="fps"></span></p>
+                <p>Home system gamma: <span id="hsg"></span></p>
+                <p>Game clock: <span id="gameclock"></span></p>
+                <p>Real time: <span id="time"></span></p>
+            </div>
+        </div>
+    </body>
+</html>
