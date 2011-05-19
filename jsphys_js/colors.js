@@ -16,7 +16,7 @@ function tempToColor(colorTemp)
     {
         var xyz = spectrum_to_xyz(bb_spectrum(colorTemp));
         var rgb = constrain_rgb(xyz_to_rgb(xyz[0], xyz[1], xyz[2]));
-        rgb = norm_rgb(rgb[0], rgb[1], rgb[2]);
+        // rgb = norm_rgb(rgb[0], rgb[1], rgb[2]);
     
         var color = "#" + padRGB(Math.floor(rgb[0] * 255).toString(16)) + 
                      padRGB(Math.floor(rgb[1] * 255).toString(16)) +
@@ -113,8 +113,7 @@ function xyz_to_rgb(xc, yc, zc)
     one of the primaries, it lies outside the colour gamut 
     accessible from the given triple of primaries.  Desaturate
     it by adding white, equal quantities of R, G, and B, enough
-    to make RGB all positive.  The function returns 1 if the
-    components were modified, zero otherwise.
+    to make RGB all positive.
     
 */
 function constrain_rgb(rgb)
