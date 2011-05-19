@@ -1,10 +1,21 @@
+/**
+ * Doppler shift a color temperature by simply multiplying it
+ * by the Doppler factor.
+ */
 function dopplerShiftColor(colorTemp, velocity, gamma)
 {
     // Assuming this is accurate for transverse doppler, too.
-    var dopplerFactor = 1/(1+(velocity/c))/gamma;
+    var dopplerFactor = 1/(1 + (velocity / c)) / gamma;
     return colorTemp * dopplerFactor;
 }
 
+/**
+ * Convert a color temperature to an RGB color of form #RRGGBB by using
+ * the blackbody spectrum.
+ *
+ * Uses a temperature cache to avoid recalculating colors for similar color
+ * temperatures needlessly, saving significant computation time.
+ */
 function tempToColor(colorTemp)
 {
     if (!tempToColor.cache)
@@ -14,12 +25,12 @@ function tempToColor(colorTemp)
     
     if (!(roundedTemp.toString() in tempToColor.cache))
     {
-        var xyz = spectrum_to_xyz(bb_spectrum(colorTemp));
+        var xyz = spectrum_to_xyz(bb_spectrum(roundedTemp));
         var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
         
         var color = "#" + padRGB(Math.floor(rgb[0] * 255).toString(16)) + 
-                     padRGB(Math.floor(rgb[1] * 255).toString(16)) +
-                     padRGB(Math.floor(rgb[2] * 255).toString(16));
+                          padRGB(Math.floor(rgb[1] * 255).toString(16)) +
+                          padRGB(Math.floor(rgb[2] * 255).toString(16));
         tempToColor.cache[roundedTemp.toString()] = color;
     }
     
@@ -141,10 +152,9 @@ function constrain_rgb(rgb)
     return [r, g, b];
 }
 
-/*  	    	    	    NORM_RGB
+/*                          NORM_RGB
 
-    Normalise RGB components so the most intense (unless all
-    are zero) has a value of 1.
+    Normalise RGB components so that none have a value greater than 1.
     
 */
 function norm_rgb(rgb)
@@ -153,12 +163,11 @@ function norm_rgb(rgb)
     var g = rgb[1];
     var b = rgb[2];
     
-    var greatest = Math.max(r, Math.max(g, b));
-    
-    if (greatest > 0 && (r > 1.0 || g > 1.0 || b > 1.0)) {
-    	r /= greatest;
-	    g /= greatest;
-    	b /= greatest;
+    if (r > 1.0 || g > 1.0 || b > 1.0) {
+        var greatest = Math.max(r, Math.max(g, b));
+        r /= greatest;
+        g /= greatest;
+        b /= greatest;
     }
     return [r, g, b];
 }
@@ -171,8 +180,8 @@ function norm_rgb(rgb)
     wavelengths between 380 and 780 nm (the argument is 
     expressed in meters), which returns emittance at  that
     wavelength in arbitrary units.  The chromaticity
-    coordinates of the spectrum are returned in the x, y, and z
-    arguments which respect the identity:
+    coordinates of the spectrum [x, y, z] are returned 
+    and respect the identity:
 
             x + y + z = 1.
 */
@@ -189,12 +198,12 @@ function spectrum_to_xyz(spectrum)
             cie_colour_match[(lambda - 380) / 5][1] = yBar
             cie_colour_match[(lambda - 380) / 5][2] = zBar
 
-	To save memory, this table can be declared as floats
-	rather than doubles; (IEEE) float has enough 
-	significant bits to represent the values. It's declared
-	as a double here to avoid warnings about "conversion
-	between floating-point types" from certain persnickety
-	compilers. */
+       To save memory, this table can be declared as floats
+       rather than doubles; (IEEE) float has enough 
+       significant bits to represent the values. It's declared
+       as a double here to avoid warnings about "conversion
+       between floating-point types" from certain persnickety
+       compilers. */
 
     var cie_colour_match = [
         [0.0014,0.0000,0.0065], [0.0022,0.0001,0.0105], [0.0042,0.0001,0.0201],
