@@ -15,9 +15,8 @@ function tempToColor(colorTemp)
     if (!(roundedTemp.toString() in tempToColor.cache))
     {
         var xyz = spectrum_to_xyz(bb_spectrum(colorTemp));
-        var rgb = constrain_rgb(xyz_to_rgb(xyz[0], xyz[1], xyz[2]));
-        // rgb = norm_rgb(rgb[0], rgb[1], rgb[2]);
-    
+        var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
+        
         var color = "#" + padRGB(Math.floor(rgb[0] * 255).toString(16)) + 
                      padRGB(Math.floor(rgb[1] * 255).toString(16)) +
                      padRGB(Math.floor(rgb[2] * 255).toString(16));
@@ -63,8 +62,12 @@ function padRGB(color)
     components so the largest nonzero component has value 1.
     
 */
-function xyz_to_rgb(xc, yc, zc)
+function xyz_to_rgb(xyz)
 {
+    var xc = xyz[0];
+    var yc = xyz[1];
+    var zc = xyz[2];
+    
     // HDTV/sRGB color space
     var cs = { "red":   {"x": 0.670, "y": 0.330, "z": 0},
                "green": {"x": 0.210, "y": 0.710, "z": 0.080},
@@ -144,11 +147,15 @@ function constrain_rgb(rgb)
     are zero) has a value of 1.
     
 */
-function norm_rgb(r, g, b)
+function norm_rgb(rgb)
 {
+    var r = rgb[0];
+    var g = rgb[1];
+    var b = rgb[2];
+    
     var greatest = Math.max(r, Math.max(g, b));
     
-    if (greatest > 0) {
+    if (greatest > 0 && (r > 1.0 || g > 1.0 || b > 1.0)) {
     	r /= greatest;
 	    g /= greatest;
     	b /= greatest;
