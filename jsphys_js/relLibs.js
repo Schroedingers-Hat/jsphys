@@ -7,13 +7,27 @@
  *gamma.
 */
 vToGamma = function(V){
- return Math.pow((1-V[1]*V[1]-V[2]*V[2]),-0.5)
+    if (V.length == 3)
+    {
+        return Math.pow((1 - V[1] * V[1] - V[2] * V[2]), -0.5);
+    }
+    if (V.length == 4)
+    {
+        return Math.pow((1 - V[1] * V[1] - V[2] * V[2] - V[3] * V[3]), -0.5);
+    }
 };
 
 //Takes a momentum (0th element Energy) and re-generates the energy
 //From the spacial elements.
 genEnergy = function(P,c){
- P[0]=c*Math.pow((c*c+P[1]*P[1]+P[2]*P[2]),0.5);
+    if (P.length == 3)
+    {
+        P[0] = c*Math.pow((c * c + P[1] * P[1] + P[2] * P[2]), 0.5);
+    }
+    if (P.length == 4)
+    {
+        P[0] = c*Math.pow((c * c + P[1] * P[1] + P[2] * P[2] - P[3] * P[3]), 0.5);
+    }
  return P;
 };
 
@@ -45,11 +59,82 @@ mat3.multiplyVec3 = function(mat, vec, dest) {
 	return dest;
 };
 
+quat4.scale = function(vec, val, dest) {
+        if(!dest || vec == dest) {
+                vec[0] *= val;
+                vec[1] *= val;
+                vec[2] *= val;
+                vec[3] *= val;
+                return vec;
+        }
+        
+        dest[0] = vec[0]*val;
+        dest[1] = vec[1]*val;
+        dest[2] = vec[2]*val;
+        dest[3] = vec[3]*val;
+        return dest;
+};
+
+quat4.add = function(vec, vec2, dest) {
+        if(!dest || vec == dest) {
+                vec[0] += vec2[0];
+                vec[1] += vec2[1];
+                vec[2] += vec2[2];
+                vec[3] += vec2[3];
+                return vec;
+        }
+        
+        dest[0] = vec[0] + vec2[0];
+        dest[1] = vec[1] + vec2[1];
+        dest[2] = vec[2] + vec2[2];
+        dest[3] = vec[3] + vec2[3];
+        return dest;
+};
+
+
+quat4.subtract = function(vec, vec2, dest) {
+        if(!dest || vec == dest) {
+                vec[0] -= vec2[0];
+                vec[1] -= vec2[1];
+                vec[2] -= vec2[2];
+                vec[3] -= vec2[3];
+                return vec;
+        }
+        
+        dest[0] = vec[0] - vec2[0];
+        dest[1] = vec[1] - vec2[1];
+        dest[2] = vec[2] - vec2[2];
+        dest[3] = vec[3] - vec2[3];
+        return dest;
+};
+
+
+
 //Projection of spacial elements of vec onto vec2.
-vec3.spaceDot = function(vec,vec2){
-return vec[1]*vec2[1]+vec[2]*vec2[2];
+vec3.spaceDot = function(vec, vec2)
+{
+if (vec.length == 3)
+{
+return vec[1] * vec2[1] + vec[2] * vec2[2];
+}
+if (vec.length == 4)
+{
+return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
+}
 }
 
+
+quat4.spaceDot = function(vec, vec2)
+{
+if (vec.length == 3)
+{
+return vec[1] * vec2[1] + vec[2] * vec2[2];
+}
+if (vec.length == 4)
+{
+return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
+}
+}
 /*
  *cBoostMat
  *Takes a velocity and a speed of light and returns a boost matrix
@@ -67,8 +152,9 @@ return vec[1]*vec2[1]+vec[2]*vec2[2];
 function cBoostMat(boostV,c) {
     var boostMagSq=boostV[1]*boostV[1]+boostV[2]*boostV[2];
 	var gamma=vToGamma(boostV);
-	return (mat3.create([gamma,            -boostV[1]*gamma,                            -boostV[2]*gamma,
-                         -boostV[1]*gamma, 1+(gamma-1)*boostV[1]*boostV[1]/boostMagSq, (gamma-1)*boostV[1]*boostV[2]/boostMagSq,	 
-                         -boostV[2]*gamma, (gamma-1)*boostV[1]*boostV[2]/boostMagSq,   1+(gamma-1)*boostV[2]*boostV[2]/boostMagSq
+	return (mat4.create([gamma,            -boostV[1]*gamma,                            -boostV[2]*gamma, 0,
+                         -boostV[1]*gamma, 1+(gamma-1)*boostV[1]*boostV[1]/boostMagSq, (gamma-1)*boostV[1]*boostV[2]/boostMagSq, 0,
+                         -boostV[2]*gamma, (gamma-1)*boostV[1]*boostV[2]/boostMagSq,   1+(gamma-1)*boostV[2]*boostV[2]/boostMagSq, 0,
+                        0, 0, 0, 1
                         ]));
 };

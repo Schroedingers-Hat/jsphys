@@ -33,19 +33,19 @@ function onKeyDown(evt)
     	{
     	    zoom = zoom / 2;
             if (zoom < 0.06 ) zoom = 0.6;
-            boostRight  = cBoostMat(vec3.create([0, 0.02 / zoom, 0]), c);
-            boostLeft   = cBoostMat(vec3.create([0, -0.02 / zoom, 0]), c);
-            boostUp     = cBoostMat(vec3.create([0, 0, -0.02 / zoom]), c);
-            boostDown   = cBoostMat(vec3.create([0, 0, 0.02 / zoom]), c);
+            boostRight  = cBoostMat(quat4.create([0, 0.02 / zoom, 0, 0]), c);
+            boostLeft   = cBoostMat(quat4.create([0, -0.02 / zoom, 0, 0]), c);
+            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / zoom, 0]), c);
+            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / zoom, 0]), c);
     	}
     	else if (evt.keyCode == 109) 
     	{
     	    zoom = zoom * 2;
             if (zoom > 40) zoom = 40;
-            boostRight  = cBoostMat(vec3.create([0, 0.02 * zoom,0]), c);
-            boostLeft   = cBoostMat(vec3.create([0, -0.02 * zoom,0]), c);
-            boostUp     = cBoostMat(vec3.create([0, 0, -0.02 * zoom]), c);
-            boostDown   = cBoostMat(vec3.create([0, 0, 0.02 * zoom]), c);
+            boostRight  = cBoostMat(quat4.create([0, 0.02 * zoom,0, 0]), c);
+            boostLeft   = cBoostMat(quat4.create([0, -0.02 * zoom,0, 0]), c);
+            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 * zoom, 0]), c);
+            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 * zoom, 0]), c);
     	}
 }
 
@@ -83,11 +83,11 @@ function clickHandler(e)
     if (minDist < 30)
     {
         //Should probably take this out of here.
-        newFrameBoost=cBoostMat(vec3.scale(carray[minElement].COM.V,
-                                           1 / carray[minElement].COM.V[0],tempVec3),c);
-        carray[minElement].COM.changeFrame([0,0,0], newFrameBoost);
+        newFrameBoost=cBoostMat(quat4.scale(carray[minElement].COM.V,
+                                           1 / carray[minElement].COM.V[0], tempVec3), c);
+        carray[minElement].COM.changeFrame([0, 0, 0, 0], newFrameBoost);
         XShift=carray[minElement].COM.X0;
-        carray[minElement].COM.X0=vec3.create([0,0,0]);
+        carray[minElement].COM.X0=quat4.create([0, 0, 0, 0]);
         for (i = 0; i < carray.length; i++)
         {
             if (i != minElement)
