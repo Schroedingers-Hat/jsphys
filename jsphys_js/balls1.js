@@ -9,6 +9,8 @@ var upDown = false;
 var downDown = false;
 var rotLeftDown = false;
 var rotRightDown = false;
+var rotUpDown = false;
+var rotDownDown = false;
 var displayTime = false;
 var carray = new Array();
 var c = 1; //Do not change, not fully implemented
@@ -26,17 +28,29 @@ var boostUp     = cBoostMat(quat4.create([0, 0, -0.05, 0]), c);
 var boostDown   = cBoostMat(quat4.create([0, 0, 0.05, 0]), c);
 var timeScale   = 0.02;
 var rotLeft  = mat4.create([1, 0, 0, 0,
-                        0, Math.cos(0.1), Math.sin(0.1), 0,
-                        0, Math.sin( -0.1), Math.cos(0.1), 0,
+                        0, Math.cos(0.1), Math.sin(-0.1), 0,
+                        0, Math.sin( 0.1), Math.cos(0.1), 0,
                         0, 0, 0, 1]);
-//rotLeft = mat4.toMat3(rotLeft);  //Migration to 3D
 var rotRight = mat4.create([1, 0, 0, 0,
-                        0, Math.cos(0.1), Math.sin( -0.1), 0,
-                        0, Math.sin(0.1), Math.cos(0.1), 0,
+                        0, Math.cos(0.1), Math.sin( 0.1), 0,
+                        0, Math.sin(-0.1), Math.cos(0.1), 0,
                         0, 0, 0, 1]);
-//rotRight = mat4.toMat3(rotRight); //Migration to 3D
 
-zoom = 1;
+var rotUp = mat4.create([1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, Math.cos(0.1), Math.sin(0.1),
+                        0, 0, Math.sin( -0.1), Math.cos(0.1)
+                        ]);
+var rotDown = mat4.create([1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, Math.cos(0.1), Math.sin(-0.1),
+                        0, 0, Math.sin(0.1), Math.cos(0.1)
+                        ]);
+
+
+
+
+zoom = 0.25;
 //TODO: Decide if we're using increments of ct or t.
 var timeStep=5; //Not wholly implemented yet, need some scale calls. Do not change from 1.
 var t = 0;
@@ -49,18 +63,19 @@ function start()
     HEIGHT = $("#canvas").height();
     HWIDTH = WIDTH / 2;
     HHEIGHT = HEIGHT / 2;
-    var numstars = 1000;
+    var numstars = 2000;
     var angle;
     for (i=0; i < numstars; i++)
     {
         angle = Math.random() * twopi;
-        rad   = Math.pow(Math.random() * 100000000, 0.5);
-        xjit  = Math.random() * 0.2 * c;
-        yjit  = Math.random() * 0.2 * c;
+        angle2 = Math.random() * twopi;
+        rad   = Math.pow(Math.random() * 1000000, 0.5);
+        xjit  = Math.random() * 0.001 * c;
+        yjit  = Math.random() * 0.001 * c;
         lum   = Math.pow( 1000, Math.random() ) / 100;
-        carray[i] = new mainSequenceStar(quat4.create([0, Math.cos(angle) * rad, Math.sin(angle) * rad, 0], 0),
-                                         quat4.create([0, c * 0.1 * Math.cos(angle) + xjit, 
-                                                        c * 0.1 * Math.sin(angle) + yjit, 0]),
+        carray[i] = new mainSequenceStar(quat4.create([0, Math.cos(angle) * rad, Math.sin(angle) * rad, Math.cos(angle2) * rad], 0),
+                                         quat4.create([0, c * 0.01 * Math.cos(angle) + xjit, 
+                                                        c * 0.01 * Math.sin(angle) + yjit, 0]),
                                          lum);
         carray[i].COM.init();
     
@@ -90,7 +105,8 @@ function draw()
     for (i=0; i<carray.length; i++)
     {
         carray[i].COM.updateX0();
-        carray[i].draw();
+//        carray[i].draw();
+        carray[i].draw3D();
     }
     
     $("#fps").html(Math.floor(1000 / (timeStep / timeScale)));
@@ -105,6 +121,8 @@ function draw()
   	if (downDown == true)    changeArrayFrame(quat4.create([0, 0, 0, 0]), boostDown, carray);
     if (rotLeftDown == true) changeArrayFrame(quat4.create([0, 0, 0, 0]), rotRight,  carray);
     if (rotRightDown == true)changeArrayFrame(quat4.create([0, 0, 0, 0]), rotLeft,   carray);
+    if (rotUpDown == true) changeArrayFrame(quat4.create([0, 0, 0, 0]), rotUp,  carray);
+    if (rotDownDown == true)changeArrayFrame(quat4.create([0, 0, 0, 0]), rotDown,   carray);
   	if (rightDown == true)   changeArrayFrame(quat4.create([0, 0, 0, 0]), boostRight,carray);
     t+=timeStep;
 }

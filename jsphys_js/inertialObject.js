@@ -5,6 +5,7 @@ function inertialObject(X, P, m)
     this.init = function()
     {
         this.X0 = X;
+        this.rPast = 1;
 	    this.XView = quat4.create();
         this.V = quat4.scale(P,1 / m); 
         // Relativistic velocity, or momentum/mass.
@@ -75,7 +76,7 @@ function inertialObject(X, P, m)
         
         this.uDisplacement=quat4.scale(this.V, this.viewTime / this.V[0], this.uDisplacement);
         this.Xview=quat4.subtract(this.X0, this.uDisplacement, this.XView);
-        
+        this.rPast = Math.max(quat4.spaceDot( this.Xview, this.Xview ),1);        
         this.radialVPast = (quat4.spaceDot(this.XView, this.V) /
                             Math.sqrt(Math.abs(quat4.spaceDot(this.XView, this.XView))) / 
                             this.V[0]);
@@ -130,6 +131,38 @@ function mainSequenceStar(X,P,Lum)
     //You can read this off of a HR diagram.
     this.temp = Math.pow(10,(3.45 + Lum / 10)); 
     //TODO: Add the mass and radius relations here.
+
+    this.draw3D = function()
+    {
+
+        if(showVisualPos &&
+           (5 *  Math.abs(this.COM.XView[2])) > Math.abs(this.COM.Xview[1]) &&
+           (5 * Math.abs(this.COM.XView[2])) > Math.abs(this.COM.Xview[3]) &&
+           (this.COM.rPast) > 1000 &&
+           this.COM.XView[2]<0&&
+           this.r / zoom > 0.3)
+        {
+            if(showDoppler)
+            {
+                g.fillStyle = tempToColor(dopplerShiftColor(this.temp,
+                                                            this.COM.radialVPast,
+                                                            this.COM.V[0]));
+            }
+            else
+            {
+                g.fillStyle = tempToColor(this.temp);
+            }
+            g.beginPath();
+            g.arc(this.COM.XView[1] / this.COM.rPast * 10000/ zoom + HWIDTH,
+                  this.COM.XView[3] / this.COM.rPast * 10000/ zoom + HHEIGHT,
+                  this.r / Math.pow(this.COM.rPast,2) * 100000000, 0, twopi, true);
+            g.closePath();
+            g.fill();
+        }
+
+    }
+
+
     this.draw = function()
     {
         if(showVisualPos &&
