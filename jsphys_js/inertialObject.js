@@ -31,7 +31,7 @@ function inertialObject(X, P, m)
         this.tau += c * timeStep / this.V[0];
 	    //Bring it to now.
         quat4.add(this.X0, this.displace);
-        this.X0[0] = this.X0[0] - timeStep;
+        this.X0[0] = this.X0[0] - timeStep * c;
         // Can't decide what to do with this last line, it /is/ moving forward 1 
         // unit in time, but so is the frame. Should I move the -1 into this.displace?
         this.calcPast();
@@ -69,7 +69,7 @@ function inertialObject(X, P, m)
     this.calcPast = function()
     {
         this.radialDist = Math.sqrt(quat4.spaceDot(this.X0, this.X0));
-        this.radialV = (0 - quat4.spaceDot(this.V,this.X0) / 
+        this.radialV = ( -quat4.spaceDot(this.V,this.X0) / 
                         this.radialDist / 
                         this.V[0]);
         this.viewTime = this.radialDist / (c - this.radialV);

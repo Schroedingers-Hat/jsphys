@@ -9,11 +9,11 @@
 vToGamma = function(V){
     if (V.length == 3)
     {
-        return Math.pow((1 - V[1] * V[1] - V[2] * V[2]), -0.5);
+        return Math.pow((1 - (V[1] * V[1] + V[2] * V[2])/(c*c) ), -0.5);
     }
     if (V.length == 4)
     {
-        return Math.pow((1 - V[1] * V[1] - V[2] * V[2] - V[3] * V[3]), -0.5);
+        return Math.pow((1 - (V[1] * V[1] + V[2] * V[2] + V[3] * V[3])/(c*c) ), -0.5);
     }
 };
 
@@ -26,7 +26,7 @@ genEnergy = function(P,c){
     }
     if (P.length == 4)
     {
-        P[0] = c*Math.pow((c * c + P[1] * P[1] + P[2] * P[2] - P[3] * P[3]), 0.5);
+        P[0] = c*Math.pow((c * c + P[1] * P[1] + P[2] * P[2] + P[3] * P[3]), 0.5);
     }
  return P;
 };
