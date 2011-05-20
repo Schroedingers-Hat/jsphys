@@ -163,12 +163,19 @@ function norm_rgb(rgb)
     var g = rgb[1];
     var b = rgb[2];
     
-    if (r > 1.0 || g > 1.0 || b > 1.0) {
+    /*if (r > 1.0 || g > 1.0 || b > 1.0) {
         var greatest = Math.max(r, Math.max(g, b));
         r /= greatest;
         g /= greatest;
         b /= greatest;
-    }
+    }*/
+    if (r > 1.0)
+        r = 1.0;
+    if (g > 1.0)
+        g = 1.0;
+    if (b > 1.0)
+        b = 1.0;
+    
     return [r, g, b];
 }
 
