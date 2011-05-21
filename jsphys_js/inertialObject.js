@@ -120,6 +120,18 @@ function inertialObject(X, P, m)
 
 }
 
+
+//function lineObject(X, P, Materials, Shape)
+
+
+
+
+
+
+
+
+
+
 //Generates an approximation of a main sequence star. 
 //Luminosity is in units 10^Lum*1 solar luminosity=Luminosity in watts.
 function mainSequenceStar(X, P, Lum)

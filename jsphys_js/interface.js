@@ -15,8 +15,8 @@ function onKeyDown(evt)
     	else if (evt.keyCode == 65) leftDown = true;
     	else if (evt.keyCode == 87) upDown = true;
     	else if (evt.keyCode == 83) downDown = true;
-//    	else if (evt.keyCode == 49) rotUpDown = true;  
-//    	else if (evt.keyCode == 50) rotDownDown = true;  
+//    	else if (evt.keyCode == 49) rotUpDown = true; //Not needed for 2D 
+//    	else if (evt.keyCode == 50) rotDownDown = true;  //Not needed for 2D
 
         else if (evt.keyCode == 84) displayTime = !displayTime;
         else if (evt.keyCode == 90)
