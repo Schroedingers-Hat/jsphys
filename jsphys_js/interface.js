@@ -15,8 +15,8 @@ function onKeyDown(evt)
     	else if (evt.keyCode == 65) leftDown = true;
     	else if (evt.keyCode == 87) upDown = true;
     	else if (evt.keyCode == 83) downDown = true;
-    	else if (evt.keyCode == 49) rotUpDown = true;  
-    	else if (evt.keyCode == 50) rotDownDown = true;  
+//    	else if (evt.keyCode == 49) rotUpDown = true;  
+//    	else if (evt.keyCode == 50) rotDownDown = true;  
 
         else if (evt.keyCode == 84) displayTime = !displayTime;
         else if (evt.keyCode == 90)
@@ -59,8 +59,8 @@ function onKeyUp(evt)
 	else if(evt.keyCode == 83) downDown = false;
 	else if (evt.keyCode == 69) rotRightDown = false;
 	else if (evt.keyCode == 81) rotLeftDown = false; 
-	else if (evt.keyCode == 49) rotUpDown = false;  
-	else if (evt.keyCode == 50) rotDownDown = false;  
+//	else if (evt.keyCode == 49) rotUpDown = false;  
+//	else if (evt.keyCode == 50) rotDownDown = false;  
 }
 
 function clickHandler(e)

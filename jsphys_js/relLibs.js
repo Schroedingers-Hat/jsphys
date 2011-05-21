@@ -19,14 +19,14 @@ vToGamma = function(V){
 
 //Takes a momentum (0th element Energy) and re-generates the energy
 //From the spacial elements.
-genEnergy = function(P,c){
+genEnergy = function(P,c,m){
     if (P.length == 3)
     {
-        P[0] = c*Math.pow((c * c + P[1] * P[1] + P[2] * P[2]), 0.5);
+        P[0] = Math.pow((c * c + P[1] * P[1] + P[2] * P[2]), 0.5);
     }
     if (P.length == 4)
     {
-        P[0] = c*Math.pow((c * c + P[1] * P[1] + P[2] * P[2] + P[3] * P[3]), 0.5);
+        P[0] = Math.pow((c*c *  m*m + P[1] * P[1] + P[2] * P[2] + P[3] * P[3]), 0.5);
     }
  return P;
 };

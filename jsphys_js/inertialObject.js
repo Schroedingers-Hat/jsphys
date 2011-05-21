@@ -1,4 +1,3 @@
-
 // inertialObject Class    
 function inertialObject(X, P, m)
 {
@@ -7,9 +6,9 @@ function inertialObject(X, P, m)
         this.X0 = X;
         this.rPast = 1;
 	    this.XView = quat4.create();
-        this.V = quat4.scale(P,1 / m); 
+        this.V = quat4.scale(P, 1 / m); 
         // Relativistic velocity, or momentum/mass.
-        genEnergy(this.V, c);
+        genEnergy(this.V, c, m);
         this.displace = quat4.create();
         quat4.scale(this.V, timeStep / this.V[0], this.displace);
         this.tau = 0;
@@ -26,12 +25,13 @@ function inertialObject(X, P, m)
     //Find out if the modulo command is as/more efficient.
 
     this.updateX0 = function()
-    {    
+    {   
+        quat4.scale(this.V, timeStep / this.V[0], this.displace);
 	    //Increase proper time.
         this.tau += c * timeStep / this.V[0];
 	    //Bring it to now.
         quat4.add(this.X0, this.displace);
-        this.X0[0] = this.X0[0] - timeStep * c;
+        this.X0[0] = this.X0[0] - timeStep;
         // Can't decide what to do with this last line, it /is/ moving forward 1 
         // unit in time, but so is the frame. Should I move the -1 into this.displace?
         this.calcPast();
@@ -40,6 +40,7 @@ function inertialObject(X, P, m)
     //Note that translation can include time, and rotation can include boost.
     this.changeFrame = function(translation, rotation)
     {
+
         //Boost both velocity and position vectors using the boost matrix.
         mat4.multiplyVec4(rotation, this.X0);
         mat4.multiplyVec4(rotation, this.V);
@@ -50,12 +51,12 @@ function inertialObject(X, P, m)
         
         //Bring to current time.
         quat4.add(this.X0, this.uDisplacement);
-        this.tau+=this.uDisplacement[0] / this.V[0];
+        this.tau += this.uDisplacement[0] / this.V[0];
         
-        quat4.subtract(this.X0,translation);
         //Find the new displacement vector.
-        quat4.scale(this.V, timeStep/this.V[0], this.displace);
+        quat4.scale(this.V, timeStep / this.V[0], this.displace);
     
+        quat4.subtract(this.X0, translation);
         this.calcPast();
     }
    
@@ -69,16 +70,16 @@ function inertialObject(X, P, m)
     this.calcPast = function()
     {
         this.radialDist = Math.sqrt(quat4.spaceDot(this.X0, this.X0));
-        this.radialV = ( -quat4.spaceDot(this.V,this.X0) / 
-                        this.radialDist / 
+        this.radialV = ( -quat4.spaceDot(this.V, this.X0) / 
+                        Math.max(this.radialDist,0.000000001) / 
                         this.V[0]);
         this.viewTime = this.radialDist / (c - this.radialV);
         
-        this.uDisplacement=quat4.scale(this.V, this.viewTime / this.V[0], this.uDisplacement);
-        this.Xview=quat4.subtract(this.X0, this.uDisplacement, this.XView);
-        this.rPast = Math.max(quat4.spaceDot( this.Xview, this.Xview ),1);        
+        this.uDisplacement = quat4.scale(this.V, this.viewTime / this.V[0], this.uDisplacement);
+        this.XView = quat4.subtract(this.X0, this.uDisplacement, this.XView);
+        this.rPast = Math.sqrt(Math.max(quat4.spaceDot( this.XView, this.XView ),0.00001));        
         this.radialVPast = (quat4.spaceDot(this.XView, this.V) /
-                            Math.sqrt(Math.abs(quat4.spaceDot(this.XView, this.XView))) / 
+                            Math.max(Math.sqrt(Math.abs(quat4.spaceDot(this.XView, this.XView))),0.0000000001) / 
                             this.V[0]);
  
    }
@@ -121,52 +122,20 @@ function inertialObject(X, P, m)
 
 //Generates an approximation of a main sequence star. 
 //Luminosity is in units 10^Lum*1 solar luminosity=Luminosity in watts.
-function mainSequenceStar(X,P,Lum)
+function mainSequenceStar(X, P, Lum)
 {
     //Aesthetic reasons only. 
     //If any 3D images are rendered Lum will be more useful
-    this.r = Math.sqrt(Lum)*10; 
+    this.r = Math.sqrt(Lum) * 10; 
     
     //Very rough approximation of main sequence lum/temp relation.
     //You can read this off of a HR diagram.
-    this.temp = Math.pow(10,(3.45 + Lum / 10)); 
+    this.temp = Math.pow(10, (3.45 + Lum / 10)); 
     //TODO: Add the mass and radius relations here.
-
-    this.draw3D = function()
-    {
-
-        if(showVisualPos &&
-           (5 *  Math.abs(this.COM.XView[2])) > Math.abs(this.COM.Xview[1]) &&
-           (5 * Math.abs(this.COM.XView[2])) > Math.abs(this.COM.Xview[3]) &&
-           (this.COM.rPast) > 1000 &&
-           this.COM.XView[2]<0&&
-           this.r / zoom > 0.3)
-        {
-            if(showDoppler)
-            {
-                g.fillStyle = tempToColor(dopplerShiftColor(this.temp,
-                                                            this.COM.radialVPast,
-                                                            this.COM.V[0]));
-            }
-            else
-            {
-                g.fillStyle = tempToColor(this.temp);
-            }
-            g.beginPath();
-            g.arc(this.COM.XView[1] / this.COM.rPast * 10000/ zoom + HWIDTH,
-                  this.COM.XView[3] / this.COM.rPast * 10000/ zoom + HHEIGHT,
-                  this.r / Math.pow(this.COM.rPast,2) * 100000000, 0, twopi, true);
-            g.closePath();
-            g.fill();
-        }
-
-    }
-
-
     this.draw = function()
     {
         if(showVisualPos &&
-           this.COM.XView[1]/zoom < (HWIDTH + 10) &&
+           this.COM.XView[1]/zoom < (HWIDTH + 10)  &&
            this.COM.XView[2]/zoom < (HHEIGHT + 10) &&
            this.COM.XView[1]/zoom > (-HWIDTH - 10) &&
            this.COM.XView[2]/zoom > (-HHEIGHT - 10)&&
