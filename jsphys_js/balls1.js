@@ -13,6 +13,7 @@ var rotUpDown = false;
 var rotDownDown = false;
 var displayTime = false;
 var carray = new Array();
+var testObject = new Array();
 var c = 1; //Do not change, not fully implemented
 var twopi = Math.PI * 2;
 var tempVec3 = quat4.create();
@@ -78,10 +79,15 @@ function start()
                                                         c * 0.01 * Math.sin(angle) + yjit, 0]),
                                          lum);
         carray[i].COM.init();
-    
+        
+
     }
-    carray[numstars]=new mainSequenceStar(quat4.create([0, 0, 0, 0]),quat4.create([0, 0, 0, 0]),20);
-    carray[numstars].COM.init();
+    testObject[0] = new extendedObject(quat4.create([0, 0, 0, 0]), quat4.create([0, 0, 0, 0]), 1, 1,
+                                    [0,  0,  0, 0, 
+                                     0,-120,  0, 0,    
+                                     0,-120,120, 0, 
+                                     0,  0,120, 0]);
+    testObject[0].init();
     return setInterval(draw, 20);
 }
 
@@ -91,6 +97,7 @@ function changeArrayFrame(translation, boost, objectArray)
     {
         objectArray[i].COM.changeFrame(translation, boost);
     }
+    testObject[0].changeFrame(translation, boost);
 }
 
 // Draw Function
@@ -107,7 +114,10 @@ function draw()
         carray[i].COM.updateX0();
         carray[i].draw();
     }
-    
+    testObject[0].update(); 
+    if (showVisualPos) testObject[0].drawPast();
+    if (showFramePos) testObject[0].drawNow();
+ 
     t = t + (timeStep*c);
     $("#fps").html(Math.floor(1000 / (timeStep / timeScale)));
     $("#hsg").html( Math.floor(carray[carray.length - 1].COM.V[0]) );

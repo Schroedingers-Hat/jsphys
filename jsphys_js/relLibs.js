@@ -136,18 +136,20 @@ return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
 }
 }
 /*
- *cBoostMat
- *Takes a velocity and a speed of light and returns a boost matrix
- *A bit less efficient than it should be, create some temporary variables lazy git. :/
+ * cBoostMat
+ * Takes a velocity and a speed of light and returns a boost matrix
+ * A bit less efficient than it should be, create some temporary variables lazy git. :/
  *
- *Until that time, here's an explanation.
- *An acceleration (or boost) in relativity is almost exactly equivalent to a rotation.
- *You can think of a particle/object as moving at the speed of light at all times in the t direction,
- *The acceleration 'rotates' that path so that it is moving in the x direction a little bit as well as the y.
- *This matrix implements the appropriate cosh(artanh(B)) and similar values, using linear algebra for speed (although not clarity)
- *One way to get an idea for how hyperbolic space works is to play with a triangle. Declare the wrong side to be the hypotenuse, and change
- *The angles. You'll notice that both the opposite and adjacent tend to infinity, so too do x and t intervals for a given proper time (hypotenuse)
- *I plan to make a demo of this some time.
+ * Until that time, here's an explanation.
+ * An acceleration (or boost) in relativity is almost exactly equivalent to a rotation.
+ * You can think of a particle/object as moving at the speed of light at all times in the t direction,
+ * The acceleration 'rotates' that path so that it is moving in the x direction a little bit as well as the y.
+ * This matrix implements the appropriate cosh(artanh(B)) and similar values, using linear algebra for speed (although not clarity)
+ * One way to get an idea for how hyperbolic space works is to play with a triangle. Declare the wrong side to be the hypotenuse, and change
+ * The angles. You'll notice that both the opposite and adjacent tend to infinity, so too do x and t intervals for a given proper time (hypotenuse)
+ * I plan to make a demo of this some time.
+ *
+ * NB: Does not yet handle boost in z direction. If you give it a z component it will not work correctly.
  */
 function cBoostMat(boostV,c) {
     var boostMagSq=boostV[1]*boostV[1]+boostV[2]*boostV[2];
@@ -158,3 +160,5 @@ function cBoostMat(boostV,c) {
                         0, 0, 0, 1
                         ]));
 };
+
+

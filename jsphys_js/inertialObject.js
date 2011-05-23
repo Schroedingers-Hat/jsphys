@@ -20,15 +20,12 @@ function inertialObject(X, P, m)
     {
         return this.X0;
     }
-    //TODO: Make it handle timeStep.
-    //TODO: Make sure all the Cs are in the right place.
-    //Find out if the modulo command is as/more efficient.
 
     this.updateX0 = function()
     {   
         quat4.scale(this.V, timeStep / this.V[0], this.displace);
 	    //Increase proper time.
-        this.tau += c * timeStep / this.V[0];
+        this.tau += timeStep / this.V[0];
 	    //Bring it to now.
         quat4.add(this.X0, this.displace);
         this.X0[0] = this.X0[0] - timeStep;
@@ -47,15 +44,13 @@ function inertialObject(X, P, m)
         //Point is now at wrong time
 
         //Find displacement to current time.
-        quat4.scale(this.V, (-this.X0[0]) / this.V[0], this.uDisplacement);
+        quat4.scale(this.V, -this.X0[0] / this.V[0], this.uDisplacement);
         
         //Bring to current time.
         quat4.add(this.X0, this.uDisplacement);
         this.tau += this.uDisplacement[0] / this.V[0];
         
-        //Find the new displacement vector.
-        quat4.scale(this.V, timeStep / this.V[0], this.displace);
-    
+        // Translate.
         quat4.subtract(this.X0, translation);
         this.calcPast();
     }
@@ -67,6 +62,7 @@ function inertialObject(X, P, m)
     //write r(t)=r0+v_r*t=a point on the light cone=ct
     //rearrange for t to find the time.
     //Then we project the particle back into its past and draw it there.
+    // The 0.00000001s are kludge to stop divide by 0.
     this.calcPast = function()
     {
         this.radialDist = Math.sqrt(quat4.spaceDot(this.X0, this.X0));
@@ -119,17 +115,6 @@ function inertialObject(X, P, m)
 //   } 
 
 }
-
-
-//function lineObject(X, P, Materials, Shape)
-
-
-
-
-
-
-
-
 
 
 //Generates an approximation of a main sequence star. 
@@ -188,7 +173,7 @@ function mainSequenceStar(X, P, Lum)
                   this.r / zoom, 0, twopi, true);
             g.closePath();
             g.fill();
-            if (displayTime) g.fillText(Math.floor(this.COM.tau / timeScale / 1000),
+            if (displayTime) g.fillText(Math.floor(this.COM.tau / timeScale / 1000) + ", " + Math.floor(this.COM.X0[0] / timeScale /1000),
                        this.COM.X0[1] / zoom + HWIDTH + 10,
                        this.COM.X0[2] / zoom + HHEIGHT);
 
