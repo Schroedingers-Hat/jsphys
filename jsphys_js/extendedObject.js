@@ -51,7 +51,7 @@ function extendedObject(X, P, m, materials, shape)
         this.COM.updateX0();
         // Make it interesting if it's in view, or if it was in view.
         // Could be other reasons, too.
-        this.isInteresting = ( this.isInView() || this.wasInView() );
+        this.isInteresting = ( this.isInView2D() || this.wasInView2D() );
         if (this.isInteresting)
         {
             for (i = 0; i < this.shapePoints.length; i++)
@@ -62,7 +62,7 @@ function extendedObject(X, P, m, materials, shape)
     }
 
     // Put code to check if we need to render it here.
-    this.wasInView = function()
+    this.wasInView2D = function()
     {
         return (showVisualPos &&
                 ((this.COM.XView[1] - this.boundingBox[0]) / zoom < (HWIDTH + 10)    ||
@@ -76,7 +76,7 @@ function extendedObject(X, P, m, materials, shape)
     }
 
 
-    this.isInView = function()
+    this.isInView2D = function()
     {
         return (showVisualPos &&
                 ((this.COM.X0[1] - this.boundingBox[0]) / zoom < (HWIDTH + 10)    ||
