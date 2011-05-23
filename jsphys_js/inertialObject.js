@@ -104,11 +104,11 @@ function inertialObject(X, P, m)
     } 
 
     // findPosition: finds the current position of an object in the frame of this one.
-    this.findPosition(object)
+    this.findPosition = function(object)
     {
          var tempVel = quat4.create();
          var tempPos = quat4.create();
-         thisBoost = cBoostMat(quat4.scale(this.V, 1 / this.V[0], tempVec3);
+         thisBoost = cBoostMat(quat4.scale(this.V, 1 / this.V[0], tempVec3));
          quat4.multiply(thisBoost, object.X0, tempPos);
          quat4.multiply(thisBoost, object.V, tempVel);
          quat4.add(tempPos, quat4.scale(tempVel, -1 / tempVel[0] * tempPos[0]));
