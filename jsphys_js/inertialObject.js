@@ -78,42 +78,46 @@ function inertialObject(X, P, m)
                             Math.max(Math.sqrt(Math.abs(quat4.spaceDot(this.XView, this.XView))),0.0000000001) / 
                             this.V[0]);
  
-   }
+    }
     
 
-    //MeasureDisplacementTo.
-    //Also measures the apparent distance to, radial velocities and a number of other things.
-    //Reproduces a lot of code from calcPast and updateX0.
-    //@Capn, if you can follow what I'm doing maybe you can rework this in a way that
-    //Inherits and/or copies things from the other constructs?
-//    this.measureDisplacementTo = function(particle)
-//    {
-//        displacement=quat4.create();
-//        measureXIncrement=quat4.create();
-//        measureV=quat4.create();
-//        boostBetween=cBoostMat(quat4.scale(this.V,1/this.V[0],tempVec3));
-//        //Find the displacement between them in current frame.
-//        quat4.subtract(particle.X0,this.X0,displacement);
-//        //Transform that to the frame of this.
-//        mat3.multiply(boostBetween,displacement);
-//        //Find out the relative velocity in the frame of this.
-//        quat4.subtract(particle.V,this.V,measureV);
-//        mat3.multiply(boostBetween,measureV);
-//
-//        //Lost my train of thought and didn't want to create more spaghetti.
-//        //@Capn
-//        //What needs to go here to finish the function is to add a constant times
-//        //MeasureV (remember this is a 3-velocity) to displacement such that 
-//        // the time component: displacement[0]==0
-//        //At that point you /should/ have a displacement vector in the frame of
-//        //this, which points to particle to do with as you wish 
-//        //I'd recommend returning the displacement and possibly this.X0 and/or this.XView
-//        //To facilitate drawing things. If you so desire. 
-//        //(although I don't know why as it won't really point to anything unless you're in
-//        //the frame of this.
-//        //also, bear in mind that distance from A to B in A's frame is not the distance from B to A in B's frame (in general).
-//   } 
+    // MeasureDisplacementFrame. Measures the displacement between two events.
+    // In the frame of this object. 
+    // Note: a.measureDisplacementInFrame(b.COM.X0,c.COM.X0) will not measure the
+    // Distance between two objects as seen by a
+    //  as those events are not synchronous in the frame of a.
+    this.measureDisplacementInFrame = function(event1, event2)
+    {
+        // Store working.
+        var temp1 = quat4.create();
+        var temp2 = quat4.create();
+        // Find velocity for boost matrix.
+        boostBetween = cBoostMat(quat4.scale(this.V, 1 / this.V[0], tempVec3));
 
+        // Find events in frame of this inertialObject.
+        quat4.multiply(boostBetween, event1, temp1);
+        quat4.multiply(boostBetween, event2, temp2);
+ 
+        //Find the displacement between them in frame of this inertialObject.
+        quat4.subtract(temp2,temp1);
+        return temp2;
+    } 
+
+    // findPosition: finds the current position of an object in the frame of this one.
+    this.findPosition(object)
+    {
+         var tempVel = quat4.create();
+         var tempPos = quat4.create();
+         thisBoost = cBoostMat(quat4.scale(this.V, 1 / this.V[0], tempVec3);
+         quat4.multiply(thisBoost, object.X0, tempPos);
+         quat4.multiply(thisBoost, object.V, tempVel);
+         quat4.add(tempPos, quat4.scale(tempVel, -1 / tempVel[0] * tempPos[0]));
+         return tempPos;
+    }
+    
+
+    // TODO: findViewedPosition, where this thinks another object is.
+    // May be worth doing a full frame change if we need this.
 }
 
 
