@@ -24,6 +24,7 @@ function extendedObject(X, P, m, materials, shape)
          * one point, need to learn how to do some real OO style inheritance
          * and overloading.
          * NB: Maybe use map here?
+         * TODO: Multi-dimensional arrays.
         */
         for (i=0; i < Math.floor(shape.length / 4); i++)  
         {
@@ -121,10 +122,10 @@ function extendedObject(X, P, m, materials, shape)
         {
             g.fillStyle = "#f0f";
             g.beginPath();
-            g.moveTo( (this.shapePoints[0].XView[1]/ zoom) +HWIDTH, (this.shapePoints[0].X0[2]) / zoom + HHEIGHT);
+            g.moveTo( (this.shapePoints[0].XView[1]/ zoom) +HWIDTH, (this.shapePoints[0].XView[2]) / zoom + HHEIGHT);
             for (i=0; i < (this.shapePoints.length); i++)
             {
-                g.lineTo( (this.shapePoints[i].XView[1]) / zoom + HWIDTH, (this.shapePoints[i].X0[2]) / zoom + HHEIGHT);
+                g.lineTo( (this.shapePoints[i].XView[1]) / zoom + HWIDTH, (this.shapePoints[i].XView[2]) / zoom + HHEIGHT);
             }
             g.fill();            
         }

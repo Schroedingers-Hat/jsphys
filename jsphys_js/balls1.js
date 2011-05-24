@@ -20,6 +20,7 @@ var tempVec3 = quat4.create();
 var initialTime = new Date().getTime();
 var newTime = new Date().getTime();
 var showDoppler = true;
+var testPath;
 var showFramePos = false;
 var showVisualPos = true;
 var keySinceLastFrame = false;
@@ -74,7 +75,7 @@ function start()
         xjit  = Math.random() * 0.001 * c;
         yjit  = Math.random() * 0.001 * c;
         lum   = Math.pow( 1000, Math.random() ) / 100;
-        carray[i] = new mainSequenceStar(quat4.create([0, Math.cos(angle) * rad, Math.sin(angle) * rad, 0], 0),
+        carray[i] = new mainSequenceStar(quat4.create([0, Math.cos(angle) * rad, Math.sin(angle) * rad, 0]),
                                          quat4.create([0, c * 0.01 * Math.cos(angle) + xjit, 
                                                         c * 0.01 * Math.sin(angle) + yjit, 0]),
                                          lum);
@@ -82,12 +83,16 @@ function start()
         
 
     }
-    testObject[0] = new extendedObject(quat4.create([0, 0, 0, 0]), quat4.create([0, 0, 0, 0]), 1, 1,
-                                    [0,  0,  0, 0, 
-                                     0,-120,  0, 0,    
-                                     0,-120,120, 0, 
-                                     0,  0,120, 0]);
-    testObject[0].init();
+//    testObject[0] = new extendedObject(quat4.create([0, 0, 0, 0]), quat4.create([0, 0, 0, 0]), 1, 1,
+//                                    [0,  0,  0, 0, 
+//                                     0,-120,  0, 0,    
+//                                     0,-120,120, 0, 
+//                                     0,  0,120, 0]);
+//    testObject[0].init();
+
+    testObject = new testStar(quat4.create([0, 0, -100, 0]), quat4.create([1, 0.1, 0, 0]), 15);
+    testObject.COM.init();
+
     return setInterval(draw, 20);
 }
 
@@ -97,7 +102,7 @@ function changeArrayFrame(translation, boost, objectArray)
     {
         objectArray[i].COM.changeFrame(translation, boost);
     }
-    testObject[0].changeFrame(translation, boost);
+    testObject.COM.changeFrame(translation, boost);
 }
 
 // Draw Function
@@ -114,9 +119,8 @@ function draw()
         carray[i].COM.updateX0();
         carray[i].draw();
     }
-    testObject[0].update(); 
-    if (showVisualPos) testObject[0].drawPast();
-    if (showFramePos) testObject[0].drawNow();
+    testObject.COM.update();
+    testObject.draw(); 
  
     t = t + (timeStep*c);
     $("#fps").html(Math.floor(1000 / (timeStep / timeScale)));
