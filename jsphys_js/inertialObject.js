@@ -95,8 +95,8 @@ function inertialObject(X, P, m)
         boostBetween = cBoostMat(quat4.scale(this.V, 1 / this.V[0], tempVec3));
 
         // Find events in frame of this inertialObject.
-        quat4.multiply(boostBetween, event1, temp1);
-        quat4.multiply(boostBetween, event2, temp2);
+        mat4.multiplyVec4(boostBetween, event1, temp1);
+        mat4.multiplyVec4(boostBetween, event2, temp2);
  
         //Find the displacement between them in frame of this inertialObject.
         quat4.subtract(temp2,temp1);
@@ -109,8 +109,8 @@ function inertialObject(X, P, m)
          var tempVel = quat4.create();
          var tempPos = quat4.create();
          thisBoost = cBoostMat(quat4.scale(this.V, 1 / this.V[0], tempVec3));
-         quat4.multiply(thisBoost, object.X0, tempPos);
-         quat4.multiply(thisBoost, object.V, tempVel);
+         mat4.multiplyVec4(thisBoost, object.X0, tempPos);
+         mat4.multiplyVec4(thisBoost, object.V, tempVel);
          quat4.add(tempPos, quat4.scale(tempVel, -1 / tempVel[0] * tempPos[0]));
          return tempPos;
     }

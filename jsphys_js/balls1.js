@@ -3,6 +3,7 @@ var HEIGHT;
 var HWIDTH;
 var HHEIGHT;
 var g;
+
 var rightDown = false;
 var leftDown = false;
 var upDown = false;
@@ -12,23 +13,30 @@ var rotRightDown = false;
 var rotUpDown = false;
 var rotDownDown = false;
 var displayTime = false;
+
 var carray = new Array();
 var testObject = new Array();
+
+var timeStep;
+var timeScale = 0.1;
 var c = 1; //Do not change, not fully implemented
 var twopi = Math.PI * 2;
 var tempVec3 = quat4.create();
+
 var initialTime = new Date().getTime();
 var newTime = new Date().getTime();
+
 var showDoppler = true;
-var testPath;
 var showFramePos = false;
 var showVisualPos = true;
 var keySinceLastFrame = false;
+
 var boostRight  = cBoostMat(quat4.create([0, 0.05, 0, 0]), c);
 var boostLeft   = cBoostMat(quat4.create([0, -0.05, 0, 0]), c);
 var boostUp     = cBoostMat(quat4.create([0, 0, -0.05, 0]), c);
 var boostDown   = cBoostMat(quat4.create([0, 0, 0.05, 0]), c);
-var timeScale   = 0.02;
+
+
 var rotLeft  = mat4.create([1, 0, 0, 0,
                         0, Math.cos(0.1), Math.sin(-0.1), 0,
                         0, Math.sin( 0.1), Math.cos(0.1), 0,
@@ -54,7 +62,6 @@ var rotDown = mat4.create([1, 0, 0, 0,
 
 zoom = 0.25;
 //TODO: Decide if we're using increments of ct or t.
-var timeStep = 5; //Not wholly implemented yet, need some scale calls. Do not change from 1.
 var t = 0;
 // Main Function To Start
 function start()
@@ -83,15 +90,13 @@ function start()
         
 
     }
-//    testObject[0] = new extendedObject(quat4.create([0, 0, 0, 0]), quat4.create([0, 0, 0, 0]), 1, 1,
-//                                    [0,  0,  0, 0, 
-//                                     0,-120,  0, 0,    
-//                                     0,-120,120, 0, 
-//                                     0,  0,120, 0]);
-//    testObject[0].init();
+    testObject[0] = new extendedObject(quat4.create([0, 0, 0, 0]), quat4.create([0, 0, 0, 0]), 1, 1,
+                                    [0,  0,  0, 0, 
+                                     0,-120,  0, 0,    
+                                     0,-120,120, 0, 
+                                     0,  0,120, 0]);
+    testObject[0].init();
 
-    testObject = new testStar(quat4.create([0, 0, -100, 0]), quat4.create([1, 0.1, 0, 0]), 15);
-    testObject.COM.init();
 
     return setInterval(draw, 20);
 }
@@ -108,7 +113,6 @@ function changeArrayFrame(translation, boost, objectArray)
 // Draw Function
 function draw()
 {
-//    console.profile();
     newTime  = new Date().getTime();
     timeStep = (newTime - initialTime) * timeScale - (t/c);
     keySinceLastFrame = false;
@@ -121,6 +125,10 @@ function draw()
     }
     testObject.COM.update();
     testObject.draw(); 
+
+
+
+
  
     t = t + (timeStep*c);
     $("#fps").html(Math.floor(1000 / (timeStep / timeScale)));
@@ -128,16 +136,17 @@ function draw()
     $("#gameclock").html( Math.floor(t / timeScale / 1000 / c) );
     $("#time").html( Math.floor( (newTime - initialTime) / 1000) );
     
-//    console.profileEnd();
 
-  	if (leftDown == true)    changeArrayFrame(quat4.create([0, 0, 0, 0]), boostLeft, carray);
   	if (upDown == true)      changeArrayFrame(quat4.create([0, 0, 0, 0]), boostUp,   carray);
   	if (downDown == true)    changeArrayFrame(quat4.create([0, 0, 0, 0]), boostDown, carray);
+  	if (leftDown == true)    changeArrayFrame(quat4.create([0, 0, 0, 0]), boostLeft, carray);
+  	if (rightDown == true)   changeArrayFrame(quat4.create([0, 0, 0, 0]), boostRight,carray);
+
     if (rotLeftDown == true) changeArrayFrame(quat4.create([0, 0, 0, 0]), rotRight,  carray);
     if (rotRightDown == true)changeArrayFrame(quat4.create([0, 0, 0, 0]), rotLeft,   carray);
+    //3D stuff, currently unused.
     if (rotUpDown == true)   changeArrayFrame(quat4.create([0, 0, 0, 0]), rotUp,  carray);
     if (rotDownDown == true) changeArrayFrame(quat4.create([0, 0, 0, 0]), rotDown,   carray);
-  	if (rightDown == true)   changeArrayFrame(quat4.create([0, 0, 0, 0]), boostRight,carray);
 }
 function clear() 
 {
