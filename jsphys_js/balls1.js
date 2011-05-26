@@ -97,7 +97,7 @@ function start()
                                      0,  0,120, 0]);
     testObject[0].init();
 
-
+    tWLW = new basicWorldLineWrapper(quat4.create([0, 0, 0, 0]), quat4.create(0, 0, 0, 0)); 
     return setInterval(draw, 20);
 }
 
@@ -107,7 +107,7 @@ function changeArrayFrame(translation, boost, objectArray)
     {
         objectArray[i].COM.changeFrame(translation, boost);
     }
-    testObject.COM.changeFrame(translation, boost);
+//    testObject.COM.changeFrame(translation, boost);
 }
 
 // Draw Function
@@ -123,9 +123,9 @@ function draw()
         carray[i].COM.updateX0();
         carray[i].draw();
     }
-    testObject.COM.update();
-    testObject.draw(); 
-
+//    testObject.COM.update();
+//    testObject.draw(); 
+    tWLW.draw();
 
 
 

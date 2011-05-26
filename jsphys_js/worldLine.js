@@ -9,7 +9,7 @@
 */
 function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
 {
-    this.init()
+    this.init = function()
     {
         this.X0 = X;
         // Make sure this is actually acting like a real particle.
@@ -28,7 +28,7 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
 
         this.properTimes.push(0);
         this.events.push(quat4.create(this.X)); //Not sure if the create is needed here.
-        this.velocities.push(quat4.vreate(this.V));
+        this.velocities.push(quat4.create(this.V));
 
         this.timeSinceShift = 0;
     }
@@ -44,7 +44,6 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
 
         // Increase proper time.
         this.tau += stepLength / this.V[0];
-        this.timeSinceShift += stepLength;
         // Bring forward in time.
         quat4.add(this.X0, this.displace);
     }
@@ -58,9 +57,9 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
         var pos1 = quat4.create();
         var pos2 = quat4.create();
         pos1 = quat4.scale(this.velocities[index1], 
-                                    this.events[index1][0] / this.velocities[index1][0], pos1);
+                           this.events[index1][0] / this.velocities[index1][0], pos1);
         pos2 = quat4.scale(this.velocities[index2], 
-                                    this.events[index2][0] / this.velocities[index2][0], pos2);        
+                           this.events[index2][0] / this.velocities[index2][0], pos2);        
         return quat4.scale(quat4.add(pos1, pos2), 1/2);
     }
 
@@ -74,33 +73,36 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
     }
 
     // Shift all our times to synch with current frame.
-    // Doing this separately avoids excessive looping.
+    // Doing this separately and only when we need it avoids excessive looping.
     this.shiftToPresent = function()
     {
-        this.X0[0] -= timeSinceShift;
+        this.X0[0] -= this.timeSinceShift;
         // Update all our times.
         for (i = 0; i < this.events.length; i++)
         {
-            this.events[i][0] -= timeSinceShift;
+            this.events[i][0] -= this.timeSinceShift;
         }
         this.timeSinceShift = 0;
-        // this.discardOldValues();
     }
     
     this.discardOldValues = function()
     {
         // If c*t is further than maxDistance, there is no reason we could
         // Need the event. Get rid of it.
-        while ( (this.events[0][0] * c) < -maxDistance )
+        while ( (( (this.events[0][0] - this.timeSinceShift) * c) < -maxDistance) && (this.events.length >= 1))
         {
             this.events.shift();
-            // Cut values off of the front of events and velocities. 
-            // Need to think about memory allocation issues here 
+            this.velocities.shift();
+            this.properTimes.shift();
+            // Cut values off of the front of properTimes, events and velocities. 
+            // Need to think about memory allocation issues here, this will be slow 
             // Set length array and roll around it?
         }
-        while ( (this.events[this.events.length][0] * c) > maxDistance )
+        while ( (( (this.events[this.events.length - 1][0] - this.timeSinceShift) * c) > maxDistance) && (this.events.length >= 1) )
         {
             this.events.pop(); // Same deal as above.
+            this.velocities.pop();
+            this.properTimes.pop();
         }
     }
 
@@ -111,24 +113,27 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
     this.getPresent = function()
     {
         // While we don't have a recent enough event.
-        while ( (this.events[this.events.length - 1] - timeSinceLastPush) > 0 )
+        while ( (this.events[this.events.length - 1][0] - this.timeSinceShift) <= 0 )
         {
             // Evolve the worldLine, saving as we go.
             this.evolve(maxTimeStep);
+            // TODO: Something to do with destruction time here.
             // TODO: Something fancy where we take the first order term into account
             // Before saving, rather than just time
-            if ( timeSinceLastPush > savePrecision )
+            if ( (this.X0[0] - this.timeSinceShift) > savePrecision )
             {
+                // This is certainly sub-optimal memory-wise.
+                // Start thinking about a set-length array.
                 this.events.push( quat4.create(this.X0) );
                 this.velocities.push( quat4.create(this.V) );
                 this.properTimes.push(this.tau);
-                this.shiftToPresent();
+                this.discardOldValues();
             }
         }
         // If there's at least one event in the future (the last event), then
         // Work backwards until we find one in the past or present.
         i =  this.events.length - 1;
-        while ( this.events[i][0] > 0 )
+        do
         {
             i--;
             if ( i < 0 ) // object does not exist yet, do something about that
@@ -137,11 +142,13 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
                 this.V  = null;
                 return null;
             }
-        }
+        } while ( (this.events[i][0] - this.timeSincePush) > 0 );
         // Interpolate between the last event we found in the future, and the one
         // We just found in the present/past.
-        this.X0 = this.interpolateX(i, i + 1);
-        this.V  = this.interpolateV(i, i + 1);
+        this.tau = this.properTimes[i];  // TODO: inerpolateToTau
+        this.X0 = this.interpolateToX(i, i + 1);
+        this.X0[0] -= this.timeSinceShift;
+        this.V  = this.interpolateToV(i, i + 1);
     }
 
 
@@ -154,7 +161,8 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
 
     // If we need to send this a signal, it'll be being changed in the future.
     this.setFuture = function(signalOrigin)
-
+    {
+    }
     // shiftFrame, translates every event in worldLine.
     this.shiftFrame = function(translation)
     {
@@ -165,8 +173,10 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
         }
     }
     // rotateFrame, matrix transform on entire worldLine.
+    // Synchronises the times with the current frame first, so boosts work.
     this.rotateFrame = function(rotation)
     {
+        this.shiftToPresent();
         mat4.multiplyVec4(rotation, this.X0);
         mat4.multiplyVec4(rotation, this.V);
         for (i=0; i < events.length; i++)
@@ -182,3 +192,20 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
 }
  
 
+function basicWorldLineWrapper(X, P)
+{
+    this.wLine = new worldLine(X, P, 1, 10000, 1000, 10);
+    this.wLine.init();
+    this.draw = function()
+    {
+        this.wLine.getPresent();
+        this.wLine.timeSinceShift += timeStep;
+        g.fillstyle = "#fff";
+        g.beginPath();
+        g.arc(this.wLine.X0[1] / zoom + HWIDTH,
+              this.wLine.X0[2] / zoom + HHEIGHT,
+              30, 0, twopi, true);
+        g.closePath();
+        g.fill();
+    }
+}
