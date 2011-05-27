@@ -86,9 +86,6 @@ function start()
                                          quat4.create([0, c * 0.01 * Math.cos(angle) + xjit, 
                                                         c * 0.01 * Math.sin(angle) + yjit, 0]),
                                          lum);
-        carray[i].COM.init();
-        
-
     }
     testObject[0] = new extendedObject(quat4.create([0, 0, 0, 0]), quat4.create([0, 0, 0, 0]), 1, 1,
                                     [0,  0,  0, 0, 
@@ -107,7 +104,6 @@ function changeArrayFrame(translation, boost, objectArray)
     {
         objectArray[i].COM.changeFrame(translation, boost);
     }
-//    tWLW.wLine.rotateFrame(boost);
 }
 
 // Draw Function
@@ -146,6 +142,8 @@ function draw()
     if (rotUpDown == true)   changeArrayFrame(quat4.create([0, 0, 0, 0]), rotUp,  carray);
     if (rotDownDown == true) changeArrayFrame(quat4.create([0, 0, 0, 0]), rotDown,   carray);
 }
+
+
 function clear() 
 {
     g.fillStyle = "#212124";
