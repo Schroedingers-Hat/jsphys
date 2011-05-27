@@ -17,6 +17,7 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
         // That, but this is a bit more robust.
         genEnergy(P, c, m);
         this.V  = quat4.scale(P, 1/m);
+        this.Xmeas = quat4.create();
 	    this.XView = quat4.create();
         this.tau = 0;
 
@@ -58,8 +59,10 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
         var pos2 = quat4.create();
         pos1 = quat4.scale(this.velocities[index1], 
                            this.events[index1][0] / this.velocities[index1][0], pos1);
+        pos1 = quat4.add(pos1,this.events[index1]);
         pos2 = quat4.scale(this.velocities[index2], 
-                           this.events[index2][0] / this.velocities[index2][0], pos2);        
+                           this.events[index2][0] / this.velocities[index2][0], pos2);       
+        pos2 = quat4.add(pos2,this.events[index2]);
         return quat4.scale(quat4.add(pos1, pos2), 1/2);
     }
 
@@ -72,11 +75,17 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
                                      this.velocities[index2], tempVec3), 1/2, tempVec3);
     }
 
+    this.interpolateToTau = function(index1, index2)
+    {
+        return ( (this.properTimes[index1]+this.properTimes[index2]) / 2 );
+    }
+
+
     // Shift all our times to synch with current frame.
     // Doing this separately and only when we need it avoids excessive looping.
     this.shiftToPresent = function()
     {
-        this.X0[0] -= this.timeSinceShift;
+//        this.X0[0] -= this.timeSinceShift;
         // Update all our times.
         for (i = 0; i < this.events.length; i++)
         {
@@ -112,10 +121,13 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
     */
     this.getPresent = function()
     {
+        this.X0 = this.events[this.events.length - 1];
+        this.V  = this.events[this.events.length - 1];
         // While we don't have a recent enough event.
         while ( (this.events[this.events.length - 1][0] - this.timeSinceShift) <= 0 )
         {
             // Evolve the worldLine, saving as we go.
+
             this.evolve(maxTimeStep);
             // TODO: Something to do with destruction time here.
             // TODO: Something fancy where we take the first order term into account
@@ -143,12 +155,14 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
                 return null;
             }
         } while ( (this.events[i][0] - this.timeSincePush) > 0 );
+
         // Interpolate between the last event we found in the future, and the one
         // We just found in the present/past.
-        this.tau = this.properTimes[i];  // TODO: inerpolateToTau
-        this.X0 = this.interpolateToX(i, i + 1);
+        this.X0     = this.interpolateToX(i, i + 1);
         this.X0[0] -= this.timeSinceShift;
-        this.V  = this.interpolateToV(i, i + 1);
+        this.V      = this.interpolateToV(i, i + 1);
+        this.tau    = this.interpolateToTau(i, i + 1);
+        this.tau   -= this.timeSinceShift / this.V[0];
     }
 
 
@@ -177,9 +191,9 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
     this.rotateFrame = function(rotation)
     {
         this.shiftToPresent();
-        mat4.multiplyVec4(rotation, this.X0);
-        mat4.multiplyVec4(rotation, this.V);
-        for (i=0; i < events.length; i++)
+//        mat4.multiplyVec4(rotation, this.X0);
+//        mat4.multiplyVec4(rotation, this.V);
+        for (i=0; i < this.events.length; i++)
         {
             mat4.multiplyVec4(rotation, this.events[i]);
             mat4.multiplyVec4(rotation, this.velocities[i]);
@@ -194,7 +208,7 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
 
 function basicWorldLineWrapper(X, P)
 {
-    this.wLine = new worldLine(X, P, 1, 10000, 1000, 10);
+    this.wLine = new worldLine(X, P, 1, 1000, 10, 10);
     this.wLine.init();
     this.draw = function()
     {
@@ -202,8 +216,8 @@ function basicWorldLineWrapper(X, P)
         this.wLine.timeSinceShift += timeStep;
         g.fillstyle = "#fff";
         g.beginPath();
-        g.arc(this.wLine.X0[1] / zoom + HWIDTH,
-              this.wLine.X0[2] / zoom + HHEIGHT,
+        g.arc(this.wLine.Xmeas[1] / zoom + HWIDTH,
+              this.wLine.Xmeas[2] / zoom + HHEIGHT,
               30, 0, twopi, true);
         g.closePath();
         g.fill();

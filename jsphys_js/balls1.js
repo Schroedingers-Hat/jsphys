@@ -72,7 +72,7 @@ function start()
     HEIGHT = $("#canvas").height();
     HWIDTH = WIDTH / 2;
     HHEIGHT = HEIGHT / 2;
-    var numstars = 100;
+    var numstars = 5000;
     var angle;
     for (i=0; i < numstars; i++)
     {
@@ -107,7 +107,7 @@ function changeArrayFrame(translation, boost, objectArray)
     {
         objectArray[i].COM.changeFrame(translation, boost);
     }
-//    testObject.COM.changeFrame(translation, boost);
+//    tWLW.wLine.rotateFrame(boost);
 }
 
 // Draw Function
@@ -123,9 +123,7 @@ function draw()
         carray[i].COM.updateX0();
         carray[i].draw();
     }
-//    testObject.COM.update();
-//    testObject.draw(); 
-    tWLW.draw();
+//    tWLW.draw();
 
 
 

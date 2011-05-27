@@ -100,7 +100,6 @@ function clickHandler(e)
                 carray[i].draw();
             }
         }
-        testObject.COM.changeFrame(XShift,newFrameBoost);
 
         // shiftToFrameOfObject(carray[minElement])
     }
