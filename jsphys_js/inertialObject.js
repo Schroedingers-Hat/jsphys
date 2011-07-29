@@ -1,18 +1,19 @@
 
 // inertialObject Class    
-function inertialObject(X,P,m)
+function inertialObject(X, P, m)
 {
     this.init = function()
     {
         this.X0 = X;
-	    this.XView = vec3.create();
-        this.V = vec3.scale(P,1/m); 
-        //Relativistic velocity, or momentum/mass.
+        this.rPast = 1;
+	    this.XView = quat4.create();
+        this.V = quat4.scale(P,1 / m); 
+        // Relativistic velocity, or momentum/mass.
         genEnergy(this.V, c);
-        this.displace = vec3.create();
-        vec3.scale(this.V,timeStep / this.V[0], this.displace);
+        this.displace = quat4.create();
+        quat4.scale(this.V, timeStep / this.V[0], this.displace);
         this.tau = 0;
-        this.uDisplacement = vec3.create();
+        this.uDisplacement = quat4.create();
     }
 
     
@@ -29,31 +30,31 @@ function inertialObject(X,P,m)
 	    //Increase proper time.
         this.tau += c * timeStep / this.V[0];
 	    //Bring it to now.
-        vec3.add(this.X0, this.displace);
-        this.X0[0]=this.X0[0]-timeStep;
+        quat4.add(this.X0, this.displace);
+        this.X0[0] = this.X0[0] - timeStep;
         // Can't decide what to do with this last line, it /is/ moving forward 1 
         // unit in time, but so is the frame. Should I move the -1 into this.displace?
         this.calcPast();
     }
     
     //Note that translation can include time, and rotation can include boost.
-    this.changeFrame = function(translation,rotation)
+    this.changeFrame = function(translation, rotation)
     {
         //Boost both velocity and position vectors using the boost matrix.
-        mat3.multiplyVec3(rotation, this.X0);
-        mat3.multiplyVec3(rotation, this.V);
+        mat4.multiplyVec4(rotation, this.X0);
+        mat4.multiplyVec4(rotation, this.V);
         //Point is now at wrong time
 
         //Find displacement to current time.
-        vec3.scale(this.V, (-this.X0[0]) / this.V[0], this.uDisplacement);
+        quat4.scale(this.V, (-this.X0[0]) / this.V[0], this.uDisplacement);
         
         //Bring to current time.
-        vec3.add(this.X0,this.uDisplacement);
-        this.tau+=this.uDisplacement[0]/this.V[0];
+        quat4.add(this.X0, this.uDisplacement);
+        this.tau+=this.uDisplacement[0] / this.V[0];
         
-        vec3.subtract(this.X0,translation);
+        quat4.subtract(this.X0,translation);
         //Find the new displacement vector.
-        vec3.scale(this.V,timeStep/this.V[0],this.displace);
+        quat4.scale(this.V, timeStep/this.V[0], this.displace);
     
         this.calcPast();
     }
@@ -67,17 +68,17 @@ function inertialObject(X,P,m)
     //Then we project the particle back into its past and draw it there.
     this.calcPast = function()
     {
-        this.radialDist = Math.sqrt(vec3.spaceDot(this.X0,this.X0));
-        this.radialV = (0 - vec3.spaceDot(this.V,this.X0) / 
+        this.radialDist = Math.sqrt(quat4.spaceDot(this.X0, this.X0));
+        this.radialV = (0 - quat4.spaceDot(this.V,this.X0) / 
                         this.radialDist / 
                         this.V[0]);
         this.viewTime = this.radialDist / (c - this.radialV);
         
-        this.uDisplacement=vec3.scale(this.V, this.viewTime / this.V[0], this.uDisplacement);
-        this.Xview=vec3.subtract(this.X0, this.uDisplacement, this.XView);
-        
-        this.radialVPast = (vec3.spaceDot(this.XView,this.V) /
-                            Math.sqrt(Math.abs(vec3.spaceDot(this.XView,this.XView))) / 
+        this.uDisplacement=quat4.scale(this.V, this.viewTime / this.V[0], this.uDisplacement);
+        this.Xview=quat4.subtract(this.X0, this.uDisplacement, this.XView);
+        this.rPast = Math.max(quat4.spaceDot( this.Xview, this.Xview ),1);        
+        this.radialVPast = (quat4.spaceDot(this.XView, this.V) /
+                            Math.sqrt(Math.abs(quat4.spaceDot(this.XView, this.XView))) / 
                             this.V[0]);
  
    }
@@ -88,33 +89,33 @@ function inertialObject(X,P,m)
     //Reproduces a lot of code from calcPast and updateX0.
     //@Capn, if you can follow what I'm doing maybe you can rework this in a way that
     //Inherits and/or copies things from the other constructs?
-    this.measureDisplacementTo = function(particle)
-    {
-        displacement=vec3.create();
-        measureXIncrement=vec3.create();
-        measureV=vec3.create();
-        boostBetween=cBoostMat(vec3.scale(this.V,1/this.V[0],tempVec3));
-        //Find the displacement between them in current frame.
-        vec3.subtract(particle.X0,this.X0,displacement);
-        //Transform that to the frame of this.
-        mat3.multiply(boostBetween,displacement);
-        //Find out the relative velocity in the frame of this.
-        vec3.subtract(particle.V,this.V,measureV);
-        mat3.multiply(boostBetween,measureV);
-
-        //Lost my train of thought and didn't want to create more spaghetti.
-        //@Capn
-        //What needs to go here to finish the function is to add a constant times
-        //MeasureV (remember this is a 3-velocity) to displacement such that 
-        // the time component: displacement[0]==0
-        //At that point you /should/ have a displacement vector in the frame of
-        //this, which points to particle to do with as you wish 
-        //I'd recommend returning the displacement and possibly this.X0 and/or this.XView
-        //To facilitate drawing things. If you so desire. 
-        //(although I don't know why as it won't really point to anything unless you're in
-        //the frame of this.
-        //also, bear in mind that distance from A to B in A's frame is not the distance from B to A in B's frame (in general).
-   } 
+//    this.measureDisplacementTo = function(particle)
+//    {
+//        displacement=quat4.create();
+//        measureXIncrement=quat4.create();
+//        measureV=quat4.create();
+//        boostBetween=cBoostMat(quat4.scale(this.V,1/this.V[0],tempVec3));
+//        //Find the displacement between them in current frame.
+//        quat4.subtract(particle.X0,this.X0,displacement);
+//        //Transform that to the frame of this.
+//        mat3.multiply(boostBetween,displacement);
+//        //Find out the relative velocity in the frame of this.
+//        quat4.subtract(particle.V,this.V,measureV);
+//        mat3.multiply(boostBetween,measureV);
+//
+//        //Lost my train of thought and didn't want to create more spaghetti.
+//        //@Capn
+//        //What needs to go here to finish the function is to add a constant times
+//        //MeasureV (remember this is a 3-velocity) to displacement such that 
+//        // the time component: displacement[0]==0
+//        //At that point you /should/ have a displacement vector in the frame of
+//        //this, which points to particle to do with as you wish 
+//        //I'd recommend returning the displacement and possibly this.X0 and/or this.XView
+//        //To facilitate drawing things. If you so desire. 
+//        //(although I don't know why as it won't really point to anything unless you're in
+//        //the frame of this.
+//        //also, bear in mind that distance from A to B in A's frame is not the distance from B to A in B's frame (in general).
+//   } 
 
 }
 
@@ -130,6 +131,38 @@ function mainSequenceStar(X,P,Lum)
     //You can read this off of a HR diagram.
     this.temp = Math.pow(10,(3.45 + Lum / 10)); 
     //TODO: Add the mass and radius relations here.
+
+    this.draw3D = function()
+    {
+
+        if(showVisualPos &&
+           (5 *  Math.abs(this.COM.XView[2])) > Math.abs(this.COM.Xview[1]) &&
+           (5 * Math.abs(this.COM.XView[2])) > Math.abs(this.COM.Xview[3]) &&
+           (this.COM.rPast) > 1000 &&
+           this.COM.XView[2]<0&&
+           this.r / zoom > 0.3)
+        {
+            if(showDoppler)
+            {
+                g.fillStyle = tempToColor(dopplerShiftColor(this.temp,
+                                                            this.COM.radialVPast,
+                                                            this.COM.V[0]));
+            }
+            else
+            {
+                g.fillStyle = tempToColor(this.temp);
+            }
+            g.beginPath();
+            g.arc(this.COM.XView[1] / this.COM.rPast * 10000/ zoom + HWIDTH,
+                  this.COM.XView[3] / this.COM.rPast * 10000/ zoom + HHEIGHT,
+                  this.r / Math.pow(this.COM.rPast,2) * 100000000, 0, twopi, true);
+            g.closePath();
+            g.fill();
+        }
+
+    }
+
+
     this.draw = function()
     {
         if(showVisualPos &&
@@ -181,7 +214,7 @@ function mainSequenceStar(X,P,Lum)
         }
  
     }
-      this.COM = new inertialObject(X,P,1);
+      this.COM = new inertialObject(X, P, 1);
 }
 
 

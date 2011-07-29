@@ -15,6 +15,8 @@ function onKeyDown(evt)
     	else if (evt.keyCode == 65) leftDown = true;
     	else if (evt.keyCode == 87) upDown = true;
     	else if (evt.keyCode == 83) downDown = true;
+    	else if (evt.keyCode == 49) rotUpDown = true;  
+    	else if (evt.keyCode == 50) rotDownDown = true;  
 
         else if (evt.keyCode == 84) displayTime = !displayTime;
         else if (evt.keyCode == 90)
@@ -33,19 +35,19 @@ function onKeyDown(evt)
     	{
     	    zoom = zoom / 2;
             if (zoom < 0.06 ) zoom = 0.6;
-            boostRight  = cBoostMat(vec3.create([0, 0.02 / zoom, 0]), c);
-            boostLeft   = cBoostMat(vec3.create([0, -0.02 / zoom, 0]), c);
-            boostUp     = cBoostMat(vec3.create([0, 0, -0.02 / zoom]), c);
-            boostDown   = cBoostMat(vec3.create([0, 0, 0.02 / zoom]), c);
+            boostRight  = cBoostMat(quat4.create([0, 0.02 / zoom, 0, 0]), c);
+            boostLeft   = cBoostMat(quat4.create([0, -0.02 / zoom, 0, 0]), c);
+            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / zoom, 0]), c);
+            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / zoom, 0]), c);
     	}
     	else if (evt.keyCode == 109) 
     	{
     	    zoom = zoom * 2;
             if (zoom > 40) zoom = 40;
-            boostRight  = cBoostMat(vec3.create([0, 0.02 * zoom,0]), c);
-            boostLeft   = cBoostMat(vec3.create([0, -0.02 * zoom,0]), c);
-            boostUp     = cBoostMat(vec3.create([0, 0, -0.02 * zoom]), c);
-            boostDown   = cBoostMat(vec3.create([0, 0, 0.02 * zoom]), c);
+            boostRight  = cBoostMat(quat4.create([0, 0.02 * zoom,0, 0]), c);
+            boostLeft   = cBoostMat(quat4.create([0, -0.02 * zoom,0, 0]), c);
+            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 * zoom, 0]), c);
+            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 * zoom, 0]), c);
     	}
 }
 
@@ -56,7 +58,9 @@ function onKeyUp(evt)
 	else if(evt.keyCode == 87) upDown = false;
 	else if(evt.keyCode == 83) downDown = false;
 	else if (evt.keyCode == 69) rotRightDown = false;
-	else if (evt.keyCode == 81) rotLeftDown = false;  
+	else if (evt.keyCode == 81) rotLeftDown = false; 
+	else if (evt.keyCode == 49) rotUpDown = false;  
+	else if (evt.keyCode == 50) rotDownDown = false;  
 }
 
 function clickHandler(e)
@@ -83,11 +87,11 @@ function clickHandler(e)
     if (minDist < 30)
     {
         //Should probably take this out of here.
-        newFrameBoost=cBoostMat(vec3.scale(carray[minElement].COM.V,
-                                           1 / carray[minElement].COM.V[0],tempVec3),c);
-        carray[minElement].COM.changeFrame([0,0,0], newFrameBoost);
+        newFrameBoost=cBoostMat(quat4.scale(carray[minElement].COM.V,
+                                           1 / carray[minElement].COM.V[0], tempVec3), c);
+        carray[minElement].COM.changeFrame([0, 0, 0, 0], newFrameBoost);
         XShift=carray[minElement].COM.X0;
-        carray[minElement].COM.X0=vec3.create([0,0,0]);
+        carray[minElement].COM.X0=quat4.create([0, 0, 0, 0]);
         for (i = 0; i < carray.length; i++)
         {
             if (i != minElement)
