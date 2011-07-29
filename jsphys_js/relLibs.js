@@ -9,24 +9,24 @@
 vToGamma = function(V){
     if (V.length == 3)
     {
-        return Math.pow((1 - V[1] * V[1] - V[2] * V[2]), -0.5);
+        return Math.pow((1 - (V[1] * V[1] + V[2] * V[2])/(c*c) ), -0.5);
     }
     if (V.length == 4)
     {
-        return Math.pow((1 - V[1] * V[1] - V[2] * V[2] - V[3] * V[3]), -0.5);
+        return Math.pow((1 - (V[1] * V[1] + V[2] * V[2] + V[3] * V[3])/(c*c) ), -0.5);
     }
 };
 
 //Takes a momentum (0th element Energy) and re-generates the energy
 //From the spacial elements.
-genEnergy = function(P,c){
+genEnergy = function(P,c,m){
     if (P.length == 3)
     {
-        P[0] = c*Math.pow((c * c + P[1] * P[1] + P[2] * P[2]), 0.5);
+        P[0] = Math.pow((c * c + P[1] * P[1] + P[2] * P[2]), 0.5);
     }
     if (P.length == 4)
     {
-        P[0] = c*Math.pow((c * c + P[1] * P[1] + P[2] * P[2] - P[3] * P[3]), 0.5);
+        P[0] = Math.pow((c*c *  m*m + P[1] * P[1] + P[2] * P[2] + P[3] * P[3]), 0.5);
     }
  return P;
 };
@@ -47,6 +47,68 @@ genEnergy = function(P,c){
  * Returns:
  * dest if specified, vec otherwise
  */
+
+
+/*
+ * cBoostMat
+ * Takes a velocity and a speed of light and returns a boost matrix
+ * A bit less efficient than it should be, create some temporary variables lazy git. :/
+ *
+ * Until that time, here's an explanation.
+ * An acceleration (or boost) in relativity is almost exactly equivalent to a rotation.
+ * You can think of a particle/object as moving at the speed of light at all times in the t direction,
+ * The acceleration 'rotates' that path so that it is moving in the x direction a little bit as well as the y.
+ * This matrix implements the appropriate cosh(artanh(B)) and similar values, using linear algebra for speed (although not clarity)
+ * One way to get an idea for how hyperbolic space works is to play with a triangle. Declare the wrong side to be the hypotenuse, and change
+ * The angles. You'll notice that both the opposite and adjacent tend to infinity, so too do x and t intervals for a given proper time (hypotenuse)
+ * I plan to make a demo of this some time.
+ *
+ * NB: Does not yet handle boost in z direction. If you give it a z component it will not work correctly.
+ */
+function cBoostMat(boostV,c) {
+    var boostMagSq=boostV[1]*boostV[1]+boostV[2]*boostV[2];
+	var gamma=vToGamma(boostV);
+	return (mat4.create([gamma,            -boostV[1]*gamma,                            -boostV[2]*gamma, 0,
+                         -boostV[1]*gamma, 1+(gamma-1)*boostV[1]*boostV[1]/boostMagSq, (gamma-1)*boostV[1]*boostV[2]/boostMagSq, 0,
+                         -boostV[2]*gamma, (gamma-1)*boostV[1]*boostV[2]/boostMagSq,   1+(gamma-1)*boostV[2]*boostV[2]/boostMagSq, 0,
+                        0, 0, 0, 1
+                        ]));
+};
+
+
+
+/*The following are extensions to and copies of functions from the
+ *glMatrix library for various purposes. As the copy of that library in this source is compressed
+ * the original licence is below.
+*/    
+    /* 
+     * glMatrix.js - High performance matrix and vector operations for WebGL
+     * version 0.9.6
+     */
+    
+    /*
+     * Copyright (c) 2011 Brandon Jones
+     *
+     * This software is provided 'as-is', without any express or implied
+     * warranty. In no event will the authors be held liable for any damages
+     * arising from the use of this software.
+     *
+     * Permission is granted to anyone to use this software for any purpose,
+     * including commercial applications, and to alter it and redistribute it
+     * freely, subject to the following restrictions:
+     *
+     *    1. The origin of this software must not be misrepresented; you must not
+     *    claim that you wrote the original software. If you use this software
+     *    in a product, an acknowledgment in the product documentation would be
+     *    appreciated but is not required.
+     *
+     *    2. Altered source versions must be plainly marked as such, and must not
+     *    be misrepresented as being the original software.
+     *
+     *    3. This notice may not be removed or altered from any source
+     *    distribution.
+     */
+
 mat3.multiplyVec3 = function(mat, vec, dest) {
 	if(!dest) { dest = vec }
 	
@@ -135,26 +197,4 @@ if (vec.length == 4)
 return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
 }
 }
-/*
- *cBoostMat
- *Takes a velocity and a speed of light and returns a boost matrix
- *A bit less efficient than it should be, create some temporary variables lazy git. :/
- *
- *Until that time, here's an explanation.
- *An acceleration (or boost) in relativity is almost exactly equivalent to a rotation.
- *You can think of a particle/object as moving at the speed of light at all times in the t direction,
- *The acceleration 'rotates' that path so that it is moving in the x direction a little bit as well as the y.
- *This matrix implements the appropriate cosh(artanh(B)) and similar values, using linear algebra for speed (although not clarity)
- *One way to get an idea for how hyperbolic space works is to play with a triangle. Declare the wrong side to be the hypotenuse, and change
- *The angles. You'll notice that both the opposite and adjacent tend to infinity, so too do x and t intervals for a given proper time (hypotenuse)
- *I plan to make a demo of this some time.
- */
-function cBoostMat(boostV,c) {
-    var boostMagSq=boostV[1]*boostV[1]+boostV[2]*boostV[2];
-	var gamma=vToGamma(boostV);
-	return (mat4.create([gamma,            -boostV[1]*gamma,                            -boostV[2]*gamma, 0,
-                         -boostV[1]*gamma, 1+(gamma-1)*boostV[1]*boostV[1]/boostMagSq, (gamma-1)*boostV[1]*boostV[2]/boostMagSq, 0,
-                         -boostV[2]*gamma, (gamma-1)*boostV[1]*boostV[2]/boostMagSq,   1+(gamma-1)*boostV[2]*boostV[2]/boostMagSq, 0,
-                        0, 0, 0, 1
-                        ]));
-};
+
