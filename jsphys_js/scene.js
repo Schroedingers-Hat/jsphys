@@ -1,7 +1,3 @@
-var showFramePos = false;
-var showVisualPos = true;
-var showDoppler = true;
-var displayTime = false;
 function Scene() {
     this.createObject = function (obj) {
         var thingy = new obj.object(quat4.create([0, obj.x[0], obj.x[1], 0], 0), 
@@ -61,6 +57,10 @@ function Scene() {
         this.interval = setInterval(drawScene, 20);
     };
 
+    this.stopAnimation = function() {
+        clearInterval(this.interval);
+    }
+
     this.nextStep = function() {
         this.curStep += 1;
         this.load(this.demo, this.curStep);
@@ -77,7 +77,7 @@ function Scene() {
     // Find the closest object to the given (x,y), within a distance maxDist
     // in screen pixels (i.e. (x,y) is a screen location, not a scaled scene
     // coordinate)
-    this.findClosestOBject = function(x, y, maxDist) {
+    this.findClosestObject = function(x, y, maxDist) {
         var i = 0;
         var minDist = this.width;
         var minElement = -1;
@@ -103,12 +103,11 @@ function Scene() {
                                                   1 / obj.COM.V[0], tempVec3), 
                                                   c);
 
-        //obj.COM.changeFrame([0, 0, 0, 0], newFrameBoost);
         var XShift = obj.COM.X0;
-        //obj.COM.X0 = quat4.create([0, 0, 0, 0]);
+        
         this.carray.forEach(function(obj) {
             obj.COM.changeFrame(XShift, newFrameBoost);
-            obj.draw();
+            obj.draw(this);
         }, this);
     };
 
@@ -127,6 +126,10 @@ function Scene() {
     this.timeStep = 5;
     this.timeScale = 0.02;
     this.t = 0;
+    this.showFramePos = false;
+    this.showVisualPos = true;
+    this.showDoppler = true;
+    this.displayTime = false;
 }
 
 /**

@@ -135,14 +135,14 @@ function mainSequenceStar(X, P, Lum)
     //TODO: Add the mass and radius relations here.
     this.draw = function(scene)
     {
-        if(showVisualPos &&
-           this.COM.XView[1]/scene.zoom < (scene.hwidth + 10)   &&
-           this.COM.XView[2]/scene.zoom < (scene.hheight + 10)  &&
-           this.COM.XView[1]/scene.zoom > (-scene.hwidth - 10)  &&
-           this.COM.XView[2]/scene.zoom > (-scene.hheight - 10) &&
+        if(scene.showVisualPos &&
+           this.COM.XView[1] / scene.zoom < (scene.hwidth + 10)   &&
+           this.COM.XView[2] / scene.zoom < (scene.hheight + 10)  &&
+           this.COM.XView[1] / scene.zoom > (-scene.hwidth - 10)  &&
+           this.COM.XView[2] / scene.zoom > (-scene.hheight - 10) &&
            this.r / scene.zoom > 0.3)
         {
-            if(showDoppler)
+            if(scene.showDoppler)
             {
                 scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                             this.COM.radialVPast,
@@ -159,14 +159,14 @@ function mainSequenceStar(X, P, Lum)
             scene.g.closePath();
             scene.g.fill();
             
-            if (displayTime) {
+            if (scene.displayTime) {
                 scene.g.fillText(Math.floor((this.COM.tau - (this.COM.viewTime)) / timeScale / 1000),
                                  this.COM.XView[1] / scene.zoom + scene.hwidth + 10,
                                  this.COM.XView[2] / scene.zoom + scene.hheight);
             }
         }
 
-        if(showFramePos &&
+        if(scene.showFramePos &&
            this.COM.X0[1] / scene.zoom < (scene.hwidth + 10)   &&
            this.COM.X0[2] / scene.zoom < (scene.hheight + 10)  &&
            this.COM.X0[1] / scene.zoom > (-scene.hwidth - 10)  &&
@@ -180,7 +180,7 @@ function mainSequenceStar(X, P, Lum)
                   this.r / scene.zoom, 0, twopi, true);
             scene.g.closePath();
             scene.g.fill();
-            if (displayTime) {
+            if (scene.displayTime) {
                 scene.g.fillText(Math.floor(this.COM.tau / timeScale / 1000) + ", " + Math.floor(this.COM.X0[0] / timeScale /1000),
                        this.COM.X0[1] / scene.zoom + scene.hwidth + 10,
                        this.COM.X0[2] / scene.zoom + scene.hheight);

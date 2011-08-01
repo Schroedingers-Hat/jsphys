@@ -10,6 +10,7 @@ var rotLeftDown = false;
 var rotRightDown = false;
 var rotUpDown = false;
 var rotDownDown = false;
+var scene;
 
 //TODO: Pull all the keycodes out of here and put them in an array or something.
 //Will allow changing the controls to boot.
@@ -76,38 +77,11 @@ function clickHandler(e)
     var offset = $('#canvas').offset();
     var x = e.pageX - offset.left;
     var y = e.pageY - offset.top;
-    
-    var i = 0;
-    var minDist = WIDTH;
-    var minElement = -1;
 
-    for (i = 0; i < carray.length; i++)
-    {
-        var dist = getDistance([x,y], [carray[i].COM.XView[1] / zoom + HWIDTH, 
-                                       carray[i].COM.XView[2] / zoom + HHEIGHT]);
-        if (dist < minDist)
-        {
-            minDist = dist;
-            minElement = i;
-        }
-    }
-    
-    if (minDist < 30)
-    {
-        //Should probably take this out of here.
-        newFrameBoost=cBoostMat(quat4.scale(carray[minElement].COM.V,
-                                           1 / carray[minElement].COM.V[0], tempVec3), c);
-        carray[minElement].COM.changeFrame([0, 0, 0, 0], newFrameBoost);
-        XShift=carray[minElement].COM.X0;
-        carray[minElement].COM.X0=quat4.create([0, 0, 0, 0]);
-        for (i = 0; i < carray.length; i++)
-        {
-            if (i != minElement)
-            {
-                carray[i].COM.changeFrame(XShift, newFrameBoost);
-                carray[i].draw();
-            }
-        }
+    var minElement = scene.findClosestObject(x, y, 30);
+
+    if (minElement != false) {
+        scene.shiftToFrameOfObject(minElement);
     }
 }
 
