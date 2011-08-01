@@ -1,0 +1,138 @@
+var showFramePos = false;
+var showVisualPos = true;
+var showDoppler = true;
+var displayTime = false;
+function Scene() {
+    this.createObject = function (obj) {
+        var thingy = new obj.object(quat4.create([0, obj.x[0], obj.x[1], 0], 0), 
+                                    quat4.create([0, obj.p[0], obj.p[1], 0], 0), 1)
+        thingy.COM.init(this.timeStep);
+        this.carray.push(thingy);
+    };
+
+    this.draw = function() {
+        var newTime  = new Date().getTime();
+        this.timeStep = (newTime - this.initialTime) * this.timeScale - (this.t/c);
+        keySinceLastFrame = false;
+        this.clear();
+
+        this.carray.forEach(function(obj) {
+            obj.COM.updateX0(this.timeStep);
+            obj.draw(this)
+        }, this);
+
+        this.drawCrosshairs();
+     
+        this.t = this.t + (this.timeStep*c);
+        $("#fps").html(Math.floor(1000 / (this.timeStep / this.timeScale)));
+        $("#hsg").html(Math.floor(this.carray[this.carray.length - 1].COM.V[0]));
+        $("#gameclock").html(Math.floor(this.t / this.timeScale / 1000 / c));
+        $("#time").html(Math.floor((newTime - this.initialTime) / 1000));
+
+        if (leftDown == true)     this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostLeft,  this.carray);
+        if (upDown == true)       this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostUp,    this.carray);
+        if (downDown == true)     this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostDown,  this.carray);
+        if (rotLeftDown == true)  this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotRight,   this.carray);
+        if (rotRightDown == true) this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotLeft,    this.carray);
+        if (rotUpDown == true)    this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotUp,      this.carray);
+        if (rotDownDown == true)  this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotDown,    this.carray);
+        if (rightDown == true)    this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostRight, this.carray);
+    };
+
+    this.clear = function() {
+        this.g.clearRect(0, 0, this.width, this.height);
+    };
+
+    this.drawCrosshairs = function () {
+        this.g.strokeStyle = "#fff";
+        this.g.beginPath();
+        this.g.moveTo(this.hwidth - 10, this.hheight);
+        this.g.lineTo(this.hwidth + 10, this.hheight);
+        this.g.stroke();
+
+        this.g.beginPath();
+        this.g.moveTo(this.hwidth, this.hheight - 10);
+        this.g.lineTo(this.hwidth, this.hheight + 10);
+        this.g.stroke();
+    };
+
+    this.startAnimation = function() {
+        this.initialTime = new Date().getTime();
+        this.interval = setInterval(drawScene, 20);
+    };
+
+    this.nextStep = function() {
+        this.curStep += 1;
+        this.load(this.demo, this.curStep);
+    };
+
+    this.load = function(demo, step) {
+        this.curStep = step;
+        this.demo = demo;
+
+        demo.steps[step].objects.forEach(this.createObject, this);
+        $('#caption').html(demo.steps[step].caption);
+    };
+
+    // Find the closest object to the given (x,y), within a distance maxDist
+    // in screen pixels (i.e. (x,y) is a screen location, not a scaled scene
+    // coordinate)
+    this.findClosestOBject = function(x, y, maxDist) {
+        var i = 0;
+        var minDist = this.width;
+        var minElement = -1;
+
+        for (i = 0; i < this.carray.length; i++) {
+            var dist = getDistance([x,y], [this.carray[i].COM.XView[1] / this.zoom + this.hwidth, 
+                                           this.carray[i].COM.XView[2] / this.zoom + this.hheight]);
+            if (dist < minDist) {
+                minDist = dist;
+                minElement = i;
+            }
+        }
+
+        if (minDist < maxDist) {
+            return this.carray[minElement];
+        }
+        return false;
+    }
+
+    // Take a given inertialObject and switch to its reference frame
+    this.shiftToFrameOfObject = function(obj) {
+        var newFrameBoost = cBoostMat(quat4.scale(obj.COM.V,
+                                                  1 / obj.COM.V[0], tempVec3), 
+                                                  c);
+
+        //obj.COM.changeFrame([0, 0, 0, 0], newFrameBoost);
+        var XShift = obj.COM.X0;
+        //obj.COM.X0 = quat4.create([0, 0, 0, 0]);
+        this.carray.forEach(function(obj) {
+            obj.COM.changeFrame(XShift, newFrameBoost);
+            obj.draw();
+        }, this);
+    };
+
+    this.changeArrayFrame = function(translation, boost) {
+        this.carray.forEach(function(obj) {obj.COM.changeFrame(translation, boost)});
+    }
+
+    this.keySinceLastFrame = false;
+    this.g = $('#canvas')[0].getContext("2d");
+    this.width = $("#canvas").width();
+    this.height = $("#canvas").height();
+    this.hwidth = this.width / 2;
+    this.hheight = this.height / 2;
+    this.carray = [];
+    this.zoom = 0.25;
+    this.timeStep = 5;
+    this.timeScale = 0.02;
+    this.t = 0;
+}
+
+/**
+ * Helper function to draw the scene. Necessary because of the setInterval()
+ * this problem.
+ */
+function drawScene() {
+    scene.draw();
+}

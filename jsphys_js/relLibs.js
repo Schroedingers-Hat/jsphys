@@ -1,12 +1,47 @@
+// Convenient constants.
+var c = 1; //Do not change, not fully implemented
+var twopi = Math.PI * 2;
+var tempVec3 = quat4.create();
+
+// Some convenient matrices.
+var rotLeft  = mat4.create([1, 0, 0, 0,
+                        0, Math.cos(0.1), Math.sin(-0.1), 0,
+                        0, Math.sin( 0.1), Math.cos(0.1), 0,
+                        0, 0, 0, 1]);
+var rotRight = mat4.create([1, 0, 0, 0,
+                        0, Math.cos(0.1), Math.sin( 0.1), 0,
+                        0, Math.sin(-0.1), Math.cos(0.1), 0,
+                        0, 0, 0, 1]);
+
+var rotUp = mat4.create([1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, Math.cos(0.1), Math.sin(0.1),
+                        0, 0, Math.sin( -0.1), Math.cos(0.1)
+                        ]);
+var rotDown = mat4.create([1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, Math.cos(0.1), Math.sin(-0.1),
+                        0, 0, Math.sin(0.1), Math.cos(0.1)
+                        ]);
+var boostRight  = cBoostMat(quat4.create([0, 0.05, 0, 0]), c);
+var boostLeft   = cBoostMat(quat4.create([0, -0.05, 0, 0]), c);
+var boostUp     = cBoostMat(quat4.create([0, 0, -0.05, 0]), c);
+var boostDown   = cBoostMat(quat4.create([0, 0, 0.05, 0]), c);
+
 //Convention of using Velocity not multiplied by gamma.
 
+// Take two points [x,y] and return the distance between them.
+function getDistance(pt1, pt2)
+{
+    return Math.sqrt(Math.pow(pt1[0] - pt2[0], 2) + Math.pow(pt1[1] - pt2[1], 2));
+}
 
 /*
  *vToGamma
  *Takes a 3-velocity (0th element time) and returns
  *gamma.
 */
-vToGamma = function(V){
+function vToGamma(V){
     if (V.length == 3)
     {
         return Math.pow((1 - (V[1] * V[1] + V[2] * V[2])/(c*c) ), -0.5);
@@ -175,26 +210,26 @@ quat4.subtract = function(vec, vec2, dest) {
 //Projection of spacial elements of vec onto vec2.
 vec3.spaceDot = function(vec, vec2)
 {
-if (vec.length == 3)
-{
-return vec[1] * vec2[1] + vec[2] * vec2[2];
-}
-if (vec.length == 4)
-{
-return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
-}
+    if (vec.length == 3)
+    {
+        return vec[1] * vec2[1] + vec[2] * vec2[2];
+    }
+    if (vec.length == 4)
+    {
+        return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
+    }
 }
 
 
 quat4.spaceDot = function(vec, vec2)
 {
-if (vec.length == 3)
-{
-return vec[1] * vec2[1] + vec[2] * vec2[2];
-}
-if (vec.length == 4)
-{
-return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
-}
+    if (vec.length == 3)
+    {
+        return vec[1] * vec2[1] + vec[2] * vec2[2];
+    }
+    if (vec.length == 4)
+    {
+        return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
+    }
 }
 

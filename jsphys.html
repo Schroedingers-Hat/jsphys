@@ -10,8 +10,14 @@
         <script type="text/javascript" src="jsphys_js/interface.js"></script>
         <script type="text/javascript" src="jsphys_js/relLibs.js"></script>
         <script type="text/javascript" src="jsphys_js/colors.js"></script>
-        <script type="text/javascript" src="jsphys_js/balls1.js"></script>
+        <script type="text/javascript" src="jsphys_js/demos.js"></script>
+        <script type="text/javascript" src="jsphys_js/scene.js"></script>
         <style type="text/css">
+            body
+            {
+                color: #ccc;
+                font-family: sans-serif;
+            }
             #infobox 
             {
                 width: 150px;
@@ -43,6 +49,9 @@
                 <p>Game clock: <span id="gameclock"></span></p>
                 <p>Real time: <span id="time"></span></p>
             </div>
+            <div id="caption"></div>
+            <!-- <div id="demo-select"><a onclick="start(threeObjects)">Three objects</a></div>
+            <div id="steps"><a onclick="prevStep()">Previous step</a> | <a onclick="nextStep()">Next step</a></div> -->
         </div>
     </body>
 </html>

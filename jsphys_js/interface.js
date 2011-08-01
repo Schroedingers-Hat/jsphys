@@ -2,6 +2,14 @@
  * User interface event handling -- mouse and keyboard input
  */
 
+var rightDown = false;
+var leftDown = false;
+var upDown = false;
+var downDown = false;
+var rotLeftDown = false;
+var rotRightDown = false;
+var rotUpDown = false;
+var rotDownDown = false;
 
 //TODO: Pull all the keycodes out of here and put them in an array or something.
 //Will allow changing the controls to boot.
@@ -100,14 +108,20 @@ function clickHandler(e)
                 carray[i].draw();
             }
         }
-        testObject[0].changeFrame(XShift,newFrameBoost);
-
-        // shiftToFrameOfObject(carray[minElement])
     }
 }
 
-// Take two points [x,y] and return the distance between them.
-function getDistance(pt1, pt2)
+// Use JQuery to wait for document load
+$(document).ready(function()
 {
-    return Math.sqrt(Math.pow(pt1[0] - pt2[0], 2) + Math.pow(pt1[1] - pt2[1], 2));
-}
+    var viewportWidth = $('body').width() - 16;
+    $("#canvas").attr('width', viewportWidth);
+    scene = new Scene();
+    scene.load(threeObjects, 0);
+    scene.startAnimation();
+    //var interval = setInterval(drawScene, 20);
+    $("#canvas").click(clickHandler);
+});
+
+$(document).keydown(onKeyDown);
+$(document).keyup(onKeyUp);

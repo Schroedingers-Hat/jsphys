@@ -1,7 +1,7 @@
 // inertialObject Class    
 function inertialObject(X, P, m)
 {
-    this.init = function()
+    this.init = function(timeStep)
     {
         this.X0 = X;
         this.rPast = 1;
@@ -21,7 +21,7 @@ function inertialObject(X, P, m)
         return this.X0;
     }
 
-    this.updateX0 = function()
+    this.updateX0 = function(timeStep)
     {   
         quat4.scale(this.V, timeStep / this.V[0], this.displace);
 	    //Increase proper time.
@@ -133,58 +133,63 @@ function mainSequenceStar(X, P, Lum)
     //You can read this off of a HR diagram.
     this.temp = Math.pow(10, (3.45 + Lum / 10)); 
     //TODO: Add the mass and radius relations here.
-    this.draw = function()
+    this.draw = function(scene)
     {
         if(showVisualPos &&
-           this.COM.XView[1]/zoom < (HWIDTH + 10)  &&
-           this.COM.XView[2]/zoom < (HHEIGHT + 10) &&
-           this.COM.XView[1]/zoom > (-HWIDTH - 10) &&
-           this.COM.XView[2]/zoom > (-HHEIGHT - 10)&&
-           this.r / zoom > 0.3)
+           this.COM.XView[1]/scene.zoom < (scene.hwidth + 10)   &&
+           this.COM.XView[2]/scene.zoom < (scene.hheight + 10)  &&
+           this.COM.XView[1]/scene.zoom > (-scene.hwidth - 10)  &&
+           this.COM.XView[2]/scene.zoom > (-scene.hheight - 10) &&
+           this.r / scene.zoom > 0.3)
         {
             if(showDoppler)
             {
-                g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
+                scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                             this.COM.radialVPast,
                                                             this.COM.V[0]));
             }
             else
             {
-                g.fillStyle = tempToColor(this.temp);
+                scene.g.fillStyle = tempToColor(this.temp);
             }
-            g.beginPath();
-            g.arc(this.COM.XView[1] / zoom + HWIDTH, 
-                  this.COM.XView[2] / zoom + HHEIGHT, 
-                  this.r / zoom, 0, twopi, true);
-            g.closePath();
-            g.fill();
+            scene.g.beginPath();
+            scene.g.arc(this.COM.XView[1] / scene.zoom + scene.hwidth, 
+                  this.COM.XView[2] / scene.zoom + scene.hheight, 
+                  this.r / scene.zoom, 0, twopi, true);
+            scene.g.closePath();
+            scene.g.fill();
             
-            if (displayTime) g.fillText(Math.floor((this.COM.tau - (this.COM.viewTime)) / timeScale / 1000),
-                       this.COM.XView[1] / zoom + HWIDTH + 10,
-                       this.COM.XView[2] / zoom + HHEIGHT);
+            if (displayTime) {
+                scene.g.fillText(Math.floor((this.COM.tau - (this.COM.viewTime)) / timeScale / 1000),
+                                 this.COM.XView[1] / scene.zoom + scene.hwidth + 10,
+                                 this.COM.XView[2] / scene.zoom + scene.hheight);
+            }
         }
-        if(showFramePos &&
-           this.COM.X0[1]/zoom < (HWIDTH + 10) &&
-           this.COM.X0[2]/zoom < (HHEIGHT + 10) &&
-           this.COM.X0[1]/zoom > (-HWIDTH - 10) &&
-           this.COM.X0[2]/zoom > (-HHEIGHT - 10)&&
-           this.r / zoom > 0.3)
-        {
-            g.fillStyle = "#0f0"; 
-            g.beginPath();
-            g.arc(this.COM.X0[1] / zoom + HWIDTH, 
-                  this.COM.X0[2] / zoom + HHEIGHT, 
-                  this.r / zoom, 0, twopi, true);
-            g.closePath();
-            g.fill();
-            if (displayTime) g.fillText(Math.floor(this.COM.tau / timeScale / 1000) + ", " + Math.floor(this.COM.X0[0] / timeScale /1000),
-                       this.COM.X0[1] / zoom + HWIDTH + 10,
-                       this.COM.X0[2] / zoom + HHEIGHT);
 
+        if(showFramePos &&
+           this.COM.X0[1] / scene.zoom < (scene.hwidth + 10)   &&
+           this.COM.X0[2] / scene.zoom < (scene.hheight + 10)  &&
+           this.COM.X0[1] / scene.zoom > (-scene.hwidth - 10)  &&
+           this.COM.X0[2] / scene.zoom > (-scene.hheight - 10) &&
+           this.r / scene.zoom > 0.3)
+        {
+            scene.g.fillStyle = "#0f0"; 
+            scene.g.beginPath();
+            scene.g.arc(this.COM.X0[1] / scene.zoom + scene.hwidth, 
+                  this.COM.X0[2] / scene.zoom + scene.hheight, 
+                  this.r / scene.zoom, 0, twopi, true);
+            scene.g.closePath();
+            scene.g.fill();
+            if (displayTime) {
+                scene.g.fillText(Math.floor(this.COM.tau / timeScale / 1000) + ", " + Math.floor(this.COM.X0[0] / timeScale /1000),
+                       this.COM.X0[1] / scene.zoom + scene.hwidth + 10,
+                       this.COM.X0[2] / scene.zoom + scene.hheight);
+            }
         }
  
     }
-      this.COM = new inertialObject(X, P, 1);
+    
+    this.COM = new inertialObject(X, P, 1);
 }
 
 
