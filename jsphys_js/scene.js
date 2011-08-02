@@ -54,6 +54,7 @@ function Scene() {
 
     this.startAnimation = function() {
         this.initialTime = new Date().getTime();
+        this.t = 0;
         this.interval = setInterval(drawScene, 20);
     };
 
@@ -68,6 +69,14 @@ function Scene() {
         this.load(this.demo, this.curStep);
         this.startAnimation();
     };
+
+    this.prevStep = function() {
+        this.stopAnimation();
+        this.curStep -= 1;
+        this.carray = [];
+        this.load(this.demo, this.curStep);
+        this.startAnimation();
+    }
 
     this.load = function(demo, step) {
         this.curStep = step;
