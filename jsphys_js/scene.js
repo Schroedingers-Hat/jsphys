@@ -59,11 +59,14 @@ function Scene() {
 
     this.stopAnimation = function() {
         clearInterval(this.interval);
-    }
+    };
 
     this.nextStep = function() {
+        this.stopAnimation();
         this.curStep += 1;
+        this.carray = [];
         this.load(this.demo, this.curStep);
+        this.startAnimation();
     };
 
     this.load = function(demo, step) {
@@ -72,6 +75,11 @@ function Scene() {
 
         demo.steps[step].objects.forEach(this.createObject, this);
         $('#caption').html(demo.steps[step].caption);
+
+        // If the demo specifies an object whose frame is preferred, shift to that frame.
+        if (typeof demo.steps[step].frame == "number") {
+            this.shiftToFrameOfObject(this.carray[demo.steps[step].frame]);
+        }
     };
 
     // Find the closest object to the given (x,y), within a distance maxDist
@@ -105,6 +113,12 @@ function Scene() {
 
         var XShift = obj.COM.X0;
         
+        // If the new frame is basically the same as the old frame, don't bother.
+        if (Math.sqrt(quat4.spaceDot(XShift, XShift)) < 0.0001 &&
+            Math.sqrt(quat4.spaceDot(obj.COM.V, obj.COM.V)) < 0.0001) {
+                return;
+        }
+
         this.carray.forEach(function(obj) {
             obj.COM.changeFrame(XShift, newFrameBoost);
             obj.draw(this);
