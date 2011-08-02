@@ -27,36 +27,36 @@ function onKeyDown(evt)
 //    	else if (evt.keyCode == 49) rotUpDown = true; //Not needed for 2D 
 //    	else if (evt.keyCode == 50) rotDownDown = true;  //Not needed for 2D
 
-        else if (evt.keyCode == 84) displayTime = !displayTime;
+        else if (evt.keyCode == 84) scene.displayTime = !scene.displayTime;
         else if (evt.keyCode == 90)
         {
-            showDoppler = !showDoppler;
+            scene.showDoppler = !scene.showDoppler;
         }
         else if (evt.keyCode == 88)
         {
-            showFramePos = !showFramePos;
+            scene.showFramePos = !scene.showFramePos;
         }
         else if (evt.keyCode == 67)
         {
-            showVisualPos = !showVisualPos;
+            scene.showVisualPos = !scene.showVisualPos;
         }
     	else if (evt.keyCode == 61) 
     	{
-    	    zoom = zoom / 2;
-            if (zoom < 0.06 ) zoom = 0.6;
-            boostRight  = cBoostMat(quat4.create([0, 0.02 / zoom, 0, 0]), c);
-            boostLeft   = cBoostMat(quat4.create([0, -0.02 / zoom, 0, 0]), c);
-            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / zoom, 0]), c);
-            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / zoom, 0]), c);
+    	    scene.zoom = scene.zoom / 2;
+            if (scene.zoom < 0.06 ) scene.zoom = 0.6;
+            boostRight  = cBoostMat(quat4.create([0, 0.02 / scene.zoom, 0, 0]), c);
+            boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
+            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
+            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / scene.zoom, 0]), c);
     	}
     	else if (evt.keyCode == 109) 
     	{
-    	    zoom = zoom * 2;
-            if (zoom > 40) zoom = 40;
-            boostRight  = cBoostMat(quat4.create([0, 0.02 * zoom,0, 0]), c);
-            boostLeft   = cBoostMat(quat4.create([0, -0.02 * zoom,0, 0]), c);
-            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 * zoom, 0]), c);
-            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 * zoom, 0]), c);
+    	    scene.zoom = scene.zoom * 2;
+            if (scene.zoom > 40) scene.zoom = 40;
+            boostRight  = cBoostMat(quat4.create([0, 0.02 * scene.zoom, 0, 0]), c);
+            boostLeft   = cBoostMat(quat4.create([0, -0.02 * scene.zoom, 0, 0]), c);
+            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 * scene.zoom, 0]), c);
+            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 * scene.zoom, 0]), c);
     	}
 }
 

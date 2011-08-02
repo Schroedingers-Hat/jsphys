@@ -169,7 +169,7 @@ function mainSequenceStar(X, P, label, options)
             scene.g.fill();
             
             if (scene.displayTime) {
-                scene.g.fillText(Math.floor((this.COM.tau - (this.COM.viewTime)) / timeScale / 1000),
+                scene.g.fillText(Math.floor((this.COM.tau - (this.COM.viewTime)) / scene.timeScale / 1000),
                                  this.COM.XView[1] / scene.zoom + scene.hwidth + 10,
                                  this.COM.XView[2] / scene.zoom + scene.hheight);
             }
