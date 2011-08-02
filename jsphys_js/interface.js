@@ -91,7 +91,7 @@ $(document).ready(function()
     var viewportWidth = $('body').width() - 16;
     $("#canvas").attr('width', viewportWidth);
     scene = new Scene();
-    scene.load(threeObjects, 0);
+    scene.load(headOnObjects, 0);
     scene.startAnimation();
     //var interval = setInterval(drawScene, 20);
     $("#canvas").click(clickHandler);

@@ -1,7 +1,14 @@
 function Scene() {
     this.createObject = function (obj) {
+        if (typeof obj.options == "undefined") {
+            obj.options = {};
+        }
+        if (typeof obj.label == "undefined") {
+            obj.label = "";
+        }
+
         var thingy = new obj.object(quat4.create([0, obj.x[0], obj.x[1], 0], 0), 
-                                    quat4.create([0, obj.p[0], obj.p[1], 0], 0), 1)
+                                    quat4.create([0, obj.p[0], obj.p[1], 0], 0), obj.label, obj.options)
         thingy.COM.init(this.timeStep);
         this.carray.push(thingy);
     };

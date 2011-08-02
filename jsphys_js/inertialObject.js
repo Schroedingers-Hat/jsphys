@@ -1,8 +1,9 @@
 // inertialObject Class    
 function inertialObject(X, P, m)
 {
-    this.init = function(timeStep)
+    this.init = function(timeStep, label)
     {
+        this.label = label
         this.X0 = X;
         this.rPast = 1;
 	    this.XView = quat4.create();
@@ -123,8 +124,16 @@ function inertialObject(X, P, m)
 
 //Generates an approximation of a main sequence star. 
 //Luminosity is in units 10^Lum*1 solar luminosity=Luminosity in watts.
-function mainSequenceStar(X, P, Lum)
+function mainSequenceStar(X, P, label, options)
 {
+    if (typeof options.lum == "number") {
+        var Lum = options.lum;
+    } else {
+        var Lum = 1;
+    }
+
+    this.label = label;
+
     //Aesthetic reasons only. 
     //If any 3D images are rendered Lum will be more useful
     this.r = Math.sqrt(Lum) * 10; 
@@ -162,6 +171,10 @@ function mainSequenceStar(X, P, Lum)
             if (scene.displayTime) {
                 scene.g.fillText(Math.floor((this.COM.tau - (this.COM.viewTime)) / timeScale / 1000),
                                  this.COM.XView[1] / scene.zoom + scene.hwidth + 10,
+                                 this.COM.XView[2] / scene.zoom + scene.hheight);
+            }
+            if (this.label != "") {
+                scene.g.fillText(this.label, this.COM.XView[1] / scene.zoom + scene.hwidth + (this.r / scene.zoom)  + 10,
                                  this.COM.XView[2] / scene.zoom + scene.hheight);
             }
         }
