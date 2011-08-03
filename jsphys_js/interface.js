@@ -85,6 +85,25 @@ function clickHandler(e)
     }
 }
 
+function zoomTo(zoom) {
+    scene.zoom = zoom;
+    boostRight  = cBoostMat(quat4.create([0, 0.02 / scene.zoom, 0, 0]), c);
+    boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
+    boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
+    boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / scene.zoom, 0]), c);
+}
+
+/**
+ * Take a slider event and convert it to a zoom event.
+ *
+ * The zoom scale goes 0.06 to 40, but representing that in a slider would be awkward.
+ * Current zoom steps work in powers of 2, not in a continuous scale. So, the slider
+ * goes -4 to 5.5, and is turned into a power of 2. (2^-4 = 0.06, for example.)
+ */
+function zoomToSlider(event, ui) {
+    zoomTo(Math.pow(2, ui.value));
+}
+
 // Use JQuery to wait for document load
 $(document).ready(function()
 {
@@ -95,6 +114,9 @@ $(document).ready(function()
     scene.startAnimation();
     //var interval = setInterval(drawScene, 20);
     $("#canvas").click(clickHandler);
+    $("#doppler").change(function() {scene.showDoppler = !scene.showDoppler;});
+    $("#zoom-slider").slider({min: -4, max: 5.5, step: 0.5, slide: zoomToSlider,
+                              value: (Math.log(scene.zoom) / Math.LN2)});
 });
 
 $(document).keydown(onKeyDown);
