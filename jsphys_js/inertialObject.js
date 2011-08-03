@@ -38,7 +38,10 @@ function inertialObject(X, P, m)
     //Note that translation can include time, and rotation can include boost.
     this.changeFrame = function(translation, rotation)
     {
-
+        // Translate.
+        quat4.subtract(this.X0, translation);
+        this.calcPast();
+        
         //Boost both velocity and position vectors using the boost matrix.
         mat4.multiplyVec4(rotation, this.X0);
         mat4.multiplyVec4(rotation, this.V);
@@ -50,10 +53,6 @@ function inertialObject(X, P, m)
         //Bring to current time.
         quat4.add(this.X0, this.uDisplacement);
         this.tau += this.uDisplacement[0] / this.V[0];
-        
-        // Translate.
-        quat4.subtract(this.X0, translation);
-        this.calcPast();
     }
    
     //This function is a bit esoteric. It works because we can calculate r(t).

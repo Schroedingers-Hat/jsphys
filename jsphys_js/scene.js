@@ -127,7 +127,7 @@ function Scene() {
                                                   1 / obj.COM.V[0], tempVec3), 
                                                   c);
 
-        var XShift = obj.COM.X0;
+        var XShift = new Float32Array(obj.COM.X0);
         
         // If the new frame is basically the same as the old frame, don't bother.
         if (Math.sqrt(quat4.spaceDot(XShift, XShift)) < 0.0001 &&
