@@ -7,6 +7,7 @@ function mainSequenceStar(X, P, Lum)
     //Very rough approximation of main sequence lum/temp relation.
     //You can read this off of a HR diagram.
     this.temp = Math.pow(10, (3.45 + Lum / 10)); 
+    this.stillColor = tempToColor(this.temp);
 
     this.COM = new inertialObject(X, P, 1);
 }
@@ -50,20 +51,23 @@ mainSequenceStar.prototype.drawNow = function()
 
 mainSequenceStar.prototype.drawPast = function()
 {
-    if(this.COM.XView[1]/zoom < (HWIDTH + 10)  &&
-       this.COM.XView[2]/zoom < (HHEIGHT + 10) &&
-       this.COM.XView[1]/zoom > (-HWIDTH - 10) &&
-       this.COM.XView[2]/zoom > (-HHEIGHT - 10)&&
+    this.WVIS = (this.COM.XView[1]/zoom);
+    this.HVIS = (this.COM.XView[2]/zoom);
+
+    if(this.WVIS < (HWIDTH + 10)  &&
+       this.HVIS < (HHEIGHT + 10) &&
+       this.WVIS > (-HWIDTH - 10) &&
+       this.HVIS > (-HHEIGHT - 10)&&
        this.r / zoom > 0.3)
     {
         if(showDoppler) g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                   this.COM.radialVPast,
                                                   this.COM.V[0]));
-        else g.fillStyle = tempToColor(this.temp);
+        else g.fillStyle = this.stillColor;
         g.beginPath();
-        g.arc(this.COM.XView[1] / zoom + HWIDTH, 
-              this.COM.XView[2] / zoom + HHEIGHT, 
-              this.r / zoom, 0, twopi, true);
+        g.arc((this.WVIS + HWIDTH), 
+              (this.HVIS + HHEIGHT), 
+              (this.r / zoom), 0, twopi, true);
         g.closePath();
         g.fill();
         

@@ -95,7 +95,13 @@ function start()
     testObject[0].init();
 
     tWLW = new basicWorldLineWrapper(quat4.create([0, 0, 0, 0]), quat4.create(0, 0, 0, 0)); 
-    return setInterval(draw, 20);
+//    return setInterval(draw, 20);
+    return animate();
+}
+
+function animate() {
+    requestAnimFrame( animate );
+    draw();
 }
 
 function changeArrayFrame(translation, boost, objectArray)
@@ -159,6 +165,20 @@ $(document).ready(function()
     start();
     $("#canvas").click(clickHandler);
 });
+
+
+// Do not quite comprehend what this does, copypasta from Paul Irish's tutorial
+// requestAnim shim layer by Paul Irish
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+          window.webkitRequestAnimationFrame || 
+          window.mozRequestAnimationFrame    || 
+          window.oRequestAnimationFrame      || 
+          window.msRequestAnimationFrame     || 
+          function(/* function */ callback, /* DOMElement */ element){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
 
 $(document).keydown(onKeyDown);
 $(document).keyup(onKeyUp);

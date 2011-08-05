@@ -11,7 +11,13 @@ function inertialObject(X, P, m)
         this.displace = quat4.create();
         quat4.scale(this.V, timeStep / this.V[0], this.displace);
         this.tau = 0;
+
+
         this.uDisplacement = quat4.create();
+        this.viewTime = 0;
+        this.radialDist = 0;
+        this.radialV = 0;
+        this.radialVPast = 0;
     }
     this.init();
 }
