@@ -64,7 +64,7 @@ function Scene() {
     this.startAnimation = function() {
         this.initialTime = new Date().getTime();
         this.t = 0;
-        this.interval = requestAnimFrame(drawScene);
+        this.draw();
     };
 
     this.stopAnimation = function() {
