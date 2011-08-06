@@ -54,8 +54,8 @@ mainSequenceStar.prototype.drawNow = function(scene)
         }
     }
     if (this.label != "") {
-        scene.g.fillText(this.label, this.COM.XView[1] / scene.zoom + scene.hwidth + (this.r / scene.zoom) + 10,
-                         this.COM.XView[2] / scene.zoom + scene.hheight);
+        scene.g.fillText(this.label, this.COM.X0[1] / scene.zoom + scene.hwidth + (this.r / scene.zoom) + 10,
+                         this.COM.X0[2] / scene.zoom + scene.hheight);
     }
 }
 
