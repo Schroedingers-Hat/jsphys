@@ -1,7 +1,8 @@
 function inertialObject(X, P, m)
 {
-    this.init = function()
+    this.init = function(timeStep, label)
     {
+        this.label = label
         this.X0 = X;
         this.rPast = 1;
         this.XView = quat4.create();
@@ -12,7 +13,6 @@ function inertialObject(X, P, m)
         quat4.scale(this.V, timeStep / this.V[0], this.displace);
         this.tau = 0;
 
-
         this.uDisplacement = quat4.create();
         this.viewTime = 0;
         this.radialDist = 0;
@@ -22,7 +22,7 @@ function inertialObject(X, P, m)
     this.init();
 }
 
-inertialObject.prototype.updateX0 = function()
+inertialObject.prototype.updateX0 = function(timeStep)
 {
     quat4.scale(this.V, timeStep / this.V[0], this.displace);
     //Increase proper time.
@@ -31,8 +31,12 @@ inertialObject.prototype.updateX0 = function()
     quat4.add(this.X0, this.displace);
     this.X0[0] = this.X0[0] - timeStep;
 }
+
 inertialObject.prototype.changeFrame = function(translation, rotation)
 {
+    // Translate.
+    quat4.subtract(this.X0, translation);
+
     //Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
     mat4.multiplyVec4(rotation, this.V);
@@ -44,9 +48,6 @@ inertialObject.prototype.changeFrame = function(translation, rotation)
     //Bring to current time.
     quat4.add(this.X0, this.uDisplacement);
     this.tau += this.uDisplacement[0] / this.V[0];
-    
-    // Translate.
-    quat4.subtract(this.X0, translation);
 }
 
 inertialObject.prototype.calcPast = function()
@@ -64,5 +65,4 @@ inertialObject.prototype.calcPast = function()
     this.radialVPast = (quat4.spaceDot(this.XView, this.V) / 
                         Math.max(Math.sqrt(Math.abs(
                         quat4.spaceDot(this.XView, this.XView) )),1e-10) / this.V[0]);
-     
 }

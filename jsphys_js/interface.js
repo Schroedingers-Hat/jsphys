@@ -2,6 +2,15 @@
  * User interface event handling -- mouse and keyboard input
  */
 
+var rightDown = false;
+var leftDown = false;
+var upDown = false;
+var downDown = false;
+var rotLeftDown = false;
+var rotRightDown = false;
+var rotUpDown = false;
+var rotDownDown = false;
+var scene;
 
 //TODO: Pull all the keycodes out of here and put them in an array or something.
 //Will allow changing the controls to boot.
@@ -18,36 +27,36 @@ function onKeyDown(evt)
 //    	else if (evt.keyCode == 49) rotUpDown = true; //Not needed for 2D 
 //    	else if (evt.keyCode == 50) rotDownDown = true;  //Not needed for 2D
 
-        else if (evt.keyCode == 84) displayTime = !displayTime;
+        else if (evt.keyCode == 84) scene.displayTime = !scene.displayTime;
         else if (evt.keyCode == 90)
         {
-            showDoppler = !showDoppler;
+            scene.showDoppler = !scene.showDoppler;
         }
         else if (evt.keyCode == 88)
         {
-            showFramePos = !showFramePos;
+            scene.showFramePos = !scene.showFramePos;
         }
         else if (evt.keyCode == 67)
         {
-            showVisualPos = !showVisualPos;
+            scene.showVisualPos = !scene.showVisualPos;
         }
     	else if (evt.keyCode == 61) 
     	{
-    	    zoom = zoom / 2;
-            if (zoom < 0.06 ) zoom = 0.6;
-            boostRight  = cBoostMat(quat4.create([0, 0.02 / zoom, 0, 0]), c);
-            boostLeft   = cBoostMat(quat4.create([0, -0.02 / zoom, 0, 0]), c);
-            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / zoom, 0]), c);
-            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / zoom, 0]), c);
+    	    scene.zoom = scene.zoom / 2;
+            if (scene.zoom < 0.06 ) scene.zoom = 0.6;
+            boostRight  = cBoostMat(quat4.create([0, 0.02 / scene.zoom, 0, 0]), c);
+            boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
+            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
+            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / scene.zoom, 0]), c);
     	}
     	else if (evt.keyCode == 109) 
     	{
-    	    zoom = zoom * 2;
-            if (zoom > 40) zoom = 40;
-            boostRight  = cBoostMat(quat4.create([0, 0.02 * zoom,0, 0]), c);
-            boostLeft   = cBoostMat(quat4.create([0, -0.02 * zoom,0, 0]), c);
-            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 * zoom, 0]), c);
-            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 * zoom, 0]), c);
+    	    scene.zoom = scene.zoom * 2;
+            if (scene.zoom > 40) scene.zoom = 40;
+            boostRight  = cBoostMat(quat4.create([0, 0.02 * scene.zoom, 0, 0]), c);
+            boostLeft   = cBoostMat(quat4.create([0, -0.02 * scene.zoom, 0, 0]), c);
+            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 * scene.zoom, 0]), c);
+            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 * scene.zoom, 0]), c);
     	}
 }
 
@@ -68,45 +77,62 @@ function clickHandler(e)
     var offset = $('#canvas').offset();
     var x = e.pageX - offset.left;
     var y = e.pageY - offset.top;
-    
-    var i = 0;
-    var minDist = WIDTH;
-    var minElement = -1;
 
-    for (i = 0; i < carray.length; i++)
-    {
-        var dist = getDistance([x,y], [carray[i].COM.XView[1] / zoom + HWIDTH, 
-                                       carray[i].COM.XView[2] / zoom + HHEIGHT]);
-        if (dist < minDist)
-        {
-            minDist = dist;
-            minElement = i;
-        }
-    }
-    
-    if (minDist < 30)
-    {
-        //Should probably take this out of here.
-        newFrameBoost=cBoostMat(quat4.scale(carray[minElement].COM.V,
-                                           1 / carray[minElement].COM.V[0], tempVec3), c);
-        carray[minElement].COM.changeFrame([0, 0, 0, 0], newFrameBoost);
-        XShift=carray[minElement].COM.X0;
-        carray[minElement].COM.X0=quat4.create([0, 0, 0, 0]);
-        for (i = 0; i < carray.length; i++)
-        {
-            if (i != minElement)
-            {
-                carray[i].COM.changeFrame(XShift, newFrameBoost);
-                carray[i].draw();
-            }
-        }
+    var minElement = scene.findClosestObject(x, y, 30);
 
-        // shiftToFrameOfObject(carray[minElement])
+    if (minElement != false) {
+        scene.shiftToFrameOfObject(minElement);
     }
 }
 
-// Take two points [x,y] and return the distance between them.
-function getDistance(pt1, pt2)
+function zoomTo(zoom) {
+    scene.zoom = zoom;
+    boostRight  = cBoostMat(quat4.create([0, 0.02 / scene.zoom, 0, 0]), c);
+    boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
+    boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
+    boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / scene.zoom, 0]), c);
+}
+
+/**
+ * Take a slider event and convert it to a zoom event.
+ *
+ * The zoom scale goes 0.06 to 40, but representing that in a slider would be awkward.
+ * Current zoom steps work in powers of 2, not in a continuous scale. So, the slider
+ * goes -4 to 5.5, and is turned into a power of 2. (2^-4 = 0.06, for example.)
+ */
+function zoomToSlider(event, ui) {
+    zoomTo(Math.pow(2, ui.value));
+}
+
+/**
+ * Do not quite comprehend what this does, copypasta from Paul Irish's tutorial
+ * requestAnim shim layer by Paul Irish
+ */
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+          window.webkitRequestAnimationFrame || 
+          window.mozRequestAnimationFrame    || 
+          window.oRequestAnimationFrame      || 
+          window.msRequestAnimationFrame     || 
+          function(/* function */ callback, /* DOMElement */ element){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+// Use JQuery to wait for document load
+$(document).ready(function()
 {
-    return Math.sqrt(Math.pow(pt1[0] - pt2[0], 2) + Math.pow(pt1[1] - pt2[1], 2));
-}
+    var viewportWidth = $('body').width() - 16;
+    $("#canvas").attr('width', viewportWidth);
+    scene = new Scene();
+    scene.load(headOnObjects, 0);
+    scene.startAnimation();
+    //var interval = setInterval(drawScene, 20);
+    $("#canvas").click(clickHandler);
+    $("#doppler").change(function() {scene.showDoppler = !scene.showDoppler;});
+    $("#zoom-slider").slider({min: -4, max: 5.5, step: 0.5, slide: zoomToSlider,
+                              value: (Math.log(scene.zoom) / Math.LN2)});
+});
+
+$(document).keydown(onKeyDown);
+$(document).keyup(onKeyUp);

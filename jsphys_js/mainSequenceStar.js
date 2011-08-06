@@ -1,5 +1,12 @@
-function mainSequenceStar(X, P, Lum)
+function mainSequenceStar(X, P, label, options)
 {
+    if (typeof options.lum == "number") {
+        var Lum = options.lum;
+    } else {
+        var Lum = 1;
+    }
+
+    this.label = label;
     //Aesthetic reasons only. 
     //If any 3D images are rendered Lum will be more useful
     this.r = Math.sqrt(Lum) * 10; 
@@ -12,73 +19,80 @@ function mainSequenceStar(X, P, Lum)
     this.COM = new inertialObject(X, P, 1);
 }
 
-mainSequenceStar.prototype.draw = function()
+mainSequenceStar.prototype.draw = function(scene)
 {
-    if (showVisualPos)
+    if (scene.showVisualPos)
     {
         this.COM.calcPast();
-        this.drawPast();
+        this.drawPast(scene);
     }
-    if (showFramePos) this.drawNow();
+    if (scene.showFramePos) this.drawNow(scene);
 } 
 
 
-mainSequenceStar.prototype.drawNow = function()
+mainSequenceStar.prototype.drawNow = function(scene)
 {
-    if(this.COM.X0[1]/zoom < (HWIDTH + 10) &&
-       this.COM.X0[2]/zoom < (HHEIGHT + 10) &&
-       this.COM.X0[1]/zoom > (-HWIDTH - 10) &&
-       this.COM.X0[2]/zoom > (-HHEIGHT - 10)&&
+    if(this.COM.X0[1] / scene.zoom < (scene.hwidth + 10) &&
+       this.COM.X0[2] / scene.zoom < (scene.hheight + 10) &&
+       this.COM.X0[1] / scene.zoom > (-scene.hwidth - 10) &&
+       this.COM.X0[2] / scene.zoom > (-scene.hheight - 10)&&
        this.r / zoom > 0.3)
     {
-        g.fillStyle = "#0f0"; 
-        g.beginPath();
-        g.arc(this.COM.X0[1] / zoom + HWIDTH, 
-              this.COM.X0[2] / zoom + HHEIGHT, 
+        scene.g.fillStyle = "#0f0"; 
+        scene.g.beginPath();
+        scene.g.arc(this.COM.X0[1] / scene.zoom + scene.hwidth, 
+              this.COM.X0[2] / scene.zoom + scene.hheight, 
               this.r / zoom, 0, twopi, true);
-        g.closePath();
-        g.fill();
-        if (displayTime) 
+        scene.g.closePath();
+        scene.g.fill();
+        if (scene.displayTime) 
         {
-            g.fillText(Math.floor(this.COM.tau / timeScale / 1000)+ ", " + 
+            scene.g.fillText(Math.floor(this.COM.tau / timeScale / 1000)+ ", " + 
                        Math.floor(this.COM.X0[0] / timeScale /1000),
-                       this.COM.X0[1] / zoom + HWIDTH + 10,
-                       this.COM.X0[2] / zoom + HHEIGHT);
+                       this.COM.X0[1] / scene.zoom + scene.hwidth + 10,
+                       this.COM.X0[2] / scene.zoom + scene.hheight);
         }
-     }
+    }
+    if (this.label != "") {
+        scene.g.fillText(this.label, this.COM.XView[1] / scene.zoom + scene.hwidth + (this.r / scene.zoom) + 10,
+                         this.COM.XView[2] / scene.zoom + scene.hheight);
+    }
 }
 
 
-mainSequenceStar.prototype.drawPast = function()
+mainSequenceStar.prototype.drawPast = function(scene)
 {
-    this.WVIS = (this.COM.XView[1]/zoom);
-    this.HVIS = (this.COM.XView[2]/zoom);
+    this.WVIS = (this.COM.XView[1]/scene.zoom);
+    this.HVIS = (this.COM.XView[2]/scene.zoom);
 
-    if(this.WVIS < (HWIDTH + 10)  &&
-       this.HVIS < (HHEIGHT + 10) &&
-       this.WVIS > (-HWIDTH - 10) &&
-       this.HVIS > (-HHEIGHT - 10)&&
-       this.r / zoom > 0.3)
+    if(this.WVIS < (scene.hwidth + 10)  &&
+       this.HVIS < (scene.hheight + 10) &&
+       this.WVIS > (-scene.hwidth - 10) &&
+       this.HVIS > (-scene.hheight - 10)&&
+       this.r / scene.zoom > 0.3)
     {
-        if(showDoppler) g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
+        if(scene.showDoppler) scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                   this.COM.radialVPast,
                                                   this.COM.V[0]));
-        else g.fillStyle = this.stillColor;
-        g.beginPath();
-        g.arc((this.WVIS + HWIDTH), 
-              (this.HVIS + HHEIGHT), 
-              (this.r / zoom), 0, twopi, true);
-        g.closePath();
-        g.fill();
+        else scene.gfillStyle = this.stillColor;
+        scene.g.beginPath();
+        scene.g.arc((this.WVIS + scene.hwidth), 
+              (this.HVIS + scene.hheight), 
+              (this.r / scene.zoom), 0, twopi, true);
+        scene.g.closePath();
+        scene.g.fill();
         
-        if (displayTime)
+        if (scene.displayTime)
         {
-            g.fillText(Math.floor(
+            scene.g.fillText(Math.floor(
                   (this.COM.tau - (this.COM.viewTime)) / timeScale / 1000),
-                   this.COM.XView[1] / zoom + HWIDTH + 10,
-                   this.COM.XView[2] / zoom + HHEIGHT);
+                   this.COM.XView[1] / scene.zoom + scene.hwidth + 10,
+                   this.COM.XView[2] / scenezoom + scene.hheight);
         
         }
-    }     
-    
+    }
+    if (this.label != "") {
+        scene.g.fillText(this.label, this.COM.XView[1] / scene.zoom + scene.hwidth + (this.r / scene.zoom) + 10,
+                         this.COM.XView[2] / scene.zoom + scene.hheight);
+    }
 }

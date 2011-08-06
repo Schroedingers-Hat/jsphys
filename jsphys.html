@@ -12,10 +12,17 @@
         <script type="text/javascript" src="jsphys_js/interface.js"></script>
         <script type="text/javascript" src="jsphys_js/relLibs.js"></script>
         <script type="text/javascript" src="jsphys_js/colors.js"></script>
-        <script type="text/javascript" src="jsphys_js/balls1.js"></script>
+        <script type="text/javascript" src="jsphys_js/demos.js"></script>
+        <script type="text/javascript" src="jsphys_js/scene.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/ui-lightness.css" />
         <style type="text/css">
-            #infobox 
-            {
+            body {
+                color: #ccc;
+                font-family: sans-serif;
+            }
+
+            #infobox  {
                 width: 150px;
                 position: absolute;
                 top: 0.5em;
@@ -28,10 +35,25 @@
                 padding: 0.5em;
             }
             
-            #infobox p
-            {
+            #infobox p, #controls p {
                 padding: 0;
                 margin: 0;
+            }
+
+            #controls {
+                width: 150px;
+                position: absolute;
+                right: 0.5em;
+                top: 0.5em;
+                color: #f0f;
+                font-size: 9pt;
+                background-color: #333;
+                opacity: 0.8;
+                padding: 0.5em;
+            }
+
+            #zoom-slider {
+                font-size: 50%;
             }
         </style>
     </head>
@@ -45,6 +67,14 @@
                 <p>Game clock: <span id="gameclock"></span></p>
                 <p>Real time: <span id="time"></span></p>
             </div>
+            <div id="controls">
+                <form name="controls">
+                    <p>Doppler effect: <input type="checkbox" name="doppler" id="doppler" checked="checked" /></p>
+                    <p>Zoom: <div id="zoom-slider"></div></p>
+                </form>
+            </div>
+            <div id="caption"></div>
+            <div id="steps"><a onclick="scene.prevStep()">Previous step</a> | <a onclick="scene.nextStep()">Next step</a></div>
         </div>
     </body>
 </html>
