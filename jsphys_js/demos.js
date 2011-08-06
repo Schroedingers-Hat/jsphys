@@ -20,6 +20,7 @@ var headOnObjects = {"steps": [{"caption": "Three stars. The left and right star
                                "objects": [{"object": mainSequenceStar, "x": [0, 0], "p": [0,0], "m": 1, "label": "Center"},
                                            {"object": mainSequenceStar, "x": [-30, 10], "p": [1, 0], "m": 1, "label": "Left"},
                                            {"object": mainSequenceStar, "x": [30, 10], "p": [-1, 0], "m": 1, "label": "Right"}],
-                               "frame": 1}
+                               "frame": 1,
+                               "origin": [150, 200, 0]}
                              ]
                     };

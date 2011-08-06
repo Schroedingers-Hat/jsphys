@@ -51,13 +51,13 @@ function Scene() {
     this.drawCrosshairs = function () {
         this.g.strokeStyle = "#fff";
         this.g.beginPath();
-        this.g.moveTo(this.hwidth - 10, this.hheight);
-        this.g.lineTo(this.hwidth + 10, this.hheight);
+        this.g.moveTo(this.origin[0] - 10, this.origin[1]);
+        this.g.lineTo(this.origin[0] + 10, this.origin[1]);
         this.g.stroke();
 
         this.g.beginPath();
-        this.g.moveTo(this.hwidth, this.hheight - 10);
-        this.g.lineTo(this.hwidth, this.hheight + 10);
+        this.g.moveTo(this.origin[0], this.origin[1] - 10);
+        this.g.lineTo(this.origin[0], this.origin[1] + 10);
         this.g.stroke();
     };
 
@@ -91,6 +91,11 @@ function Scene() {
         this.curStep = step;
         this.demo = demo;
 
+        // If the demo specifies the scene origin, set it
+        if (typeof demo.steps[step].origin == "object") {
+            this.origin = demo.steps[step].origin;
+        }
+
         demo.steps[step].objects.forEach(this.createObject, this);
         $('#caption').html(demo.steps[step].caption);
 
@@ -109,8 +114,8 @@ function Scene() {
         var minElement = -1;
 
         for (i = 0; i < this.carray.length; i++) {
-            var dist = getDistance([x,y], [this.carray[i].COM.XView[1] / this.zoom + this.hwidth, 
-                                           this.carray[i].COM.XView[2] / this.zoom + this.hheight]);
+            var dist = getDistance([x,y], [this.carray[i].COM.XView[1] / this.zoom + this.origin[0], 
+                                           this.carray[i].COM.XView[2] / this.zoom + this.origin[1]]);
             if (dist < minDist) {
                 minDist = dist;
                 minElement = i;
@@ -153,6 +158,7 @@ function Scene() {
     this.height = $("#canvas").height();
     this.hwidth = this.width / 2;
     this.hheight = this.height / 2;
+    this.origin = [this.hwidth, this.hheight, 0];
     this.carray = [];
     this.zoom = 0.25;
     this.timeStep = 5;

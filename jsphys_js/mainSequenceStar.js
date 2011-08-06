@@ -32,16 +32,20 @@ mainSequenceStar.prototype.draw = function(scene)
 
 mainSequenceStar.prototype.drawNow = function(scene)
 {
-    if(this.COM.X0[1] / scene.zoom < (scene.hwidth + 10) &&
-       this.COM.X0[2] / scene.zoom < (scene.hheight + 10) &&
-       this.COM.X0[1] / scene.zoom > (-scene.hwidth - 10) &&
-       this.COM.X0[2] / scene.zoom > (-scene.hheight - 10)&&
+    // current visible locations on the <canvas> element
+    var xvis = this.COM.X0[1] / scene.zoom;
+    var yvis = this.COM.X0[2] / scene.zoom;
+
+    if(xvis < (scene.width - scene.origin[0] + 10)   &&
+       yvis < (scene.height - scene.origin[1] + 10)  &&
+       xvis > (-scene.origin[0] - 10)  &&
+       yvis > (-scene.origin[1] - 10) &&
        this.r / scene.zoom > 0.3)
     {
         scene.g.fillStyle = "#0f0"; 
         scene.g.beginPath();
-        scene.g.arc(this.COM.X0[1] / scene.zoom + scene.hwidth, 
-              this.COM.X0[2] / scene.zoom + scene.hheight, 
+        scene.g.arc(xvis + scene.origin[0], 
+              yvis + scene.origin[1], 
               this.r / scene.zoom, 0, twopi, true);
         scene.g.closePath();
         scene.g.fill();
@@ -49,26 +53,27 @@ mainSequenceStar.prototype.drawNow = function(scene)
         {
             scene.g.fillText(Math.floor(this.COM.tau / timeScale / 1000)+ ", " + 
                        Math.floor(this.COM.X0[0] / timeScale /1000),
-                       this.COM.X0[1] / scene.zoom + scene.hwidth + 10,
-                       this.COM.X0[2] / scene.zoom + scene.hheight);
+                       xvis + scene.origin[0] + 10,
+                       yvis + scene.origin[1]);
         }
     }
     if (this.label != "") {
-        scene.g.fillText(this.label, this.COM.X0[1] / scene.zoom + scene.hwidth + (this.r / scene.zoom) + 10,
-                         this.COM.X0[2] / scene.zoom + scene.hheight);
+        scene.g.fillText(this.label, xvis + scene.origin[0] + (this.r / scene.zoom) + 10,
+                         yvis + scene.origin[1]);
     }
 }
 
 
 mainSequenceStar.prototype.drawPast = function(scene)
 {
-    this.WVIS = (this.COM.XView[1]/scene.zoom);
-    this.HVIS = (this.COM.XView[2]/scene.zoom);
+    // current visible locations on the <canvas> element
+    var xvis = (this.COM.XView[1] / scene.zoom);
+    var yvis = (this.COM.XView[2] / scene.zoom);
 
-    if(this.WVIS < (scene.hwidth + 10)  &&
-       this.HVIS < (scene.hheight + 10) &&
-       this.WVIS > (-scene.hwidth - 10) &&
-       this.HVIS > (-scene.hheight - 10)&&
+    if(xvis < (scene.width - scene.origin[0] + 10)   &&
+       yvis < (scene.height - scene.origin[1] + 10)  &&
+       xvis > (-scene.origin[0] - 10)  &&
+       yvis > (-scene.origin[1] - 10) &&
        this.r / scene.zoom > 0.3)
     {
         if(scene.showDoppler) scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
@@ -76,8 +81,8 @@ mainSequenceStar.prototype.drawPast = function(scene)
                                                   this.COM.V[0]));
         else scene.gfillStyle = this.stillColor;
         scene.g.beginPath();
-        scene.g.arc((this.WVIS + scene.hwidth), 
-              (this.HVIS + scene.hheight), 
+        scene.g.arc((xvis + scene.origin[0]), 
+              (yvis + scene.origin[1]), 
               (this.r / scene.zoom), 0, twopi, true);
         scene.g.closePath();
         scene.g.fill();
@@ -86,13 +91,13 @@ mainSequenceStar.prototype.drawPast = function(scene)
         {
             scene.g.fillText(Math.floor(
                   (this.COM.tau - (this.COM.viewTime)) / timeScale / 1000),
-                   this.COM.XView[1] / scene.zoom + scene.hwidth + 10,
-                   this.COM.XView[2] / scenezoom + scene.hheight);
+                   xvis + scene.origin[0] + 10,
+                   yvis + scene.origin[1]);
         
         }
     }
     if (this.label != "") {
-        scene.g.fillText(this.label, this.COM.XView[1] / scene.zoom + scene.hwidth + (this.r / scene.zoom) + 10,
-                         this.COM.XView[2] / scene.zoom + scene.hheight);
+        scene.g.fillText(this.label, xvis + scene.origin[0] + (this.r / scene.zoom) + 10,
+                         yvis + scene.origin[1]);
     }
 }
