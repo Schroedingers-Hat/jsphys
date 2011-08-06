@@ -7,8 +7,16 @@ function Scene() {
             obj.label = "";
         }
 
-        var thingy = new obj.object(quat4.create([0, obj.x[0], obj.x[1], 0], 0), 
-                                    quat4.create([0, obj.p[0], obj.p[1], 0], 0), obj.label, obj.options)
+        // Upgrade 2D to 3D
+        if (obj.x.length == 2) {
+            obj.x[2] = 0;
+        }
+        if (obj.p.length == 2) {
+            obj.p[2] = 0;
+        }
+
+        var thingy = new obj.object(quat4.create([0, obj.x[0], obj.x[1], obj.x[2]], 0), 
+                                    quat4.create([0, obj.p[0], obj.p[1], obj.p[2]], 0), obj.label, obj.options)
         thingy.COM.init(this.timeStep);
         this.carray.push(thingy);
     };
