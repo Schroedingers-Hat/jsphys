@@ -36,7 +36,7 @@ function Scene() {
      
         this.t = this.t + (this.timeStep*c);
         
-        $("#fps").html(Math.floor(1000 / (this.timeStep / this.timeScale)));
+        $("#fps").html(Math.floor(1000 / (this.frameStartTime - this.frameEndTime)));
         $("#hsg").html(Math.floor(this.carray[this.carray.length - 1].COM.V[0]));
         $("#gameclock").html(Math.floor(this.t / 1000 / c));
         $("#time").html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
@@ -78,7 +78,6 @@ function Scene() {
     };
 
     this.nextStep = function() {
-        this.stopAnimation();
         this.curStep += 1;
         this.carray = [];
         this.load(this.demo, this.curStep);
@@ -86,7 +85,6 @@ function Scene() {
     };
 
     this.prevStep = function() {
-        this.stopAnimation();
         this.curStep -= 1;
         this.carray = [];
         this.load(this.demo, this.curStep);
@@ -173,6 +171,7 @@ function Scene() {
     this.showFramePos = false;
     this.showVisualPos = true;
     this.showDoppler = true;
+    this.showVelocities = true;
     this.displayTime = false;
 }
 
