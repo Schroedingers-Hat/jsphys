@@ -56,15 +56,16 @@ mainSequenceStar.prototype.drawNow = function(scene)
                        xvis + scene.origin[0] + 10,
                        yvis + scene.origin[1]);
         }
-    }
-    if (this.label != "") {
-        scene.g.fillText(this.label, xvis + scene.origin[0] + (this.r / scene.zoom) + 10,
-                         yvis + scene.origin[1]);
-    }
-    
-    if (scene.showVelocities) {
-        scene.g.fillText("v = " + (Math.round(1000 *Math.sqrt(1-1/Math.pow(this.COM.V[0], 2)) / c)/1000) + "c", xvis + scene.origin[0],
-                         yvis + scene.origin[1] + (this.r / scene.zoom) + 10);
+
+        if (this.label != "") {
+            scene.g.fillText(this.label, xvis + scene.origin[0] + (this.r / scene.zoom) + 10,
+                             yvis + scene.origin[1]);
+        }
+
+        if (scene.showVelocities) {
+            scene.g.fillText("v = " + (Math.round(1000 *Math.sqrt(1-1/Math.pow(this.COM.V[0], 2)) / c)/1000) + "c", xvis + scene.origin[0],
+                             yvis + scene.origin[1] + (this.r / scene.zoom) + 10);
+        }
     }
 }
 
@@ -100,14 +101,15 @@ mainSequenceStar.prototype.drawPast = function(scene)
                    yvis + scene.origin[1]);
         
         }
-    }
-    if (this.label != "") {
-        scene.g.fillText(this.label, xvis + scene.origin[0] + (this.r / scene.zoom) + 10,
-                         yvis + scene.origin[1]);
-    }
 
-    if (scene.showVelocities) {
-        scene.g.fillText("v = " + (Math.round(1000 *Math.sqrt(1-1/Math.pow(this.COM.V[0], 2)) / c)/1000) + "c", xvis + scene.origin[0],
-                         yvis + scene.origin[1] + (this.r / scene.zoom) + 10);
+        if (this.label != "") {
+            scene.g.fillText(this.label, xvis + scene.origin[0] + (this.r / scene.zoom) + 10,
+                             yvis + scene.origin[1]);
+        }
+
+        if (scene.showVelocities) {
+            scene.g.fillText("v = " + (Math.round(1000 *Math.sqrt(1-1/Math.pow(this.COM.V[0], 2)) / c)/1000) + "c", xvis + scene.origin[0],
+                             yvis + scene.origin[1] + (this.r / scene.zoom) + 10);
+        }
     }
 }
