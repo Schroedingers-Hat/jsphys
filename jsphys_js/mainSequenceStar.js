@@ -36,13 +36,13 @@ mainSequenceStar.prototype.drawNow = function(scene)
        this.COM.X0[2] / scene.zoom < (scene.hheight + 10) &&
        this.COM.X0[1] / scene.zoom > (-scene.hwidth - 10) &&
        this.COM.X0[2] / scene.zoom > (-scene.hheight - 10)&&
-       this.r / zoom > 0.3)
+       this.r / scene.zoom > 0.3)
     {
         scene.g.fillStyle = "#0f0"; 
         scene.g.beginPath();
         scene.g.arc(this.COM.X0[1] / scene.zoom + scene.hwidth, 
               this.COM.X0[2] / scene.zoom + scene.hheight, 
-              this.r / zoom, 0, twopi, true);
+              this.r / scene.zoom, 0, twopi, true);
         scene.g.closePath();
         scene.g.fill();
         if (scene.displayTime) 
