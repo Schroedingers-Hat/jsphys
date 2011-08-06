@@ -32,24 +32,6 @@ genEnergy = function(P,c,m){
 };
 
 /*
- * mat3.multiplyVec3
- * Transforms a vec3 with the given matrix
- *
- * Copied from glMatrix mat4.multiplyVec3 function by Brandon Jones. 
- * Not sure why this does not exist. 
- * Check if there is an optimization somewhere?
- *
- * Params:
- * mat - mat3 to transform the vector with
- * vec - vec3 to transform
- * dest - Optional, vec3 receiving operation result. If not specified result is written to vec
- *
- * Returns:
- * dest if specified, vec otherwise
- */
-
-
-/*
  * cBoostMat
  * Takes a velocity and a speed of light and returns a boost matrix
  * A bit less efficient than it should be, create some temporary variables lazy git. :/
@@ -175,26 +157,12 @@ quat4.subtract = function(vec, vec2, dest) {
 //Projection of spacial elements of vec onto vec2.
 vec3.spaceDot = function(vec, vec2)
 {
-if (vec.length == 3)
-{
-return vec[1] * vec2[1] + vec[2] * vec2[2];
-}
-if (vec.length == 4)
-{
-return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
-}
+    return vec[1] * vec2[1] + vec[2] * vec2[2];
 }
 
 
 quat4.spaceDot = function(vec, vec2)
 {
-if (vec.length == 3)
-{
-return vec[1] * vec2[1] + vec[2] * vec2[2];
-}
-if (vec.length == 4)
-{
-return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
-}
+    return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
 }
 

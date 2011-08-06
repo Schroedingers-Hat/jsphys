@@ -10,6 +10,11 @@
  *
  * Cpu wise, these will be as expensive as an inertial object while they are in view for every point in them
  * When out of view they only cost as much as a single inertial object.
+ *
+ * Has a boundingBox to decide whether or not to render. Note that this does not
+ * take relativistic effects into account. This is fine for contraction as the object
+ * Will always be smaller, but behaves incorrectly for aberration (Object will appear
+ * suddenly out of nowhere if extremely aberrated).
 */
 function extendedObject(X, P, m, materials, shape)
 {
@@ -24,6 +29,8 @@ function extendedObject(X, P, m, materials, shape)
          * one point, need to learn how to do some real OO style inheritance
          * and overloading.
          * NB: Maybe use map here?
+         * TODO: Multi-dimensional arrays.
+         * TODO: Aberration and rotation for bounding box.
         */
         for (i=0; i < Math.floor(shape.length / 4); i++)  
         {
@@ -66,10 +73,10 @@ function extendedObject(X, P, m, materials, shape)
     {
         return (showVisualPos &&
                 ((this.COM.XView[1] - this.boundingBox[0]) / zoom < (HWIDTH + 10)    ||
-                (this.COM.XView[2] - this.boundingBox[2]) / zoom < (HHEIGHT + 10)   ||
-                (this.COM.XView[1] + this.boundingBox[1]) / zoom > (-HWIDTH - 10)   ||
-                (this.COM.XView[2] + this.boundingBox[3]) / zoom > (-HHEIGHT - 10)  ) &&
-                (Math.abs(this.boundingBox[0] - this.boundingBox[1]) / zoom > 0.3 ||
+                (this.COM.XView[2] - this.boundingBox[2]) / zoom < (HHEIGHT + 10)    ||
+                (this.COM.XView[1] + this.boundingBox[1]) / zoom > (-HWIDTH - 10)    ||
+                (this.COM.XView[2] + this.boundingBox[3]) / zoom > (-HHEIGHT - 10) ) &&
+                (Math.abs(this.boundingBox[0] - this.boundingBox[1]) / zoom > 0.3    ||
                 Math.abs(this.boundingBox[2] - this.boundingBox[3]) / zoom > 0.3)
                );
 
@@ -80,9 +87,9 @@ function extendedObject(X, P, m, materials, shape)
     {
         return (showVisualPos &&
                 ((this.COM.X0[1] - this.boundingBox[0]) / zoom < (HWIDTH + 10)    ||
-                (this.COM.X0[2] - this.boundingBox[2]) / zoom < (HHEIGHT + 10)   ||
-                (this.COM.X0[1] + this.boundingBox[1]) / zoom > (-HWIDTH - 10)   ||
-                (this.COM.X0[2] + this.boundingBox[3]) / zoom > (-HHEIGHT - 10)  ) &&
+                (this.COM.X0[2] - this.boundingBox[2]) / zoom < (HHEIGHT + 10)    ||
+                (this.COM.X0[1] + this.boundingBox[1]) / zoom > (-HWIDTH - 10)    ||
+                (this.COM.X0[2] + this.boundingBox[3]) / zoom > (-HHEIGHT - 10) ) &&
                 (Math.abs(this.boundingBox[0] - this.boundingBox[1]) / zoom > 0.3 ||
                 Math.abs(this.boundingBox[2] - this.boundingBox[3]) / zoom > 0.3)
                );
@@ -105,10 +112,12 @@ function extendedObject(X, P, m, materials, shape)
         {
             g.fillStyle = "#0f0";
             g.beginPath();
-            g.moveTo( (this.shapePoints[0].X0[1]/ zoom) +HWIDTH, (this.shapePoints[0].X0[2]) / zoom + HHEIGHT);
+            g.moveTo( (this.shapePoints[0].X0[1]/ zoom) +HWIDTH, 
+                      (this.shapePoints[0].X0[2]) / zoom + HHEIGHT);
             for (i=0; i < (this.shapePoints.length); i++)
             {
-                g.lineTo( (this.shapePoints[i].X0[1]) / zoom + HWIDTH, (this.shapePoints[i].X0[2]) / zoom + HHEIGHT);
+                g.lineTo( (this.shapePoints[i].X0[1]) / zoom + HWIDTH, 
+                          (this.shapePoints[i].X0[2]) / zoom + HHEIGHT);
             }
             g.fill();            
         }
@@ -121,10 +130,12 @@ function extendedObject(X, P, m, materials, shape)
         {
             g.fillStyle = "#f0f";
             g.beginPath();
-            g.moveTo( (this.shapePoints[0].XView[1]/ zoom) +HWIDTH, (this.shapePoints[0].X0[2]) / zoom + HHEIGHT);
+            g.moveTo( (this.shapePoints[0].XView[1]/ zoom) +HWIDTH, 
+                      (this.shapePoints[0].XView[2]) / zoom + HHEIGHT);
             for (i=0; i < (this.shapePoints.length); i++)
             {
-                g.lineTo( (this.shapePoints[i].XView[1]) / zoom + HWIDTH, (this.shapePoints[i].X0[2]) / zoom + HHEIGHT);
+                g.lineTo( (this.shapePoints[i].XView[1]) / zoom + HWIDTH, 
+                          (this.shapePoints[i].XView[2]) / zoom + HHEIGHT);
             }
             g.fill();            
         }
