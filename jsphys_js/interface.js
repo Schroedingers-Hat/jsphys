@@ -105,6 +105,28 @@ function zoomToSlider(event, ui) {
 }
 
 /**
+ * Pause animation
+ */
+function pause() {
+    if (scene.timeScale == 0) {
+        scene.timeScale = this.prevTimeScale;
+    } else {
+        this.prevTimeScale = scene.timeScale;
+        scene.timeScale = 0;
+    }
+    $("#speed-slider").slider("option", "value", (Math.log(scene.timeScale + 1) / Math.LN2));
+}
+
+function setAnimSpeed(event, ui) {
+    if (ui.value > 0) {
+        scene.timeScale = Math.pow(2, ui.value) - 1;
+    }
+    if (ui.value < 0) {
+        scene.timeScale = -Math.pow(2, -ui.value) + 1;
+    }
+}
+
+/**
  * Do not quite comprehend what this does, copypasta from Paul Irish's tutorial
  * requestAnim shim layer by Paul Irish
  */
@@ -132,6 +154,8 @@ $(document).ready(function()
     $("#doppler").change(function() {scene.showDoppler = !scene.showDoppler;});
     $("#zoom-slider").slider({min: -4, max: 5.5, step: 0.5, slide: zoomToSlider,
                               value: (Math.log(scene.zoom) / Math.LN2)});
+    $("#speed-slider").slider({min: -2 , max: 2, step: 0.02, slide: setAnimSpeed, 
+                               value: (Math.log(1.02) / Math.LN2)});
 });
 
 $(document).keydown(onKeyDown);

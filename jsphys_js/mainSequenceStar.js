@@ -51,8 +51,8 @@ mainSequenceStar.prototype.drawNow = function(scene)
         scene.g.fill();
         if (scene.displayTime) 
         {
-            scene.g.fillText(Math.floor(this.COM.tau / timeScale / 1000)+ ", " + 
-                       Math.floor(this.COM.X0[0] / timeScale /1000),
+            scene.g.fillText(Math.floor(this.COM.tau / scene.timeScale / 1000)+ ", " + 
+                       Math.floor(this.COM.X0[0] / scene.timeScale /1000),
                        xvis + scene.origin[0] + 10,
                        yvis + scene.origin[1]);
         }
@@ -90,7 +90,7 @@ mainSequenceStar.prototype.drawPast = function(scene)
         if (scene.displayTime)
         {
             scene.g.fillText(Math.floor(
-                  (this.COM.tau - (this.COM.viewTime)) / timeScale / 1000),
+                  (this.COM.tau - (this.COM.viewTime)) / scene.timeScale / 1000),
                    xvis + scene.origin[0] + 10,
                    yvis + scene.origin[1]);
         

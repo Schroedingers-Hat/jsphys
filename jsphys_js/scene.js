@@ -22,9 +22,9 @@ function Scene() {
     };
 
     this.draw = function() {
-        var newTime  = new Date().getTime();
-        this.timeStep = (newTime - this.initialTime) * this.timeScale - (this.t/c);
-        keySinceLastFrame = false;
+        this.frameStartTime = new Date().getTime();
+        this.timeStep = (this.frameStartTime - this.frameEndTime) * this.timeScale;
+
         this.clear();
 
         this.carray.forEach(function(obj) {
@@ -35,10 +35,11 @@ function Scene() {
         this.drawCrosshairs();
      
         this.t = this.t + (this.timeStep*c);
+        
         $("#fps").html(Math.floor(1000 / (this.timeStep / this.timeScale)));
         $("#hsg").html(Math.floor(this.carray[this.carray.length - 1].COM.V[0]));
-        $("#gameclock").html(Math.floor(this.t / this.timeScale / 1000 / c));
-        $("#time").html(Math.floor((newTime - this.initialTime) / 1000));
+        $("#gameclock").html(Math.floor(this.t / 1000 / c));
+        $("#time").html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
 
         if (leftDown == true)     this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostLeft,  this.carray);
         if (upDown == true)       this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostUp,    this.carray);
@@ -50,6 +51,7 @@ function Scene() {
         if (rightDown == true)    this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostRight, this.carray);
 
         requestAnimFrame(drawScene);
+        this.frameEndTime = new Date().getTime();
     };
 
     this.clear = function() {
@@ -70,13 +72,9 @@ function Scene() {
     };
 
     this.startAnimation = function() {
-        this.initialTime = new Date().getTime();
+        this.frameEndTime = new Date().getTime();
         this.t = 0;
         this.draw();
-    };
-
-    this.stopAnimation = function() {
-        clearInterval(this.interval);
     };
 
     this.nextStep = function() {
@@ -160,7 +158,7 @@ function Scene() {
         this.carray.forEach(function(obj) {obj.COM.changeFrame(translation, boost)});
     }
 
-    this.keySinceLastFrame = false;
+    this.initialTime = new Date().getTime();
     this.g = $('#canvas')[0].getContext("2d");
     this.width = $("#canvas").width();
     this.height = $("#canvas").height();
