@@ -98,6 +98,7 @@ function Scene() {
     }
 
     this.load = function(demo, step) {
+        this.carray = [];
         this.curStep = step;
         this.demo = demo;
 
