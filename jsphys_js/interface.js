@@ -91,7 +91,7 @@ function zoomTo(zoom) {
     boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
     boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
     boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / scene.zoom, 0]), c);
-    $("#zoom-slider").slider("option", "value", (Math.log(scene.zoom) / Math.LN2));
+    $("#zoom-slider").slider("option", "value", -(Math.log(scene.zoom) / Math.LN2));
 }
 
 /**
@@ -102,7 +102,7 @@ function zoomTo(zoom) {
  * goes -4 to 5.5, and is turned into a power of 2. (2^-4 = 0.06, for example.)
  */
 function zoomToSlider(event, ui) {
-    zoomTo(Math.pow(2, ui.value));
+    zoomTo(Math.pow(2, -ui.value));
 }
 
 /**
@@ -158,8 +158,8 @@ $(document).ready(function()
     $("#pause").click(pause);
     $("#canvas").click(clickHandler);
     $("#doppler").change(function() {scene.showDoppler = !scene.showDoppler;});
-    $("#zoom-slider").slider({min: -4, max: 5.5, step: 0.5, slide: zoomToSlider,
-                              value: (Math.log(scene.zoom) / Math.LN2)});
+    $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.5, slide: zoomToSlider,
+                              value: -(Math.log(scene.zoom) / Math.LN2)});
     $("#speed-slider").slider({min: -2 , max: 2, step: 0.02, slide: setAnimSpeed, 
                                value: (Math.log(1.02) / Math.LN2)});
 });
