@@ -85,7 +85,7 @@ mainSequenceStar.prototype.drawPast = function(scene)
         if(scene.showDoppler) scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                   this.COM.radialVPast,
                                                   this.COM.V[0]));
-        else scene.gfillStyle = this.stillColor;
+        else scene.g.fillStyle = this.stillColor;
         scene.g.beginPath();
         scene.g.arc((xvis + scene.origin[0]), 
               (yvis + scene.origin[1]), 
