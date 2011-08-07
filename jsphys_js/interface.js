@@ -162,7 +162,6 @@ function loadDemo(idx) {
  * Builds the demo chooser menu by iterating through our provided demos array.
  */
 function loadDemoList() {
-    $("#demo-chooser").show();
     demos.forEach(function(demo, idx) {
         var e = $("<li>" + demo.name + "</li>").click(loadDemo(idx));
         $("#demo-list").append(e);

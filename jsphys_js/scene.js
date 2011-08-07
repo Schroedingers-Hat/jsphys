@@ -107,6 +107,12 @@ function Scene() {
             this.origin = demo.steps[step].origin;
         }
 
+        // Set scene options
+        if (typeof demo.steps[step].showDoppler == "boolean") {
+            this.showDoppler = demo.steps[step].showDoppler;
+        }
+        
+
         demo.steps[step].objects.forEach(this.createObject, this);
         $('#caption').html(demo.steps[step].caption);
 
