@@ -91,6 +91,12 @@ function Scene() {
         this.startAnimation();
     }
 
+    this.replay = function() {
+        this.carray = []
+        this.load(this.demo, this.curStep);
+        this.startAnimation();
+    }
+
     this.load = function(demo, step) {
         this.curStep = step;
         this.demo = demo;
