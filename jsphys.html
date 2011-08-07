@@ -60,12 +60,42 @@
             #zoom-slider, #speed-slider {
                 font-size: 50%;
             }
+
+            #demo-chooser {
+                position: absolute;
+                opacity: 0.8;
+                background-color: #333;
+                width: 300px;
+                left: 50%;
+                margin-left: -150px;
+                top: 200px;
+                padding: 1em;
+            }
+
+            #demo-chooser li {
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+            #demo-chooser h3 {
+                margin: 0;
+            }
+
+            #steps {
+                text-align: center;
+            }
         </style>
     </head>
  
     <body>
         <div style="position:relative">
             <canvas id="canvas" height="500"></canvas>
+            <div id="demo-chooser">
+                <h3>Choose a demo</h3>
+                <ul id="demo-list">
+
+                </ul>
+            </div>
             <div id="infobox">
                 <p>FPS: <span id="fps"></span></p>
                 <p>Home system gamma: <span id="hsg"></span></p>
