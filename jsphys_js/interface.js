@@ -158,6 +158,7 @@ $(document).ready(function()
     $("#pause").click(pause);
     $("#canvas").click(clickHandler);
     $("#doppler").change(function() {scene.showDoppler = !scene.showDoppler;});
+    $("#framePos").change(function() {scene.showFramePos = !scene.showFramePos;});
     $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.5, slide: zoomToSlider,
                               value: -(Math.log(scene.zoom) / Math.LN2)});
     $("#speed-slider").slider({min: -2 , max: 2, step: 0.02, slide: setAnimSpeed, 

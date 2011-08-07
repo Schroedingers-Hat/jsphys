@@ -42,7 +42,7 @@ mainSequenceStar.prototype.drawNow = function(scene)
        yvis > (-scene.origin[1] - 10) &&
        this.r / scene.zoom > 0.3)
     {
-        scene.g.fillStyle = "#0f0"; 
+        scene.g.fillStyle = "rgba(0, 256, 0, 0.5)"; 
         scene.g.beginPath();
         scene.g.arc(xvis + scene.origin[0], 
               yvis + scene.origin[1], 
