@@ -42,8 +42,8 @@ function onKeyDown(evt)
         }
     	else if (evt.keyCode == 61) 
     	{
-    	    scene.zoom = scene.zoom / 2;
-            if (scene.zoom < 0.06 ) scene.zoom = 0.6;
+    	    zoomTo(scene.zoom / 2);
+            if (scene.zoom < 0.06 ) zoomTo(0.6);
             boostRight  = cBoostMat(quat4.create([0, 0.02 / scene.zoom, 0, 0]), c);
             boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
             boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
@@ -51,8 +51,8 @@ function onKeyDown(evt)
     	}
     	else if (evt.keyCode == 109) 
     	{
-    	    scene.zoom = scene.zoom * 2;
-            if (scene.zoom > 40) scene.zoom = 40;
+    	    zoomTo(scene.zoom * 2);
+            if (scene.zoom > 40) zoomTo(40);
             boostRight  = cBoostMat(quat4.create([0, 0.02 * scene.zoom, 0, 0]), c);
             boostLeft   = cBoostMat(quat4.create([0, -0.02 * scene.zoom, 0, 0]), c);
             boostUp     = cBoostMat(quat4.create([0, 0, -0.02 * scene.zoom, 0]), c);
@@ -91,6 +91,7 @@ function zoomTo(zoom) {
     boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
     boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
     boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / scene.zoom, 0]), c);
+    $("#zoom-slider").slider("option", "value", (Math.log(scene.zoom) / Math.LN2));
 }
 
 /**
@@ -107,14 +108,18 @@ function zoomToSlider(event, ui) {
 /**
  * Pause animation
  */
-function pause() {
+function pause(event) {
     if (scene.timeScale == 0) {
+        $("#pause").html("Pause");
         scene.timeScale = this.prevTimeScale;
     } else {
+        $("#pause").html("Play");
         this.prevTimeScale = scene.timeScale;
         scene.timeScale = 0;
     }
     $("#speed-slider").slider("option", "value", (Math.log(scene.timeScale + 1) / Math.LN2));
+
+    event.preventDefault();
 }
 
 function setAnimSpeed(event, ui) {
@@ -149,7 +154,8 @@ $(document).ready(function()
     scene = new Scene();
     scene.load(headOnObjects, 0);
     scene.startAnimation();
-    //var interval = setInterval(drawScene, 20);
+    
+    $("#pause").click(pause);
     $("#canvas").click(clickHandler);
     $("#doppler").change(function() {scene.showDoppler = !scene.showDoppler;});
     $("#zoom-slider").slider({min: -4, max: 5.5, step: 0.5, slide: zoomToSlider,
