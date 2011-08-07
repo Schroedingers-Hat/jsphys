@@ -7,6 +7,8 @@ function Scene() {
             obj.label = "";
         }
 
+        obj.options = $.extend({}, this.options, obj.options);
+
         // Upgrade 2D to 3D
         if (obj.x.length == 2) {
             obj.x[2] = 0;
@@ -22,6 +24,7 @@ function Scene() {
     };
 
     this.draw = function() {
+        if (this.carray.length === 0) { return; }
         this.frameStartTime = new Date().getTime();
         this.timeStep = (this.frameStartTime - this.frameEndTime) * this.timeScale;
 
@@ -107,11 +110,24 @@ function Scene() {
             this.origin = demo.steps[step].origin;
         }
 
-        // Set scene options
-        if (typeof demo.steps[step].showDoppler == "boolean") {
-            this.showDoppler = demo.steps[step].showDoppler;
+        this.options = this.defaults;
+
+        // Set global scene options
+        if (typeof demo.steps[step].showDoppler === "boolean") {
+            this.options.showDoppler = demo.steps[step].showDoppler;
+        } 
+        if (typeof demo.steps[step].showVisualPos === "boolean") {
+            this.options.showVisualPos = demo.steps[step].showVisualPos;
         }
-        
+        if (typeof demo.steps[step].showFramePos === "boolean") {
+            this.options.showFramePos = demo.steps[step].showFramePos;
+        }
+        if (typeof demo.steps[step].showVelocities === "boolean") {
+            this.options.showVelocities = demo.steps[step].showVelocities;
+        } 
+        if (typeof demo.steps[step].showTime === "boolean") {
+            this.options.showTime = demo.steps[step].showTime;
+        }
 
         demo.steps[step].objects.forEach(this.createObject, this);
         $('#caption').html(demo.steps[step].caption);
@@ -181,11 +197,11 @@ function Scene() {
     this.timeStep = 5;
     this.timeScale = 0.02;
     this.t = 0;
-    this.showFramePos = false;
-    this.showVisualPos = true;
-    this.showDoppler = true;
-    this.showVelocities = true;
-    this.displayTime = false;
+    this.defaults = {"showDoppler": true,
+                     "showVisualPos": true,
+                     "showFramePos": false,
+                     "showVelocities": true,
+                     "showTime": false}
 }
 
 /**

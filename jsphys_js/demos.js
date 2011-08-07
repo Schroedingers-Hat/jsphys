@@ -14,13 +14,13 @@ var demos = [{"name": "Velocity addition",
              {"name": "Relativistic Doppler shift",
               "steps": [{"caption": "First watch as Doppler shifting is turned off. A star shoots past.",
                          "showDoppler": false,
-                         "objects": [{"object": mainSequenceStar, "x": [0, 0, 0], "p": [0, 0], "m": 1, "label": "Observer"},
+                         "objects": [{"object": mainSequenceStar, "x": [0, 0, 0], "p": [0, 0], "m": 1, "label": "Observer", "options": {"showVelocities": false}},
                                      {"object": mainSequenceStar, "x": [-30, -20, 0], "p": [1.5, 0], "m": 1, "label": "Star"}
                                     ],
                          "frame": 0},
                         {"caption": "Now watch the same motion with the relativistic Doppler effect visible.",
                          "showDoppler": true,
-                         "objects": [{"object": mainSequenceStar, "x": [0, 0, 0], "p": [0, 0], "m": 1, "label": "Observer"},
+                         "objects": [{"object": mainSequenceStar, "x": [0, 0, 0], "p": [0, 0], "m": 1, "label": "Observer", "options": {"showVelocities": false}},
                                      {"object": mainSequenceStar, "x": [-30, -20, 0], "p": [1.5, 0], "m": 1, "label": "Star"}
                                     ],
                          "frame": 0}
