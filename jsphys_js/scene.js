@@ -105,14 +105,20 @@ function Scene() {
         this.curStep = step;
         this.demo = demo;
 
-        // If the demo specifies the scene origin, set it
-        if (typeof demo.steps[step].origin == "object") {
+        // If the demo specifies global options, set 'em
+        if (typeof demo.steps[step].origin === "object") {
             this.origin = demo.steps[step].origin;
+        }
+        if (typeof demo.steps[step].timeScale === "number") {
+            this.timeScale = demo.steps[step].timeScale;
+        }
+        if (typeof demo.steps[step].zoom === "number") {
+            this.zoom = demo.steps[step].zoom;
         }
 
         this.options = this.defaults;
 
-        // Set global scene options
+        // Set scene options
         if (typeof demo.steps[step].showDoppler === "boolean") {
             this.options.showDoppler = demo.steps[step].showDoppler;
         } 

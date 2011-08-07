@@ -113,9 +113,9 @@
             </div>
             <div id="caption"></div>
             <div id="steps">
-                <button onclick="scene.prevStep()">&lt; Previous step</button>
-                <button onclick="scene.replay()">Replay</button>
-                <button onclick="scene.nextStep()">Next step &gt;</button><br/>
+                <button onclick="scene.prevStep(); updateSliders()">&lt; Previous step</button>
+                <button onclick="scene.replay(); updateSliders();">Replay</button>
+                <button onclick="scene.nextStep(); updateSliders();">Next step &gt;</button><br/>
                 <button onclick="$('#demo-chooser').show();">Choose new demo</button>
             </div>
         </div>

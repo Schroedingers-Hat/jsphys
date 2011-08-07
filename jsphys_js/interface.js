@@ -91,7 +91,7 @@ function zoomTo(zoom) {
     boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
     boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
     boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / scene.zoom, 0]), c);
-    $("#zoom-slider").slider("option", "value", -(Math.log(scene.zoom) / Math.LN2));
+    updateSliders();
 }
 
 /**
@@ -117,8 +117,7 @@ function pause(event) {
         this.prevTimeScale = scene.timeScale;
         scene.timeScale = 0;
     }
-    $("#speed-slider").slider("option", "value", (Math.log(scene.timeScale + 1) / Math.LN2));
-
+    updateSliders();
     event.preventDefault();
 }
 
@@ -152,10 +151,17 @@ function loadDemo(idx) {
         $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.5, slide: zoomToSlider,
                                   value: -(Math.log(scene.zoom) / Math.LN2)});
         $("#speed-slider").slider({min: -2 , max: 2, step: 0.02, slide: setAnimSpeed, 
-                                   value: (Math.log(1.02) / Math.LN2)});
+                                   value: (Math.log(scene.timeScale + 1) / Math.LN2)});
         $("#demo-chooser").hide();
         scene.startAnimation();
     };
+}
+
+function updateSliders() {
+    $("#zoom-slider").slider("option", "value", -(Math.log(scene.zoom) / Math.LN2));
+
+    $("#speed-slider").slider("option", "value", 
+                              (Math.log(scene.timeScale + 1) / Math.LN2));
 }
 
 /**
