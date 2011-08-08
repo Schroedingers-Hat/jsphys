@@ -49,97 +49,98 @@ function extendedObject(X, P, m, materials, shape)
 //            this.shapePoints[i].X0 = quat4.add(this.shapePoints[i].X0, this.COM.X0);
         }
     }
+}
 
     // Update the COM and the surrounding points.
     // This is the most braindead way of doing it, huge amounts of redundant
     // data/calculations, but it saves duplicating code.
-    this.update = function()
+extendedObject.prototype.update = function()
+{
+    this.COM.updateX0();
+    // Make it interesting if it's in view, or if it was in view.
+    // Could be other reasons, too.
+    this.isInteresting = ( this.isInView2D() || this.wasInView2D() );
+    if (this.isInteresting)
     {
-        this.COM.updateX0();
-        // Make it interesting if it's in view, or if it was in view.
-        // Could be other reasons, too.
-        this.isInteresting = ( this.isInView2D() || this.wasInView2D() );
-        if (this.isInteresting)
-        {
-            for (i = 0; i < this.shapePoints.length; i++)
-            {
-                this.shapePoints[i].updateX0();
-            }
-        }
-    }
-
-    // Put code to check if we need to render it here.
-    this.wasInView2D = function()
-    {
-        return (showVisualPos &&
-                ((this.COM.XView[1] - this.boundingBox[0]) / zoom < (HWIDTH + 10)    ||
-                (this.COM.XView[2] - this.boundingBox[2]) / zoom < (HHEIGHT + 10)    ||
-                (this.COM.XView[1] + this.boundingBox[1]) / zoom > (-HWIDTH - 10)    ||
-                (this.COM.XView[2] + this.boundingBox[3]) / zoom > (-HHEIGHT - 10) ) &&
-                (Math.abs(this.boundingBox[0] - this.boundingBox[1]) / zoom > 0.3    ||
-                Math.abs(this.boundingBox[2] - this.boundingBox[3]) / zoom > 0.3)
-               );
-
-    }
-
-
-    this.isInView2D = function()
-    {
-        return (showVisualPos &&
-                ((this.COM.X0[1] - this.boundingBox[0]) / zoom < (HWIDTH + 10)    ||
-                (this.COM.X0[2] - this.boundingBox[2]) / zoom < (HHEIGHT + 10)    ||
-                (this.COM.X0[1] + this.boundingBox[1]) / zoom > (-HWIDTH - 10)    ||
-                (this.COM.X0[2] + this.boundingBox[3]) / zoom > (-HHEIGHT - 10) ) &&
-                (Math.abs(this.boundingBox[0] - this.boundingBox[1]) / zoom > 0.3 ||
-                Math.abs(this.boundingBox[2] - this.boundingBox[3]) / zoom > 0.3)
-               );
-    }
-
-    // This is the part that's harder to do with relative vectors.
-    // Working out how to do this efficiently will remove the redundancy.
-    this.changeFrame = function(translation, rotation)
-    {
-        this.COM.changeFrame(translation, rotation);
         for (i = 0; i < this.shapePoints.length; i++)
         {
-            this.shapePoints[i].changeFrame(translation,rotation);
+            this.shapePoints[i].updateX0();
         }
     }
+}
 
-    this.drawNow = function()
+// Put code to check if we need to render it here.
+extendedObject.prototype.wasInView2D = function()
+{
+    return (showVisualPos &&
+            ((this.COM.XView[1] - this.boundingBox[0]) / zoom < (HWIDTH + 10)    ||
+            (this.COM.XView[2] - this.boundingBox[2]) / zoom < (HHEIGHT + 10)    ||
+            (this.COM.XView[1] + this.boundingBox[1]) / zoom > (-HWIDTH - 10)    ||
+            (this.COM.XView[2] + this.boundingBox[3]) / zoom > (-HHEIGHT - 10) ) &&
+            (Math.abs(this.boundingBox[0] - this.boundingBox[1]) / zoom > 0.3    ||
+            Math.abs(this.boundingBox[2] - this.boundingBox[3]) / zoom > 0.3)
+           );
+
+}
+
+
+extendedObject.prototype.isInView2D = function()
+{
+    return (showVisualPos &&
+            ((this.COM.X0[1] - this.boundingBox[0]) / zoom < (HWIDTH + 10)    ||
+            (this.COM.X0[2] - this.boundingBox[2]) / zoom < (HHEIGHT + 10)    ||
+            (this.COM.X0[1] + this.boundingBox[1]) / zoom > (-HWIDTH - 10)    ||
+            (this.COM.X0[2] + this.boundingBox[3]) / zoom > (-HHEIGHT - 10) ) &&
+            (Math.abs(this.boundingBox[0] - this.boundingBox[1]) / zoom > 0.3 ||
+            Math.abs(this.boundingBox[2] - this.boundingBox[3]) / zoom > 0.3)
+           );
+}
+
+// This is the part that's harder to do with relative vectors.
+// Working out how to do this efficiently will remove the redundancy.
+extendedObject.prototype.changeFrame = function(translation, rotation)
+{
+    this.COM.changeFrame(translation, rotation);
+    for (i = 0; i < this.shapePoints.length; i++)
     {
-        if (this.isInteresting)
-        {
-            g.fillStyle = "#0f0";
-            g.beginPath();
-            g.moveTo( (this.shapePoints[0].X0[1]/ zoom) +HWIDTH, 
-                      (this.shapePoints[0].X0[2]) / zoom + HHEIGHT);
-            for (i=0; i < (this.shapePoints.length); i++)
-            {
-                g.lineTo( (this.shapePoints[i].X0[1]) / zoom + HWIDTH, 
-                          (this.shapePoints[i].X0[2]) / zoom + HHEIGHT);
-            }
-            g.fill();            
-        }
+        this.shapePoints[i].changeFrame(translation,rotation);
     }
+}
 
-
-    this.drawPast = function()
+extendedObject.prototype.drawNow = function()
+{
+    if (this.isInteresting)
     {
-        if (this.isInteresting)
+        g.fillStyle = "#0f0";
+        g.beginPath();
+        g.moveTo( (this.shapePoints[0].X0[1]/ zoom) +HWIDTH, 
+                  (this.shapePoints[0].X0[2]) / zoom + HHEIGHT);
+        for (i=0; i < (this.shapePoints.length); i++)
         {
-            g.fillStyle = "#f0f";
-            g.beginPath();
-            g.moveTo( (this.shapePoints[0].XView[1]/ zoom) +HWIDTH, 
-                      (this.shapePoints[0].XView[2]) / zoom + HHEIGHT);
-            for (i=0; i < (this.shapePoints.length); i++)
-            {
-                g.lineTo( (this.shapePoints[i].XView[1]) / zoom + HWIDTH, 
-                          (this.shapePoints[i].XView[2]) / zoom + HHEIGHT);
-            }
-            g.fill();            
+            g.lineTo( (this.shapePoints[i].X0[1]) / zoom + HWIDTH, 
+                      (this.shapePoints[i].X0[2]) / zoom + HHEIGHT);
         }
+        g.fill();            
     }
+}
+
+
+extendedObject.prototype.drawPast = function()
+{
+    if (this.isInteresting)
+    {
+        g.fillStyle = "#f0f";
+        g.beginPath();
+        g.moveTo( (this.shapePoints[0].XView[1]/ zoom) +HWIDTH, 
+                  (this.shapePoints[0].XView[2]) / zoom + HHEIGHT);
+        for (i=0; i < (this.shapePoints.length); i++)
+        {
+            g.lineTo( (this.shapePoints[i].XView[1]) / zoom + HWIDTH, 
+                      (this.shapePoints[i].XView[2]) / zoom + HHEIGHT);
+        }
+        g.fill();            
+    }
+}
 
 
 }

@@ -19,6 +19,10 @@ function Scene() {
                                     quat4.create([0, obj.p[0], obj.p[1], obj.p[2]], 0), obj.label, obj.options)
         thingy.COM.init(this.timeStep);
         this.carray.push(thingy);
+        this.extendedObjTest = new extendedObject(quat4.create([0,1,2,0]),quat4.create([1,0,0,0]),1,[[0,0,0,0],[0,100,0,0],[0,100,100,0],[0,0,100,0],[0,0,0,0]],1,1,this.timeStep);
+        this.extendedObjTest.COM.init(this.timeStep);
+//        this.extendedObjTest.init();
+        
     };
 
     this.draw = function() {
@@ -27,13 +31,15 @@ function Scene() {
 
         this.clear();
 
-        this.carray.forEach(function(obj) {
-            obj.COM.updateX0(this.timeStep);
-            obj.draw(this)
-        }, this);
+//        this.carray.forEach(function(obj) {
+//            obj.COM.updateX0(this.timeStep);
+//            obj.draw(this)
+//        }, this);
+        this.extendedObjTest.update(this.timeStep);
 
-        this.drawCrosshairs();
+//        this.drawCrosshairs();
      
+        this.extendedObjTest.drawNow(this);
         this.t = this.t + (this.timeStep*c);
         
         $("#fps").html(Math.floor(1000 / (this.timeStep / this.timeScale)));
@@ -156,6 +162,8 @@ function Scene() {
 
     this.changeArrayFrame = function(translation, boost) {
         this.carray.forEach(function(obj) {obj.COM.changeFrame(translation, boost)});
+
+        this.extendedObjTest.changeFrame(translation,boost);
     }
 
     this.initialTime = new Date().getTime();
@@ -174,6 +182,7 @@ function Scene() {
     this.showVisualPos = true;
     this.showDoppler = true;
     this.displayTime = false;
+    this.extendedObjTest = [];
 }
 
 /**
