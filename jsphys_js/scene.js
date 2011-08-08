@@ -20,7 +20,11 @@ function Scene() {
         thingy.COM.init(this.timeStep);
         this.carray.push(thingy);
         this.extendedObjTest = new extendedObject(quat4.create([0,1,2,0]),quat4.create([1,0,0,0]),1,[[0,0,0,0],[0,100,0,0],[0,100,100,0],[0,0,100,0],[0,0,0,0]],1,1,this.timeStep);
+
+        this.extendedObjTest2 = new extendedObject(quat4.create([0,101,2,0]),quat4.create([1,0,0,0]),1,[[0,0,0,0],[0,100,0,0],[0,100,100,0],[0,0,100,0],[0,0,0,0]],1,1,this.timeStep);
         this.extendedObjTest.COM.init(this.timeStep);
+
+        this.extendedObjTest2.COM.init(this.timeStep);
 //        this.extendedObjTest.init();
         
     };
@@ -31,19 +35,23 @@ function Scene() {
 
         this.clear();
 
-//        this.carray.forEach(function(obj) {
-//            obj.COM.updateX0(this.timeStep);
-//            obj.draw(this)
-//        }, this);
+        this.carray.forEach(function(obj) {
+            obj.COM.updateX0(this.timeStep);
+            obj.draw(this)
+        }, this);
         this.extendedObjTest.update(this.timeStep);
 
+        this.extendedObjTest2.update(this.timeStep);
+        this.extendedObjTest.calcPastPoints();
 //        this.drawCrosshairs();
      
         this.extendedObjTest.drawNow(this);
+        this.extendedObjTest.drawPast(this);
+        this.extendedObjTest2.drawNow(this);
         this.t = this.t + (this.timeStep*c);
         
         $("#fps").html(Math.floor(1000 / (this.timeStep / this.timeScale)));
-        $("#hsg").html(Math.floor(this.carray[this.carray.length - 1].COM.V[0]));
+        $("#hsg").html(Math.floor(this.carray[0].COM.V[0]));
         $("#gameclock").html(Math.floor(this.t / 1000 / c));
         $("#time").html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
 
@@ -164,6 +172,8 @@ function Scene() {
         this.carray.forEach(function(obj) {obj.COM.changeFrame(translation, boost)});
 
         this.extendedObjTest.changeFrame(translation,boost);
+
+        this.extendedObjTest2.changeFrame(translation,boost);
     }
 
     this.initialTime = new Date().getTime();
