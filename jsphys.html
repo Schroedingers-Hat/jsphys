@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Relativity Simulator</title>
-        <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <script type="text/javascript" src="jsphys_js/jquery.js"></script>
         <script type="text/javascript" src="jsphys_js/extendedObjects2.js"></script>
         <script type="text/javascript" src="jsphys_js/glMatrix-0.9.5.min.js"></script>
@@ -20,6 +20,7 @@
             body {
                 color: #ccc;
                 font-family: sans-serif;
+                background-color: #212124;
             }
 
             #infobox  {
@@ -41,7 +42,7 @@
             }
 
             #controls {
-                width: 150px;
+                width: 200px;
                 position: absolute;
                 right: 0.5em;
                 top: 0.5em;
@@ -59,12 +60,42 @@
             #zoom-slider, #speed-slider {
                 font-size: 50%;
             }
+
+            #demo-chooser {
+                position: absolute;
+                opacity: 0.8;
+                background-color: #333;
+                width: 300px;
+                left: 50%;
+                margin-left: -150px;
+                top: 200px;
+                padding: 1em;
+            }
+
+            #demo-chooser li {
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+            #demo-chooser h3 {
+                margin: 0;
+            }
+
+            #steps {
+                text-align: center;
+            }
         </style>
     </head>
  
-    <body bgcolor="#212124">
+    <body>
         <div style="position:relative">
             <canvas id="canvas" height="500"></canvas>
+            <div id="demo-chooser">
+                <h3>Choose a demo</h3>
+                <ul id="demo-list">
+
+                </ul>
+            </div>
             <div id="infobox">
                 <p>FPS: <span id="fps"></span></p>
                 <p>Home system gamma: <span id="hsg"></span></p>
@@ -74,15 +105,19 @@
             <div id="controls">
                 <form name="controls">
                     <p>Doppler effect: <input type="checkbox" name="doppler" id="doppler" checked="checked" /></p>
-                    <p>Zoom: <div id="zoom-slider"></div></p>
-                    <p>Speed: <div id="speed-slider"></div></p>
+                    <p>Show absolute positions: <input type="checkbox" name="framePos" id="framePos" /></p>
+                    <p>Zoom: </p><div id="zoom-slider"></div>
+                    <p>Speed: </p><div id="speed-slider"></div>
+                    <p><button id="pause">Pause</button></p>
                 </form>
             </div>
             <div id="caption"></div>
             <div id="steps">
-                <a onclick="scene.prevStep()">Previous step</a> |
-                <a onclick="scene.nextStep()">Next step</a> |
-                <a onclick="pause()">Pause</a>
+                <button onclick="scene.prevStep(); updateSliders()">&lt; Previous step</button>
+                <button onclick="scene.replay(); updateSliders();">Replay</button>
+                <button onclick="scene.nextStep(); updateSliders();">Next step &gt;</button><br/>
+                <button onclick="$('#demo-chooser').show();">Choose new demo</button>
             </div>
+        </div>
     </body>
 </html>

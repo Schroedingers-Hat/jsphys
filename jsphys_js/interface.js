@@ -42,8 +42,8 @@ function onKeyDown(evt)
         }
     	else if (evt.keyCode == 61) 
     	{
-    	    scene.zoom = scene.zoom / 2;
-            if (scene.zoom < 0.06 ) scene.zoom = 0.6;
+    	    zoomTo(scene.zoom / 2);
+            if (scene.zoom < 0.06 ) zoomTo(0.6);
             boostRight  = cBoostMat(quat4.create([0, 0.02 / scene.zoom, 0, 0]), c);
             boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
             boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
@@ -51,8 +51,8 @@ function onKeyDown(evt)
     	}
     	else if (evt.keyCode == 109) 
     	{
-    	    scene.zoom = scene.zoom * 2;
-            if (scene.zoom > 40) scene.zoom = 40;
+    	    zoomTo(scene.zoom * 2);
+            if (scene.zoom > 40) zoomTo(40);
             boostRight  = cBoostMat(quat4.create([0, 0.02 * scene.zoom, 0, 0]), c);
             boostLeft   = cBoostMat(quat4.create([0, -0.02 * scene.zoom, 0, 0]), c);
             boostUp     = cBoostMat(quat4.create([0, 0, -0.02 * scene.zoom, 0]), c);
@@ -91,6 +91,7 @@ function zoomTo(zoom) {
     boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
     boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
     boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / scene.zoom, 0]), c);
+    updateSliders();
 }
 
 /**
@@ -101,20 +102,23 @@ function zoomTo(zoom) {
  * goes -4 to 5.5, and is turned into a power of 2. (2^-4 = 0.06, for example.)
  */
 function zoomToSlider(event, ui) {
-    zoomTo(Math.pow(2, ui.value));
+    zoomTo(Math.pow(2, -ui.value));
 }
 
 /**
  * Pause animation
  */
-function pause() {
+function pause(event) {
     if (scene.timeScale == 0) {
+        $("#pause").html("Pause");
         scene.timeScale = this.prevTimeScale;
     } else {
+        $("#pause").html("Play");
         this.prevTimeScale = scene.timeScale;
         scene.timeScale = 0;
     }
-    $("#speed-slider").slider("option", "value", (Math.log(scene.timeScale + 1) / Math.LN2));
+    updateSliders();
+    event.preventDefault();
 }
 
 function setAnimSpeed(event, ui) {
@@ -141,21 +145,48 @@ window.requestAnimFrame = (function(){
           };
 })();
 
+function loadDemo(idx) {
+    return function() {
+        scene.load(demos[idx], 0);
+        $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.5, slide: zoomToSlider,
+                                  value: -(Math.log(scene.zoom) / Math.LN2)});
+        $("#speed-slider").slider({min: -2 , max: 2, step: 0.02, slide: setAnimSpeed, 
+                                   value: (Math.log(scene.timeScale + 1) / Math.LN2)});
+        $("#demo-chooser").hide();
+        scene.startAnimation();
+    };
+}
+
+function updateSliders() {
+    $("#zoom-slider").slider("option", "value", -(Math.log(scene.zoom) / Math.LN2));
+
+    $("#speed-slider").slider("option", "value", 
+                              (Math.log(scene.timeScale + 1) / Math.LN2));
+}
+
+/**
+ * Builds the demo chooser menu by iterating through our provided demos array.
+ */
+function loadDemoList() {
+    demos.forEach(function(demo, idx) {
+        var e = $("<li>" + demo.name + "</li>").click(loadDemo(idx));
+        $("#demo-list").append(e);
+    })
+}
+
 // Use JQuery to wait for document load
 $(document).ready(function()
 {
     var viewportWidth = $('body').width() - 16;
     $("#canvas").attr('width', viewportWidth);
     scene = new Scene();
-    scene.load(headOnObjects, 0);
-    scene.startAnimation();
-    //var interval = setInterval(drawScene, 20);
+    
+    loadDemoList();
+
+    $("#pause").click(pause);
     $("#canvas").click(clickHandler);
     $("#doppler").change(function() {scene.showDoppler = !scene.showDoppler;});
-    $("#zoom-slider").slider({min: -4, max: 5.5, step: 0.5, slide: zoomToSlider,
-                              value: (Math.log(scene.zoom) / Math.LN2)});
-    $("#speed-slider").slider({min: -2 , max: 2, step: 0.02, slide: setAnimSpeed, 
-                               value: (Math.log(1.02) / Math.LN2)});
+    $("#framePos").change(function() {scene.showFramePos = !scene.showFramePos;});
 });
 
 $(document).keydown(onKeyDown);

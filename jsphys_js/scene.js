@@ -1,4 +1,5 @@
 function Scene() {
+    glMatrixArrayType = Float64Array;
     this.createObject = function (obj) {
         if (typeof obj.options == "undefined") {
             obj.options = {};
@@ -6,6 +7,8 @@ function Scene() {
         if (typeof obj.label == "undefined") {
             obj.label = "";
         }
+
+        obj.options = $.extend({}, this.options, obj.options);
 
         // Upgrade 2D to 3D
         if (obj.x.length == 2) {
@@ -15,8 +18,8 @@ function Scene() {
             obj.p[2] = 0;
         }
 
-        var thingy = new obj.object(quat4.create([0, obj.x[0], obj.x[1], obj.x[2]], 0), 
-                                    quat4.create([0, obj.p[0], obj.p[1], obj.p[2]], 0), obj.label, obj.options)
+        var thingy = new obj.object(quat4.create([0, obj.x[0], obj.x[1], obj.x[2]]), 
+                                    quat4.create([0, obj.p[0], obj.p[1], obj.p[2]]), obj.label, obj.options)
         thingy.COM.init(this.timeStep);
         this.carray.push(thingy);
         this.extendedObjTest = new extendedObject(quat4.create([0,1,2,0]),quat4.create([1,0,0,0]),1,[[0,0,0,0],[0,100,0,0],[0,100,100,0],[0,0,100,0],[0,0,0,0]],1,1,this.timeStep);
@@ -30,6 +33,7 @@ function Scene() {
     };
 
     this.draw = function() {
+        if (this.carray.length === 0) { return; }
         this.frameStartTime = new Date().getTime();
         this.timeStep = (this.frameStartTime - this.frameEndTime) * this.timeScale;
 
@@ -50,7 +54,6 @@ function Scene() {
         this.extendedObjTest2.drawNow(this);
         this.t = this.t + (this.timeStep*c);
         
-        $("#fps").html(Math.floor(1000 / (this.timeStep / this.timeScale)));
         $("#hsg").html(Math.floor(this.carray[0].COM.V[0]));
         $("#gameclock").html(Math.floor(this.t / 1000 / c));
         $("#time").html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
@@ -66,6 +69,8 @@ function Scene() {
 
         requestAnimFrame(drawScene);
         this.frameEndTime = new Date().getTime();
+
+        $("#fps").html(Math.floor(1000 / (this.frameEndTime - this.frameStartTime)));
     };
 
     this.clear = function() {
@@ -92,7 +97,6 @@ function Scene() {
     };
 
     this.nextStep = function() {
-        this.stopAnimation();
         this.curStep += 1;
         this.carray = [];
         this.load(this.demo, this.curStep);
@@ -100,22 +104,52 @@ function Scene() {
     };
 
     this.prevStep = function() {
-        this.stopAnimation();
         this.curStep -= 1;
         this.carray = [];
         this.load(this.demo, this.curStep);
         this.startAnimation();
     }
 
+    this.replay = function() {
+        this.carray = []
+        this.load(this.demo, this.curStep);
+        this.startAnimation();
+    }
+
     this.load = function(demo, step) {
+        this.carray = [];
         this.curStep = step;
         this.demo = demo;
 
-        // If the demo specifies the scene origin, set it
-        if (typeof demo.steps[step].origin == "object") {
+        // If the demo specifies global options, set 'em
+        if (typeof demo.steps[step].origin === "object") {
             this.origin = demo.steps[step].origin;
         }
+        if (typeof demo.steps[step].timeScale === "number") {
+            this.timeScale = demo.steps[step].timeScale;
+        }
+        if (typeof demo.steps[step].zoom === "number") {
+            this.zoom = demo.steps[step].zoom;
+        }
 
+        this.options = this.defaults;
+
+        // Set scene options
+        if (typeof demo.steps[step].showDoppler === "boolean") {
+            this.options.showDoppler = demo.steps[step].showDoppler;
+        } 
+        if (typeof demo.steps[step].showVisualPos === "boolean") {
+            this.options.showVisualPos = demo.steps[step].showVisualPos;
+        }
+        if (typeof demo.steps[step].showFramePos === "boolean") {
+            this.options.showFramePos = demo.steps[step].showFramePos;
+        }
+        if (typeof demo.steps[step].showVelocities === "boolean") {
+            this.options.showVelocities = demo.steps[step].showVelocities;
+        } 
+        if (typeof demo.steps[step].showTime === "boolean") {
+            this.options.showTime = demo.steps[step].showTime;
+        }
         demo.steps[step].objects.forEach(this.createObject, this);
         $('#caption').html(demo.steps[step].caption);
 
@@ -154,8 +188,9 @@ function Scene() {
                                                   1 / obj.COM.V[0], tempVec3), 
                                                   c);
 
-        var XShift = new Float32Array(obj.COM.X0);
-        
+//        var XShift = new Float32Array(obj.COM.X0);     
+        var XShift = new Float64Array(obj.COM.X0);
+
         // If the new frame is basically the same as the old frame, don't bother.
         if (Math.sqrt(quat4.spaceDot(XShift, XShift)) < 0.0001 &&
             Math.sqrt(quat4.spaceDot(obj.COM.V, obj.COM.V)) < 0.0001) {
@@ -188,11 +223,16 @@ function Scene() {
     this.timeStep = 5;
     this.timeScale = 0.02;
     this.t = 0;
-    this.showFramePos = false;
-    this.showVisualPos = true;
-    this.showDoppler = true;
-    this.displayTime = false;
-    this.extendedObjTest = [];
+//    this.showFramePos = false;
+//    this.showVisualPos = true;
+//    this.showDoppler = true;
+//    this.displayTime = false;
+//    this.extendedObjTest = [];
+    this.defaults = {"showDoppler": true,
+                     "showVisualPos": true,
+                     "showFramePos": false,
+                     "showVelocities": true,
+                     "showTime": false}
 }
 
 /**
