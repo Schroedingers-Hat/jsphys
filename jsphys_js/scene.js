@@ -26,7 +26,7 @@ function Scene() {
 
         this.extendedObjTest2 = new extendedObject(quat4.create([0,101,2,0]),quat4.create([1,0,0,0]),1,[[0,0,0,0],[0,100,0,0],[0,100,100,0],[0,0,100,0],[0,0,0,0]],1,1,this.timeStep);
         this.extendedObjTest.COM.init(this.timeStep);
-
+        this.rulerTest = new ruler([this.extendedObjTest,this.extendedObjTest2],0,[1,2]);
         this.extendedObjTest2.COM.init(this.timeStep);
 //        this.extendedObjTest.init();
         
@@ -48,7 +48,8 @@ function Scene() {
         this.extendedObjTest2.update(this.timeStep);
         this.extendedObjTest.calcPastPoints();
 //        this.drawCrosshairs();
-     
+        this.rulerTest.update();
+        this.rulerTest.draw(this); 
         this.extendedObjTest.drawNow(this);
         this.extendedObjTest.drawPast(this);
         this.extendedObjTest2.drawNow(this);

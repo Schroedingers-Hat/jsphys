@@ -2,6 +2,7 @@
 var c = 1; //Do not change, not fully implemented
 var twopi = Math.PI * 2;
 var tempVec3 = quat4.create();
+var tempQuat4 = quat4.create(); //Use this one, will get rid of tempVec3 eventually.
 
 // Some convenient matrices.
 var rotLeft  = mat4.create([1, 0, 0, 0,
@@ -153,6 +154,14 @@ quat4.scale = function(vec, val, dest) {
         dest[3] = vec[3]*val;
         return dest;
 };
+
+quat4.spaceTimeDot = function(vec, vec2) {
+    return (-c*c * vec[0] * vec2[0]
+                 + vec[1] * vec2[1]
+                 + vec[2] * vec2[2]
+                 + vec[3] * vec2[3]);
+}
+
 
 quat4.add = function(vec, vec2, dest) {
         if(!dest || vec == dest) {
