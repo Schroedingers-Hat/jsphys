@@ -26,7 +26,7 @@ mainSequenceStar.prototype.draw = function(scene)
         this.COM.calcPast();
         this.drawPast(scene);
     }
-    if (this.options.showFramePos) this.drawNow(scene);
+    if (this.options.showFramePos || scene.options.showFramePos) this.drawNow(scene);
 } 
 
 
@@ -82,9 +82,11 @@ mainSequenceStar.prototype.drawPast = function(scene)
        yvis > (-scene.origin[1] - 10) &&
        this.r / scene.zoom > 0.3)
     {
-        if(this.options.showDoppler) scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                  this.COM.radialVPast,
-                                                  this.COM.V[0]));
+        if(this.options.showDoppler || scene.options.showDoppler) {
+            scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                              this.COM.radialVPast,
+                                                              this.COM.V[0]));
+        }
         else scene.g.fillStyle = this.stillColor;
         scene.g.beginPath();
         scene.g.arc((xvis + scene.origin[0]), 
