@@ -10,7 +10,7 @@ function extendedObject(X, P, m, shape, materials, options,timeStep)
     this.COM = new inertialObject(X, P, m);
     this.COM.init(timeStep); 
     this.uDisplacement = quat4.create([0,0,0,0]);
-    this.pointPos = quat4.create([0,0,0,0]);
+    this.pointPos = new Array();
     // Make a rectangular prism which, when placed at the position or view pos
     // of COM, must always contain part of the object.
     this.boundingBox = [0, 0, 0, 0, 0, 0];
@@ -23,6 +23,7 @@ function extendedObject(X, P, m, shape, materials, options,timeStep)
         }
     this.shapePoints[i] = quat4.create(shape[i]);
     this.pastPoints[i] = quat4.create([0,0,0,0]);
+    this.pointPos[i] = quat4.create([0,0,0,0]);
     }
 }
 
@@ -32,6 +33,12 @@ function extendedObject(X, P, m, shape, materials, options,timeStep)
 extendedObject.prototype.update = function(timeStep)
 {
     this.COM.updateX0(timeStep);
+    for (i = 0; i< (this.shapePoints.length); i++)
+    {
+    quat4.add(this.COM.X0,this.shapePoints[i],this.pointPos[i]);
+    quat4.scale(this.COM.V, -this.pointPos[i][0] / this.COM.V[0], tempQuat4);
+    quat4.add(this.pointPos[i],tempQuat4,this.pointPos[i]);
+    }
 }
 
 
@@ -76,22 +83,16 @@ extendedObject.prototype.drawNow = function()
     {
         scene.g.strokeStyle = "#0f0";
         scene.g.beginPath();
-        scene.g.moveTo( (this.COM.X0[1] + this.shapePoints[0][1] - this.COM.V[1] / 
-                            this.COM.V[0]* this.shapePoints[0][0]) / scene.zoom + scene.origin[0],
-                        (this.COM.X0[2] + this.shapePoints[0][2]  - this.COM.V[2] / 
-                            this.COM.V[0]* this.shapePoints[0][0]) / scene.zoom + scene.origin[1]);
+        scene.g.moveTo( this.pointPos[0][1] / scene.zoom + scene.origin[0],
+                        this.pointPos[0][2] / scene.zoom + scene.origin[1]);
         for (i=0; i < (this.shapePoints.length); i++)
         {
-            scene.g.lineTo( (this.COM.X0[1] + this.shapePoints[i][1] - this.COM.V[1] / 
-                                this.COM.V[0]* this.shapePoints[i][0]) / scene.zoom + scene.origin[0],
-                            (this.COM.X0[2] + this.shapePoints[i][2]  - this.COM.V[2] / 
-                                this.COM.V[0] * this.shapePoints[i][0]) / scene.zoom + scene.origin[1]);
+            scene.g.lineTo( this.pointPos[i][1] / scene.zoom + scene.origin[0],
+                            this.pointPos[i][2] / scene.zoom + scene.origin[1]);
         }
-        scene.g.lineTo( (this.COM.X0[1] + this.shapePoints[0][1] - this.COM.V[1] / 
-                            this.COM.V[0]* this.shapePoints[0][0]) / scene.zoom + scene.origin[0],
-                        (this.COM.X0[2] + this.shapePoints[0][2]  - this.COM.V[2] / 
-                            this.COM.V[0]* this.shapePoints[0][0]) / scene.zoom + scene.origin[1]);
-
+        scene.g.lineTo( this.pointPos[0][1] / scene.zoom + scene.origin[0],
+                        this.pointPos[0][2] / scene.zoom + scene.origin[1]);
+       
         scene.g.stroke();
     }
 }
@@ -104,14 +105,13 @@ extendedObject.prototype.calcPastPoints = function()
     var viewTime;
     for (i=0; i < (this.shapePoints.length); i++)
     {
-        quat4.add(this.COM.X0,this.shapePoints[i],this.pointPos);
-        radialDist = Math.sqrt(quat4.spaceDot(this.pointPos, this.pointPos));
-        radialV = ( -quat4.spaceDot(this.COM.V, this.pointPos) / 
+        radialDist = Math.sqrt(quat4.spaceDot(this.pointPos[i], this.pointPos[i]));
+        radialV = ( -quat4.spaceDot(this.COM.V, this.pointPos[i]) / 
                          Math.max(radialDist, 1e-16) /
                          this.COM.V[0]);
         viewTime = radialDist / (c - radialV);
         quat4.scale(this.COM.V, viewTime / this.COM.V[0], this.uDisplacement);
-       quat4.subtract(this.pointPos, this.uDisplacement, this.pastPoints[i]);
+        quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
 
         this.pastRadialV[i] = (quat4.spaceDot(this.pastPoints[i], this.COM.V) / 
                                 Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
