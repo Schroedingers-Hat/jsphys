@@ -41,7 +41,8 @@ function Scene() {
 
         this.carray.forEach(function(obj) {
             obj.COM.updateX0(this.timeStep);
-            obj.draw(this)
+            obj.draw(this);
+            obj.drawXT(this) 
         }, this);
         this.extendedObjTest.update(this.timeStep);
 
@@ -76,6 +77,7 @@ function Scene() {
 
     this.clear = function() {
         this.g.clearRect(0, 0, this.width, this.height);
+        this.h.clearRect(0, 0, this.width, this.height);
     };
 
     this.drawCrosshairs = function () {
@@ -214,6 +216,7 @@ function Scene() {
 
     this.initialTime = new Date().getTime();
     this.g = $('#canvas')[0].getContext("2d");
+    this.h = $('#minkowski')[0].getContext("2d");
     this.width = $("#canvas").width();
     this.height = $("#canvas").height();
     this.hwidth = this.width / 2;

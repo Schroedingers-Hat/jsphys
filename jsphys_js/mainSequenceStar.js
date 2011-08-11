@@ -113,3 +113,44 @@ mainSequenceStar.prototype.drawPast = function(scene)
         }
     }
 }
+
+
+mainSequenceStar.prototype.drawXT = function(scene)
+{
+    // current visible locations on the <canvas> element
+    var xvis = this.COM.X0[1] / scene.zoom;
+    var yvis = this.COM.X0[2] / scene.zoom;
+    var vVis = quat4.create([0,0,0,0]);
+    quat4.scale(this.COM.V, 1 / scene.zoom, vVis);
+    var distToPresent = (this.COM.X0[0]) / this.COM.V[0];
+    var linePoints = [quat4.create([0,0,0,0]),quat4.create([0,0,0,0])];
+    quat4.add(this.COM.X0,quat4.scale(this.COM.V,distToPresent - scene.origin[1] * scene.zoom,tempQuat4),linePoints[0]);
+    quat4.add(this.COM.X0,quat4.scale(this.COM.V,distToPresent + (scene.height - scene.origin[1]) * scene.zoom,tempQuat4),linePoints[1]);
+    if(1 ||xvis < (scene.width - scene.origin[0] + 10)   &&
+       yvis < (scene.height - scene.origin[1] + 10)  &&
+       xvis > (-scene.origin[0] - 10)  &&
+       yvis > (-scene.origin[1] - 10) &&
+       this.r / scene.zoom > 0.3)
+    {
+        scene.h.fillStyle = "rgba(0, 256, 0, 0.5)"; 
+        scene.h.beginPath();
+        scene.h.arc(xvis + scene.origin[0], 
+              scene.origin[1], 
+              this.r / scene.zoom, 0, twopi, true);
+        scene.h.closePath();
+        scene.h.fill();
+        scene.h.beginPath();
+        scene.h.moveTo(linePoints[0][1] / scene.zoom + scene.origin[0], linePoints[0][0] / scene.zoom + scene.origin[1]);
+        scene.h.lineTo(linePoints[1][1] / scene.zoom + scene.origin[0], linePoints[1][0] / scene.zoom + scene.origin[1]);
+        scene.h.stroke();
+    }
+        if (this.options.showVelocities) {
+            scene.h.fillText("v = " + (Math.round(1000 *Math.sqrt(1-1/Math.pow(this.COM.V[0], 2)) / c)/1000) + "c", xvis + scene.origin[0],
+                             -30 + scene.origin[1] + (this.r / scene.zoom) + 10);
+        }
+
+}
+//Vy*x + y = -scene.origin[1]
+
+//x = (-scene.origin[y] - y)/Vy
+//x = ((scene.height - scene.origin[1] - y)/Vy
