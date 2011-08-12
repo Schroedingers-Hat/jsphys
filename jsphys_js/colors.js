@@ -267,3 +267,17 @@ function bb_spectrum(temperature)
                (Math.exp(1.4388e-2 / (wlm * temperature)) - 1.0);
     };
 }
+
+/** Here ends specrend.c code. **/
+
+/**
+ * Return a spectrum function defined by a Gaussian distribution centered
+ * at wavelength `center` (in nm) with amplitude `a` and standard deviation 
+ * `stddev`
+ */
+function gauss_spectrum(center, a, stddev) {
+    return function(wavelength) {
+        return a * Math.pow(Math.E, -(Math.pow(wavelength - center, 2)) / 
+               (2 * Math.pow(stddev, 2)));
+    }
+}
