@@ -26,7 +26,7 @@ mainSequenceStar.prototype.draw = function(scene)
         this.COM.calcPast();
         this.drawPast(scene);
     }
-    if (this.options.showFramePos) this.drawNow(scene);
+    if (this.options.showFramePos || scene.options.showFramePos) this.drawNow(scene);
 } 
 
 
@@ -66,6 +66,10 @@ mainSequenceStar.prototype.drawNow = function(scene)
             scene.g.fillText("v = " + (Math.round(1000 *Math.sqrt(1-1/Math.pow(this.COM.V[0], 2)) / c)/1000) + "c", xvis + scene.origin[0],
                              yvis + scene.origin[1] + (this.r / scene.zoom) + 10);
         }
+        if (this.options.showGamma) {
+            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[0])) / 1000, xvis + scene.origin[0],
+                             yvis + scene.origin[1] - (this.r / scene.zoom) - 10)
+        }
     }
 }
 
@@ -82,9 +86,11 @@ mainSequenceStar.prototype.drawPast = function(scene)
        yvis > (-scene.origin[1] - 10) &&
        this.r / scene.zoom > 0.3)
     {
-        if(this.options.showDoppler) scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                  this.COM.radialVPast,
-                                                  this.COM.V[0]));
+        if(this.options.showDoppler || scene.options.showDoppler) {
+            scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                              this.COM.radialVPast,
+                                                              this.COM.V[0]));
+        }
         else scene.g.fillStyle = this.stillColor;
         scene.g.beginPath();
         scene.g.arc((xvis + scene.origin[0]), 
@@ -110,6 +116,10 @@ mainSequenceStar.prototype.drawPast = function(scene)
         if (this.options.showVelocities) {
             scene.g.fillText("v = " + (Math.round(1000 *Math.sqrt(1-1/Math.pow(this.COM.V[0], 2)) / c)/1000) + "c", xvis + scene.origin[0],
                              yvis + scene.origin[1] + (this.r / scene.zoom) + 10);
+        }
+        if (this.options.showGamma) {
+            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[0])) / 1000, xvis + scene.origin[0],
+                             yvis + scene.origin[1] - (this.r / scene.zoom) - 10)
         }
     }
 }

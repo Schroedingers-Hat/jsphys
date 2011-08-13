@@ -185,8 +185,8 @@ $(document).ready(function()
 
     $("#pause").click(pause);
     $("#canvas").click(clickHandler);
-    $("#doppler").change(function() {scene.showDoppler = !scene.showDoppler;});
-    $("#framePos").change(function() {scene.showFramePos = !scene.showFramePos;});
+    $("#doppler").change(function() {scene.options.showDoppler = !scene.options.showDoppler;});
+    $("#framePos").change(function() {scene.options.showFramePos = !scene.options.showFramePos;});
 });
 
 $(document).keydown(onKeyDown);

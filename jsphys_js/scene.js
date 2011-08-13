@@ -153,6 +153,10 @@ function Scene() {
         if (typeof demo.steps[step].showTime === "boolean") {
             this.options.showTime = demo.steps[step].showTime;
         }
+        if (typeof demo.steps[step].showGamma === "boolean") {
+            this.options.showGamma = demo.steps[step].showGamma;
+        }
+
         demo.steps[step].objects.forEach(this.createObject, this);
         $('#caption').html(demo.steps[step].caption);
 
@@ -236,7 +240,8 @@ function Scene() {
                      "showVisualPos": true,
                      "showFramePos": false,
                      "showVelocities": true,
-                     "showTime": false}
+                     "showTime": false,
+                     "showGamma": true}
 }
 
 /**
