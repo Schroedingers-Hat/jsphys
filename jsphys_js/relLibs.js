@@ -1,29 +1,28 @@
 // Convenient constants.
-var c = 1; //Do not change, not fully implemented
+var c = 2; //Do not change, not fully implemented
 var twopi = Math.PI * 2;
 var tempVec3 = quat4.create();
 var tempQuat4 = quat4.create(); //Use this one, will get rid of tempVec3 eventually.
 
 // Some convenient matrices.
 var rotLeft  = mat4.create([1, 0, 0, 0,
-                        0, Math.cos(0.1), Math.sin(-0.1), 0,
-                        0, Math.sin( 0.1), Math.cos(0.1), 0,
-                        0, 0, 0, 1]);
+                            0, Math.cos(0.1), Math.sin(-0.1), 0,
+                            0, Math.sin( 0.1), Math.cos(0.1), 0,
+                            0, 0, 0, 1]);
 var rotRight = mat4.create([1, 0, 0, 0,
-                        0, Math.cos(0.1), Math.sin( 0.1), 0,
-                        0, Math.sin(-0.1), Math.cos(0.1), 0,
-                        0, 0, 0, 1]);
+                            0, Math.cos(0.1), Math.sin( 0.1), 0,
+                            0, Math.sin(-0.1), Math.cos(0.1), 0,
+                            0, 0, 0, 1]);
 
 var rotUp = mat4.create([1, 0, 0, 0,
-                        0, 1, 0, 0,
-                        0, 0, Math.cos(0.1), Math.sin(0.1),
-                        0, 0, Math.sin( -0.1), Math.cos(0.1)
-                        ]);
+                         0, 1, 0, 0,
+                         0, 0, Math.cos(0.1), Math.sin(0.1),
+                         0, 0, Math.sin( -0.1), Math.cos(0.1)]);
 var rotDown = mat4.create([1, 0, 0, 0,
-                        0, 1, 0, 0,
-                        0, 0, Math.cos(0.1), Math.sin(-0.1),
-                        0, 0, Math.sin(0.1), Math.cos(0.1)
-                        ]);
+                           0, 1, 0, 0,
+                           0, 0, Math.cos(0.1), Math.sin(-0.1),
+                           0, 0, Math.sin(0.1), Math.cos(0.1)]);
+
 var boostRight  = cBoostMat(quat4.create([0, 0.05, 0, 0]), c);
 var boostLeft   = cBoostMat(quat4.create([0, -0.05, 0, 0]), c);
 var boostUp     = cBoostMat(quat4.create([0, 0, -0.05, 0]), c);
@@ -42,7 +41,7 @@ function getDistance(pt1, pt2)
  *Takes a 3-velocity (0th element time) and returns
  *gamma.
 */
-function vToGamma(V){
+function vToGamma(V) {
     if (V.length == 3)
     {
         return Math.pow((1 - (V[1] * V[1] + V[2] * V[2])/(c*c) ), -0.5);
@@ -51,11 +50,11 @@ function vToGamma(V){
     {
         return Math.pow((1 - (V[1] * V[1] + V[2] * V[2] + V[3] * V[3])/(c*c) ), -0.5);
     }
-};
+}
 
 //Takes a momentum (0th element Energy) and re-generates the energy
 //From the spacial elements.
-genEnergy = function(P,c,m){
+function genEnergy(P,c,m) {
     if (P.length == 3)
     {
         P[0] = Math.pow((c * c + P[1] * P[1] + P[2] * P[2]), 0.5);
@@ -65,7 +64,7 @@ genEnergy = function(P,c,m){
         P[0] = Math.pow((c*c *  m*m + P[1] * P[1] + P[2] * P[2] + P[3] * P[3]), 0.5);
     }
  return P;
-};
+}
 
 /*
  * cBoostMat
