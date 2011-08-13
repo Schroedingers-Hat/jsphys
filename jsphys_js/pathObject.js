@@ -146,7 +146,7 @@ function pathObject(X, P, m, maxDistance, savePrecision)
         var temp1 = quat4.create();
         var temp2 = quat4.create();
         // Find velocity for boost matrix.
-        boostBetween = cBoostMat(quat4.scale(this.V, 1 / this.V[0], tempVec3));
+        boostBetween = cBoostMat(quat4.scale(this.V, 1 / this.V[0], tempQuat4));
 
         // Find events in frame of this inertialObject.
         quat4.multiply(boostBetween, event1, temp1);

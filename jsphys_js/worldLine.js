@@ -72,7 +72,7 @@ function worldLine(X, P, m, maxDistance, savePrecision, maxTimeStep)
     {
         // Remember V is a four-veclocity. Should scale fairly well linearly.
         return quat4.scale(quat4.add(this.velocities[index1], 
-                                     this.velocities[index2], tempVec3), 1/2, tempVec3);
+                                     this.velocities[index2], tempQuat4), 1/2, tempQuat4);
     }
 
     this.interpolateToTau = function(index1, index2)
