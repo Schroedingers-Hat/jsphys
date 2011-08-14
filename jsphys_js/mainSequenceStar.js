@@ -89,7 +89,7 @@ mainSequenceStar.prototype.drawPast = function(scene)
         if(this.options.showDoppler || scene.options.showDoppler) {
             scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                               this.COM.radialVPast,
-                                                              this.COM.V[0]));
+                                                              this.COM.V[0] / c));
         }
         else scene.g.fillStyle = this.stillColor;
         scene.g.beginPath();
