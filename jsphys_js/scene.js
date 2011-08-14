@@ -191,9 +191,7 @@ function Scene() {
 
     // Take a given inertialObject and switch to its reference frame
     this.shiftToFrameOfObject = function(obj) {
-        var newFrameBoost = cBoostMat(quat4.scale(obj.COM.V,
-                                                  1 / obj.COM.V[0], tempQuat4),
-                                      c);
+        var newFrameBoost = cBoostMat(obj.COM.V, c);
 
 //        var XShift = new Float32Array(obj.COM.X0);     
         var XShift = new Float64Array(obj.COM.X0);
