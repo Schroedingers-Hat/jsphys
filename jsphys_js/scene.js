@@ -18,13 +18,25 @@ function Scene() {
             obj.p[2] = 0;
         }
 
-        var thingy = new obj.object(quat4.create([0, obj.x[0], obj.x[1], obj.x[2]]), 
-                                    quat4.create([0, obj.p[0], obj.p[1], obj.p[2]]), obj.label, obj.options)
+        var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
+                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options)
         thingy.COM.init(this.timeStep);
         this.carray.push(thingy);
-        this.extendedObjTest = new extendedObject(quat4.create([0,1,2,0]),quat4.create([1,0,0,0]),1,[[0,0,0,0],[0,100,0,0],[0,100,100,0],[0,0,100,0],[0,0,0,0]],1,1,this.timeStep);
+        this.extendedObjTest = new extendedObject(quat4.create([1,2,0,0]),quat4.create([0,0,0,1]),1,[
+[0  ,0  ,0 ,0],
+[100,0  ,0 ,0],
+[100,100,0 ,0],
+[0  ,100,0 ,0],
+[0  ,0  ,0 ,0]
+], 1, 1, this.timeStep);
 
-        this.extendedObjTest2 = new extendedObject(quat4.create([0,101,2,0]),quat4.create([1,0,0,0]),1,[[0,0,0,0],[0,100,0,0],[0,100,100,0],[0,0,100,0],[0,0,0,0]],1,1,this.timeStep);
+        this.extendedObjTest2 = new extendedObject(quat4.create([101,2,0,0]),quat4.create([0,0,0,1]),1,[
+[0,  0  ,0,0],
+[100,0  ,0,0],
+[100,100,0,0],
+[0  ,100,0,0],
+[0  ,0  ,0,0]
+],1,1,this.timeStep);
         this.extendedObjTest.COM.init(this.timeStep);
         this.rulerTest = new ruler([this.extendedObjTest,this.extendedObjTest2],[0,0],[1,3]);
         this.extendedObjTest2.COM.init(this.timeStep);
@@ -56,7 +68,7 @@ function Scene() {
         this.extendedObjTest2.drawNow(this);
         this.t = this.t + (this.timeStep*c);
         
-        $("#hsg").html(Math.floor(this.carray[0].COM.V[0] / c));
+        $("#hsg").html(Math.floor(this.carray[0].COM.V[3] / c));
         $("#gameclock").html(Math.floor(this.t / 1000 / c));
         $("#time").html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
 
@@ -175,8 +187,8 @@ function Scene() {
         var minElement = -1;
 
         for (i = 0; i < this.carray.length; i++) {
-            var dist = getDistance([x,y], [this.carray[i].COM.XView[1] / this.zoom + this.origin[0], 
-                                           this.carray[i].COM.XView[2] / this.zoom + this.origin[1]]);
+            var dist = getDistance([x,y], [this.carray[i].COM.XView[0] / this.zoom + this.origin[0], 
+                                           this.carray[i].COM.XView[1] / this.zoom + this.origin[1]]);
             if (dist < minDist) {
                 minDist = dist;
                 minElement = i;

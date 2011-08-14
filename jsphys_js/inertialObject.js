@@ -1,3 +1,5 @@
+// Timelike is component 3, c ready
+
 function inertialObject(X, P, m)
 {
     this.init = function(timeStep, label)
@@ -10,7 +12,7 @@ function inertialObject(X, P, m)
         // Relativistic velocity, or momentum/mass.
         genEnergy(this.V, c, m);
         this.displace = quat4.create();
-        quat4.scale(this.V, timeStep / this.V[0], this.displace);
+        quat4.scale(this.V, timeStep / this.V[3], this.displace);
         this.tau = 0;
 
         this.uDisplacement = quat4.create();
@@ -24,12 +26,12 @@ function inertialObject(X, P, m)
 
 inertialObject.prototype.updateX0 = function(timeStep)
 {
-    quat4.scale(this.V, timeStep / this.V[0], this.displace);
+    quat4.scale(this.V, timeStep / this.V[3], this.displace);
     //Increase proper time.
-    this.tau += timeStep / Math.pow(this.V[0], 2);
+    this.tau += timeStep / Math.pow(this.V[3], 2);
     //Bring it to now.
     quat4.add(this.X0, this.displace);
-    this.X0[0] = this.X0[0] - timeStep;
+    this.X0[3] = this.X0[3] - timeStep;
 }
 
 inertialObject.prototype.changeFrame = function(translation, rotation)
@@ -43,11 +45,11 @@ inertialObject.prototype.changeFrame = function(translation, rotation)
     //Point is now at wrong time
     
     //Find displacement to current time.
-    quat4.scale(this.V, -this.X0[0] / this.V[0], this.uDisplacement);
+    quat4.scale(this.V, -this.X0[3] / this.V[3], this.uDisplacement);
     
     //Bring to current time.
     quat4.add(this.X0, this.uDisplacement);
-    this.tau += this.uDisplacement[0] / this.V[0];
+    this.tau += this.uDisplacement[3] / this.V[3];
 }
 
 inertialObject.prototype.calcPast = function()
@@ -55,14 +57,14 @@ inertialObject.prototype.calcPast = function()
     this.radialDist = Math.sqrt(quat4.spaceDot(this.X0, this.X0));
     this.radialV = ( -quat4.spaceDot(this.V, this.X0) / 
                     Math.max(this.radialDist,1e-10) / 
-                    this.V[0]);
+                    this.V[3] / Math.sqrt(quat4.spaceDot(this.X0, this.X0)) * c);
     this.viewTime = this.radialDist / (c - this.radialV);
     
-    this.uDisplacement = quat4.scale(this.V, this.viewTime / this.V[0], 
+    this.uDisplacement = quat4.scale(this.V, this.viewTime / this.V[3], 
                                      this.uDisplacement);
     this.XView = quat4.subtract(this.X0, this.uDisplacement, this.XView);
     //this.rPast = Math.sqrt(Math.max(quat4.spaceDot( this.XView, this.XView ),1e-10)); 
     this.radialVPast = (quat4.spaceDot(this.XView, this.V) / 
                         Math.max(Math.sqrt(Math.abs(
-                        quat4.spaceDot(this.XView, this.XView) )),1e-10) / this.V[0]);
+                        quat4.spaceDot(this.XView, this.XView) )),1e-10) / this.V[3] * c);
 }

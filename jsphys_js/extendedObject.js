@@ -1,3 +1,4 @@
+// Time is component 3
 //lNB: Shape is four dimensional, 
 // if you draw it moving and not with the front/back in the right time as well as place, it won't be the correct shape.
 
@@ -16,7 +17,7 @@ function extendedObject(X, P, m, shape, materials, options,timeStep)
     this.boundingBox = [0, 0, 0, 0, 0, 0];
     for (i = 0; i < (shape.length - 1); i++)
     {
-        for(j = 1; j < 4; j++)
+        for(j = 0; j < 3; j++)
         {
             this.boundingBox[2 * j]     = Math.min(shape[i][j], shape[i+1][1]);
             this.boundingBox[2 * j + 1] = Math.max(shape[i][j], shape[i+1][j]);
@@ -36,7 +37,7 @@ extendedObject.prototype.update = function(timeStep)
     for (i = 0; i< (this.shapePoints.length); i++)
     {
     quat4.add(this.COM.X0,this.shapePoints[i],this.pointPos[i]);
-    quat4.scale(this.COM.V, -this.pointPos[i][0] / this.COM.V[0], tempQuat4);
+    quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
     quat4.add(this.pointPos[i],tempQuat4,this.pointPos[i]);
     }
 }
@@ -83,15 +84,15 @@ extendedObject.prototype.drawNow = function()
     {
         scene.g.strokeStyle = "#0f0";
         scene.g.beginPath();
-        scene.g.moveTo( this.pointPos[0][1] / scene.zoom + scene.origin[0],
-                        this.pointPos[0][2] / scene.zoom + scene.origin[1]);
+        scene.g.moveTo( this.pointPos[0][0] / scene.zoom + scene.origin[0],
+                        this.pointPos[0][1] / scene.zoom + scene.origin[1]);
         for (i=0; i < (this.shapePoints.length); i++)
         {
-            scene.g.lineTo( this.pointPos[i][1] / scene.zoom + scene.origin[0],
-                            this.pointPos[i][2] / scene.zoom + scene.origin[1]);
+            scene.g.lineTo( this.pointPos[i][0] / scene.zoom + scene.origin[0],
+                            this.pointPos[i][1] / scene.zoom + scene.origin[1]);
         }
-        scene.g.lineTo( this.pointPos[0][1] / scene.zoom + scene.origin[0],
-                        this.pointPos[0][2] / scene.zoom + scene.origin[1]);
+        scene.g.lineTo( this.pointPos[0][0] / scene.zoom + scene.origin[0],
+                        this.pointPos[0][1] / scene.zoom + scene.origin[1]);
        
         scene.g.stroke();
     }
@@ -108,15 +109,15 @@ extendedObject.prototype.calcPastPoints = function()
         radialDist = Math.sqrt(quat4.spaceDot(this.pointPos[i], this.pointPos[i]));
         radialV = ( -quat4.spaceDot(this.COM.V, this.pointPos[i]) / 
                          Math.max(radialDist, 1e-16) /
-                         this.COM.V[0]);
+                         this.COM.V[3] / Math.sqrt(quat4.spaceDot(this.pointPos[i],this.pointPos[i]))* c);
         viewTime = radialDist / (c - radialV);
-        quat4.scale(this.COM.V, viewTime / this.COM.V[0], this.uDisplacement);
+        quat4.scale(this.COM.V, viewTime / this.COM.V[3], this.uDisplacement);
         quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
 
         this.pastRadialV[i] = (quat4.spaceDot(this.pastPoints[i], this.COM.V) / 
                                 Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
                                 this.pastPoints[i], this.pastPoints[i]) 
-                                )),1e-16) / this.COM.V[0]);
+                                )),1e-16) / this.COM.V[3] * c);
     }
 }
 
@@ -126,15 +127,15 @@ extendedObject.prototype.drawPast = function(scene)
     {                                                                               
         scene.g.strokeStyle = "#0ff";                                                 
         scene.g.beginPath();                                                        
-        scene.g.moveTo( this.pastPoints[0][1] / scene.zoom + scene.origin[0], 
-                        this.pastPoints[0][2] / scene.zoom + scene.origin[1]);
+        scene.g.moveTo( this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
+                        this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
         for (i=1; i < (this.pastPoints.length); i++)
         {
-            scene.g.lineTo( this.pastPoints[i][1] / scene.zoom + scene.origin[0], 
-                        this.pastPoints[i][2] / scene.zoom + scene.origin[1]);
+            scene.g.lineTo( this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
+                        this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
         }
-        scene.g.lineTo( this.pastPoints[0][1] / scene.zoom + scene.origin[0], 
-                        this.pastPoints[0][2] / scene.zoom + scene.origin[1]);
+        scene.g.lineTo( this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
+                        this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
         scene.g.stroke();
     }
 }   

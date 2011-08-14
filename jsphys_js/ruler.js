@@ -35,11 +35,11 @@ ruler.prototype.update = function()
 {
         if (this.velocities.length == 1)
         {
-            this.boostMats = [cBoostMat(this.velocities[0])];
+            this.boostMats = [cBoostMat(this.velocities[0],c)];
         }
         else if (this.velocities.length == 2)
         {
-            this.boostMats = [cBoostMat(this.velocities[0]), cBoostMat(this.velocities[1])];
+            this.boostMats = [cBoostMat(this.velocities[0],c), cBoostMat(this.velocities[1],c)];
             mat4.multiplyVec4(this.boostMats[1],this.mDispl,this.mDisplBoosted[1]);
         }
         quat4.subtract(this.endPoints[0],this.endPoints[1], this.mDispl);
@@ -47,11 +47,11 @@ ruler.prototype.update = function()
         this.distances[0] = Math.sqrt(quat4.spaceDot(this.mDispl,this.mDispl));
         this.times[0] = this.mDispl[0];
         this.distances[1] = Math.sqrt(quat4.spaceDot(this.mDisplBoosted[0],this.mDisplBoosted[0]));
-        this.times[1] = this.mDisplBoosted[0][0];
+        this.times[1] = this.mDisplBoosted[0][3] / c;
         if (this.velocities.length == 2)
         {
             this.distances[2] = Math.sqrt(quat4.spaceDot(this.mDisplBoosted[1],this.mDisplBoosted[1]));
-            this.times[2] = this.mDisplBoosted[1][0];
+            this.times[2] = this.mDisplBoosted[1][3] / c;
         }
 
 }        
@@ -59,10 +59,10 @@ ruler.prototype.update = function()
 ruler.prototype.draw = function(scene)
 {
         this.renderPoints = [
-            [this.endPoints[0][1] / scene.zoom + scene.origin[0],
-             this.endPoints[0][2] / scene.zoom + scene.origin[1]],
-            [this.endPoints[1][1] / scene.zoom + scene.origin[0],
-             this.endPoints[1][2] / scene.zoom + scene.origin[1]]]
+            [this.endPoints[0][0] / scene.zoom + scene.origin[0],
+             this.endPoints[0][1] / scene.zoom + scene.origin[1]],
+            [this.endPoints[1][0] / scene.zoom + scene.origin[0],
+             this.endPoints[1][1] / scene.zoom + scene.origin[1]]]
     if( (this.renderPoints[0][0] < (scene.width) &&
          this.renderPoints[0][1] < (scene.height) &&
          this.renderPoints[0][0] > (-scene.width) &&

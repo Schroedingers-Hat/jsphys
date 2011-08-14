@@ -1,3 +1,5 @@
+//Time now component 3
+
 /*The following are extensions to and copies of functions from the
  *glMatrix library for various purposes. As the copy of that library in this source is compressed
  * the original licence is below.
@@ -59,10 +61,10 @@ quat4.scale = function(vec, val, dest) {
 };
 
 quat4.spaceTimeDot = function(vec, vec2) {
-    return (-c*c * vec[0] * vec2[0]
-                 + vec[1] * vec2[1]
-                 + vec[2] * vec2[2]
-                 + vec[3] * vec2[3]);
+    return (     - vec[0] * vec2[0]
+                 - vec[1] * vec2[1]
+                 - vec[2] * vec2[2]
+                 + c*c *vec[3] * vec2[3]);
 }
 
 
@@ -104,11 +106,11 @@ quat4.subtract = function(vec, vec2, dest) {
 //Projection of spacial elements of vec onto vec2.
 vec3.spaceDot = function(vec, vec2)
 {
-    return vec[1] * vec2[1] + vec[2] * vec2[2];
+    return vec[0] * vec2[0] + vec[1] * vec2[1];
 }
 
 
 quat4.spaceDot = function(vec, vec2)
 {
-    return vec[1] * vec2[1] + vec[2] * vec2[2] + vec[3] * vec2[3];
+    return vec[0] * vec2[0] + vec[1] * vec2[1] + vec[2] * vec2[2];
 }
