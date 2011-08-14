@@ -113,16 +113,12 @@ function Scene() {
 
     this.nextStep = function() {
         this.curStep += 1;
-        this.carray = [];
-        this.load(this.demo, this.curStep);
-        this.startAnimation();
+        this.replay();
     };
 
     this.prevStep = function() {
         this.curStep -= 1;
-        this.carray = [];
-        this.load(this.demo, this.curStep);
-        this.startAnimation();
+        this.replay();
     }
 
     this.replay = function() {
