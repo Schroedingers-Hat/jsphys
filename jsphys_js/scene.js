@@ -1,5 +1,11 @@
 function Scene() {
     glMatrixArrayType = Float64Array;
+
+    /**
+     * Called by scene.load() to create each individual object in a scene.
+     * Hence obj is an object from the demo system specifying options,
+     * a label, coordinates, and momentum.
+     */
     this.createObject = function (obj) {
         if (typeof obj.options == "undefined") {
             obj.options = {};
@@ -8,6 +14,7 @@ function Scene() {
             obj.label = "";
         }
 
+        // Copy object-specific options in on top of the global defaults
         obj.options = $.extend({}, this.options, obj.options);
 
         // Upgrade 2D to 3D
@@ -44,6 +51,10 @@ function Scene() {
         
     };
 
+    /**
+     * Draw the scene onto the canvas. Uses requestAnimFrame to schedule the
+     * next frame.
+     */
     this.draw = function() {
         if (this.carray.length === 0) { return; }
         this.frameStartTime = new Date().getTime();
@@ -159,9 +170,11 @@ function Scene() {
         }
     };
 
-    // Find the closest object to the given (x,y), within a distance maxDist
-    // in screen pixels (i.e. (x,y) is a screen location, not a scaled scene
-    // coordinate)
+    /**
+     * Find the closest object to the given (x,y), within a distance maxDist
+     * in screen pixels (i.e. (x,y) is a screen location, not a scaled scene
+     * coordinate)
+     */
     this.findClosestObject = function(x, y, maxDist) {
         var i = 0;
         var minDist = this.width;
@@ -180,7 +193,7 @@ function Scene() {
             return this.carray[minElement];
         }
         return false;
-    }
+    };
 
     // Take a given inertialObject and switch to its reference frame
     this.shiftToFrameOfObject = function(obj) {
@@ -196,6 +209,10 @@ function Scene() {
         this.changeArrayFrame(XShift, newFrameBoost);
     };
 
+    /**
+     * Switch every object in the scene to a new reference frame given by
+     * the provided translation and boost.
+     */
     this.changeArrayFrame = function(translation, boost) {
         this.carray.forEach(function(obj) {
             obj.COM.changeFrame(translation, boost) 
@@ -204,7 +221,7 @@ function Scene() {
         this.extendedObjTest.changeFrame(translation,boost);
 
         this.extendedObjTest2.changeFrame(translation,boost);
-    }
+    };
 
     this.initialTime = new Date().getTime();
     this.g = $('#canvas')[0].getContext("2d");
