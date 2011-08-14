@@ -56,7 +56,7 @@ function Scene() {
         this.extendedObjTest2.drawNow(this);
         this.t = this.t + (this.timeStep*c);
         
-        $("#hsg").html(Math.floor(this.carray[0].COM.V[0]));
+        $("#hsg").html(Math.floor(this.carray[0].COM.V[0] / c));
         $("#gameclock").html(Math.floor(this.t / 1000 / c));
         $("#time").html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
 
