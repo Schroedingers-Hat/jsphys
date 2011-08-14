@@ -143,26 +143,11 @@ function Scene() {
             this.zoom = demo.steps[step].zoom;
         }
 
-        this.options = this.defaults;
+        // Clone defaults into options, rather than getting a reference to it
+        this.options = jQuery.extend({}, this.defaults);
 
-        // Set scene options
-        if (typeof demo.steps[step].showDoppler === "boolean") {
-            this.options.showDoppler = demo.steps[step].showDoppler;
-        } 
-        if (typeof demo.steps[step].showVisualPos === "boolean") {
-            this.options.showVisualPos = demo.steps[step].showVisualPos;
-        }
-        if (typeof demo.steps[step].showFramePos === "boolean") {
-            this.options.showFramePos = demo.steps[step].showFramePos;
-        }
-        if (typeof demo.steps[step].showVelocities === "boolean") {
-            this.options.showVelocities = demo.steps[step].showVelocities;
-        } 
-        if (typeof demo.steps[step].showTime === "boolean") {
-            this.options.showTime = demo.steps[step].showTime;
-        }
-        if (typeof demo.steps[step].showGamma === "boolean") {
-            this.options.showGamma = demo.steps[step].showGamma;
+        if (typeof demo.steps[step].options == "object") {
+            $.extend(this.options, demo.steps[step].options);
         }
 
         demo.steps[step].objects.forEach(this.createObject, this);
