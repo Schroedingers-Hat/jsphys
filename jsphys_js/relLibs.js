@@ -35,11 +35,9 @@ function getDistance(pt1, pt2)
     return Math.sqrt(Math.pow(pt1[0] - pt2[0], 2) + Math.pow(pt1[1] - pt2[1], 2));
 }
 
-/*
- *vToGamma
- *Takes a 3-velocity (0th element time) and returns
- *gamma.
-*/
+/**
+ * Takes a 3- or 4-velocity, (vx, vy, [vz,] t), and returns gamma.
+ */
 function vToGamma(v) {
     if (v.length == 3)
     {
@@ -51,8 +49,10 @@ function vToGamma(v) {
     }
 }
 
-//Takes a momentum (0th element Energy) and re-generates the energy
-//From the spacial elements.
+/**
+ * Takes a momentum (0th element Energy) and recalculates the energy
+ * from the spatial elements.
+ */
 function genEnergy(P,c,m) {
     if (P.length == 3)
     {
@@ -62,11 +62,10 @@ function genEnergy(P,c,m) {
     {
         P[3] = Math.pow((c*c *  m*m + P[0] * P[0] + P[1] * P[1] + P[2] * P[2]), 0.5);
     }
- return P;
+    return P;
 }
 
-/*
- * cBoostMat
+/**
  * Takes a velocity and a speed of light and returns a boost matrix
  * A bit less efficient than it should be, create some temporary variables lazy git. :/
  *

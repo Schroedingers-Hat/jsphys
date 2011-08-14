@@ -64,6 +64,10 @@ function onKeyUp(evt)
 //	else if (evt.keyCode == 50) rotDownDown = false;  
 }
 
+/**
+ * Change the reference frame to that of the object closest to the mouse
+ * cursor when the user clicks. Click on an object and see from its perspective.
+ */
 function clickHandler(e)
 {
     var offset = $('#canvas').offset();
@@ -77,6 +81,10 @@ function clickHandler(e)
     }
 }
 
+/**
+ * Zoom to a specified zoom level, move the zoom slider to match, and
+ * recalculate the standard boosts to be used when translating with wasd.
+ */
 function zoomTo(zoom) {
     scene.zoom = zoom;
 
@@ -139,6 +147,9 @@ window.requestAnimFrame = (function(){
           };
 })();
 
+/**
+ * Take an index into the demos array and play the matching demo.
+ */
 function loadDemo(idx) {
     return function() {
         scene.load(demos[idx], 0);
@@ -181,7 +192,6 @@ $(document).ready(function()
     $("#canvas").click(clickHandler);
     $("#doppler").change(function() {scene.options.showDoppler = !scene.options.showDoppler;});
     $("#framePos").change(function() {scene.options.showFramePos = !scene.options.showFramePos;});
+    $(document).keydown(onKeyDown);
+    $(document).keyup(onKeyUp);
 });
-
-$(document).keydown(onKeyDown);
-$(document).keyup(onKeyUp);
