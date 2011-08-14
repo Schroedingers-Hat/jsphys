@@ -23,11 +23,6 @@ var rotDown = mat4.create([1, 0, 0, 0,
                            0, 0, Math.cos(0.1), Math.sin(-0.1),
                            0, 0, Math.sin(0.1), Math.cos(0.1)]);
 
-var boostRight  = cBoostMat(quat4.create([0, 0.05, 0, 0]), c);
-var boostLeft   = cBoostMat(quat4.create([0, -0.05, 0, 0]), c);
-var boostUp     = cBoostMat(quat4.create([0, 0, -0.05, 0]), c);
-var boostDown   = cBoostMat(quat4.create([0, 0, 0.05, 0]), c);
-
 //Convention of using Velocity not multiplied by gamma.
 
 // Take two points [x,y] and return the distance between them.
@@ -94,4 +89,16 @@ function cBoostMat(boostV, c) {
                          -by * gamma, (gamma - 1) * bx * by / boostMagSq,     1 + (gamma - 1) * by * by / boostMagSq, 0,
                          0,           0,                                      0,                                      1
                         ]));
+}
+
+/**
+ * Take a 3-velocity and return a boost matrix from cBoostMat.
+ *
+ * Mathematical contortions come because the magnitude of the 4-vector must be c,
+ * so the time component has to be contrived to match the spatial components.
+ */
+function boostFrom3Vel(vx, vy, vz, zoom) {
+    var gamma = vToGamma([vx, vy, vz]);
+    return cBoostMat(quat4.create([Math.sqrt(c*c - (Math.pow(gamma, 2) * (vx*vx + vy*vy + vz*vz) / (zoom * zoom))), 
+                                   vx * gamma / zoom, vy * gamma / zoom, vz * gamma / zoom]), c);
 }

@@ -42,21 +42,13 @@ function onKeyDown(evt)
         }
     	else if (evt.keyCode == 61) 
     	{
-    	    zoomTo(scene.zoom / 2);
             if (scene.zoom < 0.06 ) zoomTo(0.6);
-            boostRight  = cBoostMat(quat4.create([0, 0.02 / scene.zoom, 0, 0]), c);
-            boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
-            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
-            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / scene.zoom, 0]), c);
+            else zoomTo(scene.zoom / 2);
     	}
     	else if (evt.keyCode == 109) 
     	{
-    	    zoomTo(scene.zoom * 2);
             if (scene.zoom > 40) zoomTo(40);
-            boostRight  = cBoostMat(quat4.create([0, 0.02 * scene.zoom, 0, 0]), c);
-            boostLeft   = cBoostMat(quat4.create([0, -0.02 * scene.zoom, 0, 0]), c);
-            boostUp     = cBoostMat(quat4.create([0, 0, -0.02 * scene.zoom, 0]), c);
-            boostDown   = cBoostMat(quat4.create([0, 0, 0.02 * scene.zoom, 0]), c);
+            else zoomTo(scene.zoom * 2);
     	}
 }
 
@@ -87,10 +79,12 @@ function clickHandler(e)
 
 function zoomTo(zoom) {
     scene.zoom = zoom;
-    boostRight  = cBoostMat(quat4.create([0, 0.02 / scene.zoom, 0, 0]), c);
-    boostLeft   = cBoostMat(quat4.create([0, -0.02 / scene.zoom, 0, 0]), c);
-    boostUp     = cBoostMat(quat4.create([0, 0, -0.02 / scene.zoom, 0]), c);
-    boostDown   = cBoostMat(quat4.create([0, 0, 0.02 / scene.zoom, 0]), c);
+
+    scene.boost.right = boostFrom3Vel(0.02 * scene.zoom, 0, 0, scene.zoom);
+    scene.boost.left = boostFrom3Vel(-0.02 * scene.zoom, 0, 0, scene.zoom);
+    scene.boost.up = boostFrom3Vel(0, -0.02 * scene.zoom, 0, scene.zoom);
+    scene.boost.down = boostFrom3Vel(0, 0.02 * scene.zoom, 0, scene.zoom);
+
     updateSliders();
 }
 

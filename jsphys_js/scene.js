@@ -60,14 +60,14 @@ function Scene() {
         $("#gameclock").html(Math.floor(this.t / 1000 / c));
         $("#time").html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
 
-        if (leftDown == true)     this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostLeft,  this.carray);
-        if (upDown == true)       this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostUp,    this.carray);
-        if (downDown == true)     this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostDown,  this.carray);
+        if (leftDown == true)     this.changeArrayFrame(quat4.create([0, 0, 0, 0]), this.boost.left,  this.carray);
+        if (upDown == true)       this.changeArrayFrame(quat4.create([0, 0, 0, 0]), this.boost.up,    this.carray);
+        if (downDown == true)     this.changeArrayFrame(quat4.create([0, 0, 0, 0]), this.boost.down,  this.carray);
+        if (rightDown == true)    this.changeArrayFrame(quat4.create([0, 0, 0, 0]), this.boost.right, this.carray);
         if (rotLeftDown == true)  this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotRight,   this.carray);
         if (rotRightDown == true) this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotLeft,    this.carray);
         if (rotUpDown == true)    this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotUp,      this.carray);
         if (rotDownDown == true)  this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotDown,    this.carray);
-        if (rightDown == true)    this.changeArrayFrame(quat4.create([0, 0, 0, 0]), boostRight, this.carray);
 
         requestAnimFrame(drawScene);
         this.frameEndTime = new Date().getTime();
@@ -229,17 +229,18 @@ function Scene() {
     this.timeStep = 5;
     this.timeScale = 0.02;
     this.t = 0;
-//    this.showFramePos = false;
-//    this.showVisualPos = true;
-//    this.showDoppler = true;
-//    this.displayTime = false;
-//    this.extendedObjTest = [];
+
     this.defaults = {"showDoppler": true,
                      "showVisualPos": true,
                      "showFramePos": false,
                      "showVelocities": true,
                      "showTime": false,
-                     "showGamma": true}
+                     "showGamma": true};
+    
+    this.boost = {"left": boostFrom3Vel(-0.05, 0, 0, this.zoom),
+                  "right": boostFrom3Vel(0.05, 0, 0, this.zoom),
+                  "up": boostFrom3Vel(0, -0.05, 0, this.zoom),
+                  "down": boostFrom3Vel(0, 0.05, 0, this.zoom)};
 }
 
 /**
