@@ -82,6 +82,10 @@ function genEnergy(P,c,m) {
  */
 function cBoostMat(boostV, c) {
     var gamma = boostV[3] / c;
+    if (gamma < 1.000001)
+    {
+        return (mat4.create([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]));
+    }
     var bx = boostV[0] / boostV[3];
     var by = boostV[1] / boostV[3];
 
