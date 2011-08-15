@@ -71,7 +71,7 @@ function Scene() {
 
         this.extendedObjTest2.update(this.timeStep);
         this.extendedObjTest.calcPastPoints();
-//        this.drawCrosshairs();
+        this.drawCrosshairs();
         this.rulerTest.update();
         this.rulerTest.draw(this); 
         this.extendedObjTest.drawNow(this);
