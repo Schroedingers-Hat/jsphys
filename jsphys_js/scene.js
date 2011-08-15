@@ -201,11 +201,6 @@ function Scene() {
 
         var XShift = new Float64Array(obj.COM.X0);
 
-        // If the new frame is basically the same as the old frame, don't bother.
-        if (Math.sqrt(quat4.spaceDot(XShift, XShift)) < 0.0001 &&
-            Math.sqrt(quat4.spaceDot(obj.COM.V, obj.COM.V)) < 0.0001) {
-                return;
-        }
         this.changeArrayFrame(XShift, newFrameBoost);
     };
 
