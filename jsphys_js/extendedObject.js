@@ -96,8 +96,6 @@ extendedObject.prototype.drawNow = function()
             scene.g.lineTo( this.pointPos[i][0] / scene.zoom + scene.origin[0],
                             this.pointPos[i][1] / scene.zoom + scene.origin[1]);
         }
-        scene.g.lineTo( this.pointPos[0][0] / scene.zoom + scene.origin[0],
-                        this.pointPos[0][1] / scene.zoom + scene.origin[1]);
        
         scene.g.stroke();
     }
