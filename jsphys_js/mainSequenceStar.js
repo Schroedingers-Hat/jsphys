@@ -1,3 +1,4 @@
+
 function mainSequenceStar(X, P, label, options)
 {
     this.options = options;
@@ -29,6 +30,11 @@ mainSequenceStar.prototype.draw = function(scene)
     if (this.options.showFramePos || scene.options.showFramePos) this.drawNow(scene);
 } 
 
+mainSequenceStar.prototype.update = function(timeStep)
+{
+    this.COM.updateX0(timeStep);
+    this.COM.calcPast();
+}
 
 mainSequenceStar.prototype.drawNow = function(scene)
 {

@@ -2,14 +2,15 @@
 //lNB: Shape is four dimensional, 
 // if you draw it moving and not with the front/back in the right time as well as place, it won't be the correct shape.
 
-function extendedObject(X, P, m, shape, materials, options,timeStep)
+function extendedObject(X, P, m, options, shape, timeStep)
 {
+
     this.isInteresting = true;
     this.shapePoints = new Array();
     this.pastPoints = new Array();
     this.pastRadialV = new Array();
-    this.COM = new inertialObject(X, P, m);
-    this.COM.init(timeStep); 
+    this.COM = new inertialObject(X, P, 1);
+    this.COM.init(timeStep);
     this.uDisplacement = quat4.create([0,0,0,0]);
     this.pointPos = new Array();
     // Make a rectangular prism which, when placed at the position or view pos
@@ -26,6 +27,9 @@ function extendedObject(X, P, m, shape, materials, options,timeStep)
     this.pastPoints[i] = quat4.create([0,0,0,0]);
     this.pointPos[i] = quat4.create([0,0,0,0]);
     }
+    this.shapePoints[shape.length - 1] = quat4.create(shape[shape.length - 1]); 
+    this.pointPos[shape.length - 1] = quat4.create([0,0,0,0]);
+    this.pastPoints[shape.length - 1] = quat4.create([0,0,0,0]);
 }
 
     // Update the COM and the surrounding points.
@@ -40,6 +44,7 @@ extendedObject.prototype.update = function(timeStep)
     quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
     quat4.add(this.pointPos[i],tempQuat4,this.pointPos[i]);
     }
+    this.calcPastPoints();
 }
 
 
@@ -134,8 +139,17 @@ extendedObject.prototype.drawPast = function(scene)
             scene.g.lineTo( this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
                         this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
         }
-        scene.g.lineTo( this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
-                        this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
         scene.g.stroke();
     }
-}   
+}
+
+extendedObject.prototype.draw = function(scene)
+{
+    this.drawPast(scene);
+    this.drawNow(scene);
+}
+
+extendedObject.prototype.drawXT = function(scene)
+{
+return;
+}

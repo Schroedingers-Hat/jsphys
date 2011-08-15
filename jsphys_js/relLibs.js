@@ -108,3 +108,24 @@ function boostFrom3Vel(vx, vy, vz, zoom) {
     return cBoostMat(quat4.create([vx * gamma / zoom, vy * gamma / zoom, vz * gamma / zoom, 
                                    Math.sqrt(c*c + (Math.pow(gamma, 2) * (vx*vx + vy*vy + vz*vz) / (zoom * zoom)))]), c);
 }
+
+
+function linesPadder(shape, resolution)
+{
+    var tDisplace = quat4.create();
+    var newShape = [];
+    var distance;
+    var numSteps;
+    for( i = 0; i < shape.length - 1; i++)
+    {
+        quat4.subtract(shape[i + 1], shape[i], tDisplace);
+        distance = Math.sqrt(Math.abs(quat4.spaceTimeDot(tDisplace, tDisplace)));
+        numSteps = (Math.round(distance / resolution));
+        quat4.scale(tDisplace, (1 / numSteps) );
+        for( j = 0; j < numSteps; j++ )
+        {
+            newShape[i * numSteps + j] = quat4.create(quat4.add(quat4.scale(tDisplace, j, tempQuat4),shape[i], tempQuat4));
+        }
+    }
+    return newShape;
+}

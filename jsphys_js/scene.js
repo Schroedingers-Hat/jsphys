@@ -24,30 +24,17 @@ function Scene() {
         if (obj.p.length == 2) {
             obj.p[2] = 0;
         }
-
-        var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
+        if (obj.shape)
+        {
+            var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
+                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, linesPadder(obj.shape, 5), this.timeStep)
+        }
+        else
+        {
+            var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options)
-        thingy.COM.init(this.timeStep);
+        }
         this.carray.push(thingy);
-        this.extendedObjTest = new extendedObject(quat4.create([1,2,0,0]),quat4.create([0,0,0,1]),1,[
-[0  ,0  ,0 ,0],
-[100,0  ,0 ,0],
-[100,100,0 ,0],
-[0  ,100,0 ,0],
-[0  ,0  ,0 ,0]
-], 1, 1, this.timeStep);
-
-        this.extendedObjTest2 = new extendedObject(quat4.create([101,2,0,0]),quat4.create([0,0,0,1]),1,[
-[0,  0  ,0,0],
-[100,0  ,0,0],
-[100,100,0,0],
-[0  ,100,0,0],
-[0  ,0  ,0,0]
-],1,1,this.timeStep);
-        this.extendedObjTest.COM.init(this.timeStep);
-        this.rulerTest = new ruler([this.extendedObjTest,this.extendedObjTest2],[0,0],[1,3]);
-        this.extendedObjTest2.COM.init(this.timeStep);
-//        this.extendedObjTest.init();
         
     };
 
@@ -63,20 +50,12 @@ function Scene() {
         this.clear();
 
         this.carray.forEach(function(obj) {
-            obj.COM.updateX0(this.timeStep);
+//            obj.COM.updateX0(this.timeStep);
+            obj.update(this.timeStep);
             obj.draw(this);
             obj.drawXT(this) 
         }, this);
-        this.extendedObjTest.update(this.timeStep);
-
-        this.extendedObjTest2.update(this.timeStep);
-        this.extendedObjTest.calcPastPoints();
         this.drawCrosshairs();
-        this.rulerTest.update();
-        this.rulerTest.draw(this); 
-        this.extendedObjTest.drawNow(this);
-        this.extendedObjTest.drawPast(this);
-        this.extendedObjTest2.drawNow(this);
         this.t = this.t + (this.timeStep*c);
         
         $("#hsg").html(Math.floor(this.carray[0].COM.V[3] / c));
@@ -212,10 +191,6 @@ function Scene() {
         this.carray.forEach(function(obj) {
             obj.COM.changeFrame(translation, boost) 
         });
-
-        this.extendedObjTest.changeFrame(translation,boost);
-
-        this.extendedObjTest2.changeFrame(translation,boost);
     };
 
     this.initialTime = new Date().getTime();
