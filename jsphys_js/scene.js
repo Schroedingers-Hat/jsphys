@@ -53,7 +53,7 @@ function Scene() {
 //            obj.COM.updateX0(this.timeStep);
             obj.update(this.timeStep);
             obj.draw(this);
-            obj.drawXT(this) 
+            obj.drawXT(this); 
         }, this);
         this.drawCrosshairs();
         this.t = this.t + (this.timeStep*c);
@@ -109,13 +109,13 @@ function Scene() {
     this.prevStep = function() {
         this.curStep -= 1;
         this.replay();
-    }
+    };
 
     this.replay = function() {
-        this.carray = []
+        this.carray = [];
         this.load(this.demo, this.curStep);
         this.startAnimation();
-    }
+    };
 
     this.load = function(demo, step) {
         this.carray = [];
@@ -189,7 +189,7 @@ function Scene() {
      */
     this.changeArrayFrame = function(translation, boost) {
         this.carray.forEach(function(obj) {
-            obj.COM.changeFrame(translation, boost) 
+            obj.COM.changeFrame(translation, boost);
         });
     };
 
