@@ -24,18 +24,14 @@ function Scene() {
         if (obj.p.length == 2) {
             obj.p[2] = 0;
         }
-        if (obj.shape)
-        {
+        if (obj.shape) {
             var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
-                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, linesPadder(obj.shape, 5), this.timeStep)
-        }
-        else
-        {
+                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, linesPadder(obj.shape, 5), this.timeStep);
+        } else {
             var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
-                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options)
+                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
         }
         this.carray.push(thingy);
-        
     };
 
     /**
@@ -50,13 +46,12 @@ function Scene() {
         this.clear();
 
         this.carray.forEach(function(obj) {
-//            obj.COM.updateX0(this.timeStep);
             obj.update(this.timeStep);
             obj.draw(this);
             obj.drawXT(this); 
         }, this);
         this.drawCrosshairs();
-        this.t = this.t + (this.timeStep*c);
+        this.t = this.t + (this.timeStep * c);
         
         $("#hsg").html(Math.floor(this.carray[0].COM.V[3] / c));
         $("#gameclock").html(Math.floor(this.t / 1000 / c));
@@ -136,7 +131,7 @@ function Scene() {
         // Clone defaults into options, rather than getting a reference to it
         this.options = jQuery.extend({}, this.defaults);
 
-        if (typeof demo.steps[step].options == "object") {
+        if (typeof demo.steps[step].options === "object") {
             $.extend(this.options, demo.steps[step].options);
         }
 
@@ -144,7 +139,7 @@ function Scene() {
         $('#caption').html(demo.steps[step].caption);
 
         // If the demo specifies an object whose frame is preferred, shift to that frame.
-        if (typeof demo.steps[step].frame == "number") {
+        if (typeof demo.steps[step].frame === "number") {
             this.shiftToFrameOfObject(this.carray[demo.steps[step].frame]);
         }
     };
