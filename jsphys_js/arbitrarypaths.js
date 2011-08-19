@@ -5,11 +5,11 @@
 function pathObject(pts, params) {
     // Anchor points. Events are calculated forward from the nearest.
     // According to whatever function is associated.
-    this.motionPts          = new Array();
+    this.motionPts          = [];
     // Invariant parameters characterising the motion.
     // Includes type of motion and characteristics of it ie. proper acceleration, evt horizon
     // or position according to some frame.
-    this.motionParams       = new Array();
+    this.motionParams       = [];
 
     // Not quite sure what I'm doing here. Attempted to use object literals.
     // Not sure if this whole structure is appropriate use, or whether I should only use it for coeffs.
@@ -43,7 +43,7 @@ function pathObject(pts, params) {
             tc : rot[3] * 2 * base
             };
         //TODO: Put these....somewhere. 
-        }:
+        },
 
         // Eventually we want a variety of functions available.
         // TODO: Could also generate tangent to motion, or other vector
@@ -69,7 +69,7 @@ function pathObject(pts, params) {
     // Matrices to take invariant parameters and map them to the current frame.
     this.motionMats     = mat4.create();
     // Vector for similar use.
-    this.motionCoeffs      = new Array();
+    this.motionCoeffs      = [];
     // Hold current position.
     this.pos            = quat4.create([0,0,0,0]);
     this.V              = quat4.create([0,0,0,0]);
