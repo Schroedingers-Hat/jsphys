@@ -6,6 +6,15 @@ function Scene() {
      * Hence obj is an object from the demo system specifying options,
      * a label, coordinates, and momentum.
      */
+    this.testPath = new pathObject([0,0,0,0],
+        [{alpha: 0.01, 
+          rot  : mat4.create([
+            1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            0,0,0,1]), 
+          type  : 0
+        }]);
     this.createObject = function (obj) {
         if (typeof obj.options == "undefined") {
             obj.options = {};
@@ -44,7 +53,7 @@ function Scene() {
         this.timeStep = (this.frameStartTime - this.frameEndTime) * this.timeScale;
 
         this.clear();
-
+        this.testPath.draw(this.t, this); 
         this.carray.forEach(function(obj) {
             obj.update(this.timeStep);
             obj.draw(this);
