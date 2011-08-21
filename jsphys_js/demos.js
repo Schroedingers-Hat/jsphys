@@ -28,16 +28,18 @@ var demos = [{"name": "Velocity addition",
              },
              {"name": "Relativistic snake",
               "steps": [{"caption": "We have here two knives a fixed distance apart, moving downwards. A special breed of high-speed snake, <em>Crotalus relativisticus</em>, is moving at a speed close to the speed of light. It's just short enough to fit between the blades.",
-                         "objects": [{"object": extendedObject, "x": [-30, -20, 0], "p": [0, -2, 0], "m": 1, "shape": [[-5, -5, 0, 0], [5, -5, 0, 0], [0, 5, 0, 0]]},
-                                     {"object": extendedObject, "x": [30, -20, 0], "p": [0, -2, 0], "m": 1, "shape": [[-5, -5, 0, 0], [5, -5, 0, 0], [0, 5, 0, 0]]},
-                                     {"object": extendedObject, "x": [-30, 0, 0], "p": [2.1, 0, 0], "m": 1, "shape": [[-50, 0, 0, 0], [0, 0, 0, 0]]}
-                                    ]},
+                         "objects": [{"object": extendedObject, "x": [-30, -20, 0], "p": [0, 2, 0], "m": 1, "shape": [[-5, -5, 0, 0], [5, -5, 0, 0], [0, 5, 0, 0], [-5, -5, 0, 0]]},
+                                     {"object": extendedObject, "x": [30, -20, 0], "p": [0, 2, 0], "m": 1, "shape": [[-5, -5, 0, 0], [5, -5, 0, 0], [0, 5, 0, 0], [-5, -5, 0, 0]]},
+                                     {"object": extendedObject, "x": [-30, 0, 0], "p": [10.1, 0, 0], "m": 1, "shape": [[-50, 0, 0, 0], [0, 0, 0, 0]]}
+                                    ],
+                         "options": {"showFramePos": true, "showVisualPos": false}},
                         {"caption": "But then consider the perspective of the snake. It's not length-contracted &mdash; the knives are. They're much closer together. How does the snake survive the knives?",
-                         "objects": [{"object": extendedObject, "x": [-30, -20, 0], "p": [0, -2, 0], "m": 1, "shape": [[-5, -5, 0, 0], [5, -5, 0, 0], [0, 5, 0, 0]]},
-                                     {"object": extendedObject, "x": [30, -20, 0], "p": [0, -2, 0], "m": 1, "shape": [[-5, -5, 0, 0], [5, -5, 0, 0], [0, 5, 0, 0]]},
+                         "objects": [{"object": extendedObject, "x": [-30, -20, 0], "p": [0, 2, 0], "m": 1, "shape": [[-5, -5, 0, 0], [5, -5, 0, 0], [0, 5, 0, 0], [-5, -5, 0, 0]]},
+                                     {"object": extendedObject, "x": [30, -20, 0], "p": [0, 2, 0], "m": 1, "shape": [[-5, -5, 0, 0], [5, -5, 0, 0], [0, 5, 0, 0], [-5, -5, 0, 0]]},
                                      {"object": extendedObject, "x": [-30, 0, 0], "p": [2.1, 0, 0], "m": 1, "shape": [[-50, 0, 0, 0], [0, 0, 0, 0]]}
                                     ],
-                         "frame": 3}
+                         "frame": 3,
+                         "options": {"showFramePos": true, "showVisualPos": false}}
                        ]
              }
             ];
