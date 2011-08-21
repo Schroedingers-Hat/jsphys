@@ -4,7 +4,7 @@
 
 function extendedObject(X, P, m, options, shape, timeStep)
 {
-
+    this.options = options;
     this.isInteresting = true;
     this.shapePoints = new Array();
     this.pastPoints = new Array();
@@ -16,9 +16,9 @@ function extendedObject(X, P, m, options, shape, timeStep)
     // Make a rectangular prism which, when placed at the position or view pos
     // of COM, must always contain part of the object.
     this.boundingBox = [0, 0, 0, 0, 0, 0];
-    for (i = 0; i < (shape.length - 1); i++)
+    for (var i = 0; i < (shape.length - 1); i++)
     {
-        for(j = 0; j < 3; j++)
+        for(var j = 0; j < 3; j++)
         {
             this.boundingBox[2 * j]     = Math.min(shape[i][j], shape[i+1][1]);
             this.boundingBox[2 * j + 1] = Math.max(shape[i][j], shape[i+1][j]);
@@ -32,17 +32,18 @@ function extendedObject(X, P, m, options, shape, timeStep)
     this.pastPoints[shape.length - 1] = quat4.create([0,0,0,0]);
 }
 
-    // Update the COM and the surrounding points.
-    // This is the most braindead way of doing it, huge amounts of redundant
-    // data/calculations, but it saves duplicating code.
+/**
+ * Update the COM and the surrounding points.
+ * This is the most braindead way of doing it, huge amounts of redundant
+ * data/calculations, but it saves duplicating code.
+ */
 extendedObject.prototype.update = function(timeStep)
 {
     this.COM.updateX0(timeStep);
-    for (i = 0; i< (this.shapePoints.length); i++)
-    {
-    quat4.add(this.COM.X0,this.shapePoints[i],this.pointPos[i]);
-    quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
-    quat4.add(this.pointPos[i],tempQuat4,this.pointPos[i]);
+    for (var i = 0; i < (this.shapePoints.length); i++) {
+        quat4.add(this.COM.X0,this.shapePoints[i], this.pointPos[i]);
+        quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
+        quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
     }
     this.calcPastPoints();
 }
@@ -50,7 +51,7 @@ extendedObject.prototype.update = function(timeStep)
 
 extendedObject.prototype.wasInView2D = function()
 {
-    return (showVisualPos &&
+    return (this.options.showVisualPos &&
             ((this.COM.XView[1] - this.boundingBox[0]) / scene.zoom < (scene.width - scene.origin[0] + 10) &&
              (this.COM.XView[1] - this.boundingBox[1]) / scene.zoom < (- scene.origin[1] - 10) &&
             (this.COM.XView[2] - this.boundingBox[3]) / scene.zoom < (scene.height - scene.origin[0] + 10) &&
@@ -62,7 +63,7 @@ extendedObject.prototype.wasInView2D = function()
 
 extendedObject.prototype.isInView2D = function()
 {
-    return (showVisualPos &&
+    return (this.options.showVisualPos &&
             ((this.COM.X0[1] - this.boundingBox[0]) / scene.zoom < (scene.width - scene.origin[0] + 10) &&
              (this.COM.X0[1] - this.boundingBox[1]) / scene.zoom < (- scene.origin[1] - 10) &&
              (this.COM.X0[2] - this.boundingBox[3]) / scene.zoom < (scene.height - scene.origin[0] + 10) &&
@@ -76,7 +77,7 @@ extendedObject.prototype.isInView2D = function()
 extendedObject.prototype.changeFrame = function(translation, rotation)
 {
     this.COM.changeFrame(translation, rotation);
-    for (i = 0; i < this.shapePoints.length; i++)
+    for (var i = 0; i < this.shapePoints.length; i++)
     {
         mat4.multiplyVec4(rotation, this.shapePoints[i]);
     }
@@ -89,25 +90,27 @@ extendedObject.prototype.drawNow = function()
     {
         scene.g.strokeStyle = "#0f0";
         scene.g.beginPath();
-        scene.g.moveTo( this.pointPos[0][0] / scene.zoom + scene.origin[0],
-                        this.pointPos[0][1] / scene.zoom + scene.origin[1]);
-        for (i=0; i < (this.shapePoints.length); i++)
+        scene.g.moveTo(this.pointPos[0][0] / scene.zoom + scene.origin[0],
+                       this.pointPos[0][1] / scene.zoom + scene.origin[1]);
+        for (var i = 0; i < (this.shapePoints.length); i++)
         {
-            scene.g.lineTo( this.pointPos[i][0] / scene.zoom + scene.origin[0],
-                            this.pointPos[i][1] / scene.zoom + scene.origin[1]);
+            scene.g.lineTo(this.pointPos[i][0] / scene.zoom + scene.origin[0],
+                           this.pointPos[i][1] / scene.zoom + scene.origin[1]);
         }
        
         scene.g.stroke();
     }
 }
 
-//Note these methods assume no acceleration
+/**
+ * Note these methods assume no acceleration
+ */
 extendedObject.prototype.calcPastPoints = function()
 {
     var radialV;
     var radialDist;
     var viewTime;
-    for (i=0; i < (this.shapePoints.length); i++)
+    for (var i = 0; i < (this.shapePoints.length); i++)
     {
         radialDist = Math.sqrt(quat4.spaceDot(this.pointPos[i], this.pointPos[i]));
         radialV = ( -quat4.spaceDot(this.COM.V, this.pointPos[i]) / 
@@ -130,11 +133,11 @@ extendedObject.prototype.drawPast = function(scene)
     {                                                                               
         scene.g.strokeStyle = "#0ff";                                                 
         scene.g.beginPath();                                                        
-        scene.g.moveTo( this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
-                        this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
-        for (i=1; i < (this.pastPoints.length); i++)
+        scene.g.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
+                       this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
+        for (var i = 1; i < (this.pastPoints.length); i++)
         {
-            scene.g.lineTo( this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
+            scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
                         this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
         }
         scene.g.stroke();
@@ -143,11 +146,13 @@ extendedObject.prototype.drawPast = function(scene)
 
 extendedObject.prototype.draw = function(scene)
 {
-    this.drawPast(scene);
-    this.drawNow(scene);
+    if (this.options.showVisualPos)
+        this.drawPast(scene);
+    else if (this.options.showFramePos)
+        this.drawNow(scene);
 }
 
 extendedObject.prototype.drawXT = function(scene)
 {
-return;
+    return;
 }
