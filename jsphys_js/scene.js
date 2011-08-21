@@ -213,6 +213,9 @@ function Scene() {
                   "right": boostFrom3Vel(0.05, 0, 0, this.zoom),
                   "up": boostFrom3Vel(0, -0.05, 0, this.zoom),
                   "down": boostFrom3Vel(0, 0.05, 0, this.zoom)};
+    
+    this.alwaysDoppler = false;
+    this.neverDoppler = false;
 }
 
 /**

@@ -30,7 +30,7 @@ function onKeyDown(evt)
         else if (evt.keyCode == 84) scene.displayTime = !scene.displayTime;
         else if (evt.keyCode == 90)
         {
-            scene.showDoppler = !scene.showDoppler;
+            $('#doppler').click();
         }
         else if (evt.keyCode == 88)
         {
@@ -179,6 +179,31 @@ function loadDemoList() {
     })
 }
 
+/**
+ * The Doppler button has three states:
+ * - Force off: Force Doppler shifting to be disabled for all objects in the scene.
+ * - Force on: Force Doppler shifting to be enabled for all objects in the scene.
+ * - Default: Do whatever the demo wants.
+ */
+function dopplerButtonClick(event) {
+    if (!scene.neverDoppler && !scene.alwaysDoppler) {
+        // we're currently in default mode. switch to force off.
+        scene.neverDoppler = true;
+        $("#doppler").html("Force on");
+    } else if (scene.neverDoppler && !scene.alwaysDoppler) {
+        // we're in force off mode. switch to force on.
+        scene.neverDoppler = false;
+        scene.alwaysDoppler = true;
+        $("#doppler").html("Default");
+    } else {
+        // switch to default.
+        scene.neverDoppler = false;
+        scene.alwaysDoppler = false;
+        $("#doppler").html("Force off");
+    }
+    event.preventDefault();
+}
+
 // Use JQuery to wait for document load
 $(document).ready(function()
 {
@@ -190,7 +215,7 @@ $(document).ready(function()
 
     $("#pause").click(pause);
     $("#canvas").click(clickHandler);
-    $("#doppler").change(function() {scene.options.showDoppler = !scene.options.showDoppler;});
+    $("#doppler").click(dopplerButtonClick);
     $("#framePos").change(function() {scene.options.showFramePos = !scene.options.showFramePos;});
     $(document).keydown(onKeyDown);
     $(document).keyup(onKeyUp);

@@ -92,7 +92,7 @@ mainSequenceStar.prototype.drawPast = function(scene)
        yvis > (-scene.origin[1] - 10) &&
        this.r / scene.zoom > 0.3)
     {
-        if(this.options.showDoppler || scene.options.showDoppler) {
+        if(scene.alwaysDoppler || (!scene.neverDoppler && this.options.showDoppler)) {
             scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                               this.COM.radialVPast,
                                                               this.COM.V[3] / c));
