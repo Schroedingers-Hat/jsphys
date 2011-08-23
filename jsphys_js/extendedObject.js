@@ -6,13 +6,17 @@ function extendedObject(X, P, m, options, shape, timeStep)
 {
     this.options = options;
     this.isInteresting = true;
-    this.shapePoints = new Array();
-    this.pastPoints = new Array();
-    this.pastRadialV = new Array();
+    this.shapePoints = [];
+    this.pastPoints = [];
+    this.pastRadialV = [];
+
+    this.temp = 5000;
+    this.stillColor = tempToColor(this.temp);
+
     this.COM = new inertialObject(X, P, 1);
     this.COM.init(timeStep);
     this.uDisplacement = quat4.create([0,0,0,0]);
-    this.pointPos = new Array();
+    this.pointPos = [];
     // Make a rectangular prism which, when placed at the position or view pos
     // of COM, must always contain part of the object.
     this.boundingBox = [0, 0, 0, 0, 0, 0];
@@ -23,9 +27,9 @@ function extendedObject(X, P, m, options, shape, timeStep)
             this.boundingBox[2 * j]     = Math.min(shape[i][j], shape[i+1][1]);
             this.boundingBox[2 * j + 1] = Math.max(shape[i][j], shape[i+1][j]);
         }
-    this.shapePoints[i] = quat4.create(shape[i]);
-    this.pastPoints[i] = quat4.create([0,0,0,0]);
-    this.pointPos[i] = quat4.create([0,0,0,0]);
+        this.shapePoints[i] = quat4.create(shape[i]);
+        this.pastPoints[i] = quat4.create([0,0,0,0]);
+        this.pointPos[i] = quat4.create([0,0,0,0]);
     }
     this.shapePoints[shape.length - 1] = quat4.create(shape[shape.length - 1]); 
     this.pointPos[shape.length - 1] = quat4.create([0,0,0,0]);
@@ -41,7 +45,7 @@ extendedObject.prototype.update = function(timeStep)
 {
     this.COM.updateX0(timeStep);
     for (var i = 0; i < (this.shapePoints.length); i++) {
-        quat4.add(this.COM.X0,this.shapePoints[i], this.pointPos[i]);
+        quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
         quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
         quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
     }
@@ -130,8 +134,14 @@ extendedObject.prototype.calcPastPoints = function()
 extendedObject.prototype.drawPast = function(scene)
 {                                                                                   
     if (this.isInteresting || true)                                                 
-    {                                                                               
-        scene.g.strokeStyle = "#0ff";                                                 
+    {
+        if(scene.alwaysDoppler || (!scene.neverDoppler && this.options.showDoppler)) {
+            scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                                this.COM.radialVPast,
+                                                                this.COM.V[3] / c));
+        }
+        else scene.g.strokeStyle = this.stillColor;
+        
         scene.g.beginPath();                                                        
         scene.g.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
                        this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
