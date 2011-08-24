@@ -23,7 +23,7 @@ function extendedObject(X, P, m, options, shape, timeStep)
     this.initialBoost = cBoostMat([-this.COM.V[0],
                                    -this.COM.V[1],
                                    -this.COM.V[2],
-                                   -this.COM.V[3]]
+                                   this.COM.V[3]]
                                 ,c);
     for (var i = 0; i < (shape.length - 1); i++)
     {
@@ -91,7 +91,7 @@ extendedObject.prototype.changeFrame = function(translation, rotation)
     this.COM.changeFrame(translation, rotation);
     for (var i = 0; i < this.shapePoints.length; i++)
     {
-        mat4.multiplyVec4(rotation, this.shapePoints[i]);
+        this.shapePoints[i] = mat4.multiplyVec4(rotation, this.shapePoints[i]);
     }
 }
 
@@ -147,7 +147,7 @@ extendedObject.prototype.drawPast = function(scene)
                          (!scene.neverDoppler && this.options.showDoppler));
         if(doDoppler) {
             scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                                this.COM.radialVPast,
+                                                                this.pastRadialV[0],
                                                                 this.COM.V[3] / c));
         } else {
             scene.g.strokeStyle = this.stillColor;
@@ -164,12 +164,14 @@ extendedObject.prototype.drawPast = function(scene)
                                                                     this.pastRadialV[i],
                                                                     this.COM.V[3] / c));
             }
+            scene.g.beginPath();
+            scene.g.moveTo(this.pastPoints[i-1][0] / scene.zoom + scene.origin[0],
+                           this.pastPoints[i-1][1] / scene.zoom + scene.origin[1]);
             scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
                            this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
-            
+            scene.g.stroke();
         }
 
-        scene.g.stroke();
     }
 }
 
