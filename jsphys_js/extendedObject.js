@@ -120,6 +120,10 @@ extendedObject.prototype.drawNow = function()
             scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-1/Math.pow(this.COM.V[3] / c, 2)))/1000) + "c", this.COM.X0[0] / scene.zoom + scene.origin[0],
                              this.COM.X0[1] / scene.zoom + scene.origin[1] + 20);
         }
+        if (this.options.showGamma) {
+            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, this.COM.X0[0] / scene.zoom + scene.origin[0],
+                             this.COM.X0[1] / scene.zoom + scene.origin[1] - 20);
+        }
     }
 }
 
