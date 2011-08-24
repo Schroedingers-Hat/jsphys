@@ -56,7 +56,7 @@ inertialObject.prototype.calcPast = function()
 {
     this.radialDist = Math.sqrt(quat4.spaceDot(this.X0, this.X0));
     this.radialV = ( -quat4.spaceDot(this.V, this.X0) / 
-                    this.V[3] / Math.max(Math.sqrt(quat4.spaceDot(this.X0, this.X0)),1e-10) * c);
+                    this.V[3] / Math.max(this.radialDist,1e-10) * c);
     this.viewTime = this.radialDist / (c - this.radialV);
     
     this.uDisplacement = quat4.scale(this.V, this.viewTime / this.V[3], 

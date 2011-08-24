@@ -20,6 +20,11 @@ function extendedObject(X, P, m, options, shape, timeStep)
     // Make a rectangular prism which, when placed at the position or view pos
     // of COM, must always contain part of the object.
     this.boundingBox = [0, 0, 0, 0, 0, 0];
+    this.initialBoost = cBoostMat([-this.COM.V[0],
+                                   -this.COM.V[1],
+                                   -this.COM.V[2],
+                                   -this.COM.V[3]]
+                                ,c);
     for (var i = 0; i < (shape.length - 1); i++)
     {
         for(var j = 0; j < 3; j++)
@@ -27,11 +32,13 @@ function extendedObject(X, P, m, options, shape, timeStep)
             this.boundingBox[2 * j]     = Math.min(shape[i][j], shape[i+1][1]);
             this.boundingBox[2 * j + 1] = Math.max(shape[i][j], shape[i+1][j]);
         }
-        this.shapePoints[i] = quat4.create(shape[i]);
+        this.shapePoints[i] = quat4.create(mat4.multiplyVec4(this.initialBoost, shape[i], tempQuat4));
         this.pastPoints[i] = quat4.create([0,0,0,0]);
         this.pointPos[i] = quat4.create([0,0,0,0]);
     }
-    this.shapePoints[shape.length - 1] = quat4.create(shape[shape.length - 1]); 
+
+    this.shapePoints[shape.length - 1] = quat4.create(
+        mat4.multiplyVec4(this.initialBoost, shape[shape.length - 1], tempQuat4));
     this.pointPos[shape.length - 1] = quat4.create([0,0,0,0]);
     this.pastPoints[shape.length - 1] = quat4.create([0,0,0,0]);
 }
@@ -120,7 +127,7 @@ extendedObject.prototype.calcPastPoints = function()
         radialDist = Math.sqrt(quat4.spaceDot(this.pointPos[i], this.pointPos[i]));
         radialV = ( -quat4.spaceDot(this.COM.V, this.pointPos[i]) / 
                          Math.max(radialDist, 1e-16) /
-                         this.COM.V[3] / Math.sqrt(quat4.spaceDot(this.pointPos[i],this.pointPos[i]))* c);
+                         this.COM.V[3] * c);
         viewTime = radialDist / (c - radialV);
         quat4.scale(this.COM.V, viewTime / this.COM.V[3], this.uDisplacement);
         quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
