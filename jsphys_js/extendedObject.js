@@ -134,23 +134,33 @@ extendedObject.prototype.calcPastPoints = function()
 extendedObject.prototype.drawPast = function(scene)
 {                                                                                   
     if (this.isInteresting || true)                                                 
-    {
-        if(scene.alwaysDoppler || (!scene.neverDoppler && this.options.showDoppler)) {
+    {   
+        var doDoppler = (scene.alwaysDoppler || 
+                         (!scene.neverDoppler && this.options.showDoppler));
+        if(doDoppler) {
             scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                                 this.COM.radialVPast,
                                                                 this.COM.V[3] / c));
+        } else {
+            scene.g.strokeStyle = this.stillColor;
         }
-        else scene.g.strokeStyle = this.stillColor;
+
         
-        scene.g.beginPath();                                                        
-        scene.g.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
-                       this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
+            scene.g.beginPath();
+            scene.g.moveTo(this.pastPoints[i - 1][0] / scene.zoom + scene.origin[0], 
+                           this.pastPoints[i - 1][1] / scene.zoom + scene.origin[1]);
+            if(doDoppler) {
+                scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                                    this.COM.radialVPast,
+                                                                    this.COM.V[3] / c));
+            }
             scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
-                        this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
+                           this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
+            
+            scene.g.stroke();
         }
-        scene.g.stroke();
     }
 }
 
