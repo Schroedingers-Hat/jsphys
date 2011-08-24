@@ -44,7 +44,7 @@ function Scene() {
         this.timeStep = (this.frameStartTime - this.frameEndTime) * this.timeScale;
 
         this.clear();
-
+        drawLightCone(this);
         this.carray.forEach(function(obj) {
             obj.update(this.timeStep);
             obj.draw(this);
@@ -196,7 +196,7 @@ function Scene() {
     this.height = $("#canvas").height();
     this.hwidth = this.width / 2;
     this.hheight = this.height / 2;
-    this.origin = [this.hwidth, this.hheight, 0];
+    this.origin = [this.hwidth, this.hheight, this.hheight];
     this.carray = [];
     this.zoom = 0.25;
     this.timeStep = 5;
@@ -225,4 +225,35 @@ function Scene() {
  */
 function drawScene(event) {
     scene.draw();
+}
+
+function drawLightCone(scene){
+    var size = Math.max(scene.width,scene.height);
+    scene.h.fillStyle = "#800";
+    scene.h.beginPath();
+    scene.h.moveTo(-size + scene.origin[0], -size + scene.origin[2]);
+    scene.h.lineTo(-size + scene.origin[0], size + scene.origin[2]);
+    scene.h.lineTo(size + scene.origin[0], -size + scene.origin[2]);
+    scene.h.lineTo(size + scene.origin[0], size + scene.origin[2]);
+    scene.h.moveTo(-size + scene.origin[0], -size + scene.origin[2]);
+    scene.h.closePath();
+    scene.h.fill();
+    scene.h.fillStyle = "#008";
+    scene.h.beginPath();
+    scene.h.moveTo(-size + scene.origin[0], -size + scene.origin[2]);
+    scene.h.lineTo(size + scene.origin[0], -size + scene.origin[2]);
+    scene.h.lineTo(-size + scene.origin[0], size + scene.origin[2]);
+    scene.h.lineTo(size + scene.origin[0], size + scene.origin[2]);
+    scene.h.moveTo(-size + scene.origin[0], -size + scene.origin[2]);
+    scene.h.closePath();
+    scene.h.fill();
+    scene.h.strokeStyle = "#FFF";
+    scene.h.lineWidth = 3;
+    scene.h.beginPath();
+    scene.h.moveTo(0, scene.origin[2]);
+    scene.h.lineTo(scene.width, scene.origin[2]);
+    scene.h.moveTo(scene.origin[0], 0);
+    scene.h.lineTo(scene.origin[0], scene.height); 
+    scene.h.stroke();
+    scene.h.lineWidth = 1;
 }

@@ -12,7 +12,9 @@ function extendedObject(X, P, m, options, shape, timeStep)
 
     this.temp = 5000;
     this.stillColor = tempToColor(this.temp);
-
+    if ( options.interestingPts ){
+    this.interestingPts = options.interestingPts;
+    };
     this.COM = new inertialObject(X, P, 1);
     this.COM.init(timeStep);
     this.uDisplacement = quat4.create([0,0,0,0]);
@@ -185,5 +187,57 @@ extendedObject.prototype.draw = function(scene)
 
 extendedObject.prototype.drawXT = function(scene)
 {
-    return;
+    var xvis = this.COM.X0[0] / scene.zoom;
+    var tvis = this.COM.X0[3] / scene.timeScale;
+    /* Find dx/dt using chain rule.
+       V[0] is dx/dtau, V[3] is dt/dtau
+       thus dx/dt is V[0]/V[3].
+    */
+    var dxdtVis = (this.COM.V[0] ) / 
+                  (this.COM.V[3]);
+    scene.h.fillStyle = "rgba(0, 256, 0, 0.5)";
+    scene.h.strokeStyle = "rgba(0, 0, 0, 0.5)";
+
+    // A blob at t=0 to represent where the object is.
+    scene.h.beginPath();
+    scene.h.arc(xvis + scene.origin[0],
+                scene.origin[2],
+                3, 0, twopi, true);
+    scene.h.closePath();
+    scene.h.fill();
+
+    // A world line.
+    scene.h.beginPath();
+    scene.h.moveTo(xvis + scene.origin[0] + 
+                    scene.origin[2]*dxdtVis, 
+                   0);
+    scene.h.lineTo(xvis + scene.origin[0] -
+                    (scene.height - scene.origin[2]) * dxdtVis,
+                   scene.height);
+    scene.h.stroke();
+    
+    // A blob on the light cone.
+    xvis = this.COM.XView[0] / scene.zoom;
+    tvis = this.COM.XView[3] / scene.zoom;
+    scene.h.beginPath();
+    scene.h.arc(xvis + scene.origin[0],
+                -tvis + scene.origin[2],
+                3, 0, twopi, true);
+    scene.h.fill();
+ 
+
+
+    // Some world lines of interesting parts of the object
+    // Such as front or back.
+    for ( i in this.interestingPts){
+        xvis = this.pointPos[this.interestingPts[i]][0] / scene.zoom;
+        scene.h.beginPath();
+        scene.h.moveTo(xvis + scene.origin[0] - 
+                        scene.origin[2] * dxdtVis, 
+                       0);
+        scene.h.lineTo(xvis + scene.origin[0] + 
+                        (scene.height - scene.origin[2]) * dxdtVis, 
+                       scene.height);
+        scene.h.stroke();
+    };
 }
