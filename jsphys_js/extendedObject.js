@@ -44,6 +44,7 @@ function extendedObject(X, P, m, options, shape, timeStep)
 extendedObject.prototype.update = function(timeStep)
 {
     this.COM.updateX0(timeStep);
+    this.COM.calcPast();
     for (var i = 0; i < (this.shapePoints.length); i++) {
         quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
         quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
@@ -145,22 +146,23 @@ extendedObject.prototype.drawPast = function(scene)
             scene.g.strokeStyle = this.stillColor;
         }
 
-        
+        scene.g.beginPath();
+        scene.g.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
+                       this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
+       
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
-            scene.g.beginPath();
-            scene.g.moveTo(this.pastPoints[i - 1][0] / scene.zoom + scene.origin[0], 
-                           this.pastPoints[i - 1][1] / scene.zoom + scene.origin[1]);
             if(doDoppler) {
                 scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                                    this.COM.radialVPast,
+                                                                    this.pastRadialV[i],
                                                                     this.COM.V[3] / c));
             }
             scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
                            this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
             
-            scene.g.stroke();
         }
+
+        scene.g.stroke();
     }
 }
 
@@ -168,7 +170,7 @@ extendedObject.prototype.draw = function(scene)
 {
     if (this.options.showVisualPos)
         this.drawPast(scene);
-    else if (this.options.showFramePos)
+    if (this.options.showFramePos)
         this.drawNow(scene);
 }
 
