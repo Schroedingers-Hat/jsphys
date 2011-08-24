@@ -12,21 +12,24 @@ function extendedObject(X, P, m, options, shape, timeStep)
 
     this.temp = 5000;
     this.stillColor = tempToColor(this.temp);
-    if ( options.interestingPts ){
-    this.interestingPts = options.interestingPts;
-    };
+    
+    if (options.interestingPts) {
+        this.interestingPts = options.interestingPts;
+    }
+
     this.COM = new inertialObject(X, P, 1);
     this.COM.init(timeStep);
     this.uDisplacement = quat4.create([0,0,0,0]);
     this.pointPos = [];
+    
     // Make a rectangular prism which, when placed at the position or view pos
     // of COM, must always contain part of the object.
     this.boundingBox = [0, 0, 0, 0, 0, 0];
     this.initialBoost = cBoostMat([-this.COM.V[0],
                                    -this.COM.V[1],
                                    -this.COM.V[2],
-                                   this.COM.V[3]]
-                                ,c);
+                                    this.COM.V[3]], c);
+
     for (var i = 0; i < (shape.length - 1); i++)
     {
         for(var j = 0; j < 3; j++)
@@ -87,7 +90,6 @@ extendedObject.prototype.isInView2D = function()
             );
 }
 
-
 extendedObject.prototype.changeFrame = function(translation, rotation)
 {
     this.COM.changeFrame(translation, rotation);
@@ -96,7 +98,6 @@ extendedObject.prototype.changeFrame = function(translation, rotation)
         this.shapePoints[i] = mat4.multiplyVec4(rotation, this.shapePoints[i]);
     }
 }
-
 
 extendedObject.prototype.drawNow = function()
 {
@@ -137,14 +138,14 @@ extendedObject.prototype.calcPastPoints = function()
         var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V) / this.COM.V[3] * c;
         var a = c*c - vDotv;
 
-        viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ) / a;
+        viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a;
         quat4.scale(this.COM.V, viewTime / this.COM.V[3] * c, this.uDisplacement);
         quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
 
         this.pastRadialV[i] = (quat4.spaceDot(this.pastPoints[i], this.COM.V) / 
                                 Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
                                 this.pastPoints[i], this.pastPoints[i]) 
-                                )),1e-16) / this.COM.V[3] * c);
+                                )), 1e-16) / this.COM.V[3] * c);
     }
 }
 
@@ -235,11 +236,9 @@ extendedObject.prototype.drawXT = function(scene)
                 3, 0, twopi, true);
     scene.h.fill();
  
-
-
     // Some world lines of interesting parts of the object
     // Such as front or back.
-    for ( i in this.interestingPts){
+    for (i in this.interestingPts) {
         xvis = this.pointPos[this.interestingPts[i]][0] / scene.zoom;
         scene.h.beginPath();
         scene.h.moveTo(xvis + scene.origin[0] - 
@@ -249,5 +248,5 @@ extendedObject.prototype.drawXT = function(scene)
                         (scene.height - scene.origin[2]) * dxdtVis, 
                        scene.height);
         scene.h.stroke();
-    };
+    }
 }
