@@ -229,22 +229,22 @@ function drawScene(event) {
 
 function drawLightCone(scene){
     var size = Math.max(scene.width,scene.height);
-    scene.h.fillStyle = "#800";
+    scene.h.fillStyle = "#300";
     scene.h.beginPath();
-    scene.h.moveTo(-size + scene.origin[0], -size + scene.origin[2]);
-    scene.h.lineTo(-size + scene.origin[0], size + scene.origin[2]);
-    scene.h.lineTo(size + scene.origin[0], -size + scene.origin[2]);
-    scene.h.lineTo(size + scene.origin[0], size + scene.origin[2]);
-    scene.h.moveTo(-size + scene.origin[0], -size + scene.origin[2]);
+    scene.h.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
+    scene.h.lineTo(-size * c + scene.origin[0], size + scene.origin[2]);
+    scene.h.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
+    scene.h.lineTo( size * c + scene.origin[0], size + scene.origin[2]);
+    scene.h.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
     scene.h.closePath();
     scene.h.fill();
-    scene.h.fillStyle = "#008";
+    scene.h.fillStyle = "#003";
     scene.h.beginPath();
-    scene.h.moveTo(-size + scene.origin[0], -size + scene.origin[2]);
-    scene.h.lineTo(size + scene.origin[0], -size + scene.origin[2]);
-    scene.h.lineTo(-size + scene.origin[0], size + scene.origin[2]);
-    scene.h.lineTo(size + scene.origin[0], size + scene.origin[2]);
-    scene.h.moveTo(-size + scene.origin[0], -size + scene.origin[2]);
+    scene.h.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
+    scene.h.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
+    scene.h.lineTo(-size * c + scene.origin[0],  size + scene.origin[2]);
+    scene.h.lineTo( size * c + scene.origin[0],  size + scene.origin[2]);
+    scene.h.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
     scene.h.closePath();
     scene.h.fill();
     scene.h.strokeStyle = "#FFF";

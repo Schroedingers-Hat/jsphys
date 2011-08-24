@@ -126,13 +126,13 @@ extendedObject.prototype.calcPastPoints = function()
     var viewTime;
     for (var i = 0; i < (this.shapePoints.length); i++)
     {
-        var vDotv = quat4.spaceDot(this.COM.V, this.COM.V) / Math.pow(this.COM.V[3], 2);
+        var vDotv = quat4.spaceDot(this.COM.V, this.COM.V) / Math.pow(this.COM.V[3] / c, 2);
         var xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
-        var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V) / this.COM.V[3];
+        var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V) / this.COM.V[3] * c;
         var a = c*c - vDotv;
 
         viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ) / a;
-        quat4.scale(this.COM.V, viewTime / this.COM.V[3], this.uDisplacement);
+        quat4.scale(this.COM.V, viewTime / this.COM.V[3] * c, this.uDisplacement);
         quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
 
         this.pastRadialV[i] = (quat4.spaceDot(this.pastPoints[i], this.COM.V) / 
@@ -189,13 +189,13 @@ extendedObject.prototype.draw = function(scene)
 extendedObject.prototype.drawXT = function(scene)
 {
     var xvis = this.COM.X0[0] / scene.zoom;
-    var tvis = this.COM.X0[3] / scene.timeScale;
+    var tvis = this.COM.X0[3] / c / scene.timeScale;
     /* Find dx/dt using chain rule.
        V[0] is dx/dtau, V[3] is dt/dtau
        thus dx/dt is V[0]/V[3].
     */
     var dxdtVis = (this.COM.V[0] ) / 
-                  (this.COM.V[3]);
+                  (this.COM.V[3] / c);
     scene.h.fillStyle = "rgba(0, 256, 0, 0.5)";
     scene.h.strokeStyle = "rgba(0, 0, 0, 0.5)";
 
@@ -219,7 +219,11 @@ extendedObject.prototype.drawXT = function(scene)
     
     // A blob on the light cone.
     xvis = this.COM.XView[0] / scene.zoom;
-    tvis = this.COM.XView[3] / scene.zoom;
+    tvis = this.COM.XView[3] / c / scene.zoom;
+    scene.h.fillStyle = tempToColor(dopplerShiftColor(this.temp,
+                                                      this.COM.radialVPast,
+                                                      this.COM.V[3] / c));
+
     scene.h.beginPath();
     scene.h.arc(xvis + scene.origin[0],
                 -tvis + scene.origin[2],

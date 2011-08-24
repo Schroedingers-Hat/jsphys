@@ -52,25 +52,10 @@ inertialObject.prototype.changeFrame = function(translation, rotation)
     this.tau += this.uDisplacement[3] / this.V[3];
 }
 
-//inertialObject.prototype.calcPast = function()
-//{
-//    this.radialDist = Math.sqrt(quat4.spaceDot(this.X0, this.X0));
-//    this.radialV = ( -quat4.spaceDot(this.V, this.X0) / 
-//                    this.V[3] / Math.max(this.radialDist,1e-10) * c);
-//    this.viewTime = this.radialDist / (c - this.radialV);
-//    
-//    this.uDisplacement = quat4.scale(this.V, this.viewTime / this.V[3], 
-//                                     this.uDisplacement);
-//    this.XView = quat4.subtract(this.X0, this.uDisplacement, this.XView);
-//    this.rPast = Math.sqrt(Math.max(quat4.spaceDot( this.XView, this.XView ),1e-10)); 
-//    this.radialVPast = (quat4.spaceDot(this.XView, this.V) / 
-//                        Math.max(this.rPast,1e-10) / this.V[3] * c);
-//}
-
 inertialObject.prototype.calcPast = function() {
-    var vDotv = quat4.spaceDot(this.V, this.V) / Math.pow(this.V[3], 2);
+    var vDotv = quat4.spaceDot(this.V, this.V) / Math.pow(this.V[3] / c, 2);
     var xDotx = quat4.spaceDot(this.X0, this.X0);
-    var vDotx = quat4.spaceDot(this.X0, this.V) / this.V[3];
+    var vDotx = quat4.spaceDot(this.X0, this.V) / this.V[3] * c;
     var a = c*c - vDotv;
     if (xDotx == 0 || vDotv == 0){
         this.XView = quat4.add(this.X0, [0,0,0,0], this.XView); //Kludge 'cos I can't think of a way to do it faster w/o passing by reference.
@@ -82,11 +67,11 @@ inertialObject.prototype.calcPast = function() {
     };
 
     this.viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ) / a;
-    this.uDisplacement = quat4.scale(this.V, this.viewTime / this.V[3], 
+    this.uDisplacement = quat4.scale(this.V, this.viewTime / this.V[3] * c, 
                                      this.uDisplacement);
     this.XView = quat4.subtract(this.X0, this.uDisplacement, this.XView);
     this.rPast = Math.sqrt(Math.max(quat4.spaceDot( this.XView, this.XView ),1e-10)); 
     this.radialVPast = (quat4.spaceDot(this.XView, this.V) / 
-                        Math.max(this.rPast,1e-10) / this.V[3] * c);
+                        Math.max(this.rPast,1e-10) / this.V[3] / c);
 
 };
