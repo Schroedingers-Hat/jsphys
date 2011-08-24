@@ -184,8 +184,8 @@ function Scene() {
      */
     this.changeArrayFrame = function(translation, boost) {
         this.carray.forEach(function(obj) {
-            obj.changeFrame(translation, boost);
-   //         obj.COM.changeFrame(translation, boost);
+        if( obj.changeFrame) {obj.changeFrame(translation, boost)
+        } else { obj.COM.changeFrame(translation, boost)};
         });
     };
 
