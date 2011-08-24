@@ -103,6 +103,7 @@ extendedObject.prototype.drawNow = function()
     if (this.isInteresting || true)
     {
         scene.g.strokeStyle = "#0f0";
+        scene.g.fillStyle = "#0f0";
         scene.g.beginPath();
         scene.g.moveTo(this.pointPos[0][0] / scene.zoom + scene.origin[0],
                        this.pointPos[0][1] / scene.zoom + scene.origin[1]);
@@ -113,6 +114,11 @@ extendedObject.prototype.drawNow = function()
         }
        
         scene.g.stroke();
+
+        if (this.options.showVelocities) {
+            scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-1/Math.pow(this.COM.V[3] / c, 2)))/1000) + "c", this.COM.X0[0] / scene.zoom + scene.origin[0],
+                             this.COM.X0[1] / scene.zoom + scene.origin[1] + 20);
+        }
     }
 }
 
@@ -174,7 +180,6 @@ extendedObject.prototype.drawPast = function(scene)
                            this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
             scene.g.stroke();
         }
-
     }
 }
 
