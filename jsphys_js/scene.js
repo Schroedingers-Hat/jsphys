@@ -235,8 +235,10 @@ function Scene() {
                   "up": boostFrom3Vel(0, -0.05, 0, this.zoom),
                   "down": boostFrom3Vel(0, 0.05, 0, this.zoom)};
     
-    this.alwaysDoppler = false;
-    this.neverDoppler = false;
+    this.options = {"alwaysDoppler": false,
+                    "neverDoppler": false,
+                    "alwaysShowFramePos": false,
+                    "neverShowFramePos": true};
 }
 
 /**
