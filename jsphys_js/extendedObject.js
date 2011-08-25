@@ -304,14 +304,28 @@ extendedObject.prototype.drawXT = function(scene)
     scene.h.fill();
 
     // A world line.
+    var bOfLine = xvis + scene.origin[0] + scene.origin[2]*dxdtVis;
+    var eOfLine = xvis + scene.origin[0] - (scene.height - scene.origin[2]) * dxdtVis;
     scene.h.beginPath();
-    scene.h.moveTo(xvis + scene.origin[0] + 
-                    scene.origin[2]*dxdtVis, 
+    scene.h.moveTo(bOfLine, 
                    0);
-    scene.h.lineTo(xvis + scene.origin[0] -
-                    (scene.height - scene.origin[2]) * dxdtVis,
+    scene.h.lineTo(eOfLine,
                    scene.height);
     scene.h.stroke();
+
+    quat4.scale(this.COM.V, this.COM.X0[0] / this.COM.V[0], tempQuat4);
+    quat4.subtract(this.COM.X0, tempQuat4, tempQuat4);
+    xvis = tempQuat4[0] / scene.zoom;
+    tvis = tempQuat4[3] / scene.zoom;
+    scene.h.fillStyle = "#333";
+    for( i = -10; i < 20; i++) {
+        scene.h.beginPath();
+        scene.h.arc(scene.origin[0] + xvis + i* 10 * this.COM.V[0] / scene.zoom,
+                    scene.origin[2] - (tvis + i * 10 * this.COM.V[3] / scene.zoom)/c,
+                    2, 0, twopi, true);
+        scene.h.fill();
+    }
+
     
     // A blob on the light cone.
     xvis = this.COM.XView[0] / scene.zoom;
@@ -339,4 +353,6 @@ extendedObject.prototype.drawXT = function(scene)
                        scene.height);
         scene.h.stroke();
     }
+
+
 }
