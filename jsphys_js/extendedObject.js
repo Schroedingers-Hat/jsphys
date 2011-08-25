@@ -117,23 +117,30 @@ extendedObject.prototype.drawNow = function()
  */
 extendedObject.prototype.calcPastPoints = function()
 {
+    var gamma = this.COM.V[3] / c;
+    var vDotv = quat4.spaceDot(this.COM.V, this.COM.V) / Math.pow(gamma, 2);
+    var xDotx;
+    var vDotx;
+    var a;
     var viewTime;
+    var v = [this.COM.V[0] / gamma,
+             this.COM.V[1] / gamma,
+             this.COM.V[2] / gamma,
+             0];
     for (var i = 0; i < (this.shapePoints.length); i++)
     {
-        var vDotv = quat4.spaceDot(this.COM.V, this.COM.V) / Math.pow(this.COM.V[3] / c, 2);
-        var xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
-        var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V) / this.COM.V[3] * c;
-        var a = c*c - vDotv;
+        xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
+        vDotx = quat4.spaceDot(this.pointPos[i], v);
+        a = c*c - vDotv;
         
         viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a;
-        quat4.scale(this.COM.V, viewTime / this.COM.V[3] * c, this.uDisplacement);
+        quat4.scale(v, viewTime, this.uDisplacement);
         quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
 
-        this.pastRadialV[i] = (quat4.spaceDot(this.pastPoints[i], this.COM.V) / 
+        this.pastRadialV[i] = (quat4.spaceDot(this.pastPoints[i], v) / 
                                 Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
                                 this.pastPoints[i], this.pastPoints[i]) 
-                                )), 1e-16) / this.COM.V[3] * c);
-        this.pastR[i] = Math.sqrt(quat4.spaceDot(this.pastPoints[i],this.pastPoints[i]));
+                                )), 1e-16));
     }
 }
 
