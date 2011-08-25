@@ -32,12 +32,17 @@ function extendedObject(X, P, m, options, shape, timeStep)
 
     for (var i = 0; i < (shape.length - 1); i++)
     {
+
+        this.shapePoints[i] = quat4.create(mat4.multiplyVec4(this.initialBoost, shape[i], tempQuat4));
         for(var j = 0; j < 3; j++)
         {
-            this.boundingBox[2 * j]     = Math.min(shape[i][j], shape[i+1][1]);
-            this.boundingBox[2 * j + 1] = Math.max(shape[i][j], shape[i+1][j]);
+            if (this.shapePoints[i][j] < this.boundingBox[0][j]){
+                this.boundingBox[0][j] = i;   
+            }
+            if (this.shapePoints[i][j] > this.boundingBox[0][j]){
+                this.boundingBox[1][j] = i;   
+            }
         }
-        this.shapePoints[i] = quat4.create(mat4.multiplyVec4(this.initialBoost, shape[i], tempQuat4));
         this.pastPoints[i] = quat4.create([0,0,0,0]);
         this.pointPos[i] = quat4.create([0,0,0,0]);
     }
@@ -66,29 +71,6 @@ extendedObject.prototype.update = function(timeStep)
 }
 
 
-extendedObject.prototype.wasInView2D = function()
-{
-    return (this.options.showVisualPos &&
-            ((this.COM.XView[1] - this.boundingBox[0]) / scene.zoom < (scene.width - scene.origin[0] + 10) &&
-             (this.COM.XView[1] - this.boundingBox[1]) / scene.zoom < (- scene.origin[1] - 10) &&
-            (this.COM.XView[2] - this.boundingBox[3]) / scene.zoom < (scene.height - scene.origin[0] + 10) &&
-             (this.COM.XView[1] - this.boundingBox[1]) / scene.zoom < (- scene.origin[1] - 10)) &&
-             (Math.abs(this.boundingBox[0] - this.boundingBox[1]) / zoom > 1    ||
-            Math.abs(this.boundingBox[2] - this.boundingBox[3]) / zoom > 1)
-            );
-}
-
-extendedObject.prototype.isInView2D = function()
-{
-    return (this.options.showVisualPos &&
-            ((this.COM.X0[1] - this.boundingBox[0]) / scene.zoom < (scene.width - scene.origin[0] + 10) &&
-             (this.COM.X0[1] - this.boundingBox[1]) / scene.zoom < (- scene.origin[1] - 10) &&
-             (this.COM.X0[2] - this.boundingBox[3]) / scene.zoom < (scene.height - scene.origin[0] + 10) &&
-             (this.COM.X0[1] - this.boundingBox[1]) / scene.zoom < (- scene.origin[1] - 10)) &&
-             (Math.abs(this.boundingBox[0] - this.boundingBox[1]) / zoom > 1    ||
-            Math.abs(this.boundingBox[2] - this.boundingBox[3]) / zoom > 1)
-            );
-}
 
 extendedObject.prototype.changeFrame = function(translation, rotation)
 {
