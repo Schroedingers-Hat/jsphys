@@ -99,12 +99,14 @@ extendedObject.prototype.drawNow = function()
         scene.g.stroke();
 
         if (this.options.showVelocities) {
-            scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", this.COM.X0[0] / scene.zoom + scene.origin[0],
-                             this.COM.X0[1] / scene.zoom + scene.origin[1] + 20);
+            scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", 
+                             (this.pointPos[this.boundingBox[1][0]][0] + this.pointPos[this.boundingBox[0][0]][0]) / (2 * scene.zoom) + scene.origin[0] - 10,
+                             this.pointPos[this.boundingBox[1][1]][1] / scene.zoom + scene.origin[1] + 20);
         }
         if (this.options.showGamma) {
-            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, this.COM.X0[0] / scene.zoom + scene.origin[0],
-                             this.COM.X0[1] / scene.zoom + scene.origin[1] - 20);
+            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000,
+                             (this.pointPos[this.boundingBox[1][0]][0] + this.pointPos[this.boundingBox[0][0]][0]) / (2 * scene.zoom) + scene.origin[0] - 10,
+                             this.pointPos[this.boundingBox[0][1]][1] / scene.zoom + scene.origin[1] - 10);
         }
     }
 }
