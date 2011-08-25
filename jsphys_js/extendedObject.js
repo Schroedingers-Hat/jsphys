@@ -2,13 +2,14 @@
 //lNB: Shape is four dimensional, 
 // if you draw it moving and not with the front/back in the right time as well as place, it won't be the correct shape.
 
-function extendedObject(X, P, m, options, shape, timeStep)
+function extendedObject(X, P, label, options, shape, timeStep)
 {
     this.options = options;
     this.isInteresting = true;
     this.shapePoints = [];
     this.pastPoints = [];
     this.pastRadialV = [];
+    this.label = label;
 
     this.temp = 5000;
     this.stillColor = tempToColor(this.temp);
@@ -107,6 +108,11 @@ extendedObject.prototype.drawNow = function()
             scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000,
                              (this.pointPos[this.boundingBox[1][0]][0] + this.pointPos[this.boundingBox[0][0]][0]) / (2 * scene.zoom) + scene.origin[0] - 10,
                              this.pointPos[this.boundingBox[0][1]][1] / scene.zoom + scene.origin[1] - 10);
+        }
+        if (this.label != "") {
+            scene.g.fillText(this.label, 
+                             this.pointPos[this.boundingBox[1][0]][0] / scene.zoom + scene.origin[0] + 10,
+                             (this.pointPos[this.boundingBox[1][1]][1] + this.pointPos[this.boundingBox[0][1]][1]) / (2 * scene.zoom) + scene.origin[1]);
         }
     }
 }
