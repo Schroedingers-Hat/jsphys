@@ -37,11 +37,11 @@ function extendedObject(X, P, label, options, shape, timeStep)
         this.shapePoints[i] = quat4.create(mat4.multiplyVec4(this.initialBoost, shape[i], tempQuat4));
         for(var j = 0; j < 3; j++)
         {
-            if (this.shapePoints[i][j] < this.boundingBox[0][j]) {
-                this.boundingBox[0][j] = i;   
+            if (this.shapePoints[i][j] < this.shapePoints[this.boundingBox[0][j]][j]) {
+                this.boundingBox[0][j] = i;
             }
-            if (this.shapePoints[i][j] > this.boundingBox[0][j]) {
-                this.boundingBox[1][j] = i;   
+            if (this.shapePoints[i][j] > this.shapePoints[this.boundingBox[0][j]][j]) {
+                this.boundingBox[1][j] = i;
             }
         }
         this.pastPoints[i] = quat4.create([0,0,0,0]);
