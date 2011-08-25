@@ -55,7 +55,6 @@ function Scene() {
             obj.update(this.timeStep);
             obj.draw(this);
             obj.drawXT(this); 
-            obj.drawPast3D(this); 
         }, this);
         this.drawCrosshairs();
         this.t = this.t + (this.timeStep * c);
@@ -160,7 +159,7 @@ function Scene() {
                     0]));
             }
         }
-        var sphereThingy = new extendedObject(quat4.create([0,0,0,0]), quat4.create([0,0,0,0]), "thing", 1, aSphere, this.timeStep);
+        var sphereThingy = new extendedObject(quat4.create([0,-30,0,0]), quat4.create([0,0,0,0]), 1, {"showFramePos" : true, "showVisualPos" : true}, aSphere, this.timeStep);
         this.carray.push(sphereThingy);
     };
 
