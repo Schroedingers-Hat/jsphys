@@ -26,7 +26,7 @@ function Scene() {
         }
         if (obj.shape) {
             var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
-                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, linesPadder(obj.shape, 2), this.timeStep);
+                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, obj.shape, this.timeStep);
         } else {
             var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);

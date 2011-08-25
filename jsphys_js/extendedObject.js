@@ -28,6 +28,8 @@ function extendedObject(X, P, m, options, shape, timeStep)
     // Make a rectangular prism which, when placed at the position or view pos
     // of COM, must always contain part of the object.
     this.boundingBox = [0, 0, 0, 0, 0, 0];
+    this.boundingBoxP = [0, 0, 0, 0, 0, 0];
+    this.boundingIdx = [0, 0, 0, 0, 0, 0];
     this.initialBoost = cBoostMat([-this.COM.V[0],
                                    -this.COM.V[1],
                                    -this.COM.V[2],
@@ -39,11 +41,11 @@ function extendedObject(X, P, m, options, shape, timeStep)
         this.shapePoints[i] = quat4.create(mat4.multiplyVec4(this.initialBoost, shape[i], tempQuat4));
         for(var j = 0; j < 3; j++)
         {
-            if (this.shapePoints[i][j] < this.boundingBox[0][j]){
-                this.boundingBox[0][j] = i;   
+            if (this.shapePoints[i][j] < this.shapePoints[this.boundingIdx[2 * j + 1]][j]){
+                this.boundingIdx[2 * j + 1] = i;   
             }
-            if (this.shapePoints[i][j] > this.boundingBox[0][j]){
-                this.boundingBox[1][j] = i;   
+            if (this.shapePoints[i][j] > this.shapePoints[this.boundingIdx[2 * j]][j]){
+                this.boundingIdx[2 *j] = i;   
             }
         }
         this.pastPoints[i] = quat4.create([0,0,0,0]);
@@ -71,8 +73,30 @@ extendedObject.prototype.update = function(timeStep)
         quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
     }
     this.calcPastPoints();
+    this.findBB(this.pointPos, this.boundingBox);
+    this.findBB(this.pastPoints, this.boundingBoxP);
 }
 
+
+extendedObject.prototype.findBB = function(pointsArr, BB)
+{
+    BB[0] = Math.min(pointsArr[this.boundingIdx[0]][0],pointsArr[this.boundingIdx[1]][0]);
+    BB[1] = Math.max(pointsArr[this.boundingIdx[0]][0],pointsArr[this.boundingIdx[1]][0]);
+    BB[2] = Math.min(pointsArr[this.boundingIdx[0]][1],pointsArr[this.boundingIdx[1]][1]);
+    BB[3] = Math.max(pointsArr[this.boundingIdx[0]][1],pointsArr[this.boundingIdx[1]][1]);
+    BB[4] = Math.min(pointsArr[this.boundingIdx[0]][2],pointsArr[this.boundingIdx[1]][2]);
+    BB[5] = Math.max(pointsArr[this.boundingIdx[0]][2],pointsArr[this.boundingIdx[1]][2]);
+
+    for (i = 2; i < 5; i++){
+        BB[0] = Math.min(BB[0],pointsArr[this.boundingIdx[i]][0]);
+        BB[1] = Math.max(BB[1],pointsArr[this.boundingIdx[i]][0]);
+        BB[2] = Math.min(BB[2],pointsArr[this.boundingIdx[i]][1]);
+        BB[3] = Math.max(BB[3],pointsArr[this.boundingIdx[i]][1]);
+        BB[4] = Math.min(BB[4],pointsArr[this.boundingIdx[i]][2]);
+        BB[5] = Math.max(BB[5],pointsArr[this.boundingIdx[i]][2]);
+
+    }    
+}
 
 
 extendedObject.prototype.changeFrame = function(translation, rotation)
@@ -102,12 +126,13 @@ extendedObject.prototype.drawNow = function()
         scene.g.stroke();
 
         if (this.options.showVelocities) {
-            scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-1/Math.pow(this.COM.V[3] / c, 2)))/1000) + "c", this.COM.X0[0] / scene.zoom + scene.origin[0],
-                             this.COM.X0[1] / scene.zoom + scene.origin[1] + 20);
+            scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-1/Math.pow(this.COM.V[3] / c, 2)))/1000) + "c", 
+                this.boundingBox[1] / scene.zoom + scene.origin[0], 
+                this.boundingBox[3] / scene.zoom+ scene.origin[1]);
         }
         if (this.options.showGamma) {
-            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, this.COM.X0[0] / scene.zoom + scene.origin[0],
-                             this.COM.X0[1] / scene.zoom + scene.origin[1] - 20);
+            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, this.boundingBox[1] / scene.zoom + scene.origin[0],
+                             this.boundingBox[2] / scene.zoom + scene.origin[1] - 20);
         }
     }
 }
