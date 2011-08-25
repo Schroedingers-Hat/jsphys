@@ -28,7 +28,7 @@ inertialObject.prototype.updateX0 = function(timeStep)
 {
     quat4.scale(this.V, timeStep / this.V[3], this.displace);
     //Increase proper time.
-    this.tau += timeStep / Math.pow(this.V[3], 2);
+    this.tau += timeStep / Math.pow(this.V[3] / c, 2);
     //Bring it to now.
     quat4.add(this.X0, this.displace);
     this.X0[3] = this.X0[3] - timeStep;

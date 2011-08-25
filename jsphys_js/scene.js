@@ -26,7 +26,7 @@ function Scene() {
         }
         if (obj.shape) {
             var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
-                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, linesPadder(obj.shape, 2), this.timeStep);
+                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, obj.shape, this.timeStep);
         } else {
             var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
@@ -149,18 +149,6 @@ function Scene() {
         if (typeof demo.steps[step].frame === "number") {
             this.shiftToFrameOfObject(this.carray[demo.steps[step].frame]);
         }
-        var aSphere = [];
-        for (i=0; i < 32; i++){
-            for (j=0; j < 32; j++) {
-                aSphere.push( quat4.create([
-                    Math.cos(j/5)*Math.sin(i/5)*10,
-                    Math.sin(j/5)*Math.sin(i/5)*10,
-                    Math.cos(i/5)*10,
-                    0]));
-            }
-        }
-        var sphereThingy = new extendedObject(quat4.create([0,-30,0,0]), quat4.create([0,0,0,0]), 1, {"showFramePos" : true, "showVisualPos" : true}, aSphere, this.timeStep);
-        this.carray.push(sphereThingy);
     };
 
     /**
@@ -193,6 +181,7 @@ function Scene() {
         var newFrameBoost = cBoostMat(obj.COM.V, c);
 
         var XShift = new Float64Array(obj.COM.X0);
+        XShift[1] = XShift[1] + 30;
 
         this.changeArrayFrame(XShift, newFrameBoost);
     };

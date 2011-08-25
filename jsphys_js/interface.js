@@ -188,18 +188,19 @@ function loadDemoList() {
 function dopplerButtonClick(event) {
     if (!scene.options.neverDoppler && !scene.options.alwaysDoppler) {
         // we're currently in default mode. switch to force off.
-        scene.options.neverDoppler = true;
-        $("#doppler").html("Force on");
-    } else if (scene.options.neverDoppler && !scene.options.alwaysDoppler) {
+        scene.neverDoppler = true;
+        scene.alwaysDoppler= false
+        $("#doppler").html("Force off");
+    } else if (scene.neverDoppler && !scene.alwaysDoppler) {
         // we're in force off mode. switch to force on.
-        scene.options.neverDoppler = false;
-        scene.options.alwaysDoppler = true;
-        $("#doppler").html("Default");
+        scene.neverDoppler = false;
+        scene.alwaysDoppler = true;
+        $("#doppler").html("Force on");
     } else {
         // switch to default.
-        scene.options.neverDoppler = false;
-        scene.options.alwaysDoppler = false;
-        $("#doppler").html("Force off");
+        scene.neverDoppler = false;
+        scene.alwaysDoppler = false;
+        $("#doppler").html("Default");
     }
     event.preventDefault();
 }
