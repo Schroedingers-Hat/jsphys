@@ -218,12 +218,11 @@ extendedObject.prototype.drawPast3D = function(scene)
         } else {
             scene.TDC.strokeStyle = this.stillColor;
             scene.TDC.beginPath();
+            scene.TDC.moveTo(this.pastPoints[0][0] / scene.zoom / this.pastPoints[0][1] * 20 + scene.origin[0],
+                             this.pastPoints[0][2] / scene.zoom / this.pastPoints[0][1] * 20 + scene.origin[1]);
+
         }
 
-        scene.TDC.beginPath();
-        scene.TDC.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
-                       this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
-       
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
             if(doDoppler) {
