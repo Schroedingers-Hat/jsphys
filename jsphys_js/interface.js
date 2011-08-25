@@ -189,17 +189,18 @@ function dopplerButtonClick(event) {
     if (!scene.neverDoppler && !scene.alwaysDoppler) {
         // we're currently in default mode. switch to force off.
         scene.neverDoppler = true;
-        $("#doppler").html("Force on");
+        scene.alwaysDoppler= false
+        $("#doppler").html("Force off");
     } else if (scene.neverDoppler && !scene.alwaysDoppler) {
         // we're in force off mode. switch to force on.
         scene.neverDoppler = false;
         scene.alwaysDoppler = true;
-        $("#doppler").html("Default");
+        $("#doppler").html("Force on");
     } else {
         // switch to default.
         scene.neverDoppler = false;
         scene.alwaysDoppler = false;
-        $("#doppler").html("Force off");
+        $("#doppler").html("Default");
     }
     event.preventDefault();
 }

@@ -1,27 +1,27 @@
 var demos = [{"name": "Velocity addition", 
               "steps": [{"caption": "Three stars. The left and right stars approach the center star at high speed - 0.9 times the speed of light.",
-                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Center", "shape": aSphere(5,100)},
-                                     {"object": extendedObject, "x": [-30, -20, 0], "p": [2.1 * c, 0], "m": 1, "label": "Left", "shape": aSphere(5,100)},
-                                     {"object": extendedObject, "x": [30, -30, 0], "p": [-2.1 * c, 0], "m": 1, "label": "Right", "shape": aSphere(5,100)}],
+                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Center", "shape": aSphere(5,64)},
+                                     {"object": extendedObject, "x": [-30, -20, 0], "p": [2.1 * c, 0], "m": 1, "label": "Left", "shape": aSphere(5,64)},
+                                     {"object": extendedObject, "x": [30, -30, 0], "p": [-2.1 * c, 0], "m": 1, "label": "Right", "shape": aSphere(5,64)}],
                          "frame": 0},
                         {"caption": "Let's see that again, but this time from the perspective of the far-left star. The rightmost star only approaches at 0.995c &mdash; not the 1.8c you'd expect.",
-                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Center", "shape": aSphere(5,100)},
-                                     {"object": extendedObject, "x": [-30, -20, 0], "p": [2.1 * c, 0], "m": 1, "label": "Left", "shape": aSphere(5,100)},
-                                     {"object": extendedObject, "x": [30, -30, 0], "p": [-2.1 * c, 0], "m": 1, "label": "Right", "shape": aSphere(5,100)}],
+                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Center", "shape": aSphere(5,64)},
+                                     {"object": extendedObject, "x": [-30, -20, 0], "p": [2.1 * c, 0], "m": 1, "label": "Left", "shape": aSphere(5,64)},
+                                     {"object": extendedObject, "x": [30, -30, 0], "p": [-2.1 * c, 0], "m": 1, "label": "Right", "shape": aSphere(5,64)}],
                          "frame": 1}
                        ]
              },
              {"name": "Relativistic Doppler shift",
               "steps": [{"caption": "First watch as Doppler shifting is turned off. A star shoots past.",
                          "options": {"showDoppler": false, "showGamma": false},
-                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Observer", "options": {"showVelocities": false}, "shape": aSphere(5,100)},
-                                     {"object": extendedObject, "x": [-30, -30, 0], "p": [1.5 * c, 0], "m": 1, "label": "Star", "shape": aSphere(5,100)}
+                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Observer", "options": {"showVelocities": false}, "shape": aSphere(5,64)},
+                                     {"object": extendedObject, "x": [-30, -30, 0], "p": [1.5 * c, 0], "m": 1, "label": "Star", "shape": aSphere(5,64)}
                                     ],
                          "frame": 0},
                         {"caption": "Now watch the same motion with the relativistic Doppler effect visible.",
                          "options": {"showDoppler": true},
-                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Observer", "shape": aSphere(5,100), "options": {"showVelocities": false}},
-                                     {"object": extendedObject, "x": [-30, -30, 0], "p": [1.5 * c, 0], "m": 1, "label": "Star", "shape": aSphere(5,100)}
+                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Observer", "shape": aSphere(5,64), "options": {"showVelocities": false}},
+                                     {"object": extendedObject, "x": [-30, -30, 0], "p": [1.5 * c, 0], "m": 1, "label": "Star", "shape": aSphere(5,64)}
                                     ],
                          "frame": 0}
                        ]

@@ -156,26 +156,27 @@ extendedObject.prototype.drawPast = function(scene)
                                                                 this.COM.V[3] / c));
         } else {
             scene.g.strokeStyle = this.stillColor;
+            scene.g.beginPath();
+            scene.g.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
+                           this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
         }
-
-        scene.g.beginPath();
-        scene.g.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
-                       this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
-       
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
             if(doDoppler) {
                 scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                                     this.pastRadialV[i],
                                                                     this.COM.V[3] / c));
+
+                scene.g.beginPath();
+                scene.g.moveTo(this.pastPoints[i-1][0] / scene.zoom + scene.origin[0],
+                               this.pastPoints[i-1][1] / scene.zoom + scene.origin[1]);
+
             }
-            scene.g.beginPath();
-            scene.g.moveTo(this.pastPoints[i-1][0] / scene.zoom + scene.origin[0],
-                           this.pastPoints[i-1][1] / scene.zoom + scene.origin[1]);
             scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
                            this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
-            scene.g.stroke();
+            if(doDoppler) scene.g.stroke();
         }
+        if(!doDoppler) scene.g.stroke();
     }
 }
 
@@ -191,6 +192,7 @@ extendedObject.prototype.drawPast3D = function(scene)
                                                                 this.COM.V[3] / c));
         } else {
             scene.TDC.strokeStyle = this.stillColor;
+            scene.TDC.beginPath();
         }
 
         scene.TDC.beginPath();
@@ -203,16 +205,18 @@ extendedObject.prototype.drawPast3D = function(scene)
                 scene.TDC.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                                     this.pastRadialV[i],
                                                                     this.COM.V[3] / c));
+
+                scene.TDC.beginPath();
+                scene.TDC.moveTo(this.pastPoints[i-1][0] / scene.zoom / this.pastPoints[i - 1][1] * 20 + scene.origin[0],
+                                 this.pastPoints[i-1][2] / scene.zoom / this.pastPoints[i - 1][1] * 20 + scene.origin[1]);
             }
             if (this.pastPoints[i-1][1] < 0 && this.pastPoints[i][1] < 0){
-            scene.TDC.beginPath();
-            scene.TDC.moveTo(this.pastPoints[i-1][0] / scene.zoom / this.pastPoints[i - 1][1] * 20 + scene.origin[0],
-                           this.pastPoints[i-1][2] / scene.zoom / this.pastPoints[i - 1][1] * 20 + scene.origin[1]);
             scene.TDC.lineTo(this.pastPoints[i][0] / scene.zoom /   this.pastPoints[i][1]   * 20  + scene.origin[0], 
                            this.pastPoints[i][2] / scene.zoom /   this.pastPoints[i][1]    * 20 + scene.origin[1]);
-            scene.TDC.stroke();
             }
+            if(doDoppler) scene.TDC.stroke();
         }
+        if(!doDoppler) scene.TDC.stroke();
     }
 }
 
