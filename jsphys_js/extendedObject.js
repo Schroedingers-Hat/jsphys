@@ -9,6 +9,7 @@ function extendedObject(X, P, m, options, shape, timeStep)
     this.shapePoints = [];
     this.pastPoints = [];
     this.pastRadialV = [];
+    this.pastR = [];
 
     this.temp = 5000;
     this.stillColor = tempToColor(this.temp);
@@ -114,8 +115,6 @@ extendedObject.prototype.drawNow = function()
  */
 extendedObject.prototype.calcPastPoints = function()
 {
-    var radialV;
-    var radialDist;
     var viewTime;
     for (var i = 0; i < (this.shapePoints.length); i++)
     {
@@ -123,7 +122,7 @@ extendedObject.prototype.calcPastPoints = function()
         var xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
         var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V) / this.COM.V[3] * c;
         var a = c*c - vDotv;
-
+        
         viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a;
         quat4.scale(this.COM.V, viewTime / this.COM.V[3] * c, this.uDisplacement);
         quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
@@ -132,6 +131,7 @@ extendedObject.prototype.calcPastPoints = function()
                                 Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
                                 this.pastPoints[i], this.pastPoints[i]) 
                                 )), 1e-16) / this.COM.V[3] * c);
+        this.pastR[i] = Math.sqrt(quat4.spaceDot(this.pastPoints[i],this.pastPoints[i]));
     }
 }
 
@@ -166,6 +166,43 @@ extendedObject.prototype.drawPast = function(scene)
             scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
                            this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
             scene.g.stroke();
+        }
+    }
+}
+
+extendedObject.prototype.drawPast3D = function(scene)
+{                                                                                   
+    if (this.isInteresting || true)                                                 
+    {   
+        var doDoppler = (scene.alwaysDoppler || 
+                         (!scene.neverDoppler && this.options.showDoppler));
+        if(doDoppler) {
+            scene.TDC.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                                this.pastRadialV[0],
+                                                                this.COM.V[3] / c));
+        } else {
+            scene.TDC.strokeStyle = this.stillColor;
+        }
+
+        scene.TDC.beginPath();
+        scene.TDC.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
+                       this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
+       
+        for (var i = 1; i < (this.pastPoints.length); i++)
+        {
+            if(doDoppler) {
+                scene.TDC.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                                    this.pastRadialV[i],
+                                                                    this.COM.V[3] / c));
+            }
+            if (this.pastPoints[i-1][1] > 0 && this.pastPoints[i][1] > 0){
+            scene.TDC.beginPath();
+            scene.TDC.moveTo(this.pastPoints[i-1][0] / scene.zoom / this.pastPoints[i - 1][1] * 10 + scene.origin[0],
+                           this.pastPoints[i-1][2] / scene.zoom / this.pastPoints[i - 1][1] * 10 + scene.origin[1]);
+            scene.TDC.lineTo(this.pastPoints[i][0] / scene.zoom /   this.pastPoints[i][1]   * 10  + scene.origin[0], 
+                           this.pastPoints[i][2] / scene.zoom /   this.pastPoints[i][1]    * 10 + scene.origin[1]);
+            scene.TDC.stroke();
+            }
         }
     }
 }

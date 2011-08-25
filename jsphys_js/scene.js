@@ -32,6 +32,7 @@ function Scene() {
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
         }
         this.carray.push(thingy);
+
     };
 
     /**
@@ -54,6 +55,7 @@ function Scene() {
             obj.update(this.timeStep);
             obj.draw(this);
             obj.drawXT(this); 
+            obj.drawPast3D(this); 
         }, this);
         this.drawCrosshairs();
         this.t = this.t + (this.timeStep * c);
@@ -80,6 +82,7 @@ function Scene() {
     this.clear = function() {
         this.g.clearRect(0, 0, this.width, this.height);
         this.h.clearRect(0, 0, this.width, this.height);
+        this.TDC.clearRect(0, 0, this.width, this.height);
     };
 
     this.drawCrosshairs = function () {
@@ -147,6 +150,18 @@ function Scene() {
         if (typeof demo.steps[step].frame === "number") {
             this.shiftToFrameOfObject(this.carray[demo.steps[step].frame]);
         }
+        var aSphere = [];
+        for (i=0; i < 32; i++){
+            for (j=0; j < 32; j++) {
+                aSphere.push( quat4.create([
+                    Math.cos(j/5)*Math.sin(i/5)*10,
+                    Math.sin(j/5)*Math.sin(i/5)*10,
+                    Math.cos(i/5)*10,
+                    0]));
+            }
+        }
+        var sphereThingy = new extendedObject(quat4.create([0,0,0,0]), quat4.create([0,0,0,0]), "thing", 1, aSphere, this.timeStep);
+        this.carray.push(sphereThingy);
     };
 
     /**
@@ -197,6 +212,7 @@ function Scene() {
     this.initialTime = new Date().getTime();
     this.g = $('#canvas')[0].getContext("2d");
     this.h = $('#minkowski')[0].getContext("2d");
+    this.TDC = $('#3DCanvas')[0].getContext("2d");
     this.width = $("#canvas").width();
     this.height = $("#canvas").height();
     this.hwidth = this.width / 2;
