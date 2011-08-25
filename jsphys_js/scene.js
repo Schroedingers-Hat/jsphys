@@ -58,9 +58,9 @@ function Scene() {
         this.drawCrosshairs();
         this.t = this.t + (this.timeStep * c);
         
-        $("#hsg").html(Math.floor(this.carray[0].COM.V[3] / c));
-        $("#gameclock").html(Math.floor(this.t / 1000 / c));
-        $("#time").html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
+        this.hsg.html(Math.floor(this.carray[0].COM.V[3] / c));
+        this.gameclock.html(Math.floor(this.t / 1000 / c));
+        this.time.html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
 
         if (leftDown == true)     this.changeArrayFrame(quat4.create([0, 0, 0, 0]), this.boost.left,  this.carray);
         if (upDown == true)       this.changeArrayFrame(quat4.create([0, 0, 0, 0]), this.boost.up,    this.carray);
@@ -74,7 +74,7 @@ function Scene() {
         requestAnimFrame(drawScene);
         this.frameEndTime = new Date().getTime();
 
-        $("#fps").html(Math.floor(1000 / (this.frameEndTime - this.frameStartTime)));
+        this.fps.html(Math.floor(1000 / (this.frameEndTime - this.frameStartTime)));
     };
 
     this.clear = function() {
@@ -224,6 +224,11 @@ function Scene() {
                     "neverDoppler": false,
                     "alwaysShowFramePos": false,
                     "neverShowFramePos": true};
+    
+    this.hsg = $("#hsg");
+    this.gameclock = $("#gameclock");
+    this.time = $("#time");
+    this.fps = $("#fps");
 }
 
 /**
