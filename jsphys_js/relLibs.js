@@ -129,3 +129,29 @@ function linesPadder(shape, resolution)
     }
     return newShape;
 }
+
+function aSphere(r,numPts){
+   var Sphere = [];
+   var numAngles = Math.ceil(Math.sqrt(numPts));
+   for (i=0; i < numAngles; i++){
+       for (j=0; j < numAngles; j++) {
+           Sphere.push( quat4.create([
+               Math.cos(6.283 * j / numAngles) * Math.sin(3.1416 * i / numAngles) * r,
+               Math.sin(6.283 * j / numAngles) * Math.sin(3.1416 * i / numAngles) * r,
+               Math.cos(3.1416 * i / numAngles) * r,
+               0]));
+       }
+    }
+    return Sphere;
+}
+
+function aCircle(r, numPts) {
+    var Circle = [];
+    for (i = 0; i <= numPts; i++){
+        Circle.push( quat4.create([Math.cos(6.283 * i / numPts) * r, 
+                                   Math.sin(6.283 * i / numPts) * r, 
+                                   0, 
+                                   0]) );
+    }
+    return Circle;
+}

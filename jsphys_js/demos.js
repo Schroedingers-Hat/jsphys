@@ -1,27 +1,27 @@
 var demos = [{"name": "Velocity addition", 
               "steps": [{"caption": "Three stars. The left and right stars approach the center star at high speed - 0.9 times the speed of light.",
-                         "objects": [{"object": mainSequenceStar, "x": [0, 0, 0], "p": [0, 0], "m": 1, "label": "Center"},
-                                     {"object": mainSequenceStar, "x": [-30, 10, 0], "p": [2.1 * c, 0], "m": 1, "label": "Left"},
-                                     {"object": mainSequenceStar, "x": [30, 20, 0], "p": [-2.1 * c, 0], "m": 1, "label": "Right"}],
+                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Center", "shape": aSphere(5,100)},
+                                     {"object": extendedObject, "x": [-30, -20, 0], "p": [2.1 * c, 0], "m": 1, "label": "Left", "shape": aSphere(5,100)},
+                                     {"object": extendedObject, "x": [30, -30, 0], "p": [-2.1 * c, 0], "m": 1, "label": "Right", "shape": aSphere(5,100)}],
                          "frame": 0},
                         {"caption": "Let's see that again, but this time from the perspective of the far-left star. The rightmost star only approaches at 0.995c &mdash; not the 1.8c you'd expect.",
-                         "objects": [{"object": mainSequenceStar, "x": [0, 0, 0], "p": [0, 0], "m": 1, "label": "Center"},
-                                     {"object": mainSequenceStar, "x": [-30, 10, 0], "p": [2.1 * c, 0], "m": 1, "label": "Left"},
-                                     {"object": mainSequenceStar, "x": [30, 20, 0], "p": [-2.1 * c, 0], "m": 1, "label": "Right"}],
+                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Center", "shape": aSphere(5,100)},
+                                     {"object": extendedObject, "x": [-30, -20, 0], "p": [2.1 * c, 0], "m": 1, "label": "Left", "shape": aSphere(5,100)},
+                                     {"object": extendedObject, "x": [30, -30, 0], "p": [-2.1 * c, 0], "m": 1, "label": "Right", "shape": aSphere(5,100)}],
                          "frame": 1}
                        ]
              },
              {"name": "Relativistic Doppler shift",
               "steps": [{"caption": "First watch as Doppler shifting is turned off. A star shoots past.",
                          "options": {"showDoppler": false, "showGamma": false},
-                         "objects": [{"object": mainSequenceStar, "x": [0, 0, 0], "p": [0, 0], "m": 1, "label": "Observer", "options": {"showVelocities": false}},
-                                     {"object": mainSequenceStar, "x": [-30, -20, 0], "p": [1.5 * c, 0], "m": 1, "label": "Star"}
+                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Observer", "options": {"showVelocities": false}, "shape": aSphere(5,100)},
+                                     {"object": extendedObject, "x": [-30, -30, 0], "p": [1.5 * c, 0], "m": 1, "label": "Star", "shape": aSphere(5,100)}
                                     ],
                          "frame": 0},
                         {"caption": "Now watch the same motion with the relativistic Doppler effect visible.",
                          "options": {"showDoppler": true},
-                         "objects": [{"object": mainSequenceStar, "x": [0, 0, 0], "p": [0, 0], "m": 1, "label": "Observer", "options": {"showVelocities": false}},
-                                     {"object": mainSequenceStar, "x": [-30, -20, 0], "p": [1.5 * c, 0], "m": 1, "label": "Star"}
+                         "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Observer", "shape": aSphere(5,100), "options": {"showVelocities": false}},
+                                     {"object": extendedObject, "x": [-30, -30, 0], "p": [1.5 * c, 0], "m": 1, "label": "Star", "shape": aSphere(5,100)}
                                     ],
                          "frame": 0}
                        ]
@@ -41,5 +41,13 @@ var demos = [{"name": "Velocity addition",
                          "frame"  : 2,
                          "options": {"showFramePos": true, "showVisualPos": false}},
                        ]
-             }
+             },
+            {"name": "Test thingies.",
+             "steps": [{"caption": "Test for a sphere",
+                        "objects": [{"object": extendedObject, "x": [0, -32, 0], "p": [0,0,0], "m": 1, "shape": aSphere(10,100)},
+                                    {"object": extendedObject, "x": [20, -20, -20], "p": [0,0,0], "m": 1, 
+                                            "options": {"temperature": 3000}, 
+                                            "label": "A circle",   "shape": aCircle(10,30)}
+                      ],
+             "options": {"showFramePos": true, "showVisualPos": true}}]}
             ];

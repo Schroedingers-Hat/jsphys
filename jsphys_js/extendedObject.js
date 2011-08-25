@@ -10,8 +10,10 @@ function extendedObject(X, P, m, options, shape, timeStep)
     this.pastPoints = [];
     this.pastRadialV = [];
     this.pastR = [];
-
-    this.temp = 5000;
+    if (options.temperature) {
+        this.temp = options.temperature;
+    }
+    else this.temp = 5000;
     this.stillColor = tempToColor(this.temp);
     
     if (options.interestingPts) {
@@ -216,18 +218,19 @@ extendedObject.prototype.drawNow3D = function(scene)
         scene.TDC.beginPath();
         scene.TDC.moveTo(this.pointPos[0][0] / scene.zoom + scene.origin[0], 
                        this.pointPos[0][1] / scene.zoom + scene.origin[1]);
-       
+        
+        scene.TDC.beginPath();
+        scene.TDC.moveTo(this.pointPos[0][0] / scene.zoom / this.pointPos[0][1] * 20 + scene.origin[0],
+                         this.pointPos[0][2] / scene.zoom / this.pointPos[0][1] * 20 + scene.origin[1]);
+
         for (var i = 1; i < (this.pointPos.length); i++)
         {
             if (this.pointPos[i-1][1] < 0 && this.pointPos[i][1] < 0){
-            scene.TDC.beginPath();
-            scene.TDC.moveTo(this.pointPos[i-1][0] / scene.zoom / this.pointPos[i - 1][1] * 20 + scene.origin[0],
-                           this.pointPos[i-1][2] / scene.zoom / this.pointPos[i - 1][1] * 20 + scene.origin[1]);
             scene.TDC.lineTo(this.pointPos[i][0] / scene.zoom /   this.pointPos[i][1]   * 20  + scene.origin[0], 
                            this.pointPos[i][2] / scene.zoom /   this.pointPos[i][1]    * 20 + scene.origin[1]);
-            scene.TDC.stroke();
             }
         }
+        scene.TDC.stroke();
     }
 }
 
