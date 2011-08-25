@@ -186,20 +186,43 @@ function loadDemoList() {
  * - Default: Do whatever the demo wants.
  */
 function dopplerButtonClick(event) {
-    if (!scene.neverDoppler && !scene.alwaysDoppler) {
+    if (!scene.options.neverDoppler && !scene.options.alwaysDoppler) {
         // we're currently in default mode. switch to force off.
-        scene.neverDoppler = true;
+        scene.options.neverDoppler = true;
         $("#doppler").html("Force on");
-    } else if (scene.neverDoppler && !scene.alwaysDoppler) {
+    } else if (scene.options.neverDoppler && !scene.options.alwaysDoppler) {
         // we're in force off mode. switch to force on.
-        scene.neverDoppler = false;
-        scene.alwaysDoppler = true;
+        scene.options.neverDoppler = false;
+        scene.options.alwaysDoppler = true;
         $("#doppler").html("Default");
     } else {
         // switch to default.
-        scene.neverDoppler = false;
-        scene.alwaysDoppler = false;
+        scene.options.neverDoppler = false;
+        scene.options.alwaysDoppler = false;
         $("#doppler").html("Force off");
+    }
+    event.preventDefault();
+}
+
+/**
+ * Functions like the Doppler button, but in a different order.
+ */
+function framePosClick(event) {
+    if (!scene.options.neverShowFramePos && !scene.options.alwaysShowFramePos) {
+        // we're in default mode. switch to force on.
+        scene.options.neverShowFramePos = false;
+        scene.options.alwaysShowFramePos = true;
+        $("#framePos").html("Force off");
+    } else if (!scene.options.neverShowFramePos && scene.options.alwaysShowFramePos) {
+        // we're currently in force on mode. switch to force off.
+        scene.options.neverShowFramePos = true;
+        scene.options.alwaysShowFramePos = false;
+        $("#framePos").html("Default");
+    } else {
+        // switch to default.
+        scene.options.neverShowFramePos = false;
+        scene.options.alwaysShowFramePos = false;
+        $("#framePos").html("Force on");
     }
     event.preventDefault();
 }
@@ -216,6 +239,7 @@ $(document).ready(function()
     $("#pause").click(pause);
     $("#canvas").click(clickHandler);
     $("#doppler").click(dopplerButtonClick);
+    $('#framePos').click(framePosClick);
     $("#framePos").change(function() {scene.options.showFramePos = !scene.options.showFramePos;});
     $(document).keydown(onKeyDown);
     $(document).keyup(onKeyUp);
