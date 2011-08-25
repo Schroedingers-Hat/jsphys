@@ -72,6 +72,6 @@ inertialObject.prototype.calcPast = function() {
     this.XView = quat4.subtract(this.X0, this.uDisplacement, this.XView);
     this.rPast = Math.sqrt(Math.max(quat4.spaceDot( this.XView, this.XView ),1e-10)); 
     this.radialVPast = (quat4.spaceDot(this.XView, this.V) / 
-                        Math.max(this.rPast,1e-10) / this.V[3] / c);
+                        Math.max(this.rPast,1e-10) / this.V[3] * c);
 
 };
