@@ -24,7 +24,7 @@ function extendedObject(X, P, m, options, shape, timeStep)
     
     // Make a rectangular prism which, when placed at the position or view pos
     // of COM, must always contain part of the object.
-    this.boundingBox = [0, 0, 0, 0, 0, 0];
+    this.boundingBox = [[0, 0, 0], [0, 0, 0]];
     this.initialBoost = cBoostMat([-this.COM.V[0],
                                    -this.COM.V[1],
                                    -this.COM.V[2],
@@ -36,10 +36,10 @@ function extendedObject(X, P, m, options, shape, timeStep)
         this.shapePoints[i] = quat4.create(mat4.multiplyVec4(this.initialBoost, shape[i], tempQuat4));
         for(var j = 0; j < 3; j++)
         {
-            if (this.shapePoints[i][j] < this.boundingBox[0][j]){
+            if (this.shapePoints[i][j] < this.boundingBox[0][j]) {
                 this.boundingBox[0][j] = i;   
             }
-            if (this.shapePoints[i][j] > this.boundingBox[0][j]){
+            if (this.shapePoints[i][j] > this.boundingBox[0][j]) {
                 this.boundingBox[1][j] = i;   
             }
         }
