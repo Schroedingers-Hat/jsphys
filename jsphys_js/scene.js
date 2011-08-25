@@ -40,6 +40,11 @@ function Scene() {
      */
     this.draw = function() {
         if (this.carray.length === 0) { return; }
+        if (this.timeScale == 0) {
+            this.frameEndTime = new Date().getTime();
+            requestAnimFrame(drawScene);
+            return;
+        }
         this.frameStartTime = new Date().getTime();
         this.timeStep = (this.frameStartTime - this.frameEndTime) * this.timeScale;
 
