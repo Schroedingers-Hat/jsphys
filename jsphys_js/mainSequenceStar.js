@@ -123,7 +123,7 @@ mainSequenceStar.prototype.drawPast = function(scene)
         }
 
         if (this.options.showVelocities) {
-            scene.g.fillText("v = " + (Math.round(1000 *Math.sqrt(1-1/Math.pow(this.COM.V[3] / c, 2)))/1000) + "c", xvis + scene.origin[0],
+            scene.g.fillText("v = " + (Math.round(1000 *Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", xvis + scene.origin[0],
                              yvis + scene.origin[1] + (this.r / scene.zoom) + 10);
         }
         if (this.options.showGamma) {

@@ -99,7 +99,7 @@ extendedObject.prototype.drawNow = function()
         scene.g.stroke();
 
         if (this.options.showVelocities) {
-            scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-1/Math.pow(this.COM.V[3] / c, 2)))/1000) + "c", this.COM.X0[0] / scene.zoom + scene.origin[0],
+            scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", this.COM.X0[0] / scene.zoom + scene.origin[0],
                              this.COM.X0[1] / scene.zoom + scene.origin[1] + 20);
         }
         if (this.options.showGamma) {
