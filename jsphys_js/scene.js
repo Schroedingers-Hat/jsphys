@@ -222,7 +222,7 @@ function Scene() {
     this.defaults = {"showDoppler": true,
                      "showVisualPos": true,
                      "showFramePos": false,
-                     "showVelocities": true,
+                     "showVelocity": true,
                      "showTime": false,
                      "showGamma": true};
     
