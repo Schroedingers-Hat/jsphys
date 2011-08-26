@@ -209,6 +209,23 @@ extendedObject.prototype.drawPast = function(scene)
             if(doDoppler) scene.g.stroke();
         }
         if(!doDoppler) scene.g.stroke();
+
+        scene.g.fillStyle = "#0F0";
+        if (this.options.showVelocities) {
+            scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", 
+                             (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
+                              this.boundingBox[3] / scene.zoom + scene.origin[1] + 20);
+        }
+        if (this.options.showGamma) {
+            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000,
+                             (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
+                              this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 30);
+        }
+        if (this.label != "") {
+            scene.g.fillText(this.label, 
+                             (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
+                              this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 40);
+        }
     }
 }
 
