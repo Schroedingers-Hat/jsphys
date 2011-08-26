@@ -1,5 +1,21 @@
 // Timelike is component 3, c ready
 
+/**
+ * Creates a new inertialObject with the given X coordinate, momentum, and mass.
+ *
+ * Public member variable reference:
+ * - X0 is the current 4-vector position of the object in the current reference
+ *   frame.
+ * - XView is the current visible position of the object -- that is, from the
+ *   current reference frame, what light would be reaching us now, and where
+ *   would the object appear to be?
+ * - tau is the proper time of this object.
+ * - V is the velocity (dX/dt?)
+ * - radialDist is the distance from the origin (the observer's position) to 
+ *   this object.
+ * - radialVPast is the radial XView velocity past the origin, used for Doppler
+ *   shifting.
+ */
 function inertialObject(X, P, m)
 {
     this.init = function(timeStep, label)
