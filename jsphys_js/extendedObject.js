@@ -180,8 +180,8 @@ extendedObject.prototype.drawPast = function(scene)
 {                                                                                   
     if (this.isInteresting || true)                                                 
     {   
-        var doDoppler = (scene.alwaysDoppler || 
-                         (!scene.neverDoppler && this.options.showDoppler));
+        var doDoppler = (scene.options.alwaysDoppler || 
+                         (!scene.options.neverDoppler && this.options.showDoppler));
         if(doDoppler) {
             scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                                 this.pastRadialV[0],
@@ -216,8 +216,8 @@ extendedObject.prototype.drawPast3D = function(scene)
 {                                                                                   
     if (this.isInteresting || true)                                                 
     {   
-        var doDoppler = (scene.alwaysDoppler || 
-                         (!scene.neverDoppler && this.options.showDoppler));
+        var doDoppler = (scene.options.alwaysDoppler || 
+                         (!scene.options.neverDoppler && this.options.showDoppler));
         if(doDoppler) {
             scene.TDC.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                                 this.pastRadialV[0],
@@ -279,11 +279,12 @@ extendedObject.prototype.drawNow3D = function(scene)
 extendedObject.prototype.draw = function(scene)
 {
 
-    if (this.options.showVisualPos){
+    if (this.options.showVisualPos) {
         this.drawPast(scene);
         this.drawPast3D(scene);
     }
-    if (this.options.showFramePos){
+    if (scene.options.alwaysShowFramePos || 
+        (!scene.options.neverShowFramePos && this.options.showFramePos)) {
         this.drawNow(scene);
         this.drawNow3D(scene);
     }
