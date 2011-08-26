@@ -234,7 +234,8 @@ function Scene() {
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
                     "alwaysShowFramePos": false,
-                    "neverShowFramePos": true};
+                    "neverShowFramePos": true,
+                    "showTime": false};
     
     this.hsg = $("#hsg");
     this.gameclock = $("#gameclock");

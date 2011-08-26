@@ -141,6 +141,11 @@ extendedObject.prototype.drawNow = function()
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
                               this.boundingBox[3] / scene.zoom + scene.origin[1] + 40);
         }
+        if (this.options.showTime || scene.options.showTime) {
+            scene.g.fillText("t = " + (Math.round((this.COM.tau / c)) / 1000), 
+                             (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
+                              this.boundingBox[3] / scene.zoom + scene.origin[1] + 50);
+        }
     }
 }
 

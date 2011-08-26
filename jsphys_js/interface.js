@@ -27,7 +27,7 @@ function onKeyDown(evt)
 //    	else if (evt.keyCode == 49) rotUpDown = true; //Not needed for 2D 
 //    	else if (evt.keyCode == 50) rotDownDown = true;  //Not needed for 2D
 
-        else if (evt.keyCode == 84) scene.displayTime = !scene.displayTime;
+        else if (evt.keyCode == 84) scene.options.showTime = !scene.options.showTime;
         else if (evt.keyCode == 90)
         {
             $('#doppler').click();
