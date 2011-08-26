@@ -107,11 +107,15 @@ function Scene() {
     };
 
     this.nextStep = function() {
+        if (this.curStep + 1 >= this.demo.steps.length)
+            return;
         this.curStep += 1;
         this.replay();
     };
 
     this.prevStep = function() {
+        if (this.curStep - 1 < 0)
+            return;
         this.curStep -= 1;
         this.replay();
     };
