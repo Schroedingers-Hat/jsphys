@@ -242,7 +242,7 @@ extendedObject.prototype.drawPast3D = function(scene)
         } else {
             scene.TDC.strokeStyle = this.stillColor;
             scene.TDC.beginPath();
-            scene.TDC.moveTo(this.pastPoints[0][0] / scene.zoom / this.pastPoints[0][1] * 20 + scene.origin[0],
+            scene.TDC.moveTo(-(this.pastPoints[0][0] / scene.zoom / this.pastPoints[0][1] * 20) + scene.origin[0],
                              this.pastPoints[0][2] / scene.zoom / this.pastPoints[0][1] * 20 + scene.origin[1]);
 
         }
@@ -255,11 +255,11 @@ extendedObject.prototype.drawPast3D = function(scene)
                                                                     this.COM.V[3] / c));
 
                 scene.TDC.beginPath();
-                scene.TDC.moveTo(this.pastPoints[i-1][0] / scene.zoom / this.pastPoints[i - 1][1] * 20 + scene.origin[0],
+                scene.TDC.moveTo(- (this.pastPoints[i-1][0] / scene.zoom / this.pastPoints[i - 1][1] * 20) + scene.origin[0],
                                  this.pastPoints[i-1][2] / scene.zoom / this.pastPoints[i - 1][1] * 20 + scene.origin[1]);
             }
             if (this.pastPoints[i-1][1] < 0 && this.pastPoints[i][1] < 0){
-            scene.TDC.lineTo(this.pastPoints[i][0] / scene.zoom /   this.pastPoints[i][1]   * 20  + scene.origin[0], 
+            scene.TDC.lineTo(- (this.pastPoints[i][0] / scene.zoom /   this.pastPoints[i][1]   * 20)  + scene.origin[0], 
                            this.pastPoints[i][2] / scene.zoom /   this.pastPoints[i][1]    * 20 + scene.origin[1]);
             }
             if(doDoppler) scene.TDC.stroke();
@@ -275,18 +275,18 @@ extendedObject.prototype.drawNow3D = function(scene)
         scene.TDC.strokeStyle = "#0f0";
 
         scene.TDC.beginPath();
-        scene.TDC.moveTo(this.pointPos[0][0] / scene.zoom + scene.origin[0], 
-                       this.pointPos[0][1] / scene.zoom + scene.origin[1]);
+        scene.TDC.moveTo(- (this.pointPos[0][0] / scene.zoom) + scene.origin[0], 
+                         this.pointPos[0][1] / scene.zoom + scene.origin[1]);
         
         scene.TDC.beginPath();
-        scene.TDC.moveTo(this.pointPos[0][0] / scene.zoom / this.pointPos[0][1] * 20 + scene.origin[0],
+        scene.TDC.moveTo(- (this.pointPos[0][0] / scene.zoom / this.pointPos[0][1] * 20) + scene.origin[0],
                          this.pointPos[0][2] / scene.zoom / this.pointPos[0][1] * 20 + scene.origin[1]);
 
         for (var i = 1; i < (this.pointPos.length); i++)
         {
             if (this.pointPos[i-1][1] < 0 && this.pointPos[i][1] < 0){
-            scene.TDC.lineTo(this.pointPos[i][0] / scene.zoom /   this.pointPos[i][1]   * 20  + scene.origin[0], 
-                           this.pointPos[i][2] / scene.zoom /   this.pointPos[i][1]    * 20 + scene.origin[1]);
+            scene.TDC.lineTo(-(this.pointPos[i][0] / scene.zoom / this.pointPos[i][1] * 20)  + scene.origin[0], 
+                             this.pointPos[i][2] / scene.zoom / this.pointPos[i][1] * 20 + scene.origin[1]);
             }
         }
         scene.TDC.stroke();
