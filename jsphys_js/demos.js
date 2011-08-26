@@ -29,7 +29,7 @@ var demos = [{"name": "Velocity addition",
              {"name": "Relativistic snake",
               "steps": [{"caption": "We have here two knives a fixed distance apart, moving downwards. A special breed of high-speed snake, <em>Crotalus relativisticus</em>, is moving at a speed close to the speed of light. It's just short enough to fit between the blades.",
                          "objects": [{"object": extendedObject, "x": [-27, -60, 0], "p": [0, 4, 0], "m": 1, "shape": [[5, -10, 0, 0], [5, 10, 0, 0], [-5, -10, 0, 0], [5, -10, 0, 0]]},
-                                     {"object": extendedObject, "x": [27, -60, 0], "p": [0, 4, 0], "m": 1, "label": "KNIFE", "shape": [[-5, -10, 0, 0], [-5, 10, 0, 0], [5, -10, 0, 0], [-5, -10, 0, 0]]},
+                                     {"object": extendedObject, "x": [27, -60, 0], "p": [0, 4, 0], "m": 1, "shape": [[-5, -10, 0, 0], [-5, 10, 0, 0], [5, -10, 0, 0], [-5, -10, 0, 0]]},
                                      {"object": extendedObject, "x": [-68, 0, 0], "p": [8, 0, 0], "m": 1, "shape": linesPadder([[-35, 0, 0, 0], [35, 0, 0, 0]],3)}
                                     ],
                          "options": {"showFramePos": true, "showVisualPos": false, "showVelocities": true}},
