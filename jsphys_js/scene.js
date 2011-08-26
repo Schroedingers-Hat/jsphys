@@ -100,7 +100,10 @@ function Scene() {
     this.startAnimation = function() {
         this.frameEndTime = new Date().getTime();
         this.t = 0;
-        this.draw();
+        if (!this.drawing) {
+            this.drawing = true;
+            this.draw();
+        }
     };
 
     this.nextStep = function() {
@@ -233,6 +236,8 @@ function Scene() {
     this.gameclock = $("#gameclock");
     this.time = $("#time");
     this.fps = $("#fps");
+
+    this.drawing = false;
 }
 
 /**
