@@ -2,7 +2,7 @@
 //lNB: Shape is four dimensional, 
 // if you draw it moving and not with the front/back in the right time as well as place, it won't be the correct shape.
 
-function extendedObject(X, P, m, options, shape, timeStep)
+function extendedObject(X, P, label, options, shape, timeStep)
 {
     this.options = options;
     this.isInteresting = true;
@@ -14,6 +14,7 @@ function extendedObject(X, P, m, options, shape, timeStep)
         this.temp = options.temperature;
     }
     else this.temp = 5000;
+    this.label = label;
     this.stillColor = tempToColor(this.temp);
     
     if (options.interestingPts) {
@@ -127,12 +128,18 @@ extendedObject.prototype.drawNow = function()
 
         if (this.options.showVelocities) {
             scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", 
-                this.boundingBox[1] / scene.zoom + scene.origin[0], 
-                this.boundingBox[3] / scene.zoom+ scene.origin[1]);
+                             (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
+                              this.boundingBox[3] / scene.zoom + scene.origin[1] + 20);
         }
         if (this.options.showGamma) {
-            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, this.boundingBox[1] / scene.zoom + scene.origin[0],
-                             this.boundingBox[2] / scene.zoom + scene.origin[1] - 20);
+            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000,
+                             (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
+                              this.boundingBox[3] / scene.zoom + scene.origin[1] + 30);
+        }
+        if (this.label != "") {
+            scene.g.fillText(this.label, 
+                             (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
+                              this.boundingBox[3] / scene.zoom + scene.origin[1] + 40);
         }
     }
 }
