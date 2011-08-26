@@ -1,4 +1,8 @@
 // Object to handle preset paths in common types of motion.
+// Internal positions, velocities etc are defined at set points in the 4D world
+// These do not change with time.
+// Instead everything is moved to the current time for transformations, then moved back.
+
 
 // Takes pts -- an array of events
 // params -- an array of invariants that classify the motion between one event and the next.
@@ -23,6 +27,9 @@ function pathObject(pts, params) {
 
 };
 
+pathObject.prototype.changeFrame(time,rotation,translation) {
+
+}
 pathObject.prototype.draw = function(time, scene){
     this.pos = this.findEvt(time, this.pos);
     var xvis = this.pos[0] / scene.zoom;
@@ -86,6 +93,9 @@ pathObject.prototype.findV = function(tau){
 // dest represents the vector c^4/alpha^2 [cosh(alpha*tau),0,0,sinh(alpha*tau)]
 // rotated onto the frame defined by coeffs.
 function hypEvt(tau, alpha, coeffs, dest){
+    // Calculate three vectors that define a hyperbolic trajectory.
+    // The first to are the coefficients of the +tau and -tau exponential terms.
+    // The last is a translation from the event horizon.
     var e1 = Math.exp(tau*alpha);
     var e2 = 1/e1; 
     //Multiply relevant coefficient components w/ exp(rho) and exp(-rho).
@@ -118,4 +128,4 @@ function calcHypCoeff(c,alpha,rot){
          -rot[2] * 2 * base,
          -rot[3] * 2 * base]
     };
-};
+}
