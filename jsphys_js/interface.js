@@ -186,7 +186,7 @@ function loadDemoList() {
  * - Default: Do whatever the demo wants.
  */
 function dopplerButtonClick(event) {
-    if (!scene.neverDoppler && !scene.alwaysDoppler) {
+    if (!scene.options.neverDoppler && !scene.options.alwaysDoppler) {
         // we're currently in default mode. switch to force off.
         scene.options.neverDoppler = true;
         scene.options.alwaysDoppler = false;
