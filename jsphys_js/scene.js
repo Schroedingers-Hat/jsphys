@@ -1,5 +1,6 @@
 function Scene() {
-    glMatrixArrayType = Float64Array;
+    if (typeof Float64Array !== "undefined")
+        glMatrixArrayType = Float64Array;
 
     /**
      * Called by scene.load() to create each individual object in a scene.
@@ -194,7 +195,7 @@ function Scene() {
     this.shiftToFrameOfObject = function(obj) {
         var newFrameBoost = cBoostMat(obj.COM.V, c);
 
-        var XShift = new Float64Array(obj.COM.X0);
+        var XShift = quat4.create(obj.COM.X0);
         XShift[1] = XShift[1] + 30;
 
         this.changeArrayFrame(XShift, newFrameBoost);
