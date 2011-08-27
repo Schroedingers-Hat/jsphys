@@ -171,8 +171,13 @@ function Scene() {
         var minElement = -1;
 
         for (i = 0; i < this.carray.length; i++) {
-            var dist = getDistance([x,y], [this.carray[i].COM.XView[0] / this.zoom + this.origin[0], 
-                                           this.carray[i].COM.XView[1] / this.zoom + this.origin[1]]);
+            if (this.carray[i].COM) {
+                var dist = getDistance([x,y], [this.carray[i].COM.XView[0] / this.zoom + this.origin[0], 
+                                               this.carray[i].COM.XView[1] / this.zoom + this.origin[1]]);
+            } else {
+                var dist = getDistance([x,y], [this.carray[i].XView[0] / this.zoom + this.origin[0], 
+                                               this.carray[i].XView[1] / this.zoom + this.origin[1]]);
+            }
             if (dist < minDist) {
                 minDist = dist;
                 minElement = i;
