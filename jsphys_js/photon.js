@@ -33,7 +33,7 @@ photon.prototype.updateX0 = function(timeStep) {
     // Bring it to now.
     quat4.add(this.X0, this.displace);
 
-    this.X0[3] = this.X0[3] - timeStep;
+    this.X0[3] = this.X0[3] - timeStep * this.V[3];
 };
 
 photon.prototype.changeFrame = function(translation, rotation) {
