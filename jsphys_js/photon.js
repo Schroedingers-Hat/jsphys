@@ -11,9 +11,9 @@ function photon(X, V, timeStep) {
     this.XView = quat4.create();
     this.V = V;
 
-    // Normalize V such that V[3] = c and V[3]^2-V[2]^2-V[1]^2-V[0]^2 = 0
+    // Normalize V such that V[3] = 1 and V[3]^2-V[2]^2-V[1]^2-V[0]^2 = 0
     // (i.e. |V| (including the metric) is 0)
-    this.V[3] = c;
+    this.V[3] = 1;
     vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
 
     this.displace = quat4.create();
@@ -32,6 +32,8 @@ photon.prototype.updateX0 = function(timeStep) {
 
     // Bring it to now.
     quat4.add(this.X0, this.displace);
+
+    this.X0[3] = this.X0[3] - timeStep;
 };
 
 photon.prototype.changeFrame = function(translation, rotation) {
@@ -47,7 +49,7 @@ photon.prototype.changeFrame = function(translation, rotation) {
     vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
 
     // Point is now at wrong time. Find displacement to current time.
-    quat4.scale(this.V, -this.X0[3], this.uDisplacement);
+    quat4.scale(this.V, -this.X0[3] / this.V[3], this.uDisplacement);
     
     // Bring to current time.
     quat4.add(this.X0, this.uDisplacement);
