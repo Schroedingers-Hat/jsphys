@@ -21,8 +21,7 @@ function extendedObject(X, P, label, options, shape, timeStep)
         this.interestingPts = options.interestingPts;
     }
 
-    this.COM = new inertialObject(X, P, 1);
-    this.COM.init(timeStep);
+    this.COM = new inertialObject(X, P, 1, timeStep);
     this.uDisplacement = quat4.create([0,0,0,0]);
     this.pointPos = [];
     
