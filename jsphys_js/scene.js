@@ -60,7 +60,7 @@ function Scene() {
         this.drawCrosshairs();
         this.t = this.t + (this.timeStep * c);
         
-        this.hsg.html(Math.floor(this.carray[0].COM.V[3] / c));
+        //this.hsg.html(Math.floor(this.carray[0].COM.V[3] / c));
         this.gameclock.html(Math.floor(this.t / 1000 / c));
         this.time.html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
 
@@ -172,13 +172,8 @@ function Scene() {
         var minElement = -1;
 
         for (i = 0; i < this.carray.length; i++) {
-            if (this.carray[i].COM) {
-                var dist = getDistance([x,y], [this.carray[i].COM.XView[0] / this.zoom + this.origin[0], 
-                                               this.carray[i].COM.XView[1] / this.zoom + this.origin[1]]);
-            } else {
-                var dist = getDistance([x,y], [this.carray[i].XView[0] / this.zoom + this.origin[0], 
-                                               this.carray[i].XView[1] / this.zoom + this.origin[1]]);
-            }
+            var dist = getDistance([x,y], [this.carray[i].XView[0] / this.zoom + this.origin[0],
+                                           this.carray[i].XView[1] / this.zoom + this.origin[1]]);
             if (dist < minDist) {
                 minDist = dist;
                 minElement = i;
@@ -193,9 +188,9 @@ function Scene() {
 
     // Take a given inertialObject and switch to its reference frame
     this.shiftToFrameOfObject = function(obj) {
-        var newFrameBoost = cBoostMat(obj.COM.V, c);
+        var newFrameBoost = cBoostMat(obj.V, c);
 
-        var XShift = quat4.create(obj.COM.X0);
+        var XShift = quat4.create(obj.X0);
         XShift[1] = XShift[1] + 30;
 
         this.changeArrayFrame(XShift, newFrameBoost);

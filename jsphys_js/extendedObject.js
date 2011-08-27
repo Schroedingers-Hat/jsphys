@@ -387,6 +387,8 @@ extendedObject.prototype.drawXT = function(scene)
                        scene.height);
         scene.h.stroke();
     }
-
-
 }
+
+Object.defineProperty(extendedObject.prototype, "V", {get: function() { return this.COM.V; }});
+Object.defineProperty(extendedObject.prototype, "X0", {get: function() { return this.COM.X0; }});
+Object.defineProperty(extendedObject.prototype, "XView", {get: function() { return this.COM.XView; }});
