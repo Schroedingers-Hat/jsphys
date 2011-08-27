@@ -2,11 +2,8 @@
  * Create a new photon. Takes an initial position X and a 3-velocity V,
  * which will be rescaled to have a magnitude of c.
  */
-function photon(X, V) {
-    if (X.length == 3) {
-        X.push(0);
-    }
-    this.X0 = quat4.create(X);
+function photon(X, V, label, options) {
+    this.X0 = X;
     this.rPast = 1;
     this.XView = quat4.create();
     this.V = V;

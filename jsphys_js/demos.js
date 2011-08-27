@@ -49,5 +49,10 @@ var demos = [{"name": "Velocity addition",
                                             "options": {"temperature": 3000}, 
                                             "label": "A circle",   "shape": aCircle(10,30)}
                       ],
-             "options": {"showFramePos": true, "showVisualPos": true}}]}
+             "options": {"showFramePos": true, "showVisualPos": true}}]},
+            {"name": "Photons",
+             "steps": [{"caption": "Photons.",
+                        "objects": [{"object": photon, "x": [0, 0, 0], "v": [1, 0, 0]},
+                                    {"object": photon, "x": [0, 0, 0], "v": [-1, 0, 0]}]}]
+            }
             ];

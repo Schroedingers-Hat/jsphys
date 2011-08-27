@@ -22,15 +22,18 @@ function Scene() {
         if (obj.x.length == 2) {
             obj.x[2] = 0;
         }
-        if (obj.p.length == 2) {
+        if (obj.p && obj.p.length == 2) {
             obj.p[2] = 0;
         }
         if (obj.shape) {
             var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
-                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, obj.shape, this.timeStep);
+                                        quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, obj.shape, this.timeStep);
+        } else if (obj.v) {
+            var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
+                                        quat4.create([obj.v[0], obj.v[1], obj.v[2], 0], obj.label, obj.options));
         } else {
             var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
-                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
+                                        quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
         }
         this.carray.push(thingy);
 
@@ -151,7 +154,6 @@ function Scene() {
         }
 
         demo.steps[step].objects.forEach(this.createObject, this);
-        this.carray.push(new photon([0, 0, 0], [10, 0, 0]));
 
         $('#caption').html(demo.steps[step].caption);
 
