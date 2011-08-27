@@ -2,7 +2,7 @@
  * Create a new photon. Takes an initial position X and a 3-velocity V,
  * which will be rescaled to have a magnitude of c.
  */
-function photon(X, V, timeStep) {
+function photon(X, V) {
     if (X.length == 3) {
         X.push(0);
     }
@@ -17,7 +17,6 @@ function photon(X, V, timeStep) {
     vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
 
     this.displace = quat4.create();
-    quat4.scale(this.V, timeStep, this.displace);
 
     this.tau = 0;
 

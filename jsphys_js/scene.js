@@ -150,7 +150,7 @@ function Scene() {
         }
 
         demo.steps[step].objects.forEach(this.createObject, this);
-        this.carray.push(new photon([0, 0, 0], [10, 0, 0], this.timeStep));
+        this.carray.push(new photon([0, 0, 0], [10, 0, 0]));
 
         $('#caption').html(demo.steps[step].caption);
 
