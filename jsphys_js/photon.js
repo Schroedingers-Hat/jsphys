@@ -81,12 +81,12 @@ photon.prototype.calcPast = function() {
 
 photon.prototype.draw = function() {
     this.drawNow();
-}
+};
 
 photon.prototype.update = function(timeStep) {
     this.updateX0(timeStep);
     this.calcPast();
-}
+};
 
 photon.prototype.drawXT = function() {};
 
@@ -97,4 +97,4 @@ photon.prototype.drawNow = function() {
                 this.X0[1] / scene.zoom + scene.origin[1],
                 2, 0, twopi);
     scene.g.fill();
-}
+};
