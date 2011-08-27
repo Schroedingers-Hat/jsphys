@@ -150,6 +150,8 @@ function Scene() {
         }
 
         demo.steps[step].objects.forEach(this.createObject, this);
+        this.carray.push(new photon([0, 0, 0], [10, 0, 0], this.timeStep));
+
         $('#caption').html(demo.steps[step].caption);
 
         // If the demo specifies an object whose frame is preferred, shift to that frame.
