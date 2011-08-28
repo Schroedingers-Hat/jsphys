@@ -21,7 +21,7 @@ function tempToColor(colorTemp)
     if (!tempToColor.cache)
         tempToColor.cache = {};
     
-    var roundedTemp = (Math.round(colorTemp / 100) * 100);
+    var roundedTemp = Math.exp(Math.round(Math.log(colorTemp) * 300) / 300);
     
     if (!(roundedTemp.toString() in tempToColor.cache))
     {

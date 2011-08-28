@@ -134,12 +134,12 @@ function linesPadder(shape, resolution)
 function aSphere(r,numPts){
    var Sphere = [];
    var numAngles = Math.ceil(Math.sqrt(numPts));
-   for (i=0; i < numAngles; i++){
+   for (i=0; i < (numAngles); i++){
        for (j=0; j < numAngles; j++) {
            Sphere.push( quat4.create([
-               Math.cos(6.283 * j / numAngles) * Math.sin(3.1416 * i / numAngles) * r,
-               Math.sin(6.283 * j / numAngles) * Math.sin(3.1416 * i / numAngles) * r,
-               Math.cos(3.1416 * i / numAngles) * r,
+               Math.cos(6.283 * j / numAngles) * Math.sin(3.1416 * (i+j / numAngles) / numAngles) * r,
+               Math.sin(6.283 * j / numAngles) * Math.sin(3.1416 * (i+j / numAngles) / numAngles) * r,
+               Math.cos(3.1416 * (i+j / numAngles) /  numAngles) * r,
                0]));
        }
     }
