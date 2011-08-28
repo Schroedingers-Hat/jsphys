@@ -7,7 +7,8 @@ var nullQuat4 = quat4.create([0,0,0,0]);
 var twopi = Math.PI * 2;
 var tempVec3 = quat4.create();
 var tempQuat4 = quat4.create(); //Use this one, will get rid of tempVec3 eventually.
-
+var dopplerRoundVal = 20;
+var colorFilter = 2;
 // Some convenient matrices.
 var rotLeft  = mat4.create([ Math.cos(0.1),  Math.sin(-0.1),0, 0,
                              Math.sin(0.1),  Math.cos(0.1), 0, 0,

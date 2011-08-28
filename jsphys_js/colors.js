@@ -21,7 +21,7 @@ function tempToColor(colorTemp)
     if (!tempToColor.cache)
         tempToColor.cache = {};
     
-    var roundedTemp = Math.exp(Math.round(Math.log(colorTemp) * 300) / 300);
+    var roundedTemp = Math.exp(Math.round(Math.log(colorTemp) * dopplerRoundVal) / dopplerRoundVal);
     
     if (!(roundedTemp.toString() in tempToColor.cache))
     {
@@ -78,7 +78,7 @@ function xyz_to_rgb(xyz)
     var xc = xyz[0];
     var yc = xyz[1];
     var zc = xyz[2];
-    
+    var Y  = Math.pow(xyz[3],0.05) / colorFilter; 
     // HDTV/sRGB color space
     var cs = { "red":   {"x": 0.670, "y": 0.330, "z": 0},
                "green": {"x": 0.210, "y": 0.710, "z": 0.080},
@@ -118,7 +118,7 @@ function xyz_to_rgb(xyz)
     var g = (gx * xc) + (gy * yc) + (gz * zc);
     var b = (bx * xc) + (by * yc) + (bz * zc);
     
-    return [r, g, b];
+    return [Y*r, Y*g, Y*b];
 }
 
 /*                          CONSTRAIN_RGB
@@ -133,22 +133,22 @@ function xyz_to_rgb(xyz)
 function constrain_rgb(rgb)
 {
     var w;
-    var r = rgb[0];
-    var g = rgb[1];
-    var b = rgb[2];
+    var r = Math.max(rgb[0], 0);
+    var g = Math.max(rgb[1], 0);
+    var b = Math.max(rgb[2], 0);
     
-    /* Amount of white needed is w = - min(0, *r, *g, *b) */
-    
-    w = (0 < r) ? 0 : r;
-    w = (w < g) ? w : g;
-    w = (w < b) ? w : b;
-    w = -w;
-
-    /* Add just enough white to make r, g, b all positive. */
-    
-    if (w > 0) {
-        r += w;  g += w; b += w;
-    }
+//    /* Amount of white needed is w = - min(0, *r, *g, *b) */
+//    
+//    w = (0 < r) ? 0 : r;
+//    w = (w < g) ? w : g;
+//    w = (w < b) ? w : b;
+//    w = -w;
+//
+//    /* Add just enough white to make r, g, b all positive. */
+//    
+//    if (w > 0) {
+//        r += w;  g += w; b += w;
+//    }
     return [r, g, b];
 }
 
@@ -251,7 +251,7 @@ function spectrum_to_xyz(spectrum)
         Z += Me * cie_colour_match[i][2];
     }
     XYZ = (X + Y + Z);
-    return [X / XYZ, Y / XYZ, Z / XYZ];
+    return [X / XYZ, Y / XYZ, Z / XYZ, Y];
 }
 
 /*                            BB_SPECTRUM
