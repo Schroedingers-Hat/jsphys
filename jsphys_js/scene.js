@@ -63,7 +63,6 @@ function Scene() {
         this.drawCrosshairs();
         this.t = this.t + (this.timeStep * c);
         
-        //this.hsg.html(Math.floor(this.carray[0].COM.V[3] / c));
         this.gameclock.html(Math.floor(this.t / 1000 / c));
         this.time.html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
 
@@ -78,8 +77,6 @@ function Scene() {
 
         requestAnimFrame(drawScene);
         this.frameEndTime = new Date().getTime();
-
-        this.fps.html(Math.floor(1000 / (this.frameEndTime - this.frameStartTime)));
     };
 
     this.clear = function() {
@@ -241,10 +238,8 @@ function Scene() {
                     "neverShowFramePos": true,
                     "showTime": false};
     
-    this.hsg = $("#hsg");
     this.gameclock = $("#gameclock");
     this.time = $("#time");
-    this.fps = $("#fps");
 
     this.drawing = false;
 }
