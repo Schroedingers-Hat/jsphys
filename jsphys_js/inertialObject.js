@@ -25,7 +25,7 @@ function inertialObject(X, P, m, timeStep)
     // Relativistic velocity, or momentum/mass.
     genEnergy(this.V, c, m);
     this.displace = quat4.create();
-    quat4.scale(this.V, timeStep / this.V[3], this.displace);
+    quat4.scale(this.V, timeStep / this.V[3] * c, this.displace);
     this.tau = 0;
     this.tauPast = 0;
     this.uDisplacement = quat4.create();
@@ -60,14 +60,14 @@ inertialObject.prototype.changeFrame = function(translation, rotation)
     
     //Bring to current time.
     quat4.add(this.X0, this.uDisplacement);
-    this.tau += this.uDisplacement[3] / this.V[3];
+    this.tau += this.uDisplacement[3] / this.V[3] * c;
 };
 
 inertialObject.prototype.calcPast = function() {
     var vDotv = quat4.spaceDot(this.V, this.V) / Math.pow(this.V[3] / c, 2);
     var xDotx = quat4.spaceDot(this.X0, this.X0);
     var vDotx = quat4.spaceDot(this.X0, this.V) / this.V[3] * c;
-    var a = c*c - vDotv;
+    var a = (c*c - vDotv);
     if (xDotx == 0 || vDotv == 0) {
         this.XView[0] = this.X0[0];
         this.XView[1] = this.X0[1];
@@ -80,7 +80,7 @@ inertialObject.prototype.calcPast = function() {
         return;
     }
 
-    this.viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ) / a;
+    this.viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ) / a / c;
     
     quat4.scale(this.V, this.viewTime / this.V[3] * c, this.uDisplacement);
     quat4.subtract(this.X0, this.uDisplacement, this.XView);
@@ -88,5 +88,5 @@ inertialObject.prototype.calcPast = function() {
     this.rPast = Math.sqrt(Math.max(quat4.spaceDot(this.XView, this.XView), 1e-10)); 
     this.radialVPast = (quat4.spaceDot(this.XView, this.V) / 
                         Math.max(this.rPast,1e-10) / this.V[3] * c);
-    this.tauPast = this.tau - this.uDisplacement[3]/this.V[3];
+    this.tauPast = this.tau - this.uDisplacement[3]/this.V[3] * c;
 };
