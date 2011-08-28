@@ -128,22 +128,22 @@ extendedObject.prototype.drawNow = function()
         if (this.options.showVelocity) {
             scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", 
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBox[3] / scene.zoom + scene.origin[1] - 20);
+                              -this.boundingBox[3] / scene.zoom + scene.origin[1] - 20);
         }
         if (this.options.showGamma) {
             scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000,
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBox[3] / scene.zoom + scene.origin[1] - 30);
+                              -this.boundingBox[3] / scene.zoom + scene.origin[1] - 30);
         }
         if (this.label != "") {
             scene.g.fillText(this.label, 
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBox[3] / scene.zoom + scene.origin[1] - 40);
+                              -this.boundingBox[3] / scene.zoom + scene.origin[1] - 40);
         }
         if (this.options.showTime || scene.options.showTime) {
             scene.g.fillText("tau = " + (Math.round((this.COM.tau / c)) / 1000), 
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBox[3] / scene.zoom + scene.origin[1] - 50);
+                              -this.boundingBox[3] / scene.zoom + scene.origin[1] - 50);
         }
     }
 }
