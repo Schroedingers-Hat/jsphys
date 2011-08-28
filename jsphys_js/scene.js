@@ -251,9 +251,6 @@ function Scene() {
                     "alwaysShowFramePos": false,
                     "neverShowFramePos": true,
                     "showTime": false};
-    
-    this.gameclock = $("#gameclock");
-    this.time = $("#time");
 
     this.drawing = false;
 }
