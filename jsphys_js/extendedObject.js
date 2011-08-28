@@ -229,10 +229,16 @@ extendedObject.prototype.drawPast = function(scene)
                               this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 40);
         }
         if (this.options.showTime || scene.options.showTime) {
-            scene.g.fillText("t = " + (Math.round((this.COM.XView[3] / c)) / 1000), 
+            scene.g.fillText("t = " + (Math.round((this.COM.viewTime / c)) / 1000), 
                              (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
                               this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 50);
         }
+        if (this.options.showTime || scene.options.showTime) {
+            scene.g.fillText("tau = " + (Math.round((this.COM.tauPast / c)) / 1000), 
+                             (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
+                              this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 60);
+        }
+
     }
 }
 

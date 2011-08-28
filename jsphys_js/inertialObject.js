@@ -27,7 +27,7 @@ function inertialObject(X, P, m, timeStep)
     this.displace = quat4.create();
     quat4.scale(this.V, timeStep / this.V[3], this.displace);
     this.tau = 0;
-
+    this.tauPast = 0;
     this.uDisplacement = quat4.create();
     this.viewTime = 0;
     this.radialDist = 0;
@@ -76,7 +76,7 @@ inertialObject.prototype.calcPast = function() {
         this.radialVPast = 0;
         this.radialDist = Math.sqrt(xDotx);
         this.rPast = Math.sqrt(xDotx);
-        thisViewTime = this.rPast / c;
+        this.ViewTime = this.rPast / c;
         return;
     }
 
@@ -88,4 +88,5 @@ inertialObject.prototype.calcPast = function() {
     this.rPast = Math.sqrt(Math.max(quat4.spaceDot(this.XView, this.XView), 1e-10)); 
     this.radialVPast = (quat4.spaceDot(this.XView, this.V) / 
                         Math.max(this.rPast,1e-10) / this.V[3] * c);
+    this.tauPast = this.tau - this.uDisplacement[3]/this.V[3];
 };
