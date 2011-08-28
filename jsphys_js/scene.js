@@ -62,20 +62,34 @@ function Scene() {
         }, this);
         this.drawCrosshairs();
         this.t = this.t + (this.timeStep * c);
-        
-        this.gameclock.html(Math.floor(this.t / 1000 / c));
-        this.time.html(Math.floor((this.frameStartTime - this.initialTime) / 1000));
 
-        if (leftDown == true)     this.changeArrayFrame(quat4.create([0, 0, 0, 0]), this.boost.left,  this.carray);
-        if (upDown == true)       this.changeArrayFrame(quat4.create([0, 0, 0, 0]), this.boost.up,    this.carray);
-        if (downDown == true)     this.changeArrayFrame(quat4.create([0, 0, 0, 0]), this.boost.down,  this.carray);
-        if (rightDown == true)    this.changeArrayFrame(quat4.create([0, 0, 0, 0]), this.boost.right, this.carray);
-        if (rotLeftDown == true)  this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotRight,   this.carray);
-        if (rotRightDown == true) this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotLeft,    this.carray);
-        if (rotUpDown == true)    this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotUp,      this.carray);
-        if (rotDownDown == true)  this.changeArrayFrame(quat4.create([0, 0, 0, 0]), rotDown,    this.carray);
+        scene.g.fillStyle = "rgba(100,100,100,0.3)";
+        scene.g.beginPath();
+        scene.g.moveTo(10,10);
+        scene.g.lineTo(150,10);
+        scene.g.lineTo(150,100);
+        scene.g.lineTo(10,100);
+        scene.g.closePath();
+        scene.g.fill();
+        scene.g.fillStyle = "rgba(150,0,150,1)";
+        scene.g.fillText("Game Time: " + Math.round(this.t/c) / 1000,40,30);
+        scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000,40,50);
+        if (window.console && window.console.firebug) {
+            scene.g.fillText("Fps: " + Math.round((1000/(-this.lastFrameEndTime + this.frameEndTime))),40,70);
+
+        }
+
+        if (leftDown == true)     this.changeArrayFrame(nullQuat4, this.boost.left,  this.carray);
+        if (upDown == true)       this.changeArrayFrame(nullQuat4, this.boost.up,    this.carray);
+        if (downDown == true)     this.changeArrayFrame(nullQuat4, this.boost.down,  this.carray);
+        if (rightDown == true)    this.changeArrayFrame(nullQuat4, this.boost.right, this.carray);
+        if (rotLeftDown == true)  this.changeArrayFrame(nullQuat4, rotRight,   this.carray);
+        if (rotRightDown == true) this.changeArrayFrame(nullQuat4, rotLeft,    this.carray);
+        if (rotUpDown == true)    this.changeArrayFrame(nullQuat4, rotUp,      this.carray);
+        if (rotDownDown == true)  this.changeArrayFrame(nullQuat4, rotDown,    this.carray);
 
         requestAnimFrame(drawScene);
+        this.lastFrameEndTime = this.frameEndTime;
         this.frameEndTime = new Date().getTime();
     };
 

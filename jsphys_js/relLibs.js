@@ -3,6 +3,7 @@
 
 // Convenient constants.
 var c = 3; //Do not change, not fully implemented
+var nullQuat4 = quat4.create([0,0,0,0]);
 var twopi = Math.PI * 2;
 var tempVec3 = quat4.create();
 var tempQuat4 = quat4.create(); //Use this one, will get rid of tempVec3 eventually.

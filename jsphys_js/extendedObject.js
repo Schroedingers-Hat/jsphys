@@ -159,10 +159,8 @@ extendedObject.prototype.calcPastPoints = function()
     var vDotx;
     var a;
     var viewTime;
-    var v = [this.COM.V[0] / gamma,
-             this.COM.V[1] / gamma,
-             this.COM.V[2] / gamma,
-             0];
+    //Dangerous, might accidentally use tempQuat4 and I /think/ this is a reference.
+    var v = quat4.scale(this.COM.V, 1/ gamma, tempQuat4);  
     for (var i = 0; i < (this.shapePoints.length); i++)
     {
         xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);

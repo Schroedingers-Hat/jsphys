@@ -69,7 +69,10 @@ inertialObject.prototype.calcPast = function() {
     var vDotx = quat4.spaceDot(this.X0, this.V) / this.V[3] * c;
     var a = c*c - vDotv;
     if (xDotx == 0 || vDotv == 0) {
-        this.XView = quat4.add(this.X0, [0,0,0,0], this.XView); //Kludge 'cos I can't think of a way to do it faster w/o passing by reference.
+        this.XView[0] = this.X0[0];
+        this.XView[1] = this.X0[1];
+        this.XView[2] = this.X0[2];
+        this.XView[3] = this.X0[3];
         this.radialVPast = 0;
         this.radialDist = Math.sqrt(xDotx);
         this.rPast = Math.sqrt(xDotx);
