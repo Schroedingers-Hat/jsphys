@@ -55,14 +55,14 @@ var demos = [{"name": "Velocity addition",
                         "objects": [{"object": photon, "x": [0, 10, 0], "v": [1, 0, 0]},
                                     {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0]},
                                     {"object": extendedObject, "x": [0, 9, 0], "p": [5, 0, 0], "m": 1, "shape": aSphere(3, 20)},
-                                    {"object": extendedObject, "x": [0, 0, 0], "p": [0, 0, 0], "m": 1, "shape": linesPadder([[-40, 0, 0, 0], [40, 0, 0, 0]], 3)}
+                                    {"object": extendedObject, "x": [0, 0, 0], "p": [0, 0, 0], "m": 1, "shape": linesPadder([[-100, 0, 0, 0], [100, 0, 0, 0]], 3)}
                                     ],
                         "options": {"showFramePos": true, "showVisualPos": false}},
                        {"caption": "Now, the same scene, from the perspective of an observe travelling past at a high speed.",
                         "objects": [{"object": photon, "x": [0, 10, 0], "v": [1, 0, 0]},
                                     {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0]},
                                     {"object": extendedObject, "x": [0, 9, 0], "p": [5, 0, 0], "m": 1, "shape": aSphere(3, 20)},
-                                    {"object": extendedObject, "x": [0, 0, 0], "p": [0, 0, 0], "m": 1, "shape": linesPadder([[-100, 0, 0, 0], [40, 0, 0, 0]], 3)},
+                                    {"object": extendedObject, "x": [0, 0, 0], "p": [0, 0, 0], "m": 1, "shape": linesPadder([[-100, 0, 0, 0], [100, 0, 0, 0]], 3)},
                                     {"object": extendedObject, "x": [0, 0, 0], "p": [1, 0, 0], "m": 1, "shape": aSphere(5, 50)}],
                         "frame": 4,
                         "options": {"showFramePos": true, "showVisualPos": false}}
