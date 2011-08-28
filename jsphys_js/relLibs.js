@@ -123,7 +123,12 @@ function linesPadder(shape, resolution)
         quat4.subtract(shape[i + 1], shape[i], tDisplace);
         distance = Math.sqrt(Math.abs(quat4.spaceTimeDot(tDisplace, tDisplace)));
         numSteps = (Math.round(distance / resolution));
-        quat4.scale(tDisplace, (1 / numSteps) );
+        if (numSteps == 0){
+            tDisplace = [0,0,0,0];
+        }
+        else {
+            quat4.scale(tDisplace, (1 / numSteps) );
+        }
         for( j = 0; j <= numSteps; j++ )
         {
             newShape.push(quat4.create(quat4.add(quat4.scale(tDisplace, j, tempQuat4),shape[i], tempQuat4)));

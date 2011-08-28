@@ -62,7 +62,6 @@ function Scene() {
         }, this);
         this.drawCrosshairs();
         this.t = this.t + (this.timeStep * c);
-
         scene.g.fillStyle = "rgba(100,100,100,0.3)";
         scene.g.beginPath();
         scene.g.moveTo(10,10);
