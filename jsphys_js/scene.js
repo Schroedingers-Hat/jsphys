@@ -193,7 +193,6 @@ function Scene() {
         var newFrameBoost = cBoostMat(obj.V, c);
 
         var XShift = quat4.create(obj.X0);
-        XShift[1] = XShift[1] + 30;
 
         this.changeArrayFrame(XShift, newFrameBoost);
     };
