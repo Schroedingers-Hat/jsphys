@@ -10,13 +10,13 @@ var tempQuat4 = quat4.create(); //Use this one, will get rid of tempVec3 eventua
 var dopplerRoundVal = 10;
 var colorFilter = 2;
 // Some convenient matrices.
-var rotLeft  = mat4.create([ Math.cos(0.1),  Math.sin(-0.1),0, 0,
-                             Math.sin(0.1),  Math.cos(0.1), 0, 0,
+var rotLeft  = mat4.create([ Math.cos(0.1),  Math.sin(0.1),0, 0,
+                             Math.sin(-0.1),  Math.cos(0.1), 0, 0,
                              0,              0,             1, 0,
                              0,              0,             0, 1]);
 
-var rotRight = mat4.create([ Math.cos(0.1),  Math.sin(0.1), 0, 0,
-                             Math.sin(-0.1), Math.cos(0.1), 0, 0,
+var rotRight = mat4.create([ Math.cos(0.1),  Math.sin(-0.1), 0, 0,
+                             Math.sin(0.1), Math.cos(0.1), 0, 0,
                              0,              0,             1, 0,
                              0,              0,             0, 1]);
 //Not needed for 2D, not right for A[3] is timelike.

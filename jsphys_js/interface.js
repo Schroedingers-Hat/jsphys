@@ -90,8 +90,8 @@ function zoomTo(zoom) {
 
     scene.boost.right = boostFrom3Vel(0.02 * scene.zoom * c, 0, 0, scene.zoom);
     scene.boost.left = boostFrom3Vel(-0.02 * scene.zoom * c, 0, 0, scene.zoom);
-    scene.boost.up = boostFrom3Vel(0, -0.02 * scene.zoom * c, 0, scene.zoom);
-    scene.boost.down = boostFrom3Vel(0, 0.02 * scene.zoom * c, 0, scene.zoom);
+    scene.boost.up = boostFrom3Vel(0, 0.02 * scene.zoom * c, 0, scene.zoom);
+    scene.boost.down = boostFrom3Vel(0, -0.02 * scene.zoom * c, 0, scene.zoom);
 
     updateSliders();
 }

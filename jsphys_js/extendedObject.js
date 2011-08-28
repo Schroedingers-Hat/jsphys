@@ -13,7 +13,7 @@ function extendedObject(X, P, label, options, shape, timeStep)
     if (options.temperature) {
         this.temp = options.temperature;
     }
-    else this.temp = 5000;
+    else this.temp = 5600;
     this.label = label;
     this.stillColor = tempToColor(this.temp);
     
@@ -116,11 +116,11 @@ extendedObject.prototype.drawNow = function()
         scene.g.fillStyle = "#0f0";
         scene.g.beginPath();
         scene.g.moveTo(this.pointPos[0][0] / scene.zoom + scene.origin[0],
-                       this.pointPos[0][1] / scene.zoom + scene.origin[1]);
+                       -this.pointPos[0][1] / scene.zoom + scene.origin[1]);
         for (var i = 0; i < (this.shapePoints.length); i++)
         {
             scene.g.lineTo(this.pointPos[i][0] / scene.zoom + scene.origin[0],
-                           this.pointPos[i][1] / scene.zoom + scene.origin[1]);
+                           -this.pointPos[i][1] / scene.zoom + scene.origin[1]);
         }
        
         scene.g.stroke();
@@ -128,22 +128,22 @@ extendedObject.prototype.drawNow = function()
         if (this.options.showVelocity) {
             scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", 
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBox[3] / scene.zoom + scene.origin[1] + 20);
+                              this.boundingBox[3] / scene.zoom + scene.origin[1] - 20);
         }
         if (this.options.showGamma) {
             scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000,
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBox[3] / scene.zoom + scene.origin[1] + 30);
+                              this.boundingBox[3] / scene.zoom + scene.origin[1] - 30);
         }
         if (this.label != "") {
             scene.g.fillText(this.label, 
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBox[3] / scene.zoom + scene.origin[1] + 40);
+                              this.boundingBox[3] / scene.zoom + scene.origin[1] - 40);
         }
         if (this.options.showTime || scene.options.showTime) {
             scene.g.fillText("tau = " + (Math.round((this.COM.tau / c)) / 1000), 
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBox[3] / scene.zoom + scene.origin[1] + 50);
+                              this.boundingBox[3] / scene.zoom + scene.origin[1] - 50);
         }
     }
 }
@@ -192,7 +192,7 @@ extendedObject.prototype.drawPast = function(scene)
             scene.g.strokeStyle = this.stillColor;
             scene.g.beginPath();
             scene.g.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
-                           this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
+                           -this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
         }
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
@@ -203,11 +203,11 @@ extendedObject.prototype.drawPast = function(scene)
 
                 scene.g.beginPath();
                 scene.g.moveTo(this.pastPoints[i-1][0] / scene.zoom + scene.origin[0],
-                               this.pastPoints[i-1][1] / scene.zoom + scene.origin[1]);
+                               -this.pastPoints[i-1][1] / scene.zoom + scene.origin[1]);
 
             }
             scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
-                           this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
+                           -this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
             if(doDoppler) scene.g.stroke();
         }
         if(!doDoppler) scene.g.stroke();
@@ -216,32 +216,32 @@ extendedObject.prototype.drawPast = function(scene)
         if (this.options.showVelocity) {
             scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", 
                              (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 20);
+                              -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 20);
         }
         if (this.options.showGamma) {
             scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000,
                              (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 30);
+                              -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 30);
         }
         if (this.label != "") {
             scene.g.fillText(this.label, 
                              (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 40);
+                              -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 40);
         }
         if (this.options.showTime || scene.options.showTime) {
             scene.g.fillText("t = " + (-Math.round((this.COM.viewTime / c)*1000) / 1000), 
                              (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 50);
+                              -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 50);
         }
         if (this.options.showTime || scene.options.showTime) {
             scene.g.fillText("tau = " + (Math.round((this.COM.tauPast / c)*1000) / 1000), 
                              (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 60);
+                              -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 60);
         }
-         if (this.options.showTime || scene.options.showTime) {                                                              
-             scene.g.fillText(this.XView[0] + ", " + this.XView[1] + ", " + this.XView[2], 
+         if (this.options.showPos || scene.options.showPos) {                                                              
+             scene.g.fillText("XYZ: " + Math.round(this.XView[0]) + ", " + Math.round(this.XView[1]) + ", " + Math.round(this.XView[2]), 
                               (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                               this.boundingBoxP[3] / scene.zoom + scene.origin[1] + 70);
+                               -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 70);
          }                                                                                                               }
 }
 
@@ -271,12 +271,12 @@ extendedObject.prototype.drawPast3D = function(scene)
                                                                     this.COM.V[3] / c));
 
                 scene.TDC.beginPath();
-                scene.TDC.moveTo(- (this.pastPoints[i-1][0] / scene.zoom / this.pastPoints[i - 1][1] * 40) + scene.origin[0],
-                                 this.pastPoints[i-1][2] / scene.zoom / this.pastPoints[i - 1][1] * 40 + scene.origin[1]);
+                scene.TDC.moveTo( (this.pastPoints[i-1][0] / scene.zoom / this.pastPoints[i - 1][1] * 40) + scene.origin[0],
+                                 -this.pastPoints[i-1][2] / scene.zoom / this.pastPoints[i - 1][1] * 40 + scene.origin[1]);
             }
-            if (this.pastPoints[i-1][1] < 0 && this.pastPoints[i][1] < 0){
-            scene.TDC.lineTo(- (this.pastPoints[i][0] / scene.zoom /   this.pastPoints[i][1]   * 40)  + scene.origin[0], 
-                           this.pastPoints[i][2] / scene.zoom /   this.pastPoints[i][1]    * 40 + scene.origin[1]);
+            if (this.pastPoints[i-1][1] > 0 && this.pastPoints[i][1] > 0){
+            scene.TDC.lineTo( (this.pastPoints[i][0] / scene.zoom /   this.pastPoints[i][1]   * 40)  + scene.origin[0], 
+                           -this.pastPoints[i][2] / scene.zoom /   this.pastPoints[i][1]    * 40 + scene.origin[1]);
             }
             if(doDoppler) scene.TDC.stroke();
         }
@@ -292,7 +292,7 @@ extendedObject.prototype.drawNow3D = function(scene)
 
         scene.TDC.beginPath();
         scene.TDC.moveTo(- (this.pointPos[0][0] / scene.zoom) + scene.origin[0], 
-                         this.pointPos[0][1] / scene.zoom + scene.origin[1]);
+                         -this.pointPos[0][1] / scene.zoom + scene.origin[1]);
         
         scene.TDC.beginPath();
         scene.TDC.moveTo(- (this.pointPos[0][0] / scene.zoom / this.pointPos[0][1] * 40) + scene.origin[0],

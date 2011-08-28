@@ -72,10 +72,11 @@ function Scene() {
         scene.g.closePath();
         scene.g.fill();
         scene.g.fillStyle = "rgba(150,0,150,1)";
-        scene.g.fillText("Game Time: " + Math.round(this.t/c) / 1000,40,30);
-        scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000,40,50);
+        scene.g.fillText("Game Time: " + Math.round(this.t/c) / 1000,30,30);
+        scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000,30,50);
         if (window.console && window.console.firebug) {
-            scene.g.fillText("Fps: " + Math.round((1000/(-this.lastFrameEndTime + this.frameEndTime))),40,70);
+            scene.g.fillText("Fps: " + Math.round((1000/(-this.lastFrameEndTime + this.frameEndTime))),30,70);
+            scene.g.fillText("c: " + c,30,90);
 
         }
 
@@ -241,10 +242,10 @@ function Scene() {
                      "showTime": false,
                      "showGamma": true};
     
-    this.boost = {"left": boostFrom3Vel(-0.05, 0, 0, this.zoom),
-                  "right": boostFrom3Vel(0.05, 0, 0, this.zoom),
-                  "up": boostFrom3Vel(0, -0.05, 0, this.zoom),
-                  "down": boostFrom3Vel(0, 0.05, 0, this.zoom)};
+    this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
+                  "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
+                  "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
+                  "down": boostFrom3Vel(0, -0.005, 0, this.zoom)};
     
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
