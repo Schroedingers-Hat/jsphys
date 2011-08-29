@@ -2,7 +2,7 @@
 
 
 // Convenient constants.
-var c = 3; //Do not change, not fully implemented
+var c; // Default value set in scene.defaults
 var nullQuat4 = quat4.create([0,0,0,0]);
 var twopi = Math.PI * 2;
 var tempVec3 = quat4.create();
