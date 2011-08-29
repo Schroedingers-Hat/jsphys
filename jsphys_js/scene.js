@@ -1,6 +1,7 @@
 function Scene() {
-    if (typeof Float64Array !== "undefined")
+    if (typeof Float64Array !== "undefined") {
         glMatrixArrayType = Float64Array;
+    }
 
     /**
      * Called by scene.load() to create each individual object in a scene.
@@ -25,15 +26,16 @@ function Scene() {
         if (obj.p && obj.p.length == 2) {
             obj.p[2] = 0;
         }
+        var thingy;
         if (obj.shape) {
-            var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
-                                        quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, obj.shape, this.timeStep);
+            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
+                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, obj.shape, this.timeStep);
         } else if (obj.v) {
-            var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
-                                        quat4.create([obj.v[0], obj.v[1], obj.v[2], 0], obj.label, obj.options));
+            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
+                                    quat4.create([obj.v[0], obj.v[1], obj.v[2], 0], obj.label, obj.options));
         } else {
-            var thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
-                                        quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
+            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
+                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
         }
         this.carray.push(thingy);
 
@@ -45,7 +47,7 @@ function Scene() {
      */
     this.draw = function() {
         if (this.carray.length === 0) { return; }
-        if (this.timeScale == 0) {
+        if (this.timeScale === 0) {
             this.frameEndTime = new Date().getTime();
             requestAnimFrame(drawScene);
             return;
@@ -79,14 +81,14 @@ function Scene() {
 
         }
 
-        if (leftDown == true)     this.changeArrayFrame(nullQuat4, this.boost.left,  this.carray);
-        if (upDown == true)       this.changeArrayFrame(nullQuat4, this.boost.up,    this.carray);
-        if (downDown == true)     this.changeArrayFrame(nullQuat4, this.boost.down,  this.carray);
-        if (rightDown == true)    this.changeArrayFrame(nullQuat4, this.boost.right, this.carray);
-        if (rotLeftDown == true)  this.changeArrayFrame(nullQuat4, rotRight,   this.carray);
-        if (rotRightDown == true) this.changeArrayFrame(nullQuat4, rotLeft,    this.carray);
-        if (rotUpDown == true)    this.changeArrayFrame(nullQuat4, rotUp,      this.carray);
-        if (rotDownDown == true)  this.changeArrayFrame(nullQuat4, rotDown,    this.carray);
+        if (leftDown === true)     this.changeArrayFrame(nullQuat4, this.boost.left,  this.carray);
+        if (upDown === true)       this.changeArrayFrame(nullQuat4, this.boost.up,    this.carray);
+        if (downDown === true)     this.changeArrayFrame(nullQuat4, this.boost.down,  this.carray);
+        if (rightDown === true)    this.changeArrayFrame(nullQuat4, this.boost.right, this.carray);
+        if (rotLeftDown === true)  this.changeArrayFrame(nullQuat4, rotRight,   this.carray);
+        if (rotRightDown === true) this.changeArrayFrame(nullQuat4, rotLeft,    this.carray);
+        if (rotUpDown === true)    this.changeArrayFrame(nullQuat4, rotUp,      this.carray);
+        if (rotDownDown === true)  this.changeArrayFrame(nullQuat4, rotDown,    this.carray);
 
         requestAnimFrame(drawScene);
         this.lastFrameEndTime = this.frameEndTime;
@@ -122,17 +124,17 @@ function Scene() {
     };
 
     this.nextStep = function() {
-        if (this.curStep + 1 >= this.demo.steps.length)
-            return;
-        this.curStep += 1;
-        this.replay();
+        if (this.curStep + 1 < this.demo.steps.length) {
+            this.curStep += 1;
+            this.replay();
+        }
     };
 
     this.prevStep = function() {
-        if (this.curStep - 1 < 0)
-            return;
-        this.curStep -= 1;
-        this.replay();
+        if (this.curStep > 0) {
+            this.curStep -= 1;
+            this.replay();
+        }
     };
 
     this.replay = function() {
@@ -214,8 +216,11 @@ function Scene() {
      */
     this.changeArrayFrame = function(translation, boost) {
         this.carray.forEach(function(obj) {
-        if( obj.changeFrame) {obj.changeFrame(translation, boost)
-        } else { obj.COM.changeFrame(translation, boost)};
+            if(obj.changeFrame) {
+                obj.changeFrame(translation, boost);
+            } else { 
+                obj.COM.changeFrame(translation, boost);
+            }
         });
     };
 

@@ -12,8 +12,10 @@ function extendedObject(X, P, label, options, shape, timeStep)
     this.pastR = [];
     if (options.temperature) {
         this.temp = options.temperature;
+    } else {
+        this.temp = 5600;
     }
-    else this.temp = 5600;
+
     this.label = label;
     this.stillColor = tempToColor(this.temp);
     
@@ -75,7 +77,7 @@ extendedObject.prototype.update = function(timeStep)
     this.calcPastPoints();
     this.findBB(this.pointPos, this.boundingBox);
     this.findBB(this.pastPoints, this.boundingBoxP);
-}
+};
 
 
 extendedObject.prototype.findBB = function(pointsArr, BB)
@@ -96,7 +98,7 @@ extendedObject.prototype.findBB = function(pointsArr, BB)
         BB[5] = Math.max(BB[5],pointsArr[this.boundingIdx[i]][2]);
 
     }    
-}
+};
 
 
 extendedObject.prototype.changeFrame = function(translation, rotation)
@@ -135,7 +137,7 @@ extendedObject.prototype.drawNow = function()
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
                               -this.boundingBox[3] / scene.zoom + scene.origin[1] - 30);
         }
-        if (this.label != "") {
+        if (this.label !== "") {
             scene.g.fillText(this.label, 
                              (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
                               -this.boundingBox[3] / scene.zoom + scene.origin[1] - 40);
@@ -171,10 +173,9 @@ extendedObject.prototype.calcPastPoints = function()
         quat4.scale(v, viewTime, this.uDisplacement);
         quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
 
-        this.pastRadialV[i] = (quat4.spaceDot(this.pastPoints[i], v) / 
+        this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) / 
                                 Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
-                                this.pastPoints[i], this.pastPoints[i]) 
-                                )), 1e-16));
+                                this.pastPoints[i], this.pastPoints[i]))), 1e-16);
     }
 }
 
@@ -208,9 +209,13 @@ extendedObject.prototype.drawPast = function(scene)
             }
             scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
                            -this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
-            if(doDoppler) scene.g.stroke();
+            if(doDoppler) {
+                scene.g.stroke();
+            }
         }
-        if(!doDoppler) scene.g.stroke();
+        if(!doDoppler) {
+            scene.g.stroke();
+        }
 
         scene.g.fillStyle = "#0F0";
         if (this.options.showVelocity) {
@@ -223,7 +228,7 @@ extendedObject.prototype.drawPast = function(scene)
                              (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
                               -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 30);
         }
-        if (this.label != "") {
+        if (this.label !== "") {
             scene.g.fillText(this.label, 
                              (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
                               -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 40);
@@ -278,9 +283,13 @@ extendedObject.prototype.drawPast3D = function(scene)
             scene.TDC.lineTo( (this.pastPoints[i][0] / scene.zoom /   this.pastPoints[i][1]   * 40)  + scene.origin[0], 
                            -this.pastPoints[i][2] / scene.zoom /   this.pastPoints[i][1]    * 40 + scene.origin[1]);
             }
-            if(doDoppler) scene.TDC.stroke();
+            if(doDoppler) {
+                scene.TDC.stroke();
+            }
         }
-        if(!doDoppler) scene.TDC.stroke();
+        if(!doDoppler) {
+            scene.TDC.stroke();
+        }
     }
 }
 

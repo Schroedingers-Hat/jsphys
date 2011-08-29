@@ -68,7 +68,7 @@ inertialObject.prototype.calcPast = function() {
     var xDotx = quat4.spaceDot(this.X0, this.X0);
     var vDotx = quat4.spaceDot(this.X0, this.V) / this.V[3] * c;
     var a = (c*c - vDotv);
-    if (xDotx == 0 || vDotv == 0) {
+    if (xDotx === 0 || vDotv === 0) {
         this.XView[0] = this.X0[0];
         this.XView[1] = this.X0[1];
         this.XView[2] = this.X0[2];
