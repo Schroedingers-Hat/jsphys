@@ -32,7 +32,7 @@ function Scene() {
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, obj.shape, this.timeStep);
         } else if (obj.v) {
             thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
-                                    quat4.create([obj.v[0], obj.v[1], obj.v[2], 0], obj.label, obj.options));
+                                    quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), obj.label, obj.options);
         } else {
             thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
