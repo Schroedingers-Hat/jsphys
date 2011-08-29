@@ -167,7 +167,17 @@ function Scene() {
         }
 
         // Update c with the demo's chosen value
+        if (this.options.c){
         c = this.options.c;
+        }
+        else c=1;
+
+        this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
+                      "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
+                      "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
+                      "down": boostFrom3Vel(0, -0.005, 0, this.zoom)};
+  
+
 
         demo.steps[step].objects.forEach(this.createObject, this);
 
@@ -250,11 +260,7 @@ function Scene() {
                      "showGamma": true,
                      "c": 3};
     
-    this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
-                  "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
-                  "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
-                  "down": boostFrom3Vel(0, -0.005, 0, this.zoom)};
-    
+  
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
                     "alwaysShowFramePos": false,
