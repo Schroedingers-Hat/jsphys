@@ -2,7 +2,7 @@
 
 
 // Convenient constants.
-var c = 3; //Do not change, not fully implemented
+var c; //Do not change, not fully implemented
 var nullQuat4 = quat4.create([0,0,0,0]);
 var twopi = Math.PI * 2;
 var tempVec3 = quat4.create();
@@ -121,7 +121,7 @@ function linesPadder(shape, resolution)
     for( i = 0; i < shape.length - 1; i++)
     {
         quat4.subtract(shape[i + 1], shape[i], tDisplace);
-        distance = Math.sqrt(Math.abs(quat4.spaceTimeDot(tDisplace, tDisplace)));
+        distance = Math.sqrt(Math.abs(quat4.spaceDot(tDisplace, tDisplace)));
         numSteps = (Math.round(distance / resolution));
         if (numSteps == 0){
             tDisplace = [0,0,0,0];
