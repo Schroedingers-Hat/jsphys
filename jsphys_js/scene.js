@@ -166,6 +166,9 @@ function Scene() {
             $.extend(this.options, demo.steps[step].options);
         }
 
+        // Update c with the demo's chosen value
+        c = this.options.c;
+
         demo.steps[step].objects.forEach(this.createObject, this);
 
         $('#caption').html(demo.steps[step].caption);
@@ -244,7 +247,8 @@ function Scene() {
                      "showFramePos": false,
                      "showVelocity": true,
                      "showTime": false,
-                     "showGamma": true};
+                     "showGamma": true,
+                     "c": 3};
     
     this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
                   "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
