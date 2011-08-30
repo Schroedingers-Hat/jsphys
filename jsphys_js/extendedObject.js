@@ -283,17 +283,17 @@ extendedObject.prototype.drawPast3D = function(scene)
                                                                     this.COM.V[3] / c));
 
                 scene.TDC.beginPath();
-                scene.TDC.moveTo( (this.pastPoints[i-1][0] / scene.zoom /(this.pastPoints[i - 1][1] + scene.camBack) * 40) + scene.origin[0],
-                                 -this.pastPoints[i-1][2] / scene.zoom / (this.pastPoints[i - 1][1] + scene.camBack) * 40 + scene.origin[1]);
             }
             if (this.pastPoints[i-1][1] > -scene.camBack && this.pastPoints[i][1] > -scene.camBack){
+            scene.TDC.moveTo( (this.pastPoints[i - 1][0] / scene.zoom / (this.pastPoints[i - 1][1] + scene.camBack) * 40) + scene.origin[0],
+                              -this.pastPoints[i - 1][2] / scene.zoom / (this.pastPoints[i - 1][1] + scene.camBack) * 40 + scene.origin[1])
             scene.TDC.lineTo( (this.pastPoints[i][0] / scene.zoom /   (this.pastPoints[i][1] + scene.camBack) * 40)  + scene.origin[0], 
                               -this.pastPoints[i][2] / scene.zoom /   (this.pastPoints[i][1] + scene.camBack) * 40 + scene.origin[1]);
             }
             if(doDoppler) {
                 scene.TDC.stroke();
             }
-        }
+         }
         if(!doDoppler) {
             scene.TDC.stroke();
         }
