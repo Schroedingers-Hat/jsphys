@@ -384,14 +384,22 @@ extendedObject.prototype.drawXT = function(scene){
     }
     // Find a vector that points from intialPt to somewhere near now.
         scene.h.fillStyle = "#333";
-    for (var i = -13 * scene.zoom / this.COM.V[3] * c; i < 13 * scene.zoom / this.COM.V[3] * c; i++) {
-        quat4.scale(this.COM.V, i*20-Math.round(1/this.COM.V[3] * c * this.COM.initialPt[3] /20) * 20, tempQuat4);
+    for (var i = Math.floor(-scene.mHeight / 20 / 2 * scene.zoom / this.COM.V[3]);
+         i < Math.floor(scene.mHeight / 20 / 2 * scene.zoom / this.COM.V[3]);
+         i++) {
+        quat4.scale(this.COM.V, Math.round(this.COM.tau /20 / c) * 20, tempQuat4);
         quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
+        quat4.scale(this.COM.V, i * 20, tempQuat4);
+        quat4.add(tempQuat4, tempQuat42, tempQuat42);
         scene.h.beginPath();
         scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
                     -tempQuat42[3]/c / scene.zoom + scene.origin[2],2,0,twopi,true);
         scene.h.fill();
     }
+        scene.h.beginPath();
+        scene.h.arc(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
+                    -this.COM.initialPt[3] / c / scene.zoom + scene.origin[2],6,0,twopi,true);
+        scene.h.fill();
 };
 
 
