@@ -51,7 +51,7 @@ var demos = [{"name": "Velocity addition",
                                             "options": {"temperature": 3000}, 
                                             "label": "A circle",   "shape": aCircle(10,30)}
                       ],
-             "options": {"showFramePos": true, "showVisualPos": true}}]},
+             "options": {"showFramePos": true, "showVisualPos": true, "show3D": true}}]},
             {"name": "Speed of light",
              "steps": [{"caption": "Two photons are emitted from the center of a ruler, heading outwards. Since they both travel at c, they reach the ends at the same time.",
                         "objects": [{"object": photon, "x": [0, 10, 0], "v": [1, 0, 0]},

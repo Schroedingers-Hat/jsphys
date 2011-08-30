@@ -326,12 +326,16 @@ extendedObject.prototype.draw = function(scene)
 
     if (this.options.showVisualPos) {
         this.drawPast(scene);
-        this.drawPast3D(scene);
+        if (this.options.show3D) {
+            this.drawPast3D(scene);
+        }
     }
     if (scene.options.alwaysShowFramePos || 
         (!scene.options.neverShowFramePos && this.options.showFramePos)) {
         this.drawNow(scene);
-        this.drawNow3D(scene);
+        if (this.options.show3D) {
+            this.drawNow3D(scene);
+        }
     }
 }
 

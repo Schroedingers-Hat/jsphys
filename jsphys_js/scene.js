@@ -272,6 +272,7 @@ function Scene() {
                      "showVelocity": true,
                      "showTime": false,
                      "showGamma": true,
+                     "show3D": false,
                      "c": 3};
     
   
