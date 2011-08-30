@@ -117,6 +117,7 @@ function Scene() {
     this.startAnimation = function() {
         this.frameEndTime = new Date().getTime();
         this.t = 0;
+        this.initialTime = new Date().getTime();
         if (!this.drawing) {
             this.drawing = true;
             this.draw();
