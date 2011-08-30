@@ -255,7 +255,7 @@ function Scene() {
     this.lightConeCanvas.height =  this.mHeight;
     this.lCCtx = this.lightConeCanvas.getContext('2d');
 
-
+    this.camBack = 0;
     this.hwidth = this.width / 2;
     this.hheight = this.height / 2;
     this.origin = [this.hwidth, this.hheight, this.hheight];
