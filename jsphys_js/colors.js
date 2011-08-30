@@ -242,7 +242,7 @@ function spectrum_to_xyz(spectrum)
         [0.0001,0.0000,0.0000], [0.0001,0.0000,0.0000], [0.0000,0.0000,0.0000]
     ];
 
-    for (i = 0, lambda = 380; lambda < 780.1; i++, lambda += 5) {
+    for (var i = 0, lambda = 380; lambda < 780.1; i++, lambda += 5) {
         var Me;
 
         Me = spectrum(lambda);
