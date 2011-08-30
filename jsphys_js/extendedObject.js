@@ -216,7 +216,14 @@ extendedObject.prototype.drawPast = function(scene)
         if(!doDoppler) {
             scene.g.stroke();
         }
-
+    
+        if (window.console && window.console.firebug) {
+            scene.g.beginPath();
+            scene.g.arc(this.COM.XView[0] / scene.zoom + scene.origin[0],
+                        -this.COM.XView[1]  / scene.zoom + scene.origin[1] ,
+                        3,0,twopi,true);
+            scene.g.fill();
+        }
         scene.g.fillStyle = "#0F0";
         if (this.options.showVelocity) {
             scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", 
@@ -262,12 +269,12 @@ extendedObject.prototype.drawPast3D = function(scene)
                                                                 this.COM.V[3] / c));
         } else {
             scene.TDC.strokeStyle = this.stillColor;
+            scene.TDC.beginPath();
+            scene.TDC.moveTo((this.pastPoints[0][0] / scene.zoom / this.pastPoints[0][1] * 40) + scene.origin[0],
+                              - this.pastPoints[0][2] / scene.zoom / this.pastPoints[0][1] * 40 + scene.origin[1]);
+
 
         }
-        scene.TDC.beginPath();
-        scene.TDC.moveTo((this.pastPoints[0][0] / scene.zoom / this.pastPoints[0][1] * 40) + scene.origin[0],
-                          - this.pastPoints[0][2] / scene.zoom / this.pastPoints[0][1] * 40 + scene.origin[1]);
-
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
             if(doDoppler) {
@@ -332,78 +339,55 @@ extendedObject.prototype.draw = function(scene)
     }
 }
 
-extendedObject.prototype.drawXT = function(scene)
-{
-    var xvis = this.COM.X0[0] / scene.zoom;
-    var tvis = this.COM.X0[3] / c / scene.timeScale;
-    /* Find dx/dt using chain rule.
-       V[0] is dx/dtau, V[3] is dt/dtau
-       thus dx/dt is V[0]/V[3].
-    */
-    var dxdtVis = (this.COM.V[0] ) / 
-                  (this.COM.V[3] / c);
-    scene.h.fillStyle = "rgba(0, 256, 0, 0.5)";
-    scene.h.strokeStyle = "rgba(0, 0, 0, 0.5)";
+extendedObject.prototype.drawXT = function(scene){
+    var xvis  = this.COM.X0[0] / scene.zoom;
+    var xvisP = this.COM.XView[0] / scene.zoom;
+    var xyScale = scene.width / scene.height;
+    var tvisP = this.COM.XView[3] / scene.zoom;
+    var dxdtVis = this.COM.V[0] / this.COM.V[3] * c;
 
-    // A blob at t=0 to represent where the object is.
-    scene.h.beginPath();
-    scene.h.arc(xvis + scene.origin[0],
-                scene.origin[2],
-                3, 0, twopi, true);
-    scene.h.closePath();
-    scene.h.fill();
+    // Points in space time that represent the beginning and end of visible worldlines.
+    // Some redundant calculations, but much easier to think about.
+    var tOfLinet = scene.origin[2] * scene.zoom;
+    var tOfLinex = tOfLinet * dxdtVis + this.COM.X0[0];
+    var bOfLinet = -(scene.height + scene.origin[2]) * scene.zoom;
+    var bOfLinex = bOfLinet * dxdtVis + this.COM.X0[0];
 
-    // A world line.
-    var bOfLine = xvis + scene.origin[0] + scene.origin[2]*dxdtVis;
-    var eOfLine = xvis + scene.origin[0] - (scene.height - scene.origin[2]) * dxdtVis;
-    scene.h.beginPath();
-    scene.h.moveTo(bOfLine, 
-                   0);
-    scene.h.lineTo(eOfLine,
-                   scene.height);
+    scene.h.strokeStyle = "#333";
+    scene.h.fillStyle = "#0a0";
+
+    // A world Line.
+    scene.h.beginPath()
+    scene.h.moveTo(tOfLinex / scene.zoom + scene.origin[0],
+                   -tOfLinet / scene.zoom + scene.origin[2]);
+    scene.h.lineTo(bOfLinex / scene.zoom + scene.origin[0],
+                   -bOfLinet / scene.zoom + scene.origin[2]);
     scene.h.stroke();
-
-    quat4.scale(this.COM.V, this.COM.X0[0] / this.COM.V[0], tempQuat4);
-    quat4.subtract(this.COM.X0, tempQuat4, tempQuat4);
-    xvis = tempQuat4[0] / scene.zoom;
-    tvis = tempQuat4[3] / scene.zoom;
-    scene.h.fillStyle = "#333";
-    for(var i = -10; i < 20; i++) {
-        scene.h.beginPath();
-        scene.h.arc(scene.origin[0] + xvis + i* 10 * this.COM.V[0] / scene.zoom,
-                    scene.origin[2] - (tvis + i * 10 * this.COM.V[3] / scene.zoom)/c,
-                    2, 0, twopi, true);
-        scene.h.fill();
-    }
-
-    
-    // A blob on the light cone.
-    xvis = this.COM.XView[0] / scene.zoom;
-    tvis = this.COM.XView[3] / c / scene.zoom;
+    // A dot at t=0.
+    scene.h.beginPath();
+    scene.h.arc(xvis + scene.origin[0],scene.origin[2],3,0,twopi,true);
+    scene.h.fill();
+    // A dot at the light cone.
     scene.h.fillStyle = tempToColor(dopplerShiftColor(this.temp,
                                                       this.COM.radialVPast,
                                                       this.COM.V[3] / c));
-
     scene.h.beginPath();
-    scene.h.arc(xvis + scene.origin[0],
-                -tvis + scene.origin[2],
-                3, 0, twopi, true);
+    scene.h.arc(xvisP + scene.origin[0],
+                - tvisP / c + scene.origin[2],
+                3,0,twopi,true);
     scene.h.fill();
- 
-    // Some world lines of interesting parts of the object
-    // Such as front or back.
-    for (i in this.interestingPts) {
-        xvis = this.pointPos[this.interestingPts[i]][0] / scene.zoom;
-        scene.h.beginPath();
-        scene.h.moveTo(xvis + scene.origin[0] - 
-                        scene.origin[2] * dxdtVis, 
-                       0);
-        scene.h.lineTo(xvis + scene.origin[0] + 
-                        (scene.height - scene.origin[2]) * dxdtVis, 
-                       scene.height);
-        scene.h.stroke();
+    if (this.label !== "") {
+        scene.h.fillStyle = "#444";
+        scene.h.fillText(this.label + " present position", 
+                          xvis + scene.origin[0] + 5,
+                          -5 + scene.origin[2]);                         
+
+        scene.h.fillText(this.label + " visual position", 
+                          xvisP + scene.origin[0] + 5,
+                          -tvisP / c + scene.origin[2]);                         
     }
-}
+};
+
 
 Object.defineProperty(extendedObject.prototype, "V", {get: function() { return this.COM.V; }});
 Object.defineProperty(extendedObject.prototype, "X0", {get: function() { return this.COM.X0; }});

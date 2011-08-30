@@ -17,6 +17,7 @@
 function inertialObject(X, P, m, timeStep)
 {
     this.X0 = X;
+    this.initialPt = quat4.create(X);
     this.rPast = 1;
     this.XView = quat4.create();
     this.V = quat4.scale(P, 1 / m); 
@@ -49,6 +50,7 @@ inertialObject.prototype.changeFrame = function(translation, rotation)
     //Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
     mat4.multiplyVec4(rotation, this.V);
+    mat4.multiplyVec4(rotation, this.initialPt);
     //Point is now at wrong time
     
     //Find displacement to current time.
@@ -65,19 +67,19 @@ inertialObject.prototype.calcPast = function() {
     var vDotx = quat4.spaceDot(this.X0, this.V) / this.V[3] * c;
     var a = (c*c - vDotv);
     if (xDotx === 0 || vDotv === 0) {
+        this.radialVPast = 0;
+        this.rPast = Math.sqrt(xDotx);
+        this.viewTime = this.rPast;
         this.XView[0] = this.X0[0];
         this.XView[1] = this.X0[1];
         this.XView[2] = this.X0[2];
-        this.XView[3] = this.X0[3];
-        this.radialVPast = 0;
-        this.rPast = Math.sqrt(xDotx);
-        this.viewTime = this.rPast / c;
+        this.XView[3] = -this.viewTime;
         return;
     }
 
-    this.viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ) / a / c;
+    this.viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ) / a * c;
     
-    quat4.scale(this.V, this.viewTime / this.V[3] * c, this.uDisplacement);
+    quat4.scale(this.V, this.viewTime / this.V[3], this.uDisplacement);
     quat4.subtract(this.X0, this.uDisplacement, this.XView);
     
     this.rPast = Math.sqrt(Math.max(quat4.spaceDot(this.XView, this.XView), 1e-10)); 

@@ -54,9 +54,9 @@ function Scene() {
         }
         this.frameStartTime = new Date().getTime();
         this.timeStep = (this.frameStartTime - this.frameEndTime) * this.timeScale;
-
         this.clear();
-        drawLightCone(this);
+
+        this.h.drawImage(this.lightConeCanvas, 0, 0);
         this.carray.forEach(function(obj) {
             obj.update(this.timeStep);
             obj.draw(this);
@@ -97,8 +97,8 @@ function Scene() {
 
     this.clear = function() {
         this.g.clearRect(0, 0, this.width, this.height);
-        this.h.clearRect(0, 0, this.width, this.height);
-        this.TDC.clearRect(0, 0, this.width, this.height);
+        this.h.clearRect(0, 0, this.mWidth, this.mHeight);
+        this.TDC.clearRect(0, 0, this.tWidth, this.tHeight);
     };
 
     this.drawCrosshairs = function () {
@@ -173,6 +173,7 @@ function Scene() {
         }
         else c=1;
 
+        drawLightCone(this);
         this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
                       "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
                       "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
@@ -244,6 +245,17 @@ function Scene() {
     this.TDC = $('#3DCanvas')[0].getContext("2d");
     this.width = $("#canvas").width();
     this.height = $("#canvas").height();
+    this.mWidth = $("#minkowski").width();
+    this.mHeight = $("#minkowski").height();
+    this.tWidth = $("#3DCanvas").width();
+    this.tHeight = $("#3DCanvas").height();
+
+    this.lightConeCanvas = document.createElement('canvas');
+    this.lightConeCanvas.width =  this.mWidth;
+    this.lightConeCanvas.height =  this.mHeight;
+    this.lCCtx = this.lightConeCanvas.getContext('2d');
+
+
     this.hwidth = this.width / 2;
     this.hheight = this.height / 2;
     this.origin = [this.hwidth, this.hheight, this.hheight];
@@ -280,32 +292,38 @@ function drawScene(event) {
 }
 
 function drawLightCone(scene){
-    var size = Math.max(scene.width,scene.height);
-    scene.h.fillStyle = "#300";
-    scene.h.beginPath();
-    scene.h.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.h.lineTo(-size * c + scene.origin[0], size + scene.origin[2]);
-    scene.h.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.h.lineTo( size * c + scene.origin[0], size + scene.origin[2]);
-    scene.h.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.h.closePath();
-    scene.h.fill();
-    scene.h.fillStyle = "#003";
-    scene.h.beginPath();
-    scene.h.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.h.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.h.lineTo(-size * c + scene.origin[0],  size + scene.origin[2]);
-    scene.h.lineTo( size * c + scene.origin[0],  size + scene.origin[2]);
-    scene.h.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.h.closePath();
-    scene.h.fill();
-    scene.h.strokeStyle = "#FFF";
-    scene.h.lineWidth = 3;
-    scene.h.beginPath();
-    scene.h.moveTo(0, scene.origin[2]);
-    scene.h.lineTo(scene.width, scene.origin[2]);
-    scene.h.moveTo(scene.origin[0], 0);
-    scene.h.lineTo(scene.origin[0], scene.height); 
-    scene.h.stroke();
-    scene.h.lineWidth = 1;
+    var size = Math.max(scene.mHeight - scene.origin[2], scene.origin[2]);
+    scene.lCCtx.fillStyle = "#300";
+    scene.lCCtx.beginPath();
+    scene.lCCtx.moveTo(0,0);
+    scene.lCCtx.lineTo(0, scene.mHeight);
+    scene.lCCtx.lineTo(-size * c + scene.origin[0], size + scene.origin[2]);
+    scene.lCCtx.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
+    scene.lCCtx.lineTo(scene.mWidth, 0);
+    scene.lCCtx.lineTo(scene.mWidth, scene.mHeight);
+    scene.lCCtx.lineTo( size * c + scene.origin[0], size + scene.origin[2]);
+    scene.lCCtx.lineTo(-size * c + scene.origin[0], -size + scene.origin[2]);
+    scene.lCCtx.closePath();
+    scene.lCCtx.fill();
+    scene.lCCtx.fillStyle = "#003";
+    scene.lCCtx.beginPath();
+    scene.lCCtx.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
+    scene.lCCtx.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
+    scene.lCCtx.lineTo(-size * c + scene.origin[0],  size + scene.origin[2]);
+    scene.lCCtx.lineTo( size * c + scene.origin[0],  size + scene.origin[2]);
+    scene.lCCtx.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
+    scene.lCCtx.closePath();
+    scene.lCCtx.fill();
+    scene.lCCtx.strokeStyle = "#FFF";
+    scene.lCCtx.lineWidth = 3;
+    scene.lCCtx.beginPath();
+    scene.lCCtx.moveTo(0, scene.origin[2]);
+    scene.lCCtx.lineTo(scene.mWidth, scene.origin[2]);
+    scene.lCCtx.moveTo(scene.origin[0], 0);
+    scene.lCCtx.lineTo(scene.origin[0], scene.mHeight); 
+    scene.lCCtx.stroke();
+    scene.lCCtx.lineWidth = 1;
+    scene.lCCtx.fillStyle = "#fff";
+    scene.lCCtx.fillText("t(s)", 5 + scene.origin[0], 10);
+    scene.lCCtx.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
 }
