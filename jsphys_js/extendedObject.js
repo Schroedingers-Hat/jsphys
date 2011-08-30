@@ -169,8 +169,8 @@ extendedObject.prototype.calcPastPoints = function()
         vDotx = quat4.spaceDot(this.pointPos[i], v);
         a = c*c - vDotv;
         
-        viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a;
-        quat4.scale(v, viewTime, this.uDisplacement);
+        viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
+        quat4.scale(v, viewTime / c, this.uDisplacement);
         quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
 
         this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) / 
@@ -262,11 +262,11 @@ extendedObject.prototype.drawPast3D = function(scene)
                                                                 this.COM.V[3] / c));
         } else {
             scene.TDC.strokeStyle = this.stillColor;
-            scene.TDC.beginPath();
-            scene.TDC.moveTo(-(this.pastPoints[0][0] / scene.zoom / this.pastPoints[0][1] * 40) + scene.origin[0],
-                             this.pastPoints[0][2] / scene.zoom / this.pastPoints[0][1] * 40 + scene.origin[1]);
 
         }
+        scene.TDC.beginPath();
+        scene.TDC.moveTo((this.pastPoints[0][0] / scene.zoom / this.pastPoints[0][1] * 40) + scene.origin[0],
+                          - this.pastPoints[0][2] / scene.zoom / this.pastPoints[0][1] * 40 + scene.origin[1]);
 
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
@@ -300,18 +300,18 @@ extendedObject.prototype.drawNow3D = function(scene)
         scene.TDC.strokeStyle = "#0f0";
 
         scene.TDC.beginPath();
-        scene.TDC.moveTo(- (this.pointPos[0][0] / scene.zoom) + scene.origin[0], 
+        scene.TDC.moveTo((this.pointPos[0][0] / scene.zoom) + scene.origin[0], 
                          -this.pointPos[0][1] / scene.zoom + scene.origin[1]);
         
         scene.TDC.beginPath();
-        scene.TDC.moveTo(- (this.pointPos[0][0] / scene.zoom / this.pointPos[0][1] * 40) + scene.origin[0],
-                         this.pointPos[0][2] / scene.zoom / this.pointPos[0][1] * 40 + scene.origin[1]);
+        scene.TDC.moveTo((this.pointPos[0][0] / scene.zoom / this.pointPos[0][1] * 40) + scene.origin[0],
+                         -this.pointPos[0][2] / scene.zoom / this.pointPos[0][1] * 40 + scene.origin[1]);
 
         for (var i = 1; i < (this.pointPos.length); i++)
         {
-            if (this.pointPos[i-1][1] < 0 && this.pointPos[i][1] < 0){
-            scene.TDC.lineTo(-(this.pointPos[i][0] / scene.zoom / this.pointPos[i][1] * 40)  + scene.origin[0], 
-                             this.pointPos[i][2] / scene.zoom / this.pointPos[i][1] * 40 + scene.origin[1]);
+            if (this.pointPos[i-1][1] > 0 && this.pointPos[i][1] > 0){
+            scene.TDC.lineTo((this.pointPos[i][0] / scene.zoom / this.pointPos[i][1] * 40)  + scene.origin[0], 
+                             -this.pointPos[i][2] / scene.zoom / this.pointPos[i][1] * 40 + scene.origin[1]);
             }
         }
         scene.TDC.stroke();
