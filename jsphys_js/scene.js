@@ -17,7 +17,7 @@ function Scene() {
         }
 
         // Copy object-specific options in on top of the global defaults
-        obj.options = $.extend({}, this.options, obj.options);
+        obj.options = $.extend({}, this.curOptions, obj.options);
 
         // Upgrade 2D to 3D
         if (obj.x.length == 2) {
@@ -160,18 +160,19 @@ function Scene() {
             this.zoom = demo.steps[step].zoom;
         }
 
-        // Clone defaults into options, rather than getting a reference to it
-        this.options = jQuery.extend({}, this.defaults);
+        // Clone defaults into curOptions, rather than getting a reference to it
+        this.curOptions = jQuery.extend({}, this.defaults);
 
         if (typeof demo.steps[step].options === "object") {
-            $.extend(this.options, demo.steps[step].options);
+            $.extend(this.curOptions, demo.steps[step].options);
         }
 
         // Update c with the demo's chosen value
-        if (this.options.c){
-        c = this.options.c;
+        if (this.curOptions.c) {
+            c = this.curOptions.c;
+        } else {
+            c = 1;
         }
-        else c=1;
 
         drawLightCone(this);
         this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
@@ -271,13 +272,14 @@ function Scene() {
                      "showVelocity": true,
                      "showTime": false,
                      "showGamma": true,
+                     "show3D": false,
                      "c": 3};
     
   
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
                     "alwaysShowFramePos": false,
-                    "neverShowFramePos": true,
+                    "neverShowFramePos": false,
                     "showTime": false};
 
     this.drawing = false;
