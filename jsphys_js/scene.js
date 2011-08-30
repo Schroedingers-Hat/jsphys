@@ -52,8 +52,10 @@ function Scene() {
             requestAnimFrame(drawScene);
             return;
         }
+		
+		this.oldFrameStartTime = this.frameStartTime;
         this.frameStartTime = new Date().getTime();
-        this.timeStep = (this.frameStartTime - this.frameEndTime) * this.timeScale;
+        this.timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale;
         this.clear();
 
         this.h.drawImage(this.lightConeCanvas, 0, 0);
@@ -190,6 +192,7 @@ function Scene() {
         if (typeof demo.steps[step].frame === "number") {
             this.shiftToFrameOfObject(this.carray[demo.steps[step].frame]);
         }
+		this.frameStartTime = new Date().getTime();
     };
 
     /**
@@ -265,6 +268,7 @@ function Scene() {
     this.timeStep = 5;
     this.timeScale = 0.02;
     this.t = 0;
+	
 
     this.defaults = {"showDoppler": true,
                      "showVisualPos": true,
