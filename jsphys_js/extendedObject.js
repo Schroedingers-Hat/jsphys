@@ -89,7 +89,7 @@ extendedObject.prototype.findBB = function(pointsArr, BB)
     BB[4] = Math.min(pointsArr[this.boundingIdx[0]][2],pointsArr[this.boundingIdx[1]][2]);
     BB[5] = Math.max(pointsArr[this.boundingIdx[0]][2],pointsArr[this.boundingIdx[1]][2]);
 
-    for (i = 2; i < 5; i++){
+    for (var i = 2; i < 5; i++){
         BB[0] = Math.min(BB[0],pointsArr[this.boundingIdx[i]][0]);
         BB[1] = Math.max(BB[1],pointsArr[this.boundingIdx[i]][0]);
         BB[2] = Math.min(BB[2],pointsArr[this.boundingIdx[i]][1]);
@@ -368,7 +368,7 @@ extendedObject.prototype.drawXT = function(scene)
     xvis = tempQuat4[0] / scene.zoom;
     tvis = tempQuat4[3] / scene.zoom;
     scene.h.fillStyle = "#333";
-    for( i = -10; i < 20; i++) {
+    for(var i = -10; i < 20; i++) {
         scene.h.beginPath();
         scene.h.arc(scene.origin[0] + xvis + i* 10 * this.COM.V[0] / scene.zoom,
                     scene.origin[2] - (tvis + i * 10 * this.COM.V[3] / scene.zoom)/c,

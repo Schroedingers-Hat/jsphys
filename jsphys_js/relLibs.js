@@ -118,7 +118,7 @@ function linesPadder(shape, resolution)
     var newShape = [];
     var distance;
     var numSteps;
-    for( i = 0; i < shape.length - 1; i++)
+    for(var i = 0; i < shape.length - 1; i++)
     {
         quat4.subtract(shape[i + 1], shape[i], tDisplace);
         distance = Math.sqrt(Math.abs(quat4.spaceDot(tDisplace, tDisplace)));
@@ -129,7 +129,7 @@ function linesPadder(shape, resolution)
         else {
             quat4.scale(tDisplace, (1 / numSteps) );
         }
-        for( j = 0; j <= numSteps; j++ )
+        for(var j = 0; j <= numSteps; j++ )
         {
             newShape.push(quat4.create(quat4.add(quat4.scale(tDisplace, j, tempQuat4),shape[i], tempQuat4)));
         }
@@ -140,8 +140,8 @@ function linesPadder(shape, resolution)
 function aSphere(r,numPts){
    var Sphere = [];
    var numAngles = Math.ceil(Math.sqrt(numPts));
-   for (i=0; i < (numAngles); i++){
-       for (j=0; j < numAngles; j++) {
+   for (var i = 0; i < (numAngles); i++){
+       for (var j = 0; j < numAngles; j++) {
            Sphere.push( quat4.create([
                Math.cos(6.283 * j / numAngles) * Math.sin(3.1416 * (i+j / numAngles) / numAngles) * r,
                Math.sin(6.283 * j / numAngles) * Math.sin(3.1416 * (i+j / numAngles) / numAngles) * r,
@@ -154,7 +154,7 @@ function aSphere(r,numPts){
 
 function aCircle(r, numPts) {
     var Circle = [];
-    for (i = 0; i <= numPts; i++){
+    for (var i = 0; i <= numPts; i++){
         Circle.push( quat4.create([Math.cos(6.283 * i / numPts) * r, 
                                    Math.sin(6.283 * i / numPts) * r, 
                                    0, 
