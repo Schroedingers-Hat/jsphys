@@ -47,6 +47,7 @@ inertialObject.prototype.changeFrame = function(translation, rotation)
 {
     // Translate.
     quat4.subtract(this.X0, translation);
+    quat4.subtract(this.initialPt, translation);
 
     //Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
