@@ -11,8 +11,6 @@
  *   would the object appear to be?
  * - tau is the proper time of this object.
  * - V is the velocity (dX/dt?)
- * - radialDist is the distance from the origin (the observer's position) to 
- *   this object.
  * - radialVPast is the radial XView velocity past the origin, used for Doppler
  *   shifting.
  */
@@ -30,8 +28,6 @@ function inertialObject(X, P, m, timeStep)
     this.tauPast = 0;
     this.uDisplacement = quat4.create();
     this.viewTime = 0;
-    this.radialDist = 0;
-    this.radialV = 0;
     this.radialVPast = 0;
 }
 
@@ -74,9 +70,8 @@ inertialObject.prototype.calcPast = function() {
         this.XView[2] = this.X0[2];
         this.XView[3] = this.X0[3];
         this.radialVPast = 0;
-        this.radialDist = Math.sqrt(xDotx);
         this.rPast = Math.sqrt(xDotx);
-        this.ViewTime = this.rPast / c;
+        this.viewTime = this.rPast / c;
         return;
     }
 

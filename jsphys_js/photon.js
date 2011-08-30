@@ -19,7 +19,6 @@ function photon(X, V, label, options) {
 
     this.uDisplacement = quat4.create();
     this.viewTime = 0;
-    this.radialDist = 0;
     this.radialVPast = 0;
 }
 
