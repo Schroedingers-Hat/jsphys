@@ -386,6 +386,15 @@ extendedObject.prototype.drawXT = function(scene){
                           xvisP + scene.origin[0] + 5,
                           -tvisP / c + scene.origin[2]);                         
     }
+    // Find a vector that points from intialPt to somewhere near now.
+    for ( i = -13; i < 13; i++) {
+        quat4.scale(this.COM.V, i*20 * scene.zoom-Math.round(1/this.COM.V[3] * c * this.COM.initialPt[3] /20 / scene.zoom) * 20 * scene.zoom, tempQuat4);
+        quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
+        scene.h.beginPath();
+        scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
+                    -tempQuat42[3]/c / scene.zoom + scene.origin[2],2,0,twopi,true);
+        scene.h.fill();
+    }
 };
 
 

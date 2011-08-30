@@ -40,6 +40,7 @@ inertialObject.prototype.updateX0 = function(timeStep)
     //Bring it to now.
     quat4.add(this.X0, this.displace);
     this.X0[3] = this.X0[3] - timeStep;
+    this.initialPt[3] = this.initialPt[3] - timeStep;
 };
 
 inertialObject.prototype.changeFrame = function(translation, rotation)
