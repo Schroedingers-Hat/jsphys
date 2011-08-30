@@ -10,7 +10,7 @@ function photon(X, V, label, options) {
 
     // Normalize V such that V[3] = 1 and V[3]^2-V[2]^2-V[1]^2-V[0]^2 = 0
     // (i.e. |V| (including the metric) is 0)
-    this.V[3] = 1;
+    this.V[3] = c;
     vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
 
     this.displace = quat4.create();
@@ -23,12 +23,12 @@ function photon(X, V, label, options) {
 }
 
 photon.prototype.updateX0 = function(timeStep) {
-    quat4.scale(this.V, timeStep, this.displace);
+    quat4.scale(this.V, timeStep/c, this.displace);
 
     // Bring it to now.
     quat4.add(this.X0, this.displace);
 
-    this.X0[3] = this.X0[3] - timeStep * this.V[3];
+    this.X0[3] = this.X0[3] - timeStep * this.V[3]/c;
 };
 
 photon.prototype.changeFrame = function(translation, rotation) {
