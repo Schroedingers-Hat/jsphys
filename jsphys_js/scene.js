@@ -33,20 +33,15 @@ function Scene() {
         }
 
         // Update c with the demo's chosen value
-        if (this.curOptions.c) {
-            c = this.curOptions.c;
-        } else {
-            c = 1;
-        }
+        c = (this.curOptions.c) ? this.curOptions.c : 1;
 
         drawLightCone(this);
+        
         this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
                       "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
                       "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
                       "down": boostFrom3Vel(0, -0.005, 0, this.zoom)};
   
-
-
         demo.steps[step].objects.forEach(this.createObject, this);
 
         $('#caption').html(demo.steps[step].caption);
@@ -64,10 +59,10 @@ function Scene() {
      * a label, coordinates, and momentum.
      */
     this.createObject = function (obj) {
-        if (typeof obj.options == "undefined") {
+        if (typeof obj.options === "undefined") {
             obj.options = {};
         }
-        if (typeof obj.label == "undefined") {
+        if (typeof obj.label === "undefined") {
             obj.label = "";
         }
 
@@ -93,7 +88,6 @@ function Scene() {
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
         }
         this.carray.push(thingy);
-
     };
 
     /** Scene drawing functions **/
@@ -123,22 +117,6 @@ function Scene() {
         }, this);
         this.drawCrosshairs();
         this.t = this.t + (this.timeStep * c);
-        scene.g.fillStyle = "rgba(100,100,100,0.3)";
-        scene.g.beginPath();
-        scene.g.moveTo(10,10);
-        scene.g.lineTo(150,10);
-        scene.g.lineTo(150,100);
-        scene.g.lineTo(10,100);
-        scene.g.closePath();
-        scene.g.fill();
-        scene.g.fillStyle = "rgba(150,0,150,1)";
-        scene.g.fillText("Game Time: " + Math.round(this.t/c) / 1000,30,30);
-        scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000,30,50);
-        if (window.console && window.console.firebug) {
-            scene.g.fillText("Fps: " + Math.round((1000/(-this.lastFrameEndTime + this.frameEndTime))),30,70);
-            scene.g.fillText("c: " + c,30,90);
-
-        }
 
         if (leftDown === true)     this.changeArrayFrame(nullQuat4, this.boost.left,  this.carray);
         if (upDown === true)       this.changeArrayFrame(nullQuat4, this.boost.up,    this.carray);
@@ -153,6 +131,25 @@ function Scene() {
         this.lastFrameEndTime = this.frameEndTime;
         this.frameEndTime = new Date().getTime();
     };
+
+    this.drawInfo = function() {
+        scene.g.fillStyle = "rgba(100,100,100,0.3)";
+        scene.g.beginPath();
+        scene.g.moveTo(10,10);
+        scene.g.lineTo(150,10);
+        scene.g.lineTo(150,100);
+        scene.g.lineTo(10,100);
+        scene.g.closePath();
+        scene.g.fill();
+        scene.g.fillStyle = "rgba(150,0,150,1)";
+        scene.g.fillText("Game Time: " + Math.round(this.t/c) / 1000, 30, 30);
+        scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 50);
+
+        if (window.console && window.console.firebug) {
+            scene.g.fillText("Fps: " + Math.round((1000 / (-this.lastFrameEndTime + this.frameEndTime))), 30, 70);
+            scene.g.fillText("c: " + c, 30, 90);
+        }
+    }
 
     this.drawCrosshairs = function () {
         this.g.strokeStyle = "#fff";
@@ -212,11 +209,10 @@ function Scene() {
      * coordinate)
      */
     this.findClosestObject = function(x, y, maxDist) {
-        var i = 0;
         var minDist = this.width;
         var minElement = -1;
 
-        for (i = 0; i < this.carray.length; i++) {
+        for (var i = 0; i < this.carray.length; i++) {
             var dist = getDistance([x,y], [this.carray[i].XView[0] / this.zoom + this.origin[0],
                                            this.carray[i].XView[1] / this.zoom + this.origin[1]]);
             if (dist < minDist) {
@@ -233,11 +229,7 @@ function Scene() {
 
     // Take a given inertialObject and switch to its reference frame
     this.shiftToFrameOfObject = function(obj) {
-        var newFrameBoost = cBoostMat(obj.V, c);
-
-        var XShift = quat4.create(obj.X0);
-
-        this.changeArrayFrame(XShift, newFrameBoost);
+        this.changeArrayFrame(quat4.create(obj.X0), cBoostMat(obj.V, c));
     };
 
     /**
@@ -246,11 +238,7 @@ function Scene() {
      */
     this.changeArrayFrame = function(translation, boost) {
         this.carray.forEach(function(obj) {
-            if(obj.changeFrame) {
-                obj.changeFrame(translation, boost);
-            } else { 
-                obj.COM.changeFrame(translation, boost);
-            }
+            obj.changeFrame(translation, boost);
         });
     };
 
