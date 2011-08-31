@@ -111,14 +111,12 @@ function zoomToSlider(event, ui) {
  * Pause animation
  */
 function pause(event) {
-    if (scene.timeScale == 0) {
+    if (scene.timeScale === 0) {
         $("#pause").html("Pause");
-        scene.timeScale = this.prevTimeScale;
     } else {
         $("#pause").html("Play");
-        this.prevTimeScale = scene.timeScale;
-        scene.timeScale = 0;
     }
+    scene.pause();
     updateSliders();
     event.preventDefault();
 }
@@ -159,6 +157,7 @@ function loadDemo(idx) {
                                    value: (Math.log(scene.timeScale + 1) / Math.LN2)});
         $("#demo-chooser").hide();
         scene.startAnimation();
+        requestAnimFrame(drawScene);
     };
 }
 

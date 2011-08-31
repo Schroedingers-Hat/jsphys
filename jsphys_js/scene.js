@@ -36,7 +36,7 @@ function Scene() {
         c = (this.curOptions.c) ? this.curOptions.c : 1;
 
         drawLightCone(this);
-        
+
         this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
                       "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
                       "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
@@ -97,14 +97,7 @@ function Scene() {
      * next frame.
      */
     this.draw = function() {
-        if (this.carray.length === 0) { return; }
-        if (this.timeScale === 0) {
-            this.frameStartTime = new Date().getTime();
-            requestAnimFrame(drawScene);
-            return;
-        }
-		
-		this.oldFrameStartTime = this.frameStartTime;
+        this.oldFrameStartTime = this.frameStartTime;
         this.frameStartTime = new Date().getTime();
         this.timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale;
         this.clear();
@@ -127,7 +120,9 @@ function Scene() {
         if (rotUpDown === true)    this.changeArrayFrame(nullQuat4, rotUp,      this.carray);
         if (rotDownDown === true)  this.changeArrayFrame(nullQuat4, rotDown,    this.carray);
 
-        requestAnimFrame(drawScene);
+        if (this.drawing) {
+            requestAnimFrame(drawScene);
+        }
         this.lastFrameEndTime = this.frameEndTime;
         this.frameEndTime = new Date().getTime();
     };
@@ -149,7 +144,7 @@ function Scene() {
             scene.g.fillText("Fps: " + Math.round((1000 / (-this.lastFrameEndTime + this.frameEndTime))), 30, 70);
             scene.g.fillText("c: " + c, 30, 90);
         }
-    }
+    };
 
     this.drawCrosshairs = function () {
         this.g.strokeStyle = "#fff";
@@ -171,12 +166,15 @@ function Scene() {
     };
 
     /** Animation and step control functions **/
+
     this.startAnimation = function() {
+        // Frame timing is used to maintain constant speed. Reset.
         this.frameEndTime = new Date().getTime();
-        this.t = 0;
         this.initialTime = new Date().getTime();
+        this.t = 0;
+
+        // If not currently animating (we're paused), draw the first frame.
         if (!this.drawing) {
-            this.drawing = true;
             this.draw();
         }
     };
@@ -195,10 +193,25 @@ function Scene() {
         }
     };
 
+    /**
+     * Reload the current demo from scratch and restart the animation.
+     */
     this.replay = function() {
-        this.carray = [];
         this.load(this.demo, this.curStep);
         this.startAnimation();
+    };
+
+    this.pause = function() {
+        if (this.timeScale === 0) {
+            this.timeScale = this.prevTimeScale;
+            this.frameStartTime = new Date().getTime();
+            this.drawing = true;
+            this.draw();
+        } else {
+            this.prevTimeScale = this.timeScale;
+            this.timeScale = 0;
+            this.drawing = false;
+        }
     };
 
     /** Object utilities **/
@@ -267,7 +280,6 @@ function Scene() {
     this.timeStep = 5;
     this.timeScale = 0.02;
     this.t = 0;
-	
 
     this.defaults = {"showDoppler": true,
                      "showVisualPos": true,
@@ -277,7 +289,6 @@ function Scene() {
                      "showGamma": true,
                      "show3D": false,
                      "c": 3};
-    
   
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
@@ -285,7 +296,7 @@ function Scene() {
                     "neverShowFramePos": false,
                     "showTime": false};
 
-    this.drawing = false;
+    this.drawing = true;
 }
 
 /**
