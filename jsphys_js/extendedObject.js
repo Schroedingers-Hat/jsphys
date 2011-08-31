@@ -74,9 +74,11 @@ extendedObject.prototype.update = function(timeStep)
         quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
         quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
     }
-    this.calcPastPoints();
+    if (this.options.showVisualPos){
+        this.calcPastPoints();
+        this.findBB(this.pastPoints, this.boundingBoxP);
+    }
     this.findBB(this.pointPos, this.boundingBox);
-    this.findBB(this.pastPoints, this.boundingBoxP);
 };
 
 
@@ -126,26 +128,20 @@ extendedObject.prototype.drawNow = function()
         }
        
         scene.g.stroke();
-
+        var textX =  (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10;
+        var textY = -this.boundingBox[3] / scene.zoom + scene.origin[1];
         if (this.options.showVelocity) {
             scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", 
-                             (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              -this.boundingBox[3] / scene.zoom + scene.origin[1] - 20);
+                             textX, textY - 10);
         }
         if (this.options.showGamma) {
-            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000,
-                             (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              -this.boundingBox[3] / scene.zoom + scene.origin[1] - 30);
+            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, textX, textY - 20);
         }
         if (this.label !== "") {
-            scene.g.fillText(this.label, 
-                             (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              -this.boundingBox[3] / scene.zoom + scene.origin[1] - 40);
+            scene.g.fillText(this.label, textX, textY - 30);
         }
         if (this.options.showTime || scene.options.showTime) {
-            scene.g.fillText("tau = " + (Math.round((this.COM.tau / c)) / 1000), 
-                             (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              -this.boundingBox[3] / scene.zoom + scene.origin[1] - 50);
+            scene.g.fillText("tau = " + (Math.round((this.COM.tau / c)) / 1000), textX, textY - 40); 
         }
     }
 }
@@ -185,37 +181,37 @@ extendedObject.prototype.drawPast = function(scene)
     {   
         var doDoppler = (scene.options.alwaysDoppler || 
                          (!scene.options.neverDoppler && this.options.showDoppler));
+        var currentColor;
+        var prevColor;
+        scene.g.beginPath();
         if(doDoppler) {
-            scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                                this.pastRadialV[0],
-                                                                this.COM.V[3] / c));
+                scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                                    this.pastRadialV[0],
+                                                                    this.COM.V[3] / c));
         } else {
             scene.g.strokeStyle = this.stillColor;
-            scene.g.beginPath();
-            scene.g.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
-                           -this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
         }
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
             if(doDoppler) {
-                scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                                    this.pastRadialV[i],
-                                                                    this.COM.V[3] / c));
-
-                scene.g.beginPath();
-                scene.g.moveTo(this.pastPoints[i-1][0] / scene.zoom + scene.origin[0],
-                               -this.pastPoints[i-1][1] / scene.zoom + scene.origin[1]);
-
+                prevColor = currentColor;
+                currentColor = tempToColor(dopplerShiftColor(this.temp, 
+                                                         this.pastRadialV[i],
+                                                         this.COM.V[3] / c));
+                if((currentColor != prevColor)) {
+                    scene.g.strokeStyle = currentColor;
+                }
             }
+            scene.g.moveTo(this.pastPoints[i-1][0] / scene.zoom + scene.origin[0],
+                           -this.pastPoints[i-1][1] / scene.zoom + scene.origin[1]);
             scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
                            -this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
-            if(doDoppler) {
+            if((currentColor != prevColor)) {
                 scene.g.stroke();
+                if (i < (this.pastPoints.length - 1)) scene.g.beginPath();
             }
         }
-        if(!doDoppler) {
-            scene.g.stroke();
-        }
+        if(currentColor == prevColor) scene.g.stroke();
     
         if (window.console && window.console.firebug) {
             scene.g.beginPath();
@@ -225,36 +221,36 @@ extendedObject.prototype.drawPast = function(scene)
             scene.g.fill();
         }
         scene.g.fillStyle = "#0F0";
+        var textX =  (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10;
+        var textY = -this.boundingBoxP[3] / scene.zoom + scene.origin[1];
+        var i = 1;
         if (this.options.showVelocity) {
             scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", 
-                             (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 20);
-        }
+                             textX, textY - 10 * i);
+            i++;
+        }   
         if (this.options.showGamma) {
-            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000,
-                             (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 30);
+            scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, textX, textY - 10 * i);
+            i++;
         }
         if (this.label !== "") {
-            scene.g.fillText(this.label, 
-                             (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 40);
+            scene.g.fillText(this.label, textX, textY - 10 * i);
+            i++;
         }
         if (this.options.showTime || scene.options.showTime) {
-            scene.g.fillText("t = " + (-Math.round((this.COM.viewTime / c)*1000) / 1000), 
-                             (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 50);
+            scene.g.fillText("t = " + (-Math.round((this.COM.viewTime / c)*1000) / 1000), textX, textY - 10 * i);
+            i++;
         }
         if (this.options.showTime || scene.options.showTime) {
-            scene.g.fillText("tau = " + (Math.round((this.COM.tauPast / c)*1000) / 1000), 
-                             (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                              -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 60);
+            scene.g.fillText("tau = " + (Math.round((this.COM.tauPast / c)*1000) / 1000), textX, textY - 10 * i);
+            i++;
         }
          if (this.options.showPos || scene.options.showPos) {                                                              
              scene.g.fillText("XYZ: " + Math.round(this.XView[0]) + ", " + Math.round(this.XView[1]) + ", " + Math.round(this.XView[2]), 
-                              (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10,
-                               -this.boundingBoxP[3] / scene.zoom + scene.origin[1] - 70);
-         }                                                                                                               }
+                              textX, textY - 10 * i);
+             i++;
+        }
+    }
 }
 
 extendedObject.prototype.drawPast3D = function(scene)
@@ -263,58 +259,61 @@ extendedObject.prototype.drawPast3D = function(scene)
     {   
         var doDoppler = (scene.options.alwaysDoppler || 
                          (!scene.options.neverDoppler && this.options.showDoppler));
+        var currentColor;
+        var prevColor;
+        var zCoeff1;
+        var zcoeff2;
+        scene.TDC.beginPath();
         if(doDoppler) {
             scene.TDC.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                                 this.pastRadialV[0],
                                                                 this.COM.V[3] / c));
         } else {
             scene.TDC.strokeStyle = this.stillColor;
-            scene.TDC.beginPath();
-            scene.TDC.moveTo((this.pastPoints[0][0] / scene.zoom / (this.pastPoints[0][1] + scene.camBack) * 40) + scene.origin[0],
-                              - this.pastPoints[0][2] / scene.zoom / (this.pastPoints[0][1] + scene.camBack) * 40 + scene.origin[1]);
-
-
         }
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
-            if(doDoppler) {
-                scene.TDC.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                                    this.pastRadialV[i],
-                                                                    this.COM.V[3] / c));
-
-                scene.TDC.beginPath();
-            }
+            zCoeff1 = 40 / (scene.zoom * (this.pastPoints[i - 1][1] + scene.camBack));
+            zCoeff2 = 40 / (scene.zoom * (this.pastPoints[i][1]     + scene.camBack));
             if (this.pastPoints[i-1][1] > -scene.camBack && this.pastPoints[i][1] > -scene.camBack){
-            scene.TDC.moveTo( (this.pastPoints[i - 1][0] / scene.zoom / (this.pastPoints[i - 1][1] + scene.camBack) * 40) + scene.origin[0],
-                              -this.pastPoints[i - 1][2] / scene.zoom / (this.pastPoints[i - 1][1] + scene.camBack) * 40 + scene.origin[1])
-            scene.TDC.lineTo( (this.pastPoints[i][0] / scene.zoom /   (this.pastPoints[i][1] + scene.camBack) * 40)  + scene.origin[0], 
-                              -this.pastPoints[i][2] / scene.zoom /   (this.pastPoints[i][1] + scene.camBack) * 40 + scene.origin[1]);
+                if(doDoppler) {
+                    prevColor = currentColor;
+                    currentColor = tempToColor(dopplerShiftColor(this.temp, 
+                                                                 this.pastRadialV[i],
+                                                                 this.COM.V[3] / c));
+                    if (prevColor != currentColor) scene.TDC.strokeStyle = currentColor;
+                } 
+                scene.TDC.moveTo(this.pastPoints[i - 1][0] * zCoeff1 + scene.origin[0],
+                                -this.pastPoints[i - 1][2] * zCoeff1 + scene.origin[1]);
+                scene.TDC.lineTo(this.pastPoints[i][0] * zCoeff2 + scene.origin[0], 
+                                -this.pastPoints[i][2] * zCoeff2 + scene.origin[1]);
+                if (prevColor != currentColor){
+                    scene.TDC.stroke();
+                    if (i < this.pastPoints.length - 1) scene.TDC.beginPath();
+                }
             }
-            if(doDoppler) {
-                scene.TDC.stroke();
-            }
-         }
-        if(!doDoppler) {
-            scene.TDC.stroke();
         }
+        scene.TDC.stroke();
     }
 }
 
 extendedObject.prototype.drawNow3D = function(scene)
-{                                                                                   
+{
+    var coeff = 40/(scene.zoom * (this.pointPos[0][1] + scene.camBack));
     if (this.isInteresting || true)                                                 
     {   
         scene.TDC.strokeStyle = "#0f0";
 
         scene.TDC.beginPath();
-        scene.TDC.moveTo((this.pointPos[0][0] / scene.zoom / (this.pointPos[0][1] + scene.camBack) * 40) + scene.origin[0],
-                         -this.pointPos[0][2] / scene.zoom / (this.pointPos[0][1] + scene.camBack) * 40 + scene.origin[1]);
+        scene.TDC.moveTo(this.pointPos[0][0] * coeff + scene.origin[0],
+                        -this.pointPos[0][2] * coeff + scene.origin[1]);
 
         for (var i = 1; i < (this.pointPos.length); i++)
         {
+            coeff = 1/(scene.zoom * (this.pointPos[i][1] + scene.camBack) / 40);
             if (this.pointPos[i-1][1] > -scene.camBack && this.pointPos[i][1] > -scene.camBack){
-            scene.TDC.lineTo((this.pointPos[i][0] / scene.zoom / (this.pointPos[i][1] + scene.camBack) * 40)  + scene.origin[0], 
-                             -this.pointPos[i][2] / scene.zoom / (this.pointPos[i][1] + scene.camBack) * 40 + scene.origin[1]);
+            scene.TDC.lineTo(this.pointPos[i][0] * coeff + scene.origin[0], 
+                             -this.pointPos[i][2] * coeff + scene.origin[1]);
             }
         }
         scene.TDC.stroke();
@@ -348,20 +347,20 @@ extendedObject.prototype.drawXT = function(scene){
 
     // Points in space time that represent the beginning and end of visible worldlines.
     // Some redundant calculations, but much easier to think about.
-    var tOfLinet = scene.origin[2] * scene.zoom;
-    var tOfLinex = tOfLinet * dxdtVis + this.COM.X0[0];
-    var bOfLinet = -(scene.height + scene.origin[2]) * scene.zoom;
-    var bOfLinex = bOfLinet * dxdtVis + this.COM.X0[0];
+    var tOfLinet = scene.origin[2];
+    var tOfLinex = tOfLinet * dxdtVis + this.COM.X0[0] / scene.zoom;
+    var bOfLinet = -(scene.height + scene.origin[2]);
+    var bOfLinex = bOfLinet * dxdtVis + this.COM.X0[0] / scene.zoom;
 
     scene.h.strokeStyle = "#333";
     scene.h.fillStyle = "#0a0";
 
     // A world Line.
     scene.h.beginPath()
-    scene.h.moveTo(tOfLinex / scene.zoom + scene.origin[0],
-                   -tOfLinet / scene.zoom + scene.origin[2]);
-    scene.h.lineTo(bOfLinex / scene.zoom + scene.origin[0],
-                   -bOfLinet / scene.zoom + scene.origin[2]);
+    scene.h.moveTo(tOfLinex + scene.origin[0],
+                  -tOfLinet + scene.origin[2]);
+    scene.h.lineTo(bOfLinex + scene.origin[0],
+                  -bOfLinet + scene.origin[2]);
     scene.h.stroke();
     // A dot at t=0.
     scene.h.beginPath();
@@ -388,19 +387,19 @@ extendedObject.prototype.drawXT = function(scene){
     }
     // Find a vector that points from intialPt to somewhere near now.
         scene.h.fillStyle = "#333";
-    for (var i = Math.floor(-scene.mHeight / 20 / 2 * scene.zoom / this.COM.V[3] * c);
-         i < Math.ceil(scene.mHeight / 20 / 2 * scene.zoom / this.COM.V[3] * c );
-         i++) {
-        quat4.scale(this.COM.V, Math.round(this.COM.tau /20 / c) * 20, tempQuat4);
+
+    scene.h.beginPath();
+    var hNumDots = Math.ceil(scene.mHeight / 50 / 2 * scene.zoom / this.COM.V[3] * c);
+    for (var i = -hNumDots; i < hNumDots; i++) {
+        quat4.scale(this.COM.V, Math.round(this.COM.tau /50 / c) * 50, tempQuat4);
         quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
-        quat4.scale(this.COM.V, i * 20, tempQuat4);
+        quat4.scale(this.COM.V, i * 50, tempQuat4);
         quat4.add(tempQuat4, tempQuat42, tempQuat42);
-        scene.h.beginPath();
         scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
                     -tempQuat42[3]/c / scene.zoom + scene.origin[2],2,0,twopi,true);
-        scene.h.fill();
     }
 
+    scene.h.fill();
     if (window.console && window.console.firebug) {
         scene.h.beginPath();
         scene.h.arc(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
