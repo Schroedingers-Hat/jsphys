@@ -185,37 +185,37 @@ extendedObject.prototype.drawPast = function(scene)
     {   
         var doDoppler = (scene.options.alwaysDoppler || 
                          (!scene.options.neverDoppler && this.options.showDoppler));
+        var currentColor;
+        var prevColor;
+        scene.g.beginPath();
         if(doDoppler) {
-            scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                                this.pastRadialV[0],
-                                                                this.COM.V[3] / c));
+                scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                                    this.pastRadialV[0],
+                                                                    this.COM.V[3] / c));
         } else {
             scene.g.strokeStyle = this.stillColor;
-            scene.g.beginPath();
-            scene.g.moveTo(this.pastPoints[0][0] / scene.zoom + scene.origin[0], 
-                           -this.pastPoints[0][1] / scene.zoom + scene.origin[1]);
         }
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
             if(doDoppler) {
-                scene.g.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                                    this.pastRadialV[i],
-                                                                    this.COM.V[3] / c));
-
-                scene.g.beginPath();
-                scene.g.moveTo(this.pastPoints[i-1][0] / scene.zoom + scene.origin[0],
-                               -this.pastPoints[i-1][1] / scene.zoom + scene.origin[1]);
-
+                prevColor = currentColor;
+                currentColor = tempToColor(dopplerShiftColor(this.temp, 
+                                                         this.pastRadialV[i],
+                                                         this.COM.V[3] / c));
+                if((currentColor != prevColor)) {
+                    scene.g.strokeStyle = currentColor;
+                }
             }
+            scene.g.moveTo(this.pastPoints[i-1][0] / scene.zoom + scene.origin[0],
+                           -this.pastPoints[i-1][1] / scene.zoom + scene.origin[1]);
             scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0], 
                            -this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
-            if(doDoppler) {
+            if((currentColor != prevColor)) {
                 scene.g.stroke();
+                if (i < (this.pastPoints.length - 1)) scene.g.beginPath();
             }
         }
-        if(!doDoppler) {
-            scene.g.stroke();
-        }
+        if(currentColor == prevColor) scene.g.stroke();
     
         if (window.console && window.console.firebug) {
             scene.g.beginPath();
@@ -263,40 +263,38 @@ extendedObject.prototype.drawPast3D = function(scene)
     {   
         var doDoppler = (scene.options.alwaysDoppler || 
                          (!scene.options.neverDoppler && this.options.showDoppler));
+        var currentColor;
+        var prevColor;
+
+        scene.TDC.beginPath();
         if(doDoppler) {
             scene.TDC.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
                                                                 this.pastRadialV[0],
                                                                 this.COM.V[3] / c));
         } else {
             scene.TDC.strokeStyle = this.stillColor;
-            scene.TDC.beginPath();
-            scene.TDC.moveTo((this.pastPoints[0][0] / scene.zoom / (this.pastPoints[0][1] + scene.camBack) * 40) + scene.origin[0],
-                              - this.pastPoints[0][2] / scene.zoom / (this.pastPoints[0][1] + scene.camBack) * 40 + scene.origin[1]);
-
-
         }
         for (var i = 1; i < (this.pastPoints.length); i++)
         {
-            if(doDoppler) {
-                scene.TDC.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                                    this.pastRadialV[i],
-                                                                    this.COM.V[3] / c));
-
-                scene.TDC.beginPath();
-            }
             if (this.pastPoints[i-1][1] > -scene.camBack && this.pastPoints[i][1] > -scene.camBack){
-            scene.TDC.moveTo( (this.pastPoints[i - 1][0] / scene.zoom / (this.pastPoints[i - 1][1] + scene.camBack) * 40) + scene.origin[0],
-                              -this.pastPoints[i - 1][2] / scene.zoom / (this.pastPoints[i - 1][1] + scene.camBack) * 40 + scene.origin[1])
-            scene.TDC.lineTo( (this.pastPoints[i][0] / scene.zoom /   (this.pastPoints[i][1] + scene.camBack) * 40)  + scene.origin[0], 
-                              -this.pastPoints[i][2] / scene.zoom /   (this.pastPoints[i][1] + scene.camBack) * 40 + scene.origin[1]);
+                if(doDoppler) {
+                    prevColor = currentColor;
+                    currentColor = tempToColor(dopplerShiftColor(this.temp, 
+                                                                 this.pastRadialV[i],
+                                                                 this.COM.V[3] / c));
+                    if (prevColor != currentColor) scene.TDC.strokeStyle = currentColor;
+                } 
+                scene.TDC.moveTo( (this.pastPoints[i - 1][0] / scene.zoom / (this.pastPoints[i - 1][1] + scene.camBack) * 40) + scene.origin[0],
+                                  -this.pastPoints[i - 1][2] / scene.zoom / (this.pastPoints[i - 1][1] + scene.camBack) * 40 + scene.origin[1])
+                scene.TDC.lineTo( (this.pastPoints[i][0] / scene.zoom /   (this.pastPoints[i][1] + scene.camBack) * 40)  + scene.origin[0], 
+                                  -this.pastPoints[i][2] / scene.zoom /   (this.pastPoints[i][1] + scene.camBack) * 40 + scene.origin[1]);
+                if (prevColor != currentColor){
+                    scene.TDC.stroke();
+                    if (i < this.pastPoints.length - 1) scene.TDC.beginPath();
+                }
             }
-            if(doDoppler) {
-                scene.TDC.stroke();
-            }
-         }
-        if(!doDoppler) {
-            scene.TDC.stroke();
         }
+        scene.TDC.stroke();
     }
 }
 
