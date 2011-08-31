@@ -109,6 +109,7 @@ function Scene() {
             obj.drawXT(this); 
         }, this);
         this.drawCrosshairs();
+        this.drawInfo();
         this.t = this.t + (this.timeStep * c);
 
         if (leftDown === true)     this.changeArrayFrame(nullQuat4, this.boost.left,  this.carray);
