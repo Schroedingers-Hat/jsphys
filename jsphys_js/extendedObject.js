@@ -74,9 +74,11 @@ extendedObject.prototype.update = function(timeStep)
         quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
         quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
     }
-    this.calcPastPoints();
+    if (this.options.showVisualPos){
+        this.calcPastPoints();
+        this.findBB(this.pastPoints, this.boundingBoxP);
+    }
     this.findBB(this.pointPos, this.boundingBox);
-    this.findBB(this.pastPoints, this.boundingBoxP);
 };
 
 
@@ -345,20 +347,20 @@ extendedObject.prototype.drawXT = function(scene){
 
     // Points in space time that represent the beginning and end of visible worldlines.
     // Some redundant calculations, but much easier to think about.
-    var tOfLinet = scene.origin[2] * scene.zoom;
-    var tOfLinex = tOfLinet * dxdtVis + this.COM.X0[0];
-    var bOfLinet = -(scene.height + scene.origin[2]) * scene.zoom;
-    var bOfLinex = bOfLinet * dxdtVis + this.COM.X0[0];
+    var tOfLinet = scene.origin[2];
+    var tOfLinex = tOfLinet * dxdtVis + this.COM.X0[0] / scene.zoom;
+    var bOfLinet = -(scene.height + scene.origin[2]);
+    var bOfLinex = bOfLinet * dxdtVis + this.COM.X0[0] / scene.zoom;
 
     scene.h.strokeStyle = "#333";
     scene.h.fillStyle = "#0a0";
 
     // A world Line.
     scene.h.beginPath()
-    scene.h.moveTo(tOfLinex / scene.zoom + scene.origin[0],
-                   -tOfLinet / scene.zoom + scene.origin[2]);
-    scene.h.lineTo(bOfLinex / scene.zoom + scene.origin[0],
-                   -bOfLinet / scene.zoom + scene.origin[2]);
+    scene.h.moveTo(tOfLinex + scene.origin[0],
+                  -tOfLinet + scene.origin[2]);
+    scene.h.lineTo(bOfLinex + scene.origin[0],
+                  -bOfLinet + scene.origin[2]);
     scene.h.stroke();
     // A dot at t=0.
     scene.h.beginPath();
@@ -387,9 +389,8 @@ extendedObject.prototype.drawXT = function(scene){
         scene.h.fillStyle = "#333";
 
     scene.h.beginPath();
-    for (var i = Math.floor(-scene.mHeight / 50 / 2 * scene.zoom / this.COM.V[3] * c);
-         i < Math.ceil(scene.mHeight / 50 / 2 * scene.zoom / this.COM.V[3] * c );
-         i++) {
+    var hNumDots = Math.ceil(scene.mHeight / 50 / 2 * scene.zoom / this.COM.V[3] * c);
+    for (var i = -hNumDots; i < hNumDots; i++) {
         quat4.scale(this.COM.V, Math.round(this.COM.tau /50 / c) * 50, tempQuat4);
         quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
         quat4.scale(this.COM.V, i * 50, tempQuat4);
