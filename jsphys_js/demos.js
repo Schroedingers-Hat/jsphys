@@ -57,14 +57,14 @@ var demos = [{"name": "Velocity addition",
                         "objects": [{"object": photon, "x": [0, 10, 0], "v": [1, 0, 0]},
                                     {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0]},
                                     {"object": extendedObject, "x": [0, 0, 0], "p": [0, 0, 0], "m": 1, "shape": linesPadder([[-100, 0, 0, 0], [100, 0, 0, 0]], 20)},
-                                    {"object": extendedObject, "x": [0, 5, 0], "p": [5, 0, 0], "m": 1, "shape": aSphere(3, 50)}
+                                    {"object": extendedObject, "x": [0, -10, 0], "p": [5, 0, 0], "m": 1, "shape": aSphere(3, 50)}
                                     ],
                         "options": {"showFramePos": true, "showVisualPos": false, "showGamma": false}},
                        {"caption": "This is the same scene from the perspective of the observer travelling right at a high speed. Now the photons don't reach the ends of the ruler at the same time. The speed of light is the same according to every observer.",
                         "objects": [{"object": photon, "x": [0, 10, 0], "v": [1, 0, 0]},
                                     {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0]},
                                     {"object": extendedObject, "x": [0, 0, 0], "p": [0, 0, 0], "m": 1, "shape": linesPadder([[-100, 0, 0, 0], [100, 0, 0, 0]], 20)},
-                                    {"object": extendedObject, "x": [0, 5, 0], "p": [5, 0, 0], "m": 1, "shape": aSphere(3, 50)}],
+                                    {"object": extendedObject, "x": [0, -10, 0], "p": [5, 0, 0], "m": 1, "shape": aSphere(3, 50)}],
                         "frame": 3,
                         "options": {"showFramePos": true, "showVisualPos": false, "showGamma": false}}
                       ]
