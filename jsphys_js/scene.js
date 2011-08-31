@@ -226,7 +226,7 @@ function Scene() {
 
         for (var i = 0; i < this.carray.length; i++) {
             var dist = getDistance([x,y], [this.carray[i].XView[0] / this.zoom + this.origin[0],
-                                           this.carray[i].XView[1] / this.zoom + this.origin[1]]);
+                                           -this.carray[i].XView[1] / this.zoom + this.origin[1]]);
             if (dist < minDist) {
                 minDist = dist;
                 minElement = i;
