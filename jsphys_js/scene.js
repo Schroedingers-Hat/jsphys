@@ -3,6 +3,61 @@ function Scene() {
         glMatrixArrayType = Float64Array;
     }
 
+    /** Demo loading functions **/
+
+    /**
+     * Load the specified demo at the given step. (The step indexes into
+     * the demo's steps array.)
+     */
+    this.load = function(demo, step) {
+        this.carray = [];
+        this.curStep = step;
+        this.demo = demo;
+
+        // If the demo specifies global options, set 'em
+        if (typeof demo.steps[step].origin === "object") {
+            this.origin = demo.steps[step].origin;
+        }
+        if (typeof demo.steps[step].timeScale === "number") {
+            this.timeScale = demo.steps[step].timeScale;
+        }
+        if (typeof demo.steps[step].zoom === "number") {
+            this.zoom = demo.steps[step].zoom;
+        }
+
+        // Clone defaults into curOptions, rather than getting a reference to it
+        this.curOptions = jQuery.extend({}, this.defaults);
+
+        if (typeof demo.steps[step].options === "object") {
+            $.extend(this.curOptions, demo.steps[step].options);
+        }
+
+        // Update c with the demo's chosen value
+        if (this.curOptions.c) {
+            c = this.curOptions.c;
+        } else {
+            c = 1;
+        }
+
+        drawLightCone(this);
+        this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
+                      "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
+                      "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
+                      "down": boostFrom3Vel(0, -0.005, 0, this.zoom)};
+  
+
+
+        demo.steps[step].objects.forEach(this.createObject, this);
+
+        $('#caption').html(demo.steps[step].caption);
+
+        // If the demo specifies an object whose frame is preferred, shift to that frame.
+        if (typeof demo.steps[step].frame === "number") {
+            this.shiftToFrameOfObject(this.carray[demo.steps[step].frame]);
+        }
+        this.frameStartTime = new Date().getTime();
+    };
+
     /**
      * Called by scene.load() to create each individual object in a scene.
      * Hence obj is an object from the demo system specifying options,
@@ -40,6 +95,8 @@ function Scene() {
         this.carray.push(thingy);
 
     };
+
+    /** Scene drawing functions **/
 
     /**
      * Draw the scene onto the canvas. Uses requestAnimFrame to schedule the
@@ -97,12 +154,6 @@ function Scene() {
         this.frameEndTime = new Date().getTime();
     };
 
-    this.clear = function() {
-        this.g.clearRect(0, 0, this.width, this.height);
-        this.h.clearRect(0, 0, this.mWidth, this.mHeight);
-        this.TDC.clearRect(0, 0, this.tWidth, this.tHeight);
-    };
-
     this.drawCrosshairs = function () {
         this.g.strokeStyle = "#fff";
         this.g.beginPath();
@@ -116,6 +167,13 @@ function Scene() {
         this.g.stroke();
     };
 
+    this.clear = function() {
+        this.g.clearRect(0, 0, this.width, this.height);
+        this.h.clearRect(0, 0, this.mWidth, this.mHeight);
+        this.TDC.clearRect(0, 0, this.tWidth, this.tHeight);
+    };
+
+    /** Animation and step control functions **/
     this.startAnimation = function() {
         this.frameEndTime = new Date().getTime();
         this.t = 0;
@@ -146,54 +204,7 @@ function Scene() {
         this.startAnimation();
     };
 
-    this.load = function(demo, step) {
-        this.carray = [];
-        this.curStep = step;
-        this.demo = demo;
-
-        // If the demo specifies global options, set 'em
-        if (typeof demo.steps[step].origin === "object") {
-            this.origin = demo.steps[step].origin;
-        }
-        if (typeof demo.steps[step].timeScale === "number") {
-            this.timeScale = demo.steps[step].timeScale;
-        }
-        if (typeof demo.steps[step].zoom === "number") {
-            this.zoom = demo.steps[step].zoom;
-        }
-
-        // Clone defaults into curOptions, rather than getting a reference to it
-        this.curOptions = jQuery.extend({}, this.defaults);
-
-        if (typeof demo.steps[step].options === "object") {
-            $.extend(this.curOptions, demo.steps[step].options);
-        }
-
-        // Update c with the demo's chosen value
-        if (this.curOptions.c) {
-            c = this.curOptions.c;
-        } else {
-            c = 1;
-        }
-
-        drawLightCone(this);
-        this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
-                      "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
-                      "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
-                      "down": boostFrom3Vel(0, -0.005, 0, this.zoom)};
-  
-
-
-        demo.steps[step].objects.forEach(this.createObject, this);
-
-        $('#caption').html(demo.steps[step].caption);
-
-        // If the demo specifies an object whose frame is preferred, shift to that frame.
-        if (typeof demo.steps[step].frame === "number") {
-            this.shiftToFrameOfObject(this.carray[demo.steps[step].frame]);
-        }
-		this.frameStartTime = new Date().getTime();
-    };
+    /** Object utilities **/
 
     /**
      * Find the closest object to the given (x,y), within a distance maxDist
