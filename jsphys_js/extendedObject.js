@@ -39,7 +39,7 @@ function extendedObject(X, P, label, options, shape)
                                    -this.COM.V[2],
                                     this.COM.V[3]], c);
 
-    for (var i = 0; i < (shape.length - 1); i++)
+    for (var i = 0; i < (shape.length); i++)
     {
 
         this.shapePoints[i] = quat4.create(mat4.multiplyVec4(this.initialBoost, shape[i], tempQuat4));

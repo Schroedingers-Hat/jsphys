@@ -13,21 +13,26 @@ function photon(X, V, label, options) {
     this.initialPt = quat4.create(X);
     if (this.options.endPt){
         this.endPt = quat4.create(this.options.endPt);
-        this.endPt[3] = Math.sqrt(quat4.spaceDot(quat4.subtract(this.endPt, this.initialPt, tempQuat4), tempQuat4));
+        this.endPt[3] = Math.sqrt(quat4.spaceDot(quat4.subtract(this.endPt, this.initialPt, tempQuat4), tempQuat4)) + this.initialPt[3];
         quat4.subtract(this.endPt, this.initialPt, this.V);
     }
     // Normalize V such that V[3] = 1 and V[3]^2-V[2]^2-V[1]^2-V[0]^2 = 0
     // (i.e. |V| (including the metric) is 0)
     this.V[3] = c;
     vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
-
     this.displace = quat4.create();
 
     this.tau = 0;
 
     this.uDisplacement = quat4.create();
+    this.displace = quat4.create();
     this.viewTime = 0;
     this.radialVPast = 0;
+    quat4.scale(this.V, -this.X0[3]/c, this.displace);
+
+    // Bring it to now.
+    quat4.add(this.X0, this.displace);
+
 }
 
 photon.prototype.updateX0 = function(timeStep) {
@@ -83,6 +88,7 @@ photon.prototype.draw = function(scene) {
         if (this.options.showCircle) this.drawCircle(scene);
     }
     }
+    this.drawXT;
 };
 
 photon.prototype.update = function(timeStep) {
