@@ -11,6 +11,11 @@ function photon(X, V, label, options) {
     this.XView = quat4.create();
     this.V = V;
     this.initialPt = quat4.create(X);
+    if (this.options.endPt){
+        this.endPt = quat4.create(this.options.endPt);
+        this.endPt[3] = Math.sqrt(quat4.spaceDot(quat4.subtract(this.endPt, this.initialPt, tempQuat4), tempQuat4));
+        quat4.subtract(this.endPt, this.initialPt, this.V);
+    }
     // Normalize V such that V[3] = 1 and V[3]^2-V[2]^2-V[1]^2-V[0]^2 = 0
     // (i.e. |V| (including the metric) is 0)
     this.V[3] = c;
@@ -33,15 +38,19 @@ photon.prototype.updateX0 = function(timeStep) {
 
     this.X0[3] = this.X0[3] - timeStep * this.V[3]/c;
     this.initialPt[3] = this.initialPt[3] - timeStep * this.V[3]/c;
+    if(this.endPt) this.endPt[3] = this.endPt[3] - timeStep * this.V[3]/c;
 };
 
 photon.prototype.changeFrame = function(translation1, rotation, translation2) {
     // Translate.
     quat4.subtract(this.X0, translation1);
+    quat4.subtract(this.initialPt, translation1);
+    if(this.endPt)  quat4.subtract(this.endPt, translation1);
 
     // Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
     mat4.multiplyVec4(rotation, this.initialPt);
+    if (this.endPt) mat4.multiplyVec4(rotation, this.endPt);
     mat4.multiplyVec4(rotation, this.V);
 
     // Renormalize this.V.
@@ -55,12 +64,25 @@ photon.prototype.changeFrame = function(translation1, rotation, translation2) {
     quat4.add(this.X0, this.uDisplacement);
     if ( translation2) {
         quat4.subtract(this.X0, translation2);
+        quat4.subtract(this.initialPt, translation2);
+        if(this.endPt) quat4.subtract(this.endPt, translation2);
+
+
     }
 };
 
-photon.prototype.draw = function() {
-    this.drawNow();
-    if (this.options.showCircle) this.drawCircle();
+photon.prototype.draw = function(scene) {
+    if (this.endPt){
+    if ( (this.initialPt[3] < 0) && (this.endPt[3] > 0)){
+        this.drawNow(scene);
+        if (this.options.showCircle) this.drawCircle(scene);
+    }
+    } else {
+    if (this.initialPt[3] < 0){
+        this.drawNow(scene);
+        if (this.options.showCircle) this.drawCircle(scene);
+    }
+    }
 };
 
 photon.prototype.update = function(timeStep) {
@@ -70,6 +92,11 @@ photon.prototype.update = function(timeStep) {
 photon.prototype.drawXT = function(scene) {
     var xvis  = this.initialPt[0] / scene.zoom;
     var tvis  = this.initialPt[3] / scene.zoom / c;
+    if(this.endPt){
+        var xvisE  = this.endPt[0] / scene.zoom;
+        var tvisE  = this.endPt[3] / scene.zoom / c;
+    }
+    
     var xyScale = scene.mWidth / scene.mHeight;
     var dxdtVis = this.V[0] / this.V[3] * c;
 
@@ -100,13 +127,17 @@ photon.prototype.drawXT = function(scene) {
             scene.h.moveTo(bOfLinex + scene.origin[0],
                           -bOfLinet + scene.origin[2]);
         }
-        scene.h.lineTo(tOfLinex + scene.origin[0],
-                      -tOfLinet + scene.origin[2]);
+        if ( (-tvisE + scene.origin[2]) >0){
+            scene.h.lineTo(xvisE + scene.origin[0],
+                          -tvisE + scene.origin[2]);
+           
+        } else  scene.h.lineTo(tOfLinex + scene.origin[0],
+                              -tOfLinet + scene.origin[2]);
         scene.h.stroke();
     }
 };
 
-photon.prototype.drawNow = function() {
+photon.prototype.drawNow = function(scene) {
     if (this.initialPt[3] < 0){
         scene.g.fillStyle = "#fff";
         scene.g.beginPath();
@@ -117,7 +148,7 @@ photon.prototype.drawNow = function() {
     }
 };
 
-photon.prototype.drawCircle = function() {
+photon.prototype.drawCircle = function(scene) {
     scene.g.strokeStyle = "#fff";
     scene.g.beginPath();
     scene.g.arc(this.initialPt[0] / scene.zoom + scene.origin[0],

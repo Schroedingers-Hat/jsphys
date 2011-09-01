@@ -46,12 +46,14 @@ var demos = [{"name": "Velocity addition",
                        ]
              },
             {"name": "Test thingies.",
-             "steps": [{"caption": "Test for a sphere",
+             "steps": [{"caption": "Test for some things",
                         "objects": [{"object": extendedObject, "x": [0, -32, 0], "p": [0,0,0], "m": 1, "shape": aSphere(10,100)},
+                                    {"object": extendedObject, "x": [-50, -50, 0], "p": [0,0,0], "m": 1, "shape": aMan(10,100)},
+                                    {"object": extendedObject, "x": [50, -50, 0], "p": [0,0,0], "m": 1, "shape": potPlant(10,100)},
                                     {"object": extendedObject, "x": [20, -20, -20], "p": [0,0,0], "m": 1, 
                                             "options": {"temperature": 3000}, 
                                             "label": "A circle",   "shape": aCircle(10,30)},
-                                    {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0], "label": "photon", "options": {"showCircle": true}}
+                                    {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0], "label": "photon", "options": {"showCircle": true, "endPt": [300, 10, 0, 0] }}
                       ],
              "options": {"showFramePos": true, "showVisualPos": true, "show3D": true}}]},
             {"name": "Speed of light",
@@ -86,5 +88,60 @@ var demos = [{"name": "Velocity addition",
                         "options": {"showFramePos": true, "showVisualPos": false, "showGamma": false},
                         "frame": 2},
                       ]
+            },
+            { "name" : "Han and Greedo",
+              "steps": [{"caption": "Han and greedo are standing at a bar, they both shoot their laser guns, but miss each other due to hitting a pot-plant. Luke walks by at close to light speed, as they do this. Pot-plants are very tough, and it takes two laser guns hitting them at the same time to break one.",
+                         "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [0,0,0], "m": 1, 
+                                            "label": "Greedo", "shape": aMan(5,10)},
+                                     {"object": extendedObject, "x": [ 100, 0, 0], "p": [0,0,0], "m": 1, 
+                                            "label": "Han", "shape": aMan(5,10)},
+                                     {"object": extendedObject, "x": [ 0, -30, 0], "p": [1,0,0], "m": 1, 
+                                            "label": "Luke", "shape": aMan(5,10)},
+
+                                     {"object": extendedObject, "x": [0, 0, 0], "p": [0,0,0], "m": 1, "shape": potPlant(5,30)},
+                                     {"object": photon, "x": [-90, 0, 0], "v": [-1, 0, 0], 
+                                         "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }},
+                                     {"object": photon, "x": [90, 0, 0], "v": [-1, 0, 0], 
+                                         "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }}
+                                    ],
+                         "timeScale": 0.005,
+                         "options": {"showVisualPos": false, "showFramePos": true}
+                        },
+                        {"caption": "Let's look at the same scene again from Luke's point of view, if we make a Galilean transform. Can you see something wrong?",
+                         "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [-1,0,0], "m": 1, 
+                                            "label": "Han", "shape": aMan(5,10)},
+                                     {"object": extendedObject, "x": [ 100, 0, 0], "p": [-1,0,0], "m": 1, 
+                                            "label": "Greedo", "shape": aMan(5,10)},
+                                     {"object": extendedObject, "x": [ 0, -30, 0], "p": [0,0,0], "m": 1, 
+                                            "label": "Luke", "shape": aMan(5,10)},
+                                     {"object": extendedObject, "x": [0, 0, 0], "p": [-1,0,0], "m": 1, "shape": potPlant(5,30)},
+                                     {"object": photon, "x": [-90, 0, 0], "v": [-1, 0, 0], 
+                                         "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }},
+                                     {"object": photon, "x": [90, 0, 0], "v": [-1, 0, 0], 
+                                         "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }}
+                                    ],
+                         "timeScale": 0.005,
+                         "options": {"showVisualPos": false, "showFramePos": true}
+                        },
+                        {"caption": "Let's try that again with a Lorentz transform. If the distance from Luke to Han and from Luke to Greedo are the same, then the only conclusion is that Han shot first.",
+                         "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [0,0,0], "m": 1, 
+                                            "label": "Greedo", "shape": aMan(5,10)},
+                                     {"object": extendedObject, "x": [ 100, 0, 0], "p": [0,0,0], "m": 1, 
+                                            "label": "Han", "shape": aMan(5,10)},
+                                     {"object": extendedObject, "x": [ 0, -30, 0], "p": [1,0,0], "m": 1, 
+                                            "label": "Luke", "shape": aMan(5,10)},
+
+                                     {"object": extendedObject, "x": [0, 0, 0], "p": [0,0,0], "m": 1, "shape": potPlant(5,30)},
+                                     {"object": photon, "x": [-90, 0, 0], "v": [-1, 0, 0], 
+                                         "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }},
+                                     {"object": photon, "x": [90, 0, 0], "v": [-1, 0, 0], 
+                                         "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }}
+                                    ],
+                         "timeScale": 0.005,
+                         "frame": 2,
+                         "options": {"showVisualPos": false, "showFramePos": true}
+                        }
+
+                        ]
             }
             ];

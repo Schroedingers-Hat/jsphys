@@ -157,10 +157,33 @@ function aSphere(r,numPts){
 function aCircle(r, numPts) {
     var Circle = [];
     for (var i = 0; i <= numPts; i++){
-        Circle.push( quat4.create([Math.cos(6.283 * i / numPts) * r, 
-                                   Math.sin(6.283 * i / numPts) * r, 
+        Circle.push( quat4.create([Math.cos(6.283 * i / numPts + twopi*3/4) * r, 
+                                   Math.sin(6.283 * i / numPts + twopi*3/4) * r, 
                                    0, 
                                    0]) );
     }
     return Circle;
+}
+
+function aMan(size, detail){
+    var headPts = aCircle(size/2,detail);
+    var bodyPts = linesPadder([[0,-1.2*size,0,0],[-size,-0.2*size,0,0],[0,-1.2*size,0,0],
+                   [size,-0.2*size,0,0],[0,-1.2*size,0,0],[0,-2*size,0,0],
+                   [-size,-3*size,0,0],[0,-2*size,0,0],[size,-3*size,0,0]], 9*size / detail);
+    return headPts.concat(bodyPts);
+}
+
+function potPlant(size, detail) {
+    var flower = aCircle(size / 5, detail / 5);
+    for (var i = 0; i <= detail; i++){
+        flower.push( quat4.create([Math.cos(6.283 * i / detail + twopi*3/4) * (size / 5 + size / 3 * Math.abs(Math.sin(2.5*6.283 * i / detail))),
+                                   Math.sin(6.283 * i / detail + twopi*3/4) * (size / 5 + size / 3 * Math.abs(Math.sin(2.5*6.283 * i / detail))), 
+                                   0, 
+                                   0]) );
+    }
+    var stemPot = linesPadder([[0,        -size / 5,  0, 0], [0,         -size,    0, 0],
+                               [-0.5*size, -size,     0, 0], [-0.4*size, -1.8*size,0, 0], 
+                               [0.4*size,  -1.8*size, 0, 0], [0.5*size,  -size,    0, 0],
+                               [0,         -size,     0, 0]], 8 * size / detail);
+    return flower.concat(stemPot);
 }
