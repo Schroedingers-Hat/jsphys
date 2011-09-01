@@ -107,12 +107,14 @@ photon.prototype.drawXT = function(scene) {
 };
 
 photon.prototype.drawNow = function() {
-    scene.g.fillStyle = "#fff";
-    scene.g.beginPath();
-    scene.g.arc(this.X0[0] / scene.zoom + scene.origin[0], 
-                -this.X0[1] / scene.zoom + scene.origin[1],
-                2, 0, twopi);
-    scene.g.fill();
+    if (this.initialPt[3] < 0){
+        scene.g.fillStyle = "#fff";
+        scene.g.beginPath();
+        scene.g.arc(this.X0[0] / scene.zoom + scene.origin[0], 
+                    -this.X0[1] / scene.zoom + scene.origin[1],
+                    2, 0, twopi);
+        scene.g.fill();
+    }
 };
 
 photon.prototype.drawCircle = function() {

@@ -15,7 +15,6 @@ function Scene() {
         this.carray = [];
         this.curStep = step;
         this.demo = demo;
-
         // If the demo specifies global options, set 'em
         if (typeof demo.steps[step].origin === "object") {
             this.origin = demo.steps[step].origin;
@@ -99,6 +98,13 @@ function Scene() {
      * next frame.
      */
     this.draw = function() {
+        if (fireDown == true) {
+            var newPhoton = new photon(quat4.create([0, 0, 0, 0]),
+                                       quat4.create([0, 1, 0, 0]), "photon", {"showCircle": false});
+            this.carray.push(newPhoton);
+            fireDown = false;
+        }
+
         this.oldFrameStartTime = this.frameStartTime;
         this.frameStartTime = new Date().getTime();
         var timeStep = 0;

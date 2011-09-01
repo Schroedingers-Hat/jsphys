@@ -12,6 +12,8 @@ var rotLeftDown = false;
 var rotRightDown = false;
 var rotUpDown = false;
 var rotDownDown = false;
+var ctrlDown = false;
+var fireDown = false;
 var scene;
 
 //TODO: Pull all the keycodes out of here and put them in an array or something.
@@ -28,6 +30,10 @@ function onKeyDown(evt)
     	else if (evt.keyCode == 65) leftDown = true;
     	else if (evt.keyCode == 87) upDown = true;
     	else if (evt.keyCode == 83) downDown = true;
+        else if (evt.keyCode == 17) {
+            if (ctrlDown == false) fireDown = true;
+            ctrlDown = true;
+        }
 //    	else if (evt.keyCode == 49) rotUpDown = true; //Not needed for 2D 
 //    	else if (evt.keyCode == 50) rotDownDown = true;  //Not needed for 2D
 
@@ -72,7 +78,8 @@ function onKeyUp(evt)
 	else if(evt.keyCode == 87) upDown = false;
 	else if(evt.keyCode == 83) downDown = false;
 	else if (evt.keyCode == 69) rotRightDown = false;
-	else if (evt.keyCode == 81) rotLeftDown = false; 
+	else if (evt.keyCode == 81) rotLeftDown = false;
+    else if (evt.keyCode == 17) ctrlDown = false;
 //	else if (evt.keyCode == 49) rotUpDown = false;  
 //	else if (evt.keyCode == 50) rotDownDown = false;  
     scene.keyDown = false;
