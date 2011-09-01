@@ -1,3 +1,5 @@
+"use strict";
+
 function Scene() {
     if (typeof Float64Array !== "undefined") {
         glMatrixArrayType = Float64Array;
@@ -99,20 +101,21 @@ function Scene() {
     this.draw = function() {
         this.oldFrameStartTime = this.frameStartTime;
         this.frameStartTime = new Date().getTime();
+        var timeStep = 0;
         if (this.drawing){
-            this.timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale;
-        } else this.timeStep = 0;
+            timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale;
+        }
         this.clear();
 
         this.h.drawImage(this.lightConeCanvas, 0, 0);
         this.carray.forEach(function(obj) {
-            obj.update(this.timeStep);
+            obj.update(timeStep);
             obj.draw(this);
             obj.drawXT(this); 
         }, this);
         this.drawCrosshairs();
         this.drawInfo();
-        this.t = this.t + (this.timeStep * c);
+        this.t = this.t + (timeStep * c);
 
         if (leftDown === true)     this.changeArrayFrame(nullQuat4, this.boost.left );
         if (upDown === true)       this.changeArrayFrame(nullQuat4, this.boost.up   );
@@ -287,7 +290,6 @@ function Scene() {
     this.origin = [this.hwidth, this.hheight, this.hheight];
     this.carray = [];
     this.zoom = 0.25;
-    this.timeStep = 5;
     this.timeScale = 0.02;
     this.t = 0;
     this.defaults = {"showDoppler": true,

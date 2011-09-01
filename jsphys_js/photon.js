@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Create a new photon. Takes an initial position X and a 3-velocity V,
  * which will be rescaled to have a magnitude of c.

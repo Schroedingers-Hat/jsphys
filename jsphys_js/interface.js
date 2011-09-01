@@ -2,6 +2,8 @@
  * User interface event handling -- mouse and keyboard input
  */
 
+"use strict";
+
 var rightDown = false;
 var leftDown = false;
 var upDown = false;

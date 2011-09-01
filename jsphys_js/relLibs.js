@@ -1,5 +1,6 @@
 // Updated for A[3] is timelike, updated for c
 
+"use strict";
 
 // Convenient constants.
 var c; // Default value set in scene.defaults

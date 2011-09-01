@@ -2,6 +2,8 @@
 //lNB: Shape is four dimensional, 
 // if you draw it moving and not with the front/back in the right time as well as place, it won't be the correct shape.
 
+"use strict";
+
 function extendedObject(X, P, label, options, shape)
 {
     this.options = options;
