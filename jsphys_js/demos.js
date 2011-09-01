@@ -15,8 +15,8 @@ var demos = [
                         "frame": 2},
                       ]
             },
-            { "name" : "Simultanaety: Han and Greedo",
-              "steps": [{"caption": "Han and greedo are standing at a bar, they both shoot their laser guns, but miss each other due to hitting a pot-plant. Luke walks by at close to light speed, as they do this. Pot-plants are very tough, and it takes two laser guns hitting them at the same time to break one.",
+            { "name" : "Simultaneity: Han and Greedo",
+              "steps": [{"caption": "Han and Greedo are standing at a bar. They both shoot their laser guns, but miss each other due to hitting a pot-plant. Luke walks by at close to light speed as they do this. Pot-plants are very tough, and it takes two laser guns hitting them at the same time to break one.",
                          "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [0,0,0], "m": 1, 
                                             "label": "Greedo", "shape": aMan(5,10)},
                                      {"object": extendedObject, "x": [ 100, 0, 0], "p": [0,0,0], "m": 1, 
@@ -71,7 +71,7 @@ var demos = [
 
                         ]
              },
-             {"name": "Simultanaety: Relativistic snake",
+             {"name": "Simultaneity: Relativistic snake",
               "steps": [{"caption": "We have here two knives a fixed distance apart, moving upwards. A special breed of high-speed snake, <em>Crotalus relativisticus</em>, is moving at a speed close to the speed of light. It's just short enough to fit between the blades.",
                          "objects": [{"object": extendedObject, "x": [-27, -60, 0], "p": [0, 4, 0], "m": 1, "shape": [[5, -10, 0, 0], [5, 10, 0, 0], [-5, -10, 0, 0], [5, -10, 0, 0]]},
                                      {"object": extendedObject, "x": [27, -60, 0], "p": [0, 4, 0], "m": 1, "shape": [[-5, -10, 0, 0], [-5, 10, 0, 0], [5, -10, 0, 0], [-5, -10, 0, 0]]},
@@ -88,7 +88,7 @@ var demos = [
                          "options": {"showFramePos": true, "showVisualPos": false}},
                        ]
             },
-            {"name": "Simultanaety, c is constant: Ruler",
+            {"name": "Simultaneity, c is constant: Ruler",
              "steps": [{"caption": "Two photons are emitted from the center of a ruler, heading outwards. Since they both travel at c, they reach the ends at the same time. But what happens from the perspective of the observer moving right?",
                         "objects": [{"object": photon, "x": [0, 10, 0], "v": [1, 0, 0]},
                                     {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0]},
