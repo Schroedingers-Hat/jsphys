@@ -190,7 +190,10 @@ if (window.console && window.console.firebug) {
                                             "label": "A circle",   "shape": aCircle(10,30)},
                                        {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0], "label": "photon", 
                                         "options": {"showCircle": true, "endPt": [300, 10, 0, 0] }}
-                         ],
-               "options": {"showFramePos": true, "showVisualPos": true, "show3D": true}}]});
+                                       ],
+                           "options": {"showFramePos": true, "showVisualPos": true, "show3D": true}
+                          }],
+                "options": {"canShoot": true}
+                });
 }
 
