@@ -206,9 +206,11 @@ function Scene() {
         if (this.timeScale === 0) {
             this.timeScale = this.prevTimeScale;
             this.frameStartTime = new Date().getTime();
+            this.drawing = true;
         } else {
             this.prevTimeScale = this.timeScale;
             this.timeScale = 0;
+            this.drawing = false;
         }
     };
 
@@ -278,7 +280,6 @@ function Scene() {
     this.timeStep = 5;
     this.timeScale = 0.02;
     this.t = 0;
-
     this.defaults = {"showDoppler": true,
                      "showVisualPos": true,
                      "showFramePos": false,

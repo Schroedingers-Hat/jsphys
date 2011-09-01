@@ -50,6 +50,10 @@ function onKeyDown(evt)
             if (scene.zoom > 40) zoomTo(40);
             else zoomTo(scene.zoom * 2);
     	}
+        if (!scene.drawing){
+            scene.beginFrameTime = new Date().time;
+            requestAnimFrame(drawScene);
+        }
 }
 
 function onKeyUp(evt) 
@@ -62,6 +66,11 @@ function onKeyUp(evt)
 	else if (evt.keyCode == 81) rotLeftDown = false; 
 //	else if (evt.keyCode == 49) rotUpDown = false;  
 //	else if (evt.keyCode == 50) rotDownDown = false;  
+    if (!scene.drawing){
+        scene.beginFrameTime = new Date().time;
+        requestAnimFrame(drawScene);
+    }
+
 }
 
 /**
