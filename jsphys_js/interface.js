@@ -117,7 +117,7 @@ function zoomToSlider(event, ui) {
  * Pause animation
  */
 function pause(event) {
-    if (scene.timeScale === 0) {
+    if (!scene.drawing) {
         $("#pause").html("Pause");
     } else {
         $("#pause").html("Play");
