@@ -99,7 +99,9 @@ function Scene() {
     this.draw = function() {
         this.oldFrameStartTime = this.frameStartTime;
         this.frameStartTime = new Date().getTime();
-        this.timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale;
+        if (this.drawing){
+            this.timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale;
+        } else this.timeStep = 0;
         this.clear();
 
         this.h.drawImage(this.lightConeCanvas, 0, 0);
@@ -203,14 +205,11 @@ function Scene() {
     };
 
     this.pause = function() {
-        if (this.timeScale === 0) {
-            this.timeScale = this.prevTimeScale;
+        if (!this.drawing) {
             this.frameStartTime = new Date().getTime();
             this.drawing = true;
             this.draw();
         } else {
-            this.prevTimeScale = this.timeScale;
-            this.timeScale = 0;
             this.drawing = false;
         }
     };
