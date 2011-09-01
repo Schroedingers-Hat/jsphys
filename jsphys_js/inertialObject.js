@@ -64,6 +64,14 @@ inertialObject.prototype.changeFrame = function(translation1, rotation, translat
     this.tau += this.uDisplacement[3] / this.V[3] * c;
     if (translation2) {
         quat4.subtract(this.X0, translation2);
+        //Wrong time again.
+        //Find displacement to current time.
+        quat4.scale(this.V, -this.X0[3] / this.V[3], this.uDisplacement);
+    
+        //Bring to current time.
+        quat4.add(this.X0, this.uDisplacement);
+        this.tau += this.uDisplacement[3] / this.V[3] * c;
+
         quat4.subtract(this.initialPt, translation2);
     }
 };

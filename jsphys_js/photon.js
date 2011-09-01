@@ -69,10 +69,14 @@ photon.prototype.changeFrame = function(translation1, rotation, translation2) {
     quat4.add(this.X0, this.uDisplacement);
     if ( translation2) {
         quat4.subtract(this.X0, translation2);
+        // Point is now at wrong time. Find displacement to current time.
+        quat4.scale(this.V, -this.X0[3] / this.V[3], this.uDisplacement);
+    
+        // Bring to current time.
+        quat4.add(this.X0, this.uDisplacement);
+        // Wrong time again;
         quat4.subtract(this.initialPt, translation2);
         if(this.endPt) quat4.subtract(this.endPt, translation2);
-
-
     }
 };
 

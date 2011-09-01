@@ -100,7 +100,7 @@ function Scene() {
      * next frame.
      */
     this.draw = function() {
-        if (fireDown && this.options.canShoot) {
+        if (fireDown && this.curOptions.canShoot) {
             var newPhoton = new photon(quat4.create([0, 0, 0, 0]),
                                        quat4.create([0, 1, 0, 0]), "photon", {"showCircle": false});
             this.carray.push(newPhoton);
@@ -308,6 +308,7 @@ function Scene() {
                      "showGamma": true,
                      "show3D": false,
                      "showPos": false,
+                     "canShoot": false,
                      "c": 3};
   
     this.options = {"alwaysDoppler": false,
@@ -316,8 +317,7 @@ function Scene() {
                     "neverShowFramePos": false,
                     "alwaysShowVisualPos": false,
                     "neverShowVisualPos": false,
-                    "showTime": false,
-                    "canShoot": true
+                    "showTime": false
                    };
 
     this.drawing = true;
