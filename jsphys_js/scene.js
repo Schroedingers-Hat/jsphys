@@ -123,7 +123,7 @@ function Scene() {
         if (rotUpDown === true)    this.changeArrayFrame(nullQuat4, rotUp,      this.carray);
         if (rotDownDown === true)  this.changeArrayFrame(nullQuat4, rotDown,    this.carray);
 
-        if (this.drawing) {
+        if (this.drawing || this.keyDown) {
             requestAnimFrame(drawScene);
         }
         this.lastFrameEndTime = this.frameEndTime;
