@@ -48,7 +48,7 @@ function Scene() {
 
         // If the demo specifies an object whose frame is preferred, shift to that frame.
         if (typeof demo.steps[step].frame === "number") {
-            this.shiftToFrameOfObject(this.carray[demo.steps[step].frame]);
+            this.shiftToFrameOfObject(this.carray[demo.steps[step].frame], demo.steps[step].shift);
         }
         this.frameStartTime = new Date().getTime();
     };
@@ -114,14 +114,14 @@ function Scene() {
         this.drawInfo();
         this.t = this.t + (this.timeStep * c);
 
-        if (leftDown === true)     this.changeArrayFrame(nullQuat4, this.boost.left,  this.carray);
-        if (upDown === true)       this.changeArrayFrame(nullQuat4, this.boost.up,    this.carray);
-        if (downDown === true)     this.changeArrayFrame(nullQuat4, this.boost.down,  this.carray);
-        if (rightDown === true)    this.changeArrayFrame(nullQuat4, this.boost.right, this.carray);
-        if (rotLeftDown === true)  this.changeArrayFrame(nullQuat4, rotRight,   this.carray);
-        if (rotRightDown === true) this.changeArrayFrame(nullQuat4, rotLeft,    this.carray);
-        if (rotUpDown === true)    this.changeArrayFrame(nullQuat4, rotUp,      this.carray);
-        if (rotDownDown === true)  this.changeArrayFrame(nullQuat4, rotDown,    this.carray);
+        if (leftDown === true)     this.changeArrayFrame(nullQuat4, this.boost.left );
+        if (upDown === true)       this.changeArrayFrame(nullQuat4, this.boost.up   );
+        if (downDown === true)     this.changeArrayFrame(nullQuat4, this.boost.down );
+        if (rightDown === true)    this.changeArrayFrame(nullQuat4, this.boost.right);
+        if (rotLeftDown === true)  this.changeArrayFrame(nullQuat4, rotRight);
+        if (rotRightDown === true) this.changeArrayFrame(nullQuat4, rotLeft );
+        if (rotUpDown === true)    this.changeArrayFrame(nullQuat4, rotUp   );
+        if (rotDownDown === true)  this.changeArrayFrame(nullQuat4, rotDown );
 
         if (this.drawing || this.keyDown) {
             requestAnimFrame(drawScene);
@@ -140,12 +140,13 @@ function Scene() {
         scene.g.closePath();
         scene.g.fill();
         scene.g.fillStyle = "rgba(150,0,150,1)";
-        scene.g.fillText("Game Time: " + Math.round(this.t/c) / 1000, 30, 30);
+        scene.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
         scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 50);
 
         if (window.console && window.console.firebug) {
             scene.g.fillText("Fps: " + Math.round((1000 / (-this.lastFrameEndTime + this.frameEndTime))), 30, 70);
-            scene.g.fillText("c: " + c, 30, 90);
+            scene.g.fillText("c: " + c, 30, 80);
+            scene.g.fillText("keyCode: " + this.kC, 30, 90); 
         }
     };
 
@@ -241,18 +242,27 @@ function Scene() {
     };
 
     // Take a given inertialObject and switch to its reference frame
-    this.shiftToFrameOfObject = function(obj) {
-        this.changeArrayFrame(quat4.create(obj.X0), cBoostMat(obj.V, c));
+    this.shiftToFrameOfObject = function(obj, shift) {
+        if (shift) { this.changeArrayFrame(quat4.create(obj.X0), cBoostMat(obj.V, c), shift);}
+        else { this.changeArrayFrame(quat4.create(obj.X0), cBoostMat(obj.V, c));}
     };
 
     /**
      * Switch every object in the scene to a new reference frame given by
      * the provided translation and boost.
      */
-    this.changeArrayFrame = function(translation, boost) {
-        this.carray.forEach(function(obj) {
-            obj.changeFrame(translation, boost);
-        });
+    this.changeArrayFrame = function(translation1, boost, translation2) {
+        if (translation2){
+            this.carray.forEach(function(obj) {
+                obj.changeFrame(translation1, boost, translation2);
+            });
+        } else {
+            this.carray.forEach(function(obj) {
+                obj.changeFrame(translation1, boost);
+            });
+        }
+
+
     };
 
     this.initialTime = new Date().getTime();
@@ -270,7 +280,7 @@ function Scene() {
     this.lightConeCanvas.width =  this.mWidth;
     this.lightConeCanvas.height =  this.mHeight;
     this.lCCtx = this.lightConeCanvas.getContext('2d');
-
+    this.kC = 0;
     this.camBack = 0;
     this.hwidth = this.width / 2;
     this.hheight = this.height / 2;
@@ -287,12 +297,15 @@ function Scene() {
                      "showTime": false,
                      "showGamma": true,
                      "show3D": false,
+                     "showPos": false,
                      "c": 3};
   
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
                     "alwaysShowFramePos": false,
                     "neverShowFramePos": false,
+                    "alwaysShowVisualPos": false,
+                    "neverShowVisualPos": false,
                     "showTime": false};
 
     this.drawing = true;
