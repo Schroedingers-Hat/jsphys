@@ -39,7 +39,7 @@ function extendedObject(X, P, label, options, shape)
                                    -this.COM.V[2],
                                     this.COM.V[3]], c);
 
-    for (var i = 0; i < (shape.length); i++)
+    for (var i = 0; i < (shape.length - 1); i++)
     {
 
         this.shapePoints[i] = quat4.create(mat4.multiplyVec4(this.initialBoost, shape[i], tempQuat4));
@@ -76,7 +76,8 @@ extendedObject.prototype.update = function(timeStep)
         quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
         quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
     }
-    if (this.options.showVisualPos){
+    if (scene.options.alwaysDoppler || (
+        !scene.options.neverDoppler && this.options.showDoppler)) {
         this.calcPastPoints();
         this.findBB(this.pastPoints, this.boundingBoxP);
     }
