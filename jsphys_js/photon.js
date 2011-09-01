@@ -31,9 +31,9 @@ photon.prototype.updateX0 = function(timeStep) {
     this.X0[3] = this.X0[3] - timeStep * this.V[3]/c;
 };
 
-photon.prototype.changeFrame = function(translation, rotation) {
+photon.prototype.changeFrame = function(translation1, rotation, translation2) {
     // Translate.
-    quat4.subtract(this.X0, translation);
+    quat4.subtract(this.X0, translation1);
 
     // Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
@@ -48,6 +48,9 @@ photon.prototype.changeFrame = function(translation, rotation) {
     
     // Bring to current time.
     quat4.add(this.X0, this.uDisplacement);
+    if ( translation2) {
+        quat4.subtract(this.X0, translation2);
+    }
 };
 
 photon.prototype.draw = function() {

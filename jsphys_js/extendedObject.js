@@ -103,9 +103,12 @@ extendedObject.prototype.findBB = function(pointsArr, BB)
 };
 
 
-extendedObject.prototype.changeFrame = function(translation, rotation)
+extendedObject.prototype.changeFrame = function(translation1, rotation, translation2)
 {
-    this.COM.changeFrame(translation, rotation);
+    if (translation2){
+        this.COM.changeFrame(translation1, rotation, translation2);
+    } else this.COM.changeFrame(translation1, rotation);
+
     for (var i = 0; i < this.shapePoints.length; i++)
     {
         this.shapePoints[i] = mat4.multiplyVec4(rotation, this.shapePoints[i]);
@@ -141,7 +144,7 @@ extendedObject.prototype.drawNow = function()
             scene.g.fillText(this.label, textX, textY - 30);
         }
         if (this.options.showTime || scene.options.showTime) {
-            scene.g.fillText("tau = " + (Math.round((this.COM.tau / c)) / 1000), textX, textY - 40); 
+            scene.g.fillText("tau = " + (Math.round((this.COM.tau / c))), textX, textY - 40); 
         }
     }
 }
@@ -238,11 +241,11 @@ extendedObject.prototype.drawPast = function(scene)
             i++;
         }
         if (this.options.showTime || scene.options.showTime) {
-            scene.g.fillText("t = " + (-Math.round((this.COM.viewTime / c)*1000) / 1000), textX, textY - 10 * i);
+            scene.g.fillText("t = " + (-Math.round((this.COM.viewTime / c)*10) / 10), textX, textY - 10 * i);
             i++;
         }
         if (this.options.showTime || scene.options.showTime) {
-            scene.g.fillText("tau = " + (Math.round((this.COM.tauPast / c)*1000) / 1000), textX, textY - 10 * i);
+            scene.g.fillText("tau = " + (Math.round((this.COM.tauPast / c)*10) / 10), textX, textY - 10 * i);
             i++;
         }
          if (this.options.showPos || scene.options.showPos) {                                                              
@@ -252,6 +255,7 @@ extendedObject.prototype.drawPast = function(scene)
         }
     }
 }
+
 
 extendedObject.prototype.drawPast3D = function(scene)
 {                                                                                   
@@ -323,7 +327,8 @@ extendedObject.prototype.drawNow3D = function(scene)
 extendedObject.prototype.draw = function(scene)
 {
 
-    if (this.options.showVisualPos) {
+    if (scene.options.alwaysShowVisualPos || 
+        (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
         this.drawPast(scene);
         if (this.options.show3D) {
             this.drawPast3D(scene);

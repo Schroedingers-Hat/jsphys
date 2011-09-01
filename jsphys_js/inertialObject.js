@@ -42,11 +42,11 @@ inertialObject.prototype.updateX0 = function(timeStep)
     this.initialPt[3] = this.initialPt[3] - timeStep;
 };
 
-inertialObject.prototype.changeFrame = function(translation, rotation)
+inertialObject.prototype.changeFrame = function(translation1, rotation, translation2)
 {
     // Translate.
-    quat4.subtract(this.X0, translation);
-    quat4.subtract(this.initialPt, translation);
+    quat4.subtract(this.X0, translation1);
+    quat4.subtract(this.initialPt, translation1);
 
     //Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
@@ -60,6 +60,10 @@ inertialObject.prototype.changeFrame = function(translation, rotation)
     //Bring to current time.
     quat4.add(this.X0, this.uDisplacement);
     this.tau += this.uDisplacement[3] / this.V[3] * c;
+    if (translation2) {
+        quat4.subtract(this.X0, translation2);
+        quat4.subtract(this.initialPt, translation2);
+    }
 };
 
 inertialObject.prototype.calcPast = function() {
@@ -75,6 +79,7 @@ inertialObject.prototype.calcPast = function() {
         this.XView[1] = this.X0[1];
         this.XView[2] = this.X0[2];
         this.XView[3] = -this.viewTime;
+        this.tauPast = this.tau;
         return;
     }
 

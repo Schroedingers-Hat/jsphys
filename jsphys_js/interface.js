@@ -18,6 +18,8 @@ var scene;
 // Get Key Input
 function onKeyDown(evt) 
 {
+        
+        scene.kC = evt.keyCode;
     	if (evt.keyCode == 81) rotLeftDown = true;
     	else if (evt.keyCode == 69) rotRightDown = true;
         else if (evt.keyCode == 68) rightDown = true;
@@ -34,11 +36,11 @@ function onKeyDown(evt)
         }
         else if (evt.keyCode == 88)
         {
-            scene.showFramePos = !scene.showFramePos;
+            $('#framePos').click();
         }
         else if (evt.keyCode == 67)
         {
-            scene.showVisualPos = !scene.showVisualPos;
+            $('#vPos').click();
         }
     	else if (evt.keyCode == 61) 
     	{
@@ -50,6 +52,10 @@ function onKeyDown(evt)
             if (scene.zoom > 40) zoomTo(40);
             else zoomTo(scene.zoom * 2);
     	}
+        else if (evt.keyCode == 80)
+        {
+            scene.options.showPos = !scene.options.showPos;
+        }
         if (!scene.drawing && !scene.keyDown){
             scene.beginFrameTime = new Date().time;
             requestAnimFrame(drawScene);
@@ -233,6 +239,25 @@ function framePosClick(event) {
     event.preventDefault();
 }
 
+function vPosClick(event) {
+    if (!scene.options.neverShowVisualPos && !scene.options.alwaysShowVisualPos) {
+        // we're in default mode. switch to force on.
+        scene.options.neverShowVisualPos = false;
+        scene.options.alwaysShowVisualPos = true;
+        $("#vPos").html("Force off");
+    } else if (!scene.options.neverShowVisualPos && scene.options.alwaysShowVisualPos) {
+        // we're currently in force on mode. switch to force off.
+        scene.options.neverShowVisualPos = true;
+        scene.options.alwaysShowVisualPos = false;
+        $("#vPos").html("Default");
+    } else {
+        // switch to default.
+        scene.options.neverShowVisualPos = false;
+        scene.options.alwaysShowVisualPos = false;
+        $("#vPos").html("Force on");
+    }
+    event.preventDefault();
+}
 // Use JQuery to wait for document load
 $(document).ready(function()
 {
@@ -246,7 +271,7 @@ $(document).ready(function()
     $("#canvas").click(clickHandler);
     $("#doppler").click(dopplerButtonClick);
     $('#framePos').click(framePosClick);
-    $("#framePos").change(function() {scene.options.showFramePos = !scene.options.showFramePos;});
+    $('#vPos').click(vPosClick);
     $(document).keydown(onKeyDown);
     $(document).keyup(onKeyUp);
 });
