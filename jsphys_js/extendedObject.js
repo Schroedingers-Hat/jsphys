@@ -76,8 +76,8 @@ extendedObject.prototype.update = function(timeStep)
         quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
         quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
     }
-    if (scene.options.alwaysDoppler || (
-        !scene.options.neverDoppler && this.options.showDoppler)) {
+    if (scene.options.alwaysShowVisualPos || 
+        (!scene.options.neverShowVisualPos && this.options.showShowVisualPos)) {
         this.calcPastPoints();
         this.findBB(this.pastPoints, this.boundingBoxP);
     }
