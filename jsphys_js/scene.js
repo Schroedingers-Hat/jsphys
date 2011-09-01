@@ -174,7 +174,7 @@ function Scene() {
         this.initialTime = new Date().getTime();
         this.t = 0;
 
-        // If not currently animating (we're paused), draw the first frame.
+        // If not currently animating, draw the first frame.
         if (!this.drawing) {
             this.draw();
         }
@@ -206,7 +206,6 @@ function Scene() {
         if (this.timeScale === 0) {
             this.timeScale = this.prevTimeScale;
             this.frameStartTime = new Date().getTime();
-            this.draw();
         } else {
             this.prevTimeScale = this.timeScale;
             this.timeScale = 0;
