@@ -77,7 +77,7 @@ extendedObject.prototype.update = function(timeStep)
         quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
     }
     if (scene.options.alwaysShowVisualPos || 
-        (!scene.options.neverShowVisualPos && this.options.showShowVisualPos)) {
+        (!scene.options.neverShowVisualPos && this.options.showVisualPos)) {
         this.calcPastPoints();
         this.findBB(this.pastPoints, this.boundingBoxP);
     }
