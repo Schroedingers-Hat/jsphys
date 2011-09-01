@@ -21,6 +21,8 @@ function Scene() {
         }
         if (typeof demo.steps[step].timeScale === "number") {
             this.timeScale = demo.steps[step].timeScale;
+        } else {
+            this.timeScale = this.defaults.timeScale;
         }
         if (typeof demo.steps[step].zoom === "number") {
             this.zoom = demo.steps[step].zoom;
@@ -298,7 +300,6 @@ function Scene() {
     this.origin = [this.hwidth, this.hheight, this.hheight];
     this.carray = [];
     this.zoom = 0.25;
-    this.timeScale = 0.02;
     this.t = 0;
     this.defaults = {"showDoppler": true,
                      "showVisualPos": true,
@@ -308,7 +309,8 @@ function Scene() {
                      "showGamma": true,
                      "show3D": false,
                      "showPos": false,
-                     "c": 3};
+                     "c": 3,
+                     "timeScale": 0.02};
   
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
