@@ -1,5 +1,7 @@
 // Timelike is component 3, c ready
 
+"use strict";
+
 /**
  * Creates a new inertialObject with the given X coordinate, momentum, and mass.
  *

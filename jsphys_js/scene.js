@@ -1,3 +1,5 @@
+"use strict";
+
 function Scene() {
     if (typeof Float64Array !== "undefined") {
         glMatrixArrayType = Float64Array;
