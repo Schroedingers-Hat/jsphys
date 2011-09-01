@@ -300,7 +300,7 @@ function Scene() {
                      "showGamma": true,
                      "show3D": false,
                      "showPos": false,
-                     "c": 30};
+                     "c": 3};
   
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,

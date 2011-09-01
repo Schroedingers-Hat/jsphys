@@ -268,7 +268,7 @@ extendedObject.prototype.drawPast3D = function(scene)
         var currentColor;
         var prevColor;
         var zCoeff1;
-        var zcoeff2;
+        var zCoeff2;
         scene.TDC.beginPath();
         if(doDoppler) {
             scene.TDC.strokeStyle = tempToColor(dopplerShiftColor(this.temp, 

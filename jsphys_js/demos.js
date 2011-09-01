@@ -50,7 +50,8 @@ var demos = [{"name": "Velocity addition",
                         "objects": [{"object": extendedObject, "x": [0, -32, 0], "p": [0,0,0], "m": 1, "shape": aSphere(10,100)},
                                     {"object": extendedObject, "x": [20, -20, -20], "p": [0,0,0], "m": 1, 
                                             "options": {"temperature": 3000}, 
-                                            "label": "A circle",   "shape": aCircle(10,30)}
+                                            "label": "A circle",   "shape": aCircle(10,30)},
+                                    {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0], "label": "photon", "options": {"showCircle": true}}
                       ],
              "options": {"showFramePos": true, "showVisualPos": true, "show3D": true}}]},
             {"name": "Speed of light",
