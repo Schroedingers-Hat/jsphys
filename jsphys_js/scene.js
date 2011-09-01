@@ -310,7 +310,7 @@ function Scene() {
                      "show3D": false,
                      "showPos": false,
                      "c": 3,
-                     "timeScale": 0.02,
+                     "timeScale": 0.01,
                      "canShoot": false};
   
     this.options = {"alwaysDoppler": false,
