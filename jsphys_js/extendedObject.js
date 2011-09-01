@@ -2,7 +2,7 @@
 //lNB: Shape is four dimensional, 
 // if you draw it moving and not with the front/back in the right time as well as place, it won't be the correct shape.
 
-function extendedObject(X, P, label, options, shape, timeStep)
+function extendedObject(X, P, label, options, shape)
 {
     this.options = options;
     this.isInteresting = true;
@@ -23,7 +23,7 @@ function extendedObject(X, P, label, options, shape, timeStep)
         this.interestingPts = options.interestingPts;
     }
 
-    this.COM = new inertialObject(X, P, 1, timeStep);
+    this.COM = new inertialObject(X, P, 1);
     this.uDisplacement = quat4.create([0,0,0,0]);
     this.pointPos = [];
     

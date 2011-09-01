@@ -14,7 +14,7 @@
  * - radialVPast is the radial XView velocity past the origin, used for Doppler
  *   shifting.
  */
-function inertialObject(X, P, m, timeStep)
+function inertialObject(X, P, m)
 {
     this.X0 = X;
     this.initialPt = quat4.create(X);
@@ -23,8 +23,7 @@ function inertialObject(X, P, m, timeStep)
     this.V = quat4.scale(P, 1 / m); 
     // Relativistic velocity, or momentum/mass.
     genEnergy(this.V, c, m);
-    this.displace = quat4.create();
-    quat4.scale(this.V, timeStep / this.V[3] * c, this.displace);
+    this.displace = quat4.create([0, 0, 0, 0]);
     this.tau = 0;
     this.tauPast = 0;
     this.uDisplacement = quat4.create();
