@@ -50,10 +50,10 @@ function onKeyDown(evt)
             if (scene.zoom > 40) zoomTo(40);
             else zoomTo(scene.zoom * 2);
     	}
-        scene.keyDown = true;
-        if (!scene.drawing){
+        if (!scene.drawing && !scene.keyDown){
             scene.beginFrameTime = new Date().time;
             requestAnimFrame(drawScene);
+            scene.keyDown = true;
         }
 }
 
