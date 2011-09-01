@@ -103,7 +103,7 @@ function Scene() {
         this.frameStartTime = new Date().getTime();
         var timeStep = 0;
         if (this.drawing){
-            timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale;
+            timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale * c;
         }
         this.clear();
 
@@ -115,7 +115,7 @@ function Scene() {
         }, this);
         this.drawCrosshairs();
         this.drawInfo();
-        this.t = this.t + (timeStep * c);
+        this.t = this.t + (timeStep);
 
         if (leftDown === true)     this.changeArrayFrame(nullQuat4, this.boost.left );
         if (upDown === true)       this.changeArrayFrame(nullQuat4, this.boost.up   );
@@ -300,7 +300,7 @@ function Scene() {
                      "showGamma": true,
                      "show3D": false,
                      "showPos": false,
-                     "c": 3};
+                     "c": 30};
   
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
