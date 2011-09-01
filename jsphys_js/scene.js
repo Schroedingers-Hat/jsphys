@@ -207,6 +207,7 @@ function Scene() {
             this.timeScale = this.prevTimeScale;
             this.frameStartTime = new Date().getTime();
             this.drawing = true;
+            this.draw();
         } else {
             this.prevTimeScale = this.timeScale;
             this.timeScale = 0;
