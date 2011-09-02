@@ -114,6 +114,12 @@ function boostFrom3Vel(vx, vy, vz, zoom) {
 }
 
 
+/**
+ * Take a complete shape, consisting of a set of points, and pad the lines
+ * between points with additional points. Helps realism with aberration.
+ *
+ * Resolution is the distance between points on the connecting lines.
+ */
 function linesPadder(shape, resolution)
 {
     var tDisplace = quat4.create();
@@ -139,7 +145,10 @@ function linesPadder(shape, resolution)
     return newShape;
 }
 
-function aSphere(r,numPts){
+/**
+ * Draw a sphere of radius r consisting of numPts points interconnected by lines
+ */
+function aSphere(r, numPts){
    var Sphere = [];
    var numAngles = Math.ceil(Math.sqrt(numPts));
    for (var i = 0; i < (numAngles); i++){
@@ -154,6 +163,9 @@ function aSphere(r,numPts){
     return Sphere;
 }
 
+/**
+ * Draw a circle of radius r consisting of numPts points interconnected by lines
+ */
 function aCircle(r, numPts) {
     var Circle = [];
     for (var i = 0; i <= numPts; i++){
@@ -165,6 +177,10 @@ function aCircle(r, numPts) {
     return Circle;
 }
 
+/**
+ * Draw a stick figure with head radius size/2 and width 2*size,
+ * with resolution proportional to detail.
+ */
 function aMan(size, detail){
     var headPts = aCircle(size/2,detail);
     var bodyPts = linesPadder([[0,-1.2*size,0,0],[-size,-0.2*size,0,0],[0,-1.2*size,0,0],
@@ -173,6 +189,10 @@ function aMan(size, detail){
     return headPts.concat(bodyPts);
 }
 
+/**
+ * Draw a potted plant with height roughly 2*size and resolution proportional
+ * to detail.
+ */
 function potPlant(size, detail) {
     var flower = aCircle(size / 5, detail / 5);
     for (var i = 0; i <= detail; i++){
