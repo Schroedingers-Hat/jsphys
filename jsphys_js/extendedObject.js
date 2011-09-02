@@ -74,6 +74,8 @@ extendedObject.prototype = {
         this.COM.calcPast();
 		this.wI3d = this.wasInteresting3D(scene);
 		this.iI3d = this.isInteresting3D(scene);
+		this.wI2d = this.wasInteresting2D(scene);
+		this.iI2d = this.isInteresting2D(scene);
         for (var i = 0; i < (this.shapePoints.length); i++) {
             quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
             quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
@@ -117,8 +119,8 @@ extendedObject.prototype = {
         }
     },
 
-    drawNow: function() {
-        if (this.isInteresting || true)
+    drawNow: function(scene) {
+        if (this.iI2d)
         {
             scene.g.strokeStyle = "#0f0";
             scene.g.fillStyle = "#0f0";
@@ -179,7 +181,7 @@ extendedObject.prototype = {
     },
 
     drawPast: function(scene) {                                                                                   
-        if (this.isInteresting || true)                                                 
+        if (this.wI2d)     
         {   
             var doDoppler = (scene.options.alwaysDoppler || 
                              (!scene.options.neverDoppler && this.options.showDoppler));
@@ -495,6 +497,22 @@ extendedObject.prototype = {
 		    (this.COM.XView[1] + this.boundingBoxP[3] > 0) &&
 			(this.boundingBoxP[1] - this.boundingBoxP[0]) * coeff > 5 &&
 			(this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff > 5
+			) return true;
+		else return false;
+	},
+	isInteresting2D : function(scene) {
+		if ((this.boundingBox[0]) / scene.zoom + scene.origin[0] > 0 &&
+			(this.boundingBox[1]) / scene.zoom + scene.origin[0] < scene.width &&
+			(this.boundingBox[2]) / scene.zoom + scene.origin[1] > 0 &&
+			(this.boundingBox[3]) / scene.zoom + scene.origin[1] < scene.height
+			) return true;
+		else return false;
+	},
+	wasInteresting2D : function(scene) {
+		if ((this.boundingBoxP[0]) / scene.zoom + scene.origin[0] > 0 &&
+			(this.boundingBoxP[1]) / scene.zoom + scene.origin[0] < scene.width &&
+			(this.boundingBoxP[2]) / scene.zoom + scene.origin[1] > 0 &&
+			(this.boundingBoxP[3]) / scene.zoom + scene.origin[1] < scene.height
 			) return true;
 		else return false;
 	}
