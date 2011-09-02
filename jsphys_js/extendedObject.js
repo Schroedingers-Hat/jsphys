@@ -253,7 +253,7 @@ extendedObject.prototype = {
     },
 
     drawPast3D: function(scene) {                                                                                   
-        if (this.isInteresting || true)                                                 
+        if (this.wasInteresting3D(scene))
         {   
             var doDoppler = (scene.options.alwaysDoppler || 
                              (!scene.options.neverDoppler && this.options.showDoppler));
@@ -292,43 +292,82 @@ extendedObject.prototype = {
                 }
             }
             scene.TDC.stroke();
-        }
+        } else {
+		var coeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
+		var xview = this.XView[0] * coeff + scene.origin[0];
+		var yview = this.XView[2] * coeff + scene.origin[1];
+		var viewSize = Math.max(this.boundingBoxP[1] - this.boundingBoxP[0],
+							this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff / 2;
+		if (xview > 0 && xview < scene.tWidth &&
+			yview > 0 && yview < scene.tHeight &&
+			coeff > -scene.camBack) {
+			scene.TDC.beginPath();
+			scene.TDC.arc(xview, yview, viewSize, 0, twopi, true);
+			scene.TDC.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
+                                                                  this.pastRadialV[0],
+                                                                  this.COM.V[3] / c));
+			scene.TDC.closePath();
+			scene.TDC.fill();
+		}
+		}
     },
 
     drawNow3D: function(scene) {
         var coeff = 40/(scene.zoom * (this.pointPos[0][1] + scene.camBack));
-        if (this.isInteresting || true)                                                 
+		var startedDrawing = false;
+		var xview;
+		var yview
+        if (this.isInteresting3D(scene))
         {   
             scene.TDC.strokeStyle = "#0f0";
 
             scene.TDC.beginPath();
-            scene.TDC.moveTo(this.pointPos[0][0] * coeff + scene.origin[0],
-                            -this.pointPos[0][2] * coeff + scene.origin[1]);
-
+			xview = this.pointPos[0][0] * coeff + scene.origin[0];
+			yview = -this.pointPos[0][2] * coeff + scene.origin[1];
+			if (this.pointPos[0][1] > -scene.camBack && 
+				xview < scene.tWidth &&
+				xview > 0 &&
+				yview < scene.tHeight &&
+				yview > 0) {
+				scene.TDC.moveTo(xview, yview);
+				startedDrawing = true;
+			}
             for (var i = 1; i < (this.pointPos.length); i++)
             {
                 coeff = 1/(scene.zoom * (this.pointPos[i][1] + scene.camBack) / 40);
-                if (this.pointPos[i-1][1] > -scene.camBack && this.pointPos[i][1] > -scene.camBack){
-                scene.TDC.lineTo(this.pointPos[i][0] * coeff + scene.origin[0], 
-                                 -this.pointPos[i][2] * coeff + scene.origin[1]);
+				xview = this.pointPos[i][0] * coeff + scene.origin[0];
+				yview = -this.pointPos[i][2] * coeff + scene.origin[1];
+                if (this.pointPos[i-1][1] > -scene.camBack && 
+					this.pointPos[i][1] > -scene.camBack &&
+					xview < scene.tWidth &&
+					xview > 0 &&
+					yview < scene.tHeight &&
+					yview > 0 ) {
+					if (startedDrawing){
+						scene.TDC.lineTo(xview, yview);
+					} else {
+						scene.TDC.moveTo(xview, yview);
+						startedDrawing = true;
+						}
                 }
             }
             scene.TDC.stroke();
-        }
+        } 
+		
     },
 
     draw: function(scene) {
         if (scene.options.alwaysShowVisualPos || 
             (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
             this.drawPast(scene);
-            if (this.options.show3D) {
+            if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawPast3D(scene);
             }
         }
         if (scene.options.alwaysShowFramePos || 
             (!scene.options.neverShowFramePos && this.options.showFramePos)) {
             this.drawNow(scene);
-            if (this.options.show3D) {
+            if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawNow3D(scene);
             }
         }
@@ -414,5 +453,27 @@ extendedObject.prototype = {
 
     get XView() {
         return this.COM.XView;
-    }
+    },
+	
+	isInteresting3D : function(scene) {
+		var zCoeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
+		if ((this.COM.X0[0] / zCoeff + scene.origin[0]) > 0 &&
+			(this.COM.X0[0] / zCoeff + scene.origin[0]) < scene.tWidth &&
+			(this.COM.X0[2] / zCoeff + scene.origin[1]) > 0 &&
+			(this.COM.X0[2] / zCoeff + scene.origin[1]) < scene.tHeight && 
+		    (this.COM.X0[1] + this.boundingBox[3] > 0)) return true;
+		else return false;
+	},
+	wasInteresting3D : function(scene) {
+		var coeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
+		if ((this.COM.XView[0] * coeff + scene.origin[0]) > 0 &&
+			(this.COM.XView[0] * coeff + scene.origin[0]) < scene.tWidth &&
+			(this.COM.XView[2] * coeff + scene.origin[1]) > 0 &&
+			(this.COM.XView[2] * coeff + scene.origin[1]) < scene.tHeight && 
+		    (this.COM.XView[1] + this.boundingBoxP[3] > 0) &&
+			(this.boundingBoxP[1] - this.boundingBoxP[0]) * coeff > 5 &&
+			(this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff > 5
+			) return true;
+		else return false;
+	}
 }

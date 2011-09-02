@@ -325,7 +325,8 @@ function Scene() {
                     "neverShowFramePos": false,
                     "alwaysShowVisualPos": false,
                     "neverShowVisualPos": false,
-                    "showTime": false
+                    "showTime": false,
+					"show3D": false
                    };
 
     this.drawing = true;

@@ -163,6 +163,6 @@ photon.prototype.drawCircle = function(scene) {
     scene.g.beginPath();
     scene.g.arc(this.initialPt[0] / scene.zoom + scene.origin[0],
                -this.initialPt[1] / scene.zoom + scene.origin[1],
-                Math.max(0, -this.initialPt[3])  / scene.zoom, 0, twopi);
+                Math.max(0, -this.initialPt[3])  / scene.zoom, 0, twopi, true);
     scene.g.stroke();
 };

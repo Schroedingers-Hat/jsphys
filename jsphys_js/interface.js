@@ -30,6 +30,7 @@ function onKeyDown(evt)
     	else if (evt.keyCode == 65) leftDown = true;
     	else if (evt.keyCode == 87) upDown = true;
     	else if (evt.keyCode == 83) downDown = true;
+		else if (evt.keyCode == 51) scene.curOptions.show3D = !scene.curOptions.show3D;
         else if (evt.keyCode == 17) {
             if (ctrlDown == false) fireDown = true;
             ctrlDown = true;
