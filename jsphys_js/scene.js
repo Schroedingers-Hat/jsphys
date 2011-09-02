@@ -1,5 +1,4 @@
 "use strict";
-
 function Scene() {
     if (typeof Float64Array !== "undefined") {
         glMatrixArrayType = Float64Array;
@@ -282,6 +281,7 @@ function Scene() {
     this.g = $('#canvas')[0].getContext("2d");
     this.h = $('#minkowski')[0].getContext("2d");
     this.TDC = $('#3DCanvas')[0].getContext("2d");
+	
     this.width = $("#canvas").width();
     this.height = $("#canvas").height();
     this.mWidth = $("#minkowski").width();
@@ -293,6 +293,12 @@ function Scene() {
     this.lightConeCanvas.width =  this.mWidth;
     this.lightConeCanvas.height =  this.mHeight;
     this.lCCtx = this.lightConeCanvas.getContext('2d');
+	if((navigator.appName == "Opera") && (navigator.appVersion[0] == "9")){
+		this.TDC.fillText   = function(){};
+		this.g.fillText     = function(){};
+		this.h.fillText     = function(){};
+		this.lCCtx.fillText = function(){};
+	}
     this.kC = 0;
     this.camBack = 0;
     this.hwidth = this.width / 2;
