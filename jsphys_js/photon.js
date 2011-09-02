@@ -35,7 +35,7 @@ function photon(X, V, label, options) {
 
 }
 
-photon.prototype.updateX0 = function(timeStep) {
+photon.prototype.update = function(timeStep) {
     quat4.scale(this.V, timeStep/c, this.displace);
 
     // Bring it to now.
@@ -93,10 +93,6 @@ photon.prototype.draw = function(scene) {
     }
     }
     this.drawXT;
-};
-
-photon.prototype.update = function(timeStep) {
-    this.updateX0(timeStep);
 };
 
 photon.prototype.drawXT = function(scene) {
