@@ -16,7 +16,7 @@ var demos = [
                       ]
             },
             { "name" : "Simultaneity: Han and Greedo",
-              "steps": [{"caption": "Han and greedo are standing at a bar, they both shoot their laser guns, but miss each other due to hitting a pot-plant. Luke walks by at close to light speed, as they do this.",
+              "steps": [{"caption": "Han and Greedo are standing at a bar. They both shoot their laser guns, but miss each other due to hitting a pot-plant. Luke walks by at close to light speed as they do this.",
                          "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [0,0,0], "m": 1, 
                                             "label": "Greedo", "shape": aMan(5,10)},
                                      {"object": extendedObject, "x": [ 100, 0, 0], "p": [0,0,0], "m": 1, 
