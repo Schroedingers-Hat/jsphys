@@ -153,7 +153,7 @@ photon.prototype.drawNow = function(scene) {
         scene.g.beginPath();
         scene.g.arc(this.X0[0] / scene.zoom + scene.origin[0], 
                     -this.X0[1] / scene.zoom + scene.origin[1],
-                    2, 0, twopi);
+                    2, 0, twopi,true);
         scene.g.fill();
     }
 };
