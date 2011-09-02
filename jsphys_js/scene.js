@@ -118,7 +118,7 @@ function Scene() {
 
         this.h.drawImage(this.lightConeCanvas, 0, 0);
         this.carray.forEach(function(obj) {
-            obj.update(timeStep);
+            obj.update(timeStep, this);
             obj.draw(this);
             obj.drawXT(this); 
         }, this);

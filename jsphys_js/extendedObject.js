@@ -7,11 +7,12 @@
 function extendedObject(X, P, label, options, shape)
 {
     this.options = options;
-    this.isInteresting = true;
     this.shapePoints = [];
     this.pastPoints = [];
     this.pastRadialV = [];
     this.pastR = [];
+	this.iI3d = true;
+	this.wI3d = true;
     if (options.temperature) {
         this.temp = options.temperature;
     } else {
@@ -68,9 +69,11 @@ extendedObject.prototype = {
      * This is the most braindead way of doing it, huge amounts of redundant
      * data/calculations, but it saves duplicating code.
      */
-    update: function(timeStep) {
+    update: function(timeStep, scene) {
         this.COM.updateX0(timeStep);
         this.COM.calcPast();
+		this.wI3d = this.wasInteresting3D(scene);
+		this.iI3d = this.isInteresting3D(scene);
         for (var i = 0; i < (this.shapePoints.length); i++) {
             quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
             quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
@@ -253,7 +256,7 @@ extendedObject.prototype = {
     },
 
     drawPast3D: function(scene) {                                                                                   
-        if (this.wasInteresting3D(scene))
+        if (this.wI3d)
         {   
             var doDoppler = (scene.options.alwaysDoppler || 
                              (!scene.options.neverDoppler && this.options.showDoppler));
@@ -293,22 +296,23 @@ extendedObject.prototype = {
             }
             scene.TDC.stroke();
         } else {
-		var coeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
-		var xview = this.XView[0] * coeff + scene.origin[0];
-		var yview = this.XView[2] * coeff + scene.origin[1];
-		var viewSize = Math.max(this.boundingBoxP[1] - this.boundingBoxP[0],
-							this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff / 2;
-		if (xview > 0 && xview < scene.tWidth &&
-			yview > 0 && yview < scene.tHeight &&
-			coeff > -scene.camBack) {
-			scene.TDC.beginPath();
-			scene.TDC.arc(xview, yview, viewSize, 0, twopi, true);
-			scene.TDC.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
-                                                                  this.pastRadialV[0],
-                                                                  this.COM.V[3] / c));
-			scene.TDC.closePath();
-			scene.TDC.fill();
-		}
+			var coeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
+			var xview = this.XView[0] * coeff + scene.origin[0];
+			var yview = this.XView[2] * coeff + scene.origin[1];
+			var viewSize = Math.max(this.boundingBoxP[1] - this.boundingBoxP[0],
+								this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff / 2;
+			if (xview > 0 && xview < scene.tWidth &&
+				yview > 0 && yview < scene.tHeight &&
+				coeff > -scene.camBack) {
+				scene.TDC.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
+																	  this.pastRadialV[0],
+																	  this.COM.V[3] / c));
+
+				scene.TDC.beginPath();
+				scene.TDC.arc(xview, yview, viewSize, 0, twopi, true);
+				scene.TDC.closePath();
+				scene.TDC.fill();
+			}
 		}
     },
 
@@ -317,7 +321,7 @@ extendedObject.prototype = {
 		var startedDrawing = false;
 		var xview;
 		var yview
-        if (this.isInteresting3D(scene))
+        if (this.iI3d)
         {   
             scene.TDC.strokeStyle = "#0f0";
 
@@ -352,7 +356,22 @@ extendedObject.prototype = {
                 }
             }
             scene.TDC.stroke();
-        } 
+        } else {
+			var coeff = 40 / (scene.zoom * (this.COM.X0[1] + scene.camBack));
+			var xview = this.X0[0] * coeff + scene.origin[0];
+			var yview = this.X0[2] * coeff + scene.origin[1];
+			var viewSize = Math.max(this.boundingBox[1] - this.boundingBox[0],
+								this.boundingBox[5] - this.boundingBox[4]) * coeff / 2;
+			if (xview > 0 && xview < scene.tWidth &&
+				yview > 0 && yview < scene.tHeight &&
+				coeff > -scene.camBack) {
+				scene.TDC.fillStyle = "#0f0";
+				scene.TDC.beginPath();
+				scene.TDC.arc(xview, yview, viewSize, 0, twopi, true);
+				scene.TDC.closePath();
+				scene.TDC.fill();
+			}
+		}
 		
     },
 
@@ -456,12 +475,15 @@ extendedObject.prototype = {
     },
 	
 	isInteresting3D : function(scene) {
-		var zCoeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
-		if ((this.COM.X0[0] / zCoeff + scene.origin[0]) > 0 &&
-			(this.COM.X0[0] / zCoeff + scene.origin[0]) < scene.tWidth &&
-			(this.COM.X0[2] / zCoeff + scene.origin[1]) > 0 &&
-			(this.COM.X0[2] / zCoeff + scene.origin[1]) < scene.tHeight && 
-		    (this.COM.X0[1] + this.boundingBox[3] > 0)) return true;
+		var coeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
+		if ((this.COM.X0[0] * coeff + scene.origin[0]) > 0 &&
+			(this.COM.X0[0] * coeff + scene.origin[0]) < scene.tWidth &&
+			(this.COM.X0[2] * coeff + scene.origin[1]) > 0 &&
+			(this.COM.X0[2] * coeff + scene.origin[1]) < scene.tHeight && 
+		    (this.COM.X0[1] + this.boundingBox[3] > 0) &&
+			(this.boundingBox[1] - this.boundingBox[0]) * coeff > 5 &&
+			(this.boundingBox[5] - this.boundingBox[4]) * coeff > 5
+			) return true;
 		else return false;
 	},
 	wasInteresting3D : function(scene) {

@@ -51,7 +51,7 @@ function onKeyDown(evt)
         {
             $('#vPos').click();
         }
-    	else if (evt.keyCode == 61) 
+    	else if (evt.keyCode == 61 || evt.keyCode == 107) 
     	{
             if (scene.zoom < 0.06 ) zoomTo(0.6);
             else zoomTo(scene.zoom / 2);
