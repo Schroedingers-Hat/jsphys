@@ -361,7 +361,7 @@ extendedObject.prototype = {
 								this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff / 2;
 			if (xview > 0 && xview < scene.tWidth &&
 				yview > 0 && yview < scene.tHeight &&
-				coeff > -scene.camBack) {
+				this.COM.XView[1] > -scene.camBack + 1) {
 				scene.TDC.fillStyle = tempToColor(dopplerShiftColor(this.temp, 
 																	  this.pastRadialV[0],
 																	  this.COM.V[3] / c));
@@ -578,56 +578,48 @@ extendedObject.prototype = {
     },
 	
 	isInteresting3D : function(scene) {
-		var coeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
-		if ((this.COM.X0[0] * coeff + scene.origin[0]) > 0 &&
-			(this.COM.X0[0] * coeff + scene.origin[0]) < scene.tWidth &&
-			(this.COM.X0[2] * coeff + scene.origin[1]) > 0 &&
-			(this.COM.X0[2] * coeff + scene.origin[1]) < scene.tHeight && 
-		    (this.COM.X0[1] + this.boundingBox[3] > 0) &&
-			((this.boundingBox[1] - this.boundingBox[0]) * coeff > 5 ||
-			(this.boundingBox[3] - this.boundingBox[2]) * coeff > 5 ||
-			(this.boundingBox[5] - this.boundingBox[4]) * coeff > 5)
-			) return true;
+		var coeff = 40 / (scene.zoom * (this.COM.X0[1] + scene.camBack));
+		if ( ( ( this.boundingBox[3]) > -scene.camBack) &&
+             ( ( this.boundingBox[0] * coeff + scene.origin[0] < scene.tWidth) ||
+               ( this.boundingBox[1] * coeff + scene.origin[0] > 0) ) &&
+             ( (-this.boundingBox[4] * coeff + scene.origin[1] < scene.tHeight)||
+               (-this.boundingBox[5] * coeff + scene.origin[1] > 0) ) &&
+			 ( (this.boundingBox[1] - this.boundingBox[0]) * coeff > 5 ||
+               (this.boundingBox[3] - this.boundingBox[2]) * coeff > 5 ||
+               (this.boundingBox[5] - this.boundingBox[4]) * coeff > 5 )
+		   ) return true;
 		else return false;
 	},
 	wasInteresting3D : function(scene) {
 		var coeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
-		if ((this.COM.XView[0] * coeff + scene.origin[0]) > 0 &&
-			(this.COM.XView[0] * coeff + scene.origin[0]) < scene.tWidth &&
-			(this.COM.XView[2] * coeff + scene.origin[1]) > 0 &&
-			(this.COM.XView[2] * coeff + scene.origin[1]) < scene.tHeight && 
-		    (this.COM.XView[1] + this.boundingBoxP[3] > 0) &&
-			((this.boundingBoxP[1] - this.boundingBoxP[0]) * coeff > 5 ||
-			(this.boundingBoxP[3] - this.boundingBoxP[2]) * coeff > 5 ||
-			(this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff > 5 )
-			) return true;
+		if ( ( ( this.boundingBoxP[3]) > -scene.camBack) &&
+             ( ( this.boundingBoxP[0] * coeff + scene.origin[0] < scene.tWidth) ||
+               ( this.boundingBoxP[1] * coeff + scene.origin[0] > 0) ) &&
+             ( (-this.boundingBoxP[4] * coeff + scene.origin[1] < scene.tHeight)||
+               (-this.boundingBoxP[5] * coeff + scene.origin[1] > 0) ) &&
+			 ( (this.boundingBoxP[1] - this.boundingBoxP[0]) * coeff > 5 ||
+               (this.boundingBoxP[3] - this.boundingBoxP[2]) * coeff > 5 ||
+               (this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff > 5 )
+		   ) return true;
 		else return false;
 	},
 	isInteresting2D : function(scene) {
-		if (((this.boundingBox[0]) / scene.zoom + scene.origin[0] > 0 &&
-			(this.boundingBox[1]) / scene.zoom + scene.origin[0] < scene.width &&
-			(this.boundingBox[2]) / scene.zoom + scene.origin[1] > 0 &&
-			(this.boundingBox[3]) / scene.zoom + scene.origin[1] < scene.height ||
-            (this.X0[0] / scene.zoom + scene.origin[0] > 0 &&
-             this.X0[0] / scene.zoom + scene.origin[0] < scene.width) ||
-            (this.X0[1] / scene.zoom + scene.origin[1] > 0 &&
-             this.X0[1] / scene.zoom + scene.origin[1] < scene.height)) &&
-			((this.boundingBox[1] - this.boundingBox[0]) / scene.zoom > 5 ||
-			(this.boundingBox[3] - this.boundingBox[2])  / scene.zoom > 5)
+		if ( ( (this.boundingBox[0]) / scene.zoom + scene.origin[0] < scene.width  ||
+			   (this.boundingBox[1]) / scene.zoom + scene.origin[0] > 0    ) &&
+             ( (this.boundingBox[2]) / scene.zoom + scene.origin[1] < scene.height ||
+			   (this.boundingBox[3]) / scene.zoom + scene.origin[1] > 0    ) &&
+			 ( (this.boundingBox[1] - this.boundingBox[0]) / scene.zoom > 5 ||
+	           (this.boundingBox[3] - this.boundingBox[2]) / scene.zoom > 5)
 			) return true;
 		else return false;
 	},
 	wasInteresting2D : function(scene) {
-		if (((this.boundingBoxP[0]) / scene.zoom + scene.origin[0] > 0 &&
-			(this.boundingBoxP[1]) / scene.zoom + scene.origin[0] < scene.width &&
-			(this.boundingBoxP[2]) / scene.zoom + scene.origin[1] > 0 &&
-			(this.boundingBoxP[3]) / scene.zoom + scene.origin[1] < scene.height ||
-            (this.XView[0] / scene.zoom + scene.origin[0] > 0 &&
-             this.XView[0] / scene.zoom + scene.origin[0] < scene.width) ||
-            (this.XView[1] / scene.zoom + scene.origin[1] > 0 &&
-             this.XView[1] / scene.zoom + scene.origin[1] < scene.height)) &&
-			((this.boundingBoxP[1] - this.boundingBoxP[0]) / scene.zoom > 5 ||
-			(this.boundingBoxP[3] - this.boundingBoxP[2])  / scene.zoom > 5 )
+		if ( ( (this.boundingBoxP[0]) / scene.zoom + scene.origin[0] < scene.width  ||
+			   (this.boundingBoxP[1]) / scene.zoom + scene.origin[0] > 0    ) &&
+             ( (this.boundingBoxP[2]) / scene.zoom + scene.origin[1] < scene.height ||
+			   (this.boundingBoxP[3]) / scene.zoom + scene.origin[1] > 0    ) &&
+			 ( (this.boundingBoxP[1] - this.boundingBoxP[0]) / scene.zoom > 5 ||
+	           (this.boundingBoxP[3] - this.boundingBoxP[2]) / scene.zoom > 5)
 			) return true;
 		else return false;
 	}
