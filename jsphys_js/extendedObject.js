@@ -76,10 +76,19 @@ extendedObject.prototype = {
 		this.iI3d = this.isInteresting3D(scene);
 		this.wI2d = this.wasInteresting2D(scene);
 		this.iI2d = this.isInteresting2D(scene);
+        if (this.iI3d || this.iI2d || this.wI2d || this.wI3d) {
         for (var i = 0; i < (this.shapePoints.length); i++) {
             quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
             quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
             quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
+        }
+        } else {
+        for (var j = 0; j < (this.boundingIdx.length); j++) {
+            var i = this.boundingIdx[j];
+            quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
+            quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
+            quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
+        }
         }
         if (scene.options.alwaysShowVisualPos || 
             (!scene.options.neverShowVisualPos && this.options.showVisualPos)) {
@@ -164,6 +173,7 @@ extendedObject.prototype = {
         var viewTime;
         //Dangerous, might accidentally use tempQuat4 and I /think/ this is a reference.
         var v = quat4.scale(this.COM.V, 1/ gamma, tempQuat4);  
+        if (this.wI3d || this.wI2d) {
         for (var i = 0; i < (this.shapePoints.length); i++)
         {
             xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
@@ -177,6 +187,23 @@ extendedObject.prototype = {
             this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) / 
                                     Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
                                     this.pastPoints[i], this.pastPoints[i]))), 1e-16);
+        } 
+        } else {
+        for (var j = 0; j < (this.boundingIdx.length); j++)
+        {
+            var i = this.boundingIdx[j];
+            xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
+            vDotx = quat4.spaceDot(this.pointPos[i], v);
+            a = c*c - vDotv;
+            
+            viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
+            quat4.scale(v, viewTime / c, this.uDisplacement);
+            quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
+
+            this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) / 
+                                    Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
+                                    this.pastPoints[i], this.pastPoints[i]))), 1e-16);
+        }
         }
     },
 
@@ -355,7 +382,8 @@ extendedObject.prototype = {
 						scene.TDC.moveTo(xview, yview);
 						startedDrawing = true;
 						}
-                }
+                } else startedDrawing = false;
+                
             }
             scene.TDC.stroke();
         } else {
@@ -484,6 +512,7 @@ extendedObject.prototype = {
 			(this.COM.X0[2] * coeff + scene.origin[1]) < scene.tHeight && 
 		    (this.COM.X0[1] + this.boundingBox[3] > 0) &&
 			(this.boundingBox[1] - this.boundingBox[0]) * coeff > 5 &&
+			(this.boundingBox[3] - this.boundingBox[2]) * coeff > 5 &&
 			(this.boundingBox[5] - this.boundingBox[4]) * coeff > 5
 			) return true;
 		else return false;
@@ -496,6 +525,7 @@ extendedObject.prototype = {
 			(this.COM.XView[2] * coeff + scene.origin[1]) < scene.tHeight && 
 		    (this.COM.XView[1] + this.boundingBoxP[3] > 0) &&
 			(this.boundingBoxP[1] - this.boundingBoxP[0]) * coeff > 5 &&
+			(this.boundingBoxP[3] - this.boundingBoxP[2]) * coeff > 5 &&
 			(this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff > 5
 			) return true;
 		else return false;
