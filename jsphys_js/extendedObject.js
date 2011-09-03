@@ -462,6 +462,7 @@ extendedObject.prototype = {
                     5,0,twopi,true);
         scene.h.fill();
         if (this.label !== "") {
+            scene.h.beginPath();
             scene.h.fillStyle = "#444";
             scene.h.fillText(this.label + " present position", 
                               xvis + scene.origin[0] + 5,
@@ -470,6 +471,7 @@ extendedObject.prototype = {
             scene.h.fillText(this.label + " visual position", 
                               xvisP + scene.origin[0] + 5,
                               -tvisP / c + scene.origin[2]);                         
+            scene.h.fill();
         }
         // Find a vector that points from intialPt to somewhere near now.
             scene.h.fillStyle = "#333";
@@ -501,7 +503,12 @@ extendedObject.prototype = {
                 scene.h.fill();
                 scene.h.beginPath();
                 scene.h.fillStyle = "#0f0";
-                scene.h.fillText(Math.round((roundedTauParam + i * dotScale) * c), xDotPos + 3, tDotPos + 3);
+                scene.h.fillText("Tau: " + Math.round((roundedTauParam + i * dotScale) * c), xDotPos + 3, tDotPos + 3);
+                if (scene.options.showPos || this.options.showPos){
+                    scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " + 
+                                                   -Math.round((tDotPos - scene.origin[2]) * scene.zoom) + "]", 
+                                    xDotPos + 3, tDotPos + 13);
+                }
                 scene.h.fill();
                 scene.h.fillStyle = "#333";
                 scene.h.beginPath();
