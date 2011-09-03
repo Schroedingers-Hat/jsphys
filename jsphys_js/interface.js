@@ -14,6 +14,11 @@ var rotUpDown = false;
 var rotDownDown = false;
 var ctrlDown = false;
 var fireDown = false;
+var zoomIn = false;
+var speedDown = false;
+var speedUp = false;
+var zoomOut = false;
+var keyIsUseful = false;
 var scene;
 
 //TODO: Pull all the keycodes out of here and put them in an array or something.
@@ -22,7 +27,7 @@ var scene;
 // Get Key Input
 function onKeyDown(evt) 
 {
-        
+        keyIsUseful = true;
         scene.kC = evt.keyCode;
     	if (evt.keyCode == 81) rotLeftDown = true;
     	else if (evt.keyCode == 69) rotRightDown = true;
@@ -30,6 +35,12 @@ function onKeyDown(evt)
     	else if (evt.keyCode == 65) leftDown = true;
     	else if (evt.keyCode == 87) upDown = true;
     	else if (evt.keyCode == 83) downDown = true;
+    	else if (evt.keyCode == 221) speedUp = true;
+    	else if (evt.keyCode == 219) speedDown = true;
+    	else if (evt.keyCode == 220) {
+            scene.timeScale = -scene.timeScale;
+            updateSliders();
+        }
 		else if (evt.keyCode == 51) scene.curOptions.show3D = !scene.curOptions.show3D;
         else if (evt.keyCode == 17) {
             if (ctrlDown == false) fireDown = true;
@@ -53,19 +64,17 @@ function onKeyDown(evt)
         }
     	else if (evt.keyCode == 61 || evt.keyCode == 107) 
     	{
-            if (scene.zoom < 0.06 ) zoomTo(0.6);
-            else zoomTo(scene.zoom / 2);
+            zoomIn = true;
     	}
     	else if (evt.keyCode == 109) 
     	{
-            if (scene.zoom > 40) zoomTo(40);
-            else zoomTo(scene.zoom * 2);
+           zoomOut = true; 
     	}
         else if (evt.keyCode == 80)
         {
             scene.options.showPos = !scene.options.showPos;
-        }
-        if (!scene.drawing && !scene.keyDown){
+        } else keyIsUseful = false;
+        if (!scene.drawing && !scene.keyDown && keyIsUseful){
             scene.beginFrameTime = new Date().time;
             requestAnimFrame(drawScene);
             scene.keyDown = true;
@@ -78,8 +87,12 @@ function onKeyUp(evt)
 	else if (evt.keyCode == 65) leftDown = false;
 	else if(evt.keyCode == 87) upDown = false;
 	else if(evt.keyCode == 83) downDown = false;
+    else if (evt.keyCode == 61 || evt.keyCode == 107) zoomIn = false;
+    else if (evt.keyCode == 109) zoomOut = false;
 	else if (evt.keyCode == 69) rotRightDown = false;
 	else if (evt.keyCode == 81) rotLeftDown = false;
+    else if (evt.keyCode == 219) speedDown = false;
+    else if (evt.keyCode == 221) speedUp = false;
     else if (evt.keyCode == 17) ctrlDown = false;
 //	else if (evt.keyCode == 49) rotUpDown = false;  
 //	else if (evt.keyCode == 50) rotDownDown = false;  
@@ -110,10 +123,10 @@ function clickHandler(e)
 function zoomTo(zoom) {
     scene.zoom = zoom;
 
-    scene.boost.right = boostFrom3Vel(0.02 * scene.zoom * c, 0, 0, scene.zoom);
-    scene.boost.left = boostFrom3Vel(-0.02 * scene.zoom * c, 0, 0, scene.zoom);
-    scene.boost.up = boostFrom3Vel(0, 0.02 * scene.zoom * c, 0, scene.zoom);
-    scene.boost.down = boostFrom3Vel(0, -0.02 * scene.zoom * c, 0, scene.zoom);
+    scene.boost.right = boostFrom3Vel( 0.02 * Math.min(49, scene.zoom) * c, 0, 0);
+    scene.boost.left  = boostFrom3Vel(-0.02 * Math.min(49, scene.zoom) * c, 0, 0);
+    scene.boost.up    = boostFrom3Vel(0,  0.02 * Math.min(49, scene.zoom) * c, 0);
+    scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(49, scene.zoom) * c, 0);
 
     updateSliders();
 }
@@ -173,9 +186,9 @@ window.requestAnimFrame = (function(){
 function loadDemo(idx) {
     return function() {
         scene.load(demos[idx], 0);
-        $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.5, slide: zoomToSlider,
+        $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider,
                                   value: -(Math.log(scene.zoom) / Math.LN2)});
-        $("#speed-slider").slider({min: -2 , max: 2, step: 0.02, slide: setAnimSpeed, 
+        $("#speed-slider").slider({min: -2 , max: 2, step: 0.01, slide: setAnimSpeed, 
                                    value: (Math.log(scene.timeScale + 1) / Math.LN2)});
         $("#demo-chooser").hide();
         scene.startAnimation();
