@@ -475,13 +475,13 @@ extendedObject.prototype = {
                       -tOfLinet + scene.origin[2]);
         scene.h.lineTo(bOfLinex + scene.origin[0],
                       -bOfLinet + scene.origin[2]);
-        scene.h.closePath();
         scene.h.stroke();
+
         // A dot at t=0.
         scene.h.beginPath();
-        scene.h.arc(xvis + scene.origin[0],scene.origin[2],5,0,twopi,true);
-        scene.h.closePath();
+        scene.h.arc(xvis + scene.origin[0], scene.origin[2], 5, 0, twopi, true);
         scene.h.fill();
+
         // A dot at the light cone.
         scene.h.fillStyle = tempToColor(dopplerShiftColor(this.temp,
                                                           this.COM.radialVPast,
@@ -489,7 +489,7 @@ extendedObject.prototype = {
         scene.h.beginPath();
         scene.h.arc(xvisP + scene.origin[0],
                     - tvisP / c + scene.origin[2],
-                    5,0,twopi,true);
+                    5, 0, twopi, true);
         scene.h.fill();
         if (this.label !== "") {
             scene.h.beginPath();
