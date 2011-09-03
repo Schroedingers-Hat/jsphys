@@ -483,14 +483,18 @@ extendedObject.prototype = {
         scene.h.fill();
 
         // A dot at the light cone.
-        scene.h.fillStyle = tempToColor(dopplerShiftColor(this.temp,
-                                                          this.COM.radialVPast,
-                                                          this.COM.V[3] / c));
-        scene.h.beginPath();
-        scene.h.arc(xvisP + scene.origin[0],
-                    - tvisP / c + scene.origin[2],
-                    5, 0, twopi, true);
-        scene.h.fill();
+        if (scene.options.alwaysShowVisualPos || 
+            (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
+            scene.h.fillStyle = tempToColor(dopplerShiftColor(this.temp,
+                                                              this.COM.radialVPast,
+                                                              this.COM.V[3] / c));
+            scene.h.beginPath();
+            scene.h.arc(xvisP + scene.origin[0],
+                        - tvisP / c + scene.origin[2],
+                        5, 0, twopi, true);
+            scene.h.fill();
+        }
+
         if (this.label !== "") {
             scene.h.beginPath();
             scene.h.fillStyle = "#444";
@@ -498,10 +502,13 @@ extendedObject.prototype = {
                               xvis + scene.origin[0] + 5,
                               -5 + scene.origin[2]);                         
 
-            scene.h.fillText(this.label + " visual position", 
-                              xvisP + scene.origin[0] + 5,
-                              -tvisP / c + scene.origin[2]);                         
-            scene.h.fill();
+            if (scene.options.alwaysShowVisualPos || 
+                (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
+                scene.h.fillText(this.label + " visual position", 
+                                  xvisP + scene.origin[0] + 5,
+                                  -tvisP / c + scene.origin[2]);                         
+                scene.h.fill();
+            }
         }
         // Find a vector that points from intialPt to somewhere near now.
             scene.h.fillStyle = "#333";
