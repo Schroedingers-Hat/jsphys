@@ -423,7 +423,8 @@ extendedObject.prototype = {
 								this.boundingBox[3] - this.boundingBox[2]) * coeff / 2;
 			if (xview > 0 && xview < scene.tWidth &&
 				yview > 0 && yview < scene.tHeight &&
-				coeff > -scene.camBack) {
+				coeff > -scene.camBack &&
+				viewSize > 0 && viewSize < scene.width) {
 				scene.TDC.fillStyle = "#0f0";
 				scene.TDC.beginPath();
 				scene.TDC.arc(xview, yview, viewSize, 0, twopi, true);
