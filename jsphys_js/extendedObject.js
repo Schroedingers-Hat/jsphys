@@ -475,48 +475,48 @@ extendedObject.prototype = {
         }
         // Find a vector that points from intialPt to somewhere near now.
             scene.h.fillStyle = "#333";
-
-        var dotScale = 15 * Math.pow(2, Math.round(Math.log(scene.zoom) / Math.log(2)));
-        var dotScaleR= 10 * Math.sqrt(scene.zoom / dotScale);
-        var hNumDots = Math.ceil(scene.mHeight / dotScale / 2 * scene.zoom / this.COM.V[3] * c);
-        var dotR;
-        var roundedTauParam;
-        var tDotPos;
-        var xDotPos;
-        for (var i = -hNumDots; i < hNumDots; i++) {
-            roundedTauParam = Math.round(this.COM.tau / dotScale / c) * dotScale;
-            quat4.scale(this.COM.V, roundedTauParam, tempQuat4);
-            quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
-            quat4.scale(this.COM.V, i * dotScale, tempQuat4);
-            quat4.add(tempQuat4, tempQuat42, tempQuat42);
-            xDotPos = tempQuat42[0] / scene.zoom + scene.origin[0];
-            tDotPos = -tempQuat42[3] / c / scene.zoom + scene.origin[2]; 
-            if ((i + roundedTauParam / dotScale)%10 == 0) dotR = 2 * dotScaleR;
-            else if ((i + roundedTauParam / dotScale)%5 == 0) dotR = 1.41 * dotScaleR;
-            else dotR = dotScaleR;
-            scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
-                           tempQuat42[3] / c / scene.zoom + scene.origin[2]);
-            scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
-                        -tempQuat42[3]/c / scene.zoom + scene.origin[2],dotR,0,twopi,true);
-            if ((i + roundedTauParam / dotScale)%10 == 0) { 
-                scene.h.fill();
-                scene.h.beginPath();
-                scene.h.fillStyle = "#0f0";
-
-                if (this.options.showTime || scene.options.showTime) {
+        if (this.options.showTime || scene.options.showTime) {
+            var dotScale = 15 * Math.pow(2, Math.round(Math.log(scene.zoom) / Math.log(2)));
+            var dotScaleR= 10 * Math.sqrt(scene.zoom / dotScale);
+            var hNumDots = Math.ceil(scene.mHeight / dotScale / 2 * scene.zoom / this.COM.V[3] * c);
+            var dotR;
+            var roundedTauParam;
+            var tDotPos;
+            var xDotPos;
+            for (var i = -hNumDots; i < hNumDots; i++) {
+                roundedTauParam = Math.round(this.COM.tau / dotScale / c) * dotScale;
+                quat4.scale(this.COM.V, roundedTauParam, tempQuat4);
+                quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
+                quat4.scale(this.COM.V, i * dotScale, tempQuat4);
+                quat4.add(tempQuat4, tempQuat42, tempQuat42);
+                xDotPos = tempQuat42[0] / scene.zoom + scene.origin[0];
+                tDotPos = -tempQuat42[3] / c / scene.zoom + scene.origin[2]; 
+                if ((i + roundedTauParam / dotScale)%10 == 0) dotR = 2 * dotScaleR;
+                else if ((i + roundedTauParam / dotScale)%5 == 0) dotR = 1.41 * dotScaleR;
+                else dotR = dotScaleR;
+                scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
+                               tempQuat42[3] / c / scene.zoom + scene.origin[2]);
+                scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
+                            -tempQuat42[3]/c / scene.zoom + scene.origin[2],dotR,0,twopi,true);
+                if ((i + roundedTauParam / dotScale)%10 == 0) { 
+                    scene.h.fill();
+                    scene.h.beginPath();
+                    scene.h.fillStyle = "#0f0";
+    
                     scene.h.fillText("Tau: " + Math.round((roundedTauParam + i * dotScale)) + "s", xDotPos + 3, tDotPos + 3);
+                    if (scene.options.showPos || this.options.showPos){
+                        scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " + 
+                                                       -Math.round((tDotPos - scene.origin[2]) * scene.zoom) + "]", 
+                                        xDotPos + 3, tDotPos + 13);
+                    }
+                    scene.h.fill();
+                    scene.h.fillStyle = "#333";
+                    scene.h.beginPath();
                 }
-                if (scene.options.showPos || this.options.showPos){
-                    scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " + 
-                                                   -Math.round((tDotPos - scene.origin[2]) * scene.zoom) + "]", 
-                                    xDotPos + 3, tDotPos + 13);
-                }
-                scene.h.fill();
-                scene.h.fillStyle = "#333";
-                scene.h.beginPath();
             }
+            scene.h.fill();
         }
-        scene.h.fill();
+
         if (window.console && window.console.firebug) {
             scene.h.beginPath();
             scene.h.arc(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
