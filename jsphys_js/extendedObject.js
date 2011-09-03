@@ -476,8 +476,8 @@ extendedObject.prototype = {
         // Find a vector that points from intialPt to somewhere near now.
             scene.h.fillStyle = "#333";
 
-        var dotScale = 15 * Math.pow(2,Math.round(Math.log(scene.zoom) / Math.log(2)));
-        var dotScaleR= 10*Math.sqrt(scene.zoom / dotScale);
+        var dotScale = 15 * Math.pow(2, Math.round(Math.log(scene.zoom) / Math.log(2)));
+        var dotScaleR= 10 * Math.sqrt(scene.zoom / dotScale);
         var hNumDots = Math.ceil(scene.mHeight / dotScale / 2 * scene.zoom / this.COM.V[3] * c);
         var dotR;
         var roundedTauParam;
@@ -498,12 +498,14 @@ extendedObject.prototype = {
                            tempQuat42[3] / c / scene.zoom + scene.origin[2]);
             scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
                         -tempQuat42[3]/c / scene.zoom + scene.origin[2],dotR,0,twopi,true);
-            scene.h.fillText(dotScaleR,50,50);
-            if ((i + roundedTauParam / dotScale)%10 == 0) {
+            if ((i + roundedTauParam / dotScale)%10 == 0) { 
                 scene.h.fill();
                 scene.h.beginPath();
                 scene.h.fillStyle = "#0f0";
-                scene.h.fillText("Tau: " + Math.round((roundedTauParam + i * dotScale) * c), xDotPos + 3, tDotPos + 3);
+
+                if (this.options.showTime || scene.options.showTime) {
+                    scene.h.fillText("Tau: " + Math.round((roundedTauParam + i * dotScale) * c), xDotPos + 3, tDotPos + 3);
+                }
                 if (scene.options.showPos || this.options.showPos){
                     scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " + 
                                                    -Math.round((tDotPos - scene.origin[2]) * scene.zoom) + "]", 
