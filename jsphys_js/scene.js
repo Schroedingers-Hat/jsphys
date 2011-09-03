@@ -320,6 +320,7 @@ function Scene() {
     this.carray = [];
     this.zoom = 0.25;
     this.t = 0;
+    this.keyDown = false;
     this.defaults = {"showDoppler": true,
                      "showVisualPos": true,
                      "showFramePos": false,
