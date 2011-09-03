@@ -12,7 +12,8 @@ var demos = [
                                     {"object": extendedObject, "x": [50, -30, 0], "p": [-6, 0, 0], "m": 1, "shape": aSphere(3, 50), "label": "Observer"}
                                     ],
                         "options": {"showFramePos": true, "showVisualPos": false, "showGamma": false},
-                        "frame": 2},
+                        "frame": 2,
+                        "shift": [0, 0, 0, -70]},
                       ]
             },
             { "name" : "Simultaneity: Han and Greedo",
