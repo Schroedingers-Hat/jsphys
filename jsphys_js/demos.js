@@ -43,9 +43,9 @@ var demos = [
                                             "label": "Luke", "shape": aMan(5,10)},
                                      {"object": extendedObject, "x": [0, 0, 0], "p": [-1,0,0], "m": 1, "shape": potPlant(5,30)},
                                      {"object": photon, "x": [-90, 0, 0], "v": [-1, 0, 0], 
-                                         "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }},
+                                         "options": {"showCircle": false, "endPt": [-22, 0, 0, 0] }},
                                      {"object": photon, "x": [90, 0, 0], "v": [-1, 0, 0], 
-                                         "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }}
+                                         "options": {"showCircle": false, "endPt": [-40, 0, 0, 0] }}
                                     ],
                          "timeScale": 0.005,
                          "options": {"showVisualPos": false, "showFramePos": true},
