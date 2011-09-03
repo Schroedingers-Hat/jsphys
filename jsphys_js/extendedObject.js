@@ -576,6 +576,32 @@ extendedObject.prototype = {
     get XView() {
         return this.COM.XView;
     },
+
+    /**
+     * Determine the distance from a given point to this object, returning
+     * the minimum of the distance between (a) the point and this object's
+     * visual position and (b) the point and this object's frame position,
+     * depending on if frame and visual positions are currently displayed.
+     */
+    minDistanceTo: function(point, scene) {
+        var frameDist, viewDist;
+        if (scene.options.alwaysShowVisualPos || 
+            (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
+            var viewVec = quat4.subtract(point, this.COM.XView);
+            viewDist = quat4.spaceDot(viewVec, viewVec);
+        } else {
+            viewDist = Infinity;
+        }
+
+        if (scene.options.alwaysShowFramePos || 
+            (this.options.showFramePos && !scene.options.neverShowFramePos)) {
+            var frameVec = quat4.subtract(point, this.COM.X0);
+            frameDist = quat4.spaceDot(frameVec, frameVec);
+        } else {
+            frameDist = Infinity;
+        }
+        return Math.sqrt(Math.min(frameDist, viewDist));
+    },
 	
 	isInteresting3D : function(scene) {
 		var coeff = 40 / (scene.zoom * (this.COM.X0[1] + scene.camBack));
