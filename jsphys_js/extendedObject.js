@@ -445,10 +445,12 @@ extendedObject.prototype = {
                       -tOfLinet + scene.origin[2]);
         scene.h.lineTo(bOfLinex + scene.origin[0],
                       -bOfLinet + scene.origin[2]);
+        scene.h.closePath();
         scene.h.stroke();
         // A dot at t=0.
         scene.h.beginPath();
         scene.h.arc(xvis + scene.origin[0],scene.origin[2],3,0,twopi,true);
+        scene.h.closePath();
         scene.h.fill();
         // A dot at the light cone.
         scene.h.fillStyle = tempToColor(dopplerShiftColor(this.temp,
@@ -473,16 +475,23 @@ extendedObject.prototype = {
             scene.h.fillStyle = "#333";
 
         scene.h.beginPath();
-        var hNumDots = Math.ceil(scene.mHeight / 50 / 2 * scene.zoom / this.COM.V[3] * c);
+        var dotScale = 10 * Math.pow(5,Math.round(Math.log(scene.zoom) / Math.log(5)));
+        var hNumDots = Math.ceil(scene.mHeight / dotScale / 2 * scene.zoom / this.COM.V[3] * c);
+        var dotR;
+        var roundedTauParam;
         for (var i = -hNumDots; i < hNumDots; i++) {
-            quat4.scale(this.COM.V, Math.round(this.COM.tau /50 / c) * 50, tempQuat4);
+            roundedTauParam = Math.round(this.COM.tau / dotScale / c) * dotScale;
+            quat4.scale(this.COM.V, roundedTauParam, tempQuat4);
             quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
-            quat4.scale(this.COM.V, i * 50, tempQuat4);
+            quat4.scale(this.COM.V, i * dotScale, tempQuat4);
             quat4.add(tempQuat4, tempQuat42, tempQuat42);
+            if ((i + roundedTauParam / dotScale)%10 == 0) dotR = 5;
+            else if ((i + roundedTauParam / dotScale)%5 == 0) dotR = 3;
+            else dotR = 2;
             scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
-                        -tempQuat42[3]/c / scene.zoom + scene.origin[2],2,0,twopi,true);
+                        -tempQuat42[3]/c / scene.zoom + scene.origin[2],dotR,0,twopi,true);
         }
-
+        scene.h.closePath();
         scene.h.fill();
         if (window.console && window.console.firebug) {
             scene.h.beginPath();

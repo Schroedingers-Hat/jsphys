@@ -54,12 +54,12 @@ function onKeyDown(evt)
     	else if (evt.keyCode == 61 || evt.keyCode == 107) 
     	{
             if (scene.zoom < 0.06 ) zoomTo(0.6);
-            else zoomTo(scene.zoom / 2);
+            else zoomTo(scene.zoom / 1.1);
     	}
     	else if (evt.keyCode == 109) 
     	{
             if (scene.zoom > 40) zoomTo(40);
-            else zoomTo(scene.zoom * 2);
+            else zoomTo(scene.zoom * 1.1);
     	}
         else if (evt.keyCode == 80)
         {
