@@ -86,7 +86,7 @@ function genEnergy(P,c,m) {
  */
 function cBoostMat(boostV, c) {
     var gamma = boostV[3] / c;
-    if (gamma < 1.000001)
+    if (1 - gamma == 0)
     {
         return (mat4.create([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]));
     }
@@ -104,13 +104,11 @@ function cBoostMat(boostV, c) {
 /**
  * Take a 3-velocity and return a boost matrix from cBoostMat.
  *
- * Mathematical contortions come because the magnitude of the 4-vector must be c,
- * so the time component has to be contrived to match the spatial components.
  */
-function boostFrom3Vel(vx, vy, vz, zoom) {
+function boostFrom3Vel(vx, vy, vz) {
     var gamma = vToGamma([vx, vy, vz]);
-    return cBoostMat(quat4.create([vx * gamma / zoom, vy * gamma / zoom, vz * gamma / zoom, 
-                                   Math.sqrt(c*c + (Math.pow(gamma, 2) * (vx*vx + vy*vy + vz*vz) / (zoom * zoom)))]), c);
+    return cBoostMat(quat4.create([vx * gamma, vy * gamma, vz * gamma, 
+                                   Math.sqrt(c*c + (Math.pow(gamma, 2) * (vx*vx + vy*vy + vz*vz)))]), c);
 }
 
 

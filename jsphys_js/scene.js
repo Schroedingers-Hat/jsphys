@@ -135,14 +135,19 @@ function Scene() {
         if (rotUpDown === true)    this.changeArrayFrame(nullQuat4, rotUp   );
         if (rotDownDown === true)  this.changeArrayFrame(nullQuat4, rotDown );
         if (zoomOut == true) {
-            if (scene.zoom >= 40) zoomTo(40);
-            else zoomTo(scene.zoom * 1.05);
+            zoomTo(scene.zoom * 1.05);
         }
         if (zoomIn == true) {
-            if (scene.zoom <= 0.06 ) zoomTo(0.06);
-            else zoomTo(scene.zoom / 1.05);
+            zoomTo(scene.zoom / 1.05);
         }
-
+        if (speedDown == true) {
+            this.timeScale = this.timeScale / 1.1;
+            updateSliders();
+        }
+        if (speedUp == true) {
+            this.timeScale = this.timeScale * 1.1;
+            updateSliders();
+        }
         if (this.drawing || this.keyDown) {
             requestAnimFrame(drawScene);
         }
@@ -155,18 +160,18 @@ function Scene() {
         scene.g.beginPath();
         scene.g.moveTo(10,10);
         scene.g.lineTo(150,10);
-        scene.g.lineTo(150,100);
-        scene.g.lineTo(10,100);
+        scene.g.lineTo(150,110);
+        scene.g.lineTo(10,110);
         scene.g.closePath();
         scene.g.fill();
         scene.g.fillStyle = "rgba(150,0,150,1)";
         scene.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
         scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 50);
-
+        scene.g.fillText("Time speedup: " + Math.round(this.timeScale * 10000) / 10 + "x", 30, 70);
         if (window.console && window.console.firebug) {
-            scene.g.fillText("Fps: " + Math.round((1000 / (-this.lastFrameEndTime + this.frameEndTime))), 30, 70);
-            scene.g.fillText("c: " + c, 30, 80);
-            scene.g.fillText("keyCode: " + this.kC, 30, 90); 
+            scene.g.fillText("Fps: " + Math.round((1000 / (-this.lastFrameEndTime + this.frameEndTime))), 30, 80);
+            scene.g.fillText("c: " + c, 30, 90);
+            scene.g.fillText("keyCode: " + this.kC, 30, 100); 
         }
     };
 

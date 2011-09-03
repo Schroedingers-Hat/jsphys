@@ -149,7 +149,7 @@ extendedObject.prototype = {
                 scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c", 
                                  textX, textY - 10);
             }
-            if (this.options.showGamma) {
+            if (this.options.showGamma || scene.options.showGamma) {
                 scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, textX, textY - 20);
             }
             if (this.label !== "") {
@@ -504,7 +504,7 @@ extendedObject.prototype = {
                 scene.h.fillStyle = "#0f0";
 
                 if (this.options.showTime || scene.options.showTime) {
-                    scene.h.fillText("Tau: " + Math.round((roundedTauParam + i * dotScale) * c), xDotPos + 3, tDotPos + 3);
+                    scene.h.fillText("Tau: " + Math.round((roundedTauParam + i * dotScale)) + "s", xDotPos + 3, tDotPos + 3);
                 }
                 if (scene.options.showPos || this.options.showPos){
                     scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " + 
@@ -567,7 +567,11 @@ extendedObject.prototype = {
 		if ((this.boundingBox[0]) / scene.zoom + scene.origin[0] > 0 &&
 			(this.boundingBox[1]) / scene.zoom + scene.origin[0] < scene.width &&
 			(this.boundingBox[2]) / scene.zoom + scene.origin[1] > 0 &&
-			(this.boundingBox[3]) / scene.zoom + scene.origin[1] < scene.height
+			(this.boundingBox[3]) / scene.zoom + scene.origin[1] < scene.height ||
+            (this.X0[0] / scene.zoom + scene.origin[0] > 0 &&
+             this.X0[0] / scene.zoom + scene.origin[0] < scene.width) ||
+            (this.X0[1] / scene.zoom + scene.origin[1] > 0 &&
+             this.X0[1] / scene.zoom + scene.origin[1] < scene.height)
 			) return true;
 		else return false;
 	},
@@ -575,7 +579,11 @@ extendedObject.prototype = {
 		if ((this.boundingBoxP[0]) / scene.zoom + scene.origin[0] > 0 &&
 			(this.boundingBoxP[1]) / scene.zoom + scene.origin[0] < scene.width &&
 			(this.boundingBoxP[2]) / scene.zoom + scene.origin[1] > 0 &&
-			(this.boundingBoxP[3]) / scene.zoom + scene.origin[1] < scene.height
+			(this.boundingBoxP[3]) / scene.zoom + scene.origin[1] < scene.height ||
+            (this.XView[0] / scene.zoom + scene.origin[0] > 0 &&
+             this.XView[0] / scene.zoom + scene.origin[0] < scene.width) ||
+            (this.XView[1] / scene.zoom + scene.origin[1] > 0 &&
+             this.XView[1] / scene.zoom + scene.origin[1] < scene.height)
 			) return true;
 		else return false;
 	}
