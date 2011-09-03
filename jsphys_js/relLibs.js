@@ -86,7 +86,7 @@ function genEnergy(P,c,m) {
  */
 function cBoostMat(boostV, c) {
     var gamma = boostV[3] / c;
-    if (gamma - 1 < 0.000001)
+    if (gamma == 1)
     {
         return (mat4.create([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]));
     }
