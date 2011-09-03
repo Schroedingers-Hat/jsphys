@@ -14,6 +14,8 @@ var rotUpDown = false;
 var rotDownDown = false;
 var ctrlDown = false;
 var fireDown = false;
+var zoomIn = false;
+var zoomOut = false;
 var scene;
 
 //TODO: Pull all the keycodes out of here and put them in an array or something.
@@ -53,13 +55,11 @@ function onKeyDown(evt)
         }
     	else if (evt.keyCode == 61 || evt.keyCode == 107) 
     	{
-            if (scene.zoom < 0.06 ) zoomTo(0.6);
-            else zoomTo(scene.zoom / 1.1);
+            zoomIn = true;
     	}
     	else if (evt.keyCode == 109) 
     	{
-            if (scene.zoom > 40) zoomTo(40);
-            else zoomTo(scene.zoom * 1.1);
+           zoomOut = true; 
     	}
         else if (evt.keyCode == 80)
         {
@@ -78,6 +78,8 @@ function onKeyUp(evt)
 	else if (evt.keyCode == 65) leftDown = false;
 	else if(evt.keyCode == 87) upDown = false;
 	else if(evt.keyCode == 83) downDown = false;
+    else if (evt.keyCode == 61 || evt.keyCode == 107) zoomIn = false;
+    else if (evt.keyCode == 109) zoomOut = false;
 	else if (evt.keyCode == 69) rotRightDown = false;
 	else if (evt.keyCode == 81) rotLeftDown = false;
     else if (evt.keyCode == 17) ctrlDown = false;

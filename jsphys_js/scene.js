@@ -134,6 +134,14 @@ function Scene() {
         if (rotRightDown === true) this.changeArrayFrame(nullQuat4, rotLeft );
         if (rotUpDown === true)    this.changeArrayFrame(nullQuat4, rotUp   );
         if (rotDownDown === true)  this.changeArrayFrame(nullQuat4, rotDown );
+        if (zoomOut == true) {
+            if (scene.zoom >= 40) zoomTo(40);
+            else zoomTo(scene.zoom * 1.05);
+        }
+        if (zoomIn == true) {
+            if (scene.zoom <= 0.06 ) zoomTo(0.06);
+            else zoomTo(scene.zoom / 1.05);
+        }
 
         if (this.drawing || this.keyDown) {
             requestAnimFrame(drawScene);

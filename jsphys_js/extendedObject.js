@@ -449,7 +449,7 @@ extendedObject.prototype = {
         scene.h.stroke();
         // A dot at t=0.
         scene.h.beginPath();
-        scene.h.arc(xvis + scene.origin[0],scene.origin[2],3,0,twopi,true);
+        scene.h.arc(xvis + scene.origin[0],scene.origin[2],5,0,twopi,true);
         scene.h.closePath();
         scene.h.fill();
         // A dot at the light cone.
@@ -459,7 +459,7 @@ extendedObject.prototype = {
         scene.h.beginPath();
         scene.h.arc(xvisP + scene.origin[0],
                     - tvisP / c + scene.origin[2],
-                    3,0,twopi,true);
+                    5,0,twopi,true);
         scene.h.fill();
         if (this.label !== "") {
             scene.h.fillStyle = "#444";
@@ -474,24 +474,39 @@ extendedObject.prototype = {
         // Find a vector that points from intialPt to somewhere near now.
             scene.h.fillStyle = "#333";
 
-        scene.h.beginPath();
-        var dotScale = 10 * Math.pow(5,Math.round(Math.log(scene.zoom) / Math.log(5)));
+        var dotScale = 15 * Math.pow(2,Math.round(Math.log(scene.zoom) / Math.log(2)));
+        var dotScaleR= 10*Math.sqrt(scene.zoom / dotScale);
         var hNumDots = Math.ceil(scene.mHeight / dotScale / 2 * scene.zoom / this.COM.V[3] * c);
         var dotR;
         var roundedTauParam;
+        var tDotPos;
+        var xDotPos;
         for (var i = -hNumDots; i < hNumDots; i++) {
             roundedTauParam = Math.round(this.COM.tau / dotScale / c) * dotScale;
             quat4.scale(this.COM.V, roundedTauParam, tempQuat4);
             quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
             quat4.scale(this.COM.V, i * dotScale, tempQuat4);
             quat4.add(tempQuat4, tempQuat42, tempQuat42);
-            if ((i + roundedTauParam / dotScale)%10 == 0) dotR = 5;
-            else if ((i + roundedTauParam / dotScale)%5 == 0) dotR = 3;
-            else dotR = 2;
+            xDotPos = tempQuat42[0] / scene.zoom + scene.origin[0];
+            tDotPos = -tempQuat42[3] / c / scene.zoom + scene.origin[2]; 
+            if ((i + roundedTauParam / dotScale)%10 == 0) dotR = 2 * dotScaleR;
+            else if ((i + roundedTauParam / dotScale)%5 == 0) dotR = 1.41 * dotScaleR;
+            else dotR = dotScaleR;
+            scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
+                           tempQuat42[3] / c / scene.zoom + scene.origin[2]);
             scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
                         -tempQuat42[3]/c / scene.zoom + scene.origin[2],dotR,0,twopi,true);
+            scene.h.fillText(dotScaleR,50,50);
+            if ((i + roundedTauParam / dotScale)%10 == 0) {
+                scene.h.fill();
+                scene.h.beginPath();
+                scene.h.fillStyle = "#0f0";
+                scene.h.fillText(Math.round((roundedTauParam + i * dotScale) * c), xDotPos + 3, tDotPos + 3);
+                scene.h.fill();
+                scene.h.fillStyle = "#333";
+                scene.h.beginPath();
+            }
         }
-        scene.h.closePath();
         scene.h.fill();
         if (window.console && window.console.firebug) {
             scene.h.beginPath();
