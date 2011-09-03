@@ -10,6 +10,7 @@ function photon(X, V, label, options) {
     this.rPast = 1;
     this.XView = quat4.create();
     this.V = V;
+	this.nonTimeLike = true;
     this.initialPt = quat4.create(X);
     if (this.options.endPt){
         this.endPt = quat4.create(this.options.endPt);

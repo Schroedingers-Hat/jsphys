@@ -252,15 +252,17 @@ function Scene() {
         var minElement = -1;
 
         for (var i = 0; i < this.carray.length; i++) {
-            var dist = getDistance([x,y], [this.carray[i].XView[0] / this.zoom + this.origin[0],
-                                           -this.carray[i].XView[1] / this.zoom + this.origin[1]]);
-            if (dist < minDist) {
-                minDist = dist;
-                minElement = i;
-            }
+			if (!this.carray[i].nonTimeLike){
+				var dist = getDistance([x,y], [this.carray[i].XView[0] / this.zoom + this.origin[0],
+											  -this.carray[i].XView[1] / this.zoom + this.origin[1]]);
+				if (dist < minDist) {
+					minDist = dist;
+					minElement = i;
+				}
+			}
         }
 
-        if (minDist < maxDist) {
+        if (minDist < maxDist && minElement >= 0) {
             return this.carray[minElement];
         }
         return false;
@@ -306,7 +308,7 @@ function Scene() {
     this.lightConeCanvas.width =  this.mWidth;
     this.lightConeCanvas.height =  this.mHeight;
     this.lCCtx = this.lightConeCanvas.getContext('2d');
-	if((navigator.appName == "Opera") && (navigator.appVersion[0] == "9")){
+	if(!this.TDC.fillText){
 		this.TDC.fillText   = function(){};
 		this.g.fillText     = function(){};
 		this.h.fillText     = function(){};

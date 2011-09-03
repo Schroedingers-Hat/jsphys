@@ -182,7 +182,7 @@ var demos = [
              },
             ];
 
-if (window.console && window.console.firebug) {
+if (window.console && window.console.firebug || 1) {
     demos.push({"name": "Test thingies.",
                 "steps": [{"caption": "Test for some things",
                            "objects": [{"object": extendedObject, "x": [0, -32, 0], "p": [0,0,0], "m": 1, "shape": aSphere(10,100)},
