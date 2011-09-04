@@ -123,10 +123,10 @@ function clickHandler(e)
 function zoomTo(zoom) {
     scene.zoom = zoom;
 
-    scene.boost.right = boostFrom3Vel( 0.02 * Math.min(49, scene.zoom) * c, 0, 0);
-    scene.boost.left  = boostFrom3Vel(-0.02 * Math.min(49, scene.zoom) * c, 0, 0);
-    scene.boost.up    = boostFrom3Vel(0,  0.02 * Math.min(49, scene.zoom) * c, 0);
-    scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(49, scene.zoom) * c, 0);
+    scene.boost.right = boostFrom3Vel( 0.02 * Math.min(20, scene.zoom) * c, 0, 0);
+    scene.boost.left  = boostFrom3Vel(-0.02 * Math.min(20, scene.zoom) * c, 0, 0);
+    scene.boost.up    = boostFrom3Vel(0,  0.02 * Math.min(20, scene.zoom) * c, 0);
+    scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(20, scene.zoom) * c, 0);
 
     updateSliders();
 }

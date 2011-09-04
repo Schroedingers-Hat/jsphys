@@ -252,9 +252,9 @@ function Scene() {
         var minElement = -1;
 
         for (var i = 0; i < this.carray.length; i++) {
-			if (!this.carray[i].nonTimeLike){
-				var dist = getDistance([x,y], [this.carray[i].XView[0] / this.zoom + this.origin[0],
-											  -this.carray[i].XView[1] / this.zoom + this.origin[1]]);
+			if (!this.carray[i].nonTimeLike) {
+                var dist = this.carray[i].minDistanceTo([(x - this.origin[0]) * this.zoom,
+                                                         -(y - this.origin[1]) * this.zoom, 0, 0], this);
 				if (dist < minDist) {
 					minDist = dist;
 					minElement = i;
