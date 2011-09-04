@@ -569,18 +569,20 @@ extendedObject.prototype = {
         }
     },
 
-    get V() {
-        return this.COM.V;
-    },
+    // get V() {
+        // return this.COM.V;
+    // },
 
-    get X0() {
-        return this.COM.X0;
-    },
+    // get X0() {
+        // return this.COM.X0;
+    // },
 
-    get XView() {
-        return this.COM.XView;
-    },
-
+    // get XView() {
+        // return this.COM.XView;
+    // },
+	V : [0,0,0,0],
+	XView : [0,0,0,0],
+	X0 : [0,0,0,0],
     /**
      * Determine the distance from a given point to this object, returning
      * the minimum of the distance between (a) the point and this object's

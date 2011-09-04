@@ -37,14 +37,17 @@ function Scene() {
         // Update c with the demo's chosen value
         c = (this.curOptions.c) ? this.curOptions.c : 1;
 
-        drawLightCone(this);
+        // drawLightCone(this);
 
         this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
                       "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
                       "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
                       "down": boostFrom3Vel(0, -0.005, 0, this.zoom)};
   
-        demo.steps[step].objects.forEach(this.createObject, this);
+        // demo.steps[step].objects.forEach(this.createObject, this);
+		for ( var i = 0; i < demo.steps[step].objects.length; i++) {
+			this.createObject(demo.steps[step].objects[i]);
+		}
 
         $('#caption').html(demo.steps[step].caption);
 
@@ -115,13 +118,21 @@ function Scene() {
             timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale * c;
         }
         this.clear();
-
+		if (typeof FlashCanvas != "undefined") {
+			//Ie draw light cone here.
+		}else {
         this.h.drawImage(this.lightConeCanvas, 0, 0);
-        this.carray.forEach(function(obj) {
-            obj.update(timeStep, this);
-            obj.draw(this);
-            obj.drawXT(this); 
-        }, this);
+		}
+		for ( var i = 0; i < this.carray.length; i++) {
+			this.carray[i].update(timeStep, this);
+			this.carray[i].draw(this);
+			this.carray[i].drawXT(this);
+		}
+        // this.carray.forEach(function(obj) {
+            // obj.update(timeStep, this);
+            // obj.draw(this);
+           //obj.drawXT(this); 
+        // }, this);
         this.drawCrosshairs();
         this.drawInfo();
         this.t = this.t + (timeStep);
@@ -280,19 +291,25 @@ function Scene() {
      */
     this.changeArrayFrame = function(translation1, boost, translation2) {
         if (translation2){
-            this.carray.forEach(function(obj) {
-                obj.changeFrame(translation1, boost, translation2);
-            });
+            for (i=0;i < this.carray.length; i++) {
+				this.carray[i].changeFrame(translation1, boost, translation2);
+			}
         } else {
-            this.carray.forEach(function(obj) {
-                obj.changeFrame(translation1, boost);
-            });
+		     for (i=0;i < this.carray.length; i++) {
+				this.carray[i].changeFrame(translation1, boost);
+			}
         }
 
 
     };
 
     this.initialTime = new Date().getTime();
+	if (typeof FlashCanvas != "undefined") {
+
+		FlashCanvas.initElement($('#canvas')[0]);
+		FlashCanvas.initElement($('#minkowski')[0]);
+		FlashCanvas.initElement($('#3DCanvas')[0]);
+	}
     this.g = $('#canvas')[0].getContext("2d");
     this.h = $('#minkowski')[0].getContext("2d");
     this.TDC = $('#3DCanvas')[0].getContext("2d");
@@ -304,15 +321,19 @@ function Scene() {
     this.tWidth = $("#3DCanvas").width();
     this.tHeight = $("#3DCanvas").height();
 
-    this.lightConeCanvas = document.createElement('canvas');
-    this.lightConeCanvas.width =  this.mWidth;
-    this.lightConeCanvas.height =  this.mHeight;
+     this.lightConeCanvas = document.createElement('canvas');
+     this.lightConeCanvas.width =  this.mWidth;
+     this.lightConeCanvas.height =  this.mHeight;
+	if (typeof FlashCanvas != "undefined") {
+		FlashCanvas.initElement(this.lightConeCanvas);
+	}
+	
+
     this.lCCtx = this.lightConeCanvas.getContext('2d');
 	if(!this.TDC.fillText){
 		this.TDC.fillText   = function(){};
 		this.g.fillText     = function(){};
 		this.h.fillText     = function(){};
-		this.lCCtx.fillText = function(){};
 	}
     this.kC = 0;
     this.camBack = 0;
@@ -389,6 +410,7 @@ function drawLightCone(scene){
     scene.lCCtx.stroke();
     scene.lCCtx.lineWidth = 1;
     scene.lCCtx.fillStyle = "#fff";
-    scene.lCCtx.fillText("t(s)", 5 + scene.origin[0], 10);
-    scene.lCCtx.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
+    // scene.lCCtx.fillText("t(s)", 5 + scene.origin[0], 10);
+    // scene.lCCtx.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
+	return;
 }

@@ -186,11 +186,15 @@ window.requestAnimFrame = (function(){
 function loadDemo(idx) {
     return function() {
         scene.load(demos[idx], 0);
+		if (typeof FlashCanvas != "undefined") {
+
+		} else {
         $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider,
-                                  value: -(Math.log(scene.zoom) / Math.LN2)});
+                                   value: -(Math.log(scene.zoom) / Math.LN2)});
         $("#speed-slider").slider({min: -2 , max: 2, step: 0.01, slide: setAnimSpeed, 
-                                   value: (Math.log(scene.timeScale + 1) / Math.LN2)});
-        $("#demo-chooser").hide();
+                                    value: (Math.log(scene.timeScale + 1) / Math.LN2)});
+		}
+         $("#demo-chooser").hide();
         scene.startAnimation();
         requestAnimFrame(drawScene);
     };
@@ -207,10 +211,12 @@ function updateSliders() {
  * Builds the demo chooser menu by iterating through our provided demos array.
  */
 function loadDemoList() {
-    demos.forEach(function(demo, idx) {
-        var e = $("<li>" + demo.name + "</li>").click(loadDemo(idx));
-        $("#demo-list").append(e);
-    })
+	var e;
+	var demo;
+	for (idx=0; idx < demos.length; idx++) {
+		e = $("<li>" + demos[idx].name + "</li>").click(loadDemo(idx));
+		$("#demo-list").append(e);
+	}
 }
 
 /**
