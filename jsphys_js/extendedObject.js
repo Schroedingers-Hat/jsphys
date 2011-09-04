@@ -496,7 +496,6 @@ extendedObject.prototype = {
         }
 
         if (this.label !== "") {
-            scene.h.beginPath();
             scene.h.fillStyle = "#444";
             scene.h.fillText(this.label + " present position", 
                               xvis + scene.origin[0] + 5,
