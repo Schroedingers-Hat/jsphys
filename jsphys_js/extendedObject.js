@@ -466,7 +466,7 @@ extendedObject.prototype = {
         var bOfLinet = -(scene.height + scene.origin[2]);
         var bOfLinex = bOfLinet * dxdtVis + this.COM.X0[0] / scene.zoom;
 
-        scene.h.strokeStyle = "#333";
+        scene.h.strokeStyle = "#666";
         scene.h.fillStyle = "#0a0";
 
         // A world Line.
@@ -500,30 +500,26 @@ extendedObject.prototype = {
             scene.h.fillStyle = "#444";
             scene.h.fillText(this.label + " present position", 
                               xvis + scene.origin[0] + 5,
-                              -5 + scene.origin[2]);                         
+                              -5 + scene.origin[2]);
 
             if (scene.options.alwaysShowVisualPos || 
                 (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
                 scene.h.fillText(this.label + " visual position", 
                                   xvisP + scene.origin[0] + 5,
-                                  -tvisP / c + scene.origin[2]);                         
+                                  -tvisP / c + scene.origin[2]);
                 scene.h.fill();
             }
         }
         // Find a vector that points from intialPt to somewhere near now.
-            scene.h.fillStyle = "#333";
+        scene.h.fillStyle = "#333";
         if (this.options.showTime || scene.options.showTime) {
 
-            var dotScale = 15 * Math.pow(2, Math.round(Math.log(scene.zoom) / Math.log(2)));
-            var dotScaleR= 10 * Math.sqrt(scene.zoom / dotScale);
-            var hNumDots = Math.ceil(scene.mHeight / dotScale / 2 * scene.zoom / this.COM.V[3] * c);
-            var dotR;
-            var roundedTauParam;
-            var tDotPos;
-            var xDotPos;
+            var dotScale  = 15 * Math.pow(2, Math.round(Math.log(scene.zoom) / Math.log(2)));
+            var dotScaleR = 10 * Math.sqrt(scene.zoom / dotScale);
+            var hNumDots  = Math.ceil(scene.mHeight / dotScale / 2 * scene.zoom / this.COM.V[3] * c);
+            var dotR, roundedTauParam, tDotPos, xDotPos;
 
             for (var i = -hNumDots; i < hNumDots; i++) {
-
                 roundedTauParam = Math.round(this.COM.tau / dotScale / c) * dotScale;
 
                 quat4.scale(this.COM.V, roundedTauParam, tempQuat4);
@@ -535,16 +531,17 @@ extendedObject.prototype = {
                 xDotPos = tempQuat42[0] / scene.zoom + scene.origin[0];
                 tDotPos = -tempQuat42[3] / c / scene.zoom + scene.origin[2];
  
-                if ((i + roundedTauParam / dotScale) % 10 == 0) dotR = 2 * dotScaleR;
-                else if ((i + roundedTauParam / dotScale) % 5 == 0) dotR = 1.41 * dotScaleR;
+                if ((i + roundedTauParam / dotScale) % 10 === 0) dotR = 2 * dotScaleR;
+                else if ((i + roundedTauParam / dotScale) % 5 === 0) dotR = 1.41 * dotScaleR;
                 else dotR = dotScaleR;
 
                 scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
                                tempQuat42[3] / c / scene.zoom + scene.origin[2]);
                 scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
-                            -tempQuat42[3]/c / scene.zoom + scene.origin[2],dotR,0,twopi,true);
+                            -tempQuat42[3]/c / scene.zoom + scene.origin[2], dotR,
+                            0, twopi, true);
 
-                if ((i + roundedTauParam / dotScale)%10 == 0) { 
+                if ((i + roundedTauParam / dotScale) % 10 === 0) {
                     scene.h.fill();
                     scene.h.beginPath();
                     scene.h.fillStyle = "#0f0";    
@@ -560,7 +557,6 @@ extendedObject.prototype = {
                     scene.h.fillStyle = "#333";
                     scene.h.beginPath();
                 }
-
             }
             scene.h.fill();
         }
