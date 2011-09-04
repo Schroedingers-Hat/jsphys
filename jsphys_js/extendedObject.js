@@ -496,6 +496,7 @@ extendedObject.prototype = {
         }
 
         if (this.label !== "") {
+            scene.h.beginPath();
             scene.h.fillStyle = "#444";
             scene.h.fillText(this.label + " present position", 
                               xvis + scene.origin[0] + 5,
@@ -510,11 +511,11 @@ extendedObject.prototype = {
             }
         }
         // Find a vector that points from intialPt to somewhere near now.
-        scene.h.fillStyle = "#333";
+        scene.h.fillStyle = "#aaa";
         if (this.options.showTime || scene.options.showTime) {
 
-            var dotScale  = 15 * Math.pow(2, Math.round(Math.log(scene.zoom) / Math.log(2)));
-            var dotScaleR = 10 * Math.sqrt(scene.zoom / dotScale);
+            var dotScale  = 25 * Math.pow(2, Math.round(Math.log(scene.zoom) / Math.log(2)));
+            var dotScaleR = 15 * Math.sqrt(scene.zoom / dotScale);
             var hNumDots  = Math.ceil(scene.mHeight / dotScale / 2 * scene.zoom / this.COM.V[3] * c);
             var dotR, roundedTauParam, tDotPos, xDotPos;
 
@@ -540,7 +541,7 @@ extendedObject.prototype = {
                             -tempQuat42[3]/c / scene.zoom + scene.origin[2], dotR,
                             0, twopi, true);
 
-                if ((i + roundedTauParam / dotScale) % 10 === 0) {
+                if ((i + roundedTauParam / dotScale) % 5 === 0) {
                     scene.h.fill();
                     scene.h.beginPath();
                     scene.h.fillStyle = "#0f0";    
@@ -553,7 +554,7 @@ extendedObject.prototype = {
                     }
 
                     scene.h.fill();
-                    scene.h.fillStyle = "#333";
+                    scene.h.fillStyle = "#aaa";
                     scene.h.beginPath();
                 }
             }
