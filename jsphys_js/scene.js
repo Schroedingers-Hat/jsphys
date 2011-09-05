@@ -37,7 +37,7 @@ function Scene() {
         // Update c with the demo's chosen value
         c = (this.curOptions.c) ? this.curOptions.c : 1;
 
-        drawLightCone(this);
+        drawLightCone(this, this.lCCtx);
 
         this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
                       "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
@@ -120,6 +120,7 @@ function Scene() {
         this.clear();
 		if (typeof FlashCanvas != "undefined") {
 			//Ie draw light cone here.
+			drawLightCone(this,this.h);
 			
 		}else {
 			this.h.drawImage(this.lightConeCanvas, 0, 0);
@@ -379,40 +380,42 @@ function drawScene(event) {
     scene.draw();
 }
 
-function drawLightCone(scene){
+function drawLightCone(scene,ctx){
     var size = Math.max(scene.mHeight - scene.origin[2], scene.origin[2]);
-    scene.lCCtx.fillStyle = "#300";
-    scene.lCCtx.beginPath();
-    scene.lCCtx.moveTo(0,0);
-    scene.lCCtx.lineTo(0, scene.mHeight);
-    scene.lCCtx.lineTo(-size * c + scene.origin[0], size + scene.origin[2]);
-    scene.lCCtx.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.lCCtx.lineTo(scene.mWidth, 0);
-    scene.lCCtx.lineTo(scene.mWidth, scene.mHeight);
-    scene.lCCtx.lineTo( size * c + scene.origin[0], size + scene.origin[2]);
-    scene.lCCtx.lineTo(-size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.lCCtx.closePath();
-    scene.lCCtx.fill();
-    scene.lCCtx.fillStyle = "#003";
-    scene.lCCtx.beginPath();
-    scene.lCCtx.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.lCCtx.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.lCCtx.lineTo(-size * c + scene.origin[0],  size + scene.origin[2]);
-    scene.lCCtx.lineTo( size * c + scene.origin[0],  size + scene.origin[2]);
-    scene.lCCtx.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
-    scene.lCCtx.closePath();
-    scene.lCCtx.fill();
-    scene.lCCtx.strokeStyle = "#FFF";
-    scene.lCCtx.lineWidth = 3;
-    scene.lCCtx.beginPath();
-    scene.lCCtx.moveTo(0, scene.origin[2]);
-    scene.lCCtx.lineTo(scene.mWidth, scene.origin[2]);
-    scene.lCCtx.moveTo(scene.origin[0], 0);
-    scene.lCCtx.lineTo(scene.origin[0], scene.mHeight); 
-    scene.lCCtx.stroke();
-    scene.lCCtx.lineWidth = 1;
-    scene.lCCtx.fillStyle = "#fff";
-    // scene.lCCtx.fillText("t(s)", 5 + scene.origin[0], 10);
-    // scene.lCCtx.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
+    ctx.fillStyle = "#300";
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(0, scene.mHeight);
+    ctx.lineTo(-size * c + scene.origin[0], size + scene.origin[2]);
+    ctx.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
+    ctx.lineTo(scene.mWidth, 0);
+    ctx.lineTo(scene.mWidth, scene.mHeight);
+    ctx.lineTo( size * c + scene.origin[0], size + scene.origin[2]);
+    ctx.lineTo(-size * c + scene.origin[0], -size + scene.origin[2]);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#003";
+    ctx.beginPath();
+    ctx.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
+    ctx.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
+    ctx.lineTo(-size * c + scene.origin[0],  size + scene.origin[2]);
+    ctx.lineTo( size * c + scene.origin[0],  size + scene.origin[2]);
+    ctx.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = "#FFF";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, scene.origin[2]);
+    ctx.lineTo(scene.mWidth, scene.origin[2]);
+    ctx.moveTo(scene.origin[0], 0);
+    ctx.lineTo(scene.origin[0], scene.mHeight); 
+    ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.fillStyle = "#fff";
+	if(typeof(opera) != "undefined" && opera.version()[0] == 9){
+		ctx.fillText("t(s)", 5 + scene.origin[0], 10);
+		ctx.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
+	}
 	return;
 }
