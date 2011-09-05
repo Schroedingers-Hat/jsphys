@@ -27,6 +27,7 @@ var scene;
 // Get Key Input
 function onKeyDown(evt) 
 {
+		
         keyIsUseful = true;
         scene.kC = evt.keyCode;
     	if (evt.keyCode == 81) rotLeftDown = true;
@@ -52,21 +53,22 @@ function onKeyDown(evt)
         else if (evt.keyCode == 84) scene.options.showTime = !scene.options.showTime;
         else if (evt.keyCode == 90)
         {
-            $('#doppler').click();
+            // $('#doppler').click();
+			dopplerButtonClick(evt);
         }
         else if (evt.keyCode == 88)
         {
-            $('#framePos').click();
+			framePosClick(evt);
         }
         else if (evt.keyCode == 67)
         {
-            $('#vPos').click();
+			vPosClick(evt);
         }
-    	else if (evt.keyCode == 61 || evt.keyCode == 107) 
+    	else if (evt.keyCode == 61 || evt.keyCode == 107 || evt.keyCode == 187) 
     	{
             zoomIn = true;
     	}
-    	else if (evt.keyCode == 109) 
+    	else if (evt.keyCode == 109 || evt.keyCode == 189) 
     	{
            zoomOut = true; 
     	}
@@ -83,12 +85,14 @@ function onKeyDown(evt)
 
 function onKeyUp(evt) 
 {
+	
+	
 	if (evt.keyCode == 68) rightDown = false;
 	else if (evt.keyCode == 65) leftDown = false;
 	else if(evt.keyCode == 87) upDown = false;
 	else if(evt.keyCode == 83) downDown = false;
-    else if (evt.keyCode == 61 || evt.keyCode == 107) zoomIn = false;
-    else if (evt.keyCode == 109) zoomOut = false;
+    else if (evt.keyCode == 61 || evt.keyCode == 107 || evt.keyCode == 187) zoomIn = false;
+    else if (evt.keyCode == 109 || evt.keyCode == 189) zoomOut = false;
 	else if (evt.keyCode == 69) rotRightDown = false;
 	else if (evt.keyCode == 81) rotLeftDown = false;
     else if (evt.keyCode == 219) speedDown = false;
@@ -123,10 +127,10 @@ function clickHandler(e)
 function zoomTo(zoom) {
     scene.zoom = zoom;
 
-    scene.boost.right = boostFrom3Vel( 0.02 * Math.min(20, scene.zoom) * c, 0, 0);
-    scene.boost.left  = boostFrom3Vel(-0.02 * Math.min(20, scene.zoom) * c, 0, 0);
-    scene.boost.up    = boostFrom3Vel(0,  0.02 * Math.min(20, scene.zoom) * c, 0);
-    scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(20, scene.zoom) * c, 0);
+    scene.boost.right = boostFrom3Vel( 0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0, 0);
+    scene.boost.left  = boostFrom3Vel(-0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0, 0);
+    scene.boost.up    = boostFrom3Vel(0,  0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
+    scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
 
     updateSliders();
 }
@@ -145,7 +149,7 @@ function zoomToSlider(event, ui) {
 /**
  * Pause animation
  */
-function pause(event) {
+function doPause(event) {
     if (!scene.drawing) {
         $("#pause").html("Pause");
     } else {
@@ -153,7 +157,8 @@ function pause(event) {
     }
     scene.pause();
     updateSliders();
-    event.preventDefault();
+    if(event.preventDefault) event.preventDefault();
+	else event.returnValue = false;
 }
 
 function setAnimSpeed(event, ui) {
@@ -213,7 +218,7 @@ function updateSliders() {
 function loadDemoList() {
 	var e;
 	var demo;
-	for (idx=0; idx < demos.length; idx++) {
+	for (var idx=0; idx < demos.length; idx++) {
 		e = $("<li>" + demos[idx].name + "</li>").click(loadDemo(idx));
 		$("#demo-list").append(e);
 	}
@@ -242,7 +247,8 @@ function dopplerButtonClick(event) {
         scene.options.alwaysDoppler = false;
         $("#doppler").html("Force off");
     }
-    event.preventDefault();
+    if(event.preventDefault) event.preventDefault();
+	else event.returnValue = false;
 }
 
 /**
@@ -265,7 +271,8 @@ function framePosClick(event) {
         scene.options.alwaysShowFramePos = false;
         $("#framePos").html("Force on");
     }
-    event.preventDefault();
+    if(event.preventDefault) event.preventDefault();
+	else event.returnValue = false;
 }
 
 function vPosClick(event) {
@@ -285,7 +292,9 @@ function vPosClick(event) {
         scene.options.alwaysShowVisualPos = false;
         $("#vPos").html("Force on");
     }
-    event.preventDefault();
+	
+    if(event.preventDefault) event.preventDefault();
+	else event.returnValue = false;
 }
 // Use JQuery to wait for document load
 $(document).ready(function()
@@ -295,12 +304,12 @@ $(document).ready(function()
     scene = new Scene();
     
     loadDemoList();
-
-    $("#pause").click(pause);
+    //$(document).keydown(onKeyDown);
+    //$(document).keyup(onKeyUp);
+    //$("#pause").click(pause);
     $("#canvas").click(clickHandler);
-    $("#doppler").click(dopplerButtonClick);
-    $('#framePos').click(framePosClick);
-    $('#vPos').click(vPosClick);
-    $(document).keydown(onKeyDown);
-    $(document).keyup(onKeyUp);
+    //$("#doppler").click(dopplerButtonClick);
+    //$('#framePos').click(framePosClick);
+    //$('#vPos').click(vPosClick);
+
 });
