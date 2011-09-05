@@ -17,9 +17,10 @@
         <script type="text/javascript" src="jsphys_js/inertialObject.js"></script>
         <script type="text/javascript" src="jsphys_js/photon.js"></script>
         <script type="text/javascript" src="jsphys_js/relLibs.js"></script>
-        <script type="text/javascript" src="jsphys_js/interface.js"></script>
+        
         <script type="text/javascript" src="jsphys_js/colors.js"></script>
         <script type="text/javascript" src="jsphys_js/demos.js"></script>
+		<script type="text/javascript" src="jsphys_js/interface.js"></script>
         <script type="text/javascript" src="jsphys_js/scene.js"></script>
         <script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
         <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.8.16.custom.css" />
@@ -82,7 +83,7 @@
         </style>
     </head>
  
-    <body>
+    <body onKeyDown="onKeyDown(event);" onKeyUp="onKeyUp(event);">
         <div style="position:relative">
             <canvas id="canvas" height="500">You need a modern browser (Firefox 4 or greater, recent versions of Google Chrome, recent versions of Safari) to view this simulation.</canvas>
             <div id="demo-chooser">
@@ -93,12 +94,12 @@
             </div>
             <div id="controls">
                 <form name="controls">
-                    <p>Doppler effect: <button id="doppler">Force off</button></p>
-                    <p>Absolute positions: <button id="framePos">Force on</button></p>
-                    <p>Apparent positions: <button id="vPos">Force on</button></p>
+                    <p>Doppler effect: <button id="doppler" onclick="dopplerButtonClick(event)">Force off</button></p>
+                    <p>Absolute positions: <button id="framePos" onclick="framePosClick(event)">Force on</button></p>
+                    <p>Apparent positions: <button id="vPos" onclick="vPosClick(event)">Force on</button></p>
                     <p>Zoom: </p><div id="zoom-slider"></div>
                     <p>Speed: </p><div id="speed-slider"></div>
-                    <p><button id="pause">Pause</button></p>
+                    <p><button id="pause" onclick="doPause(event)">Pause</button></p>
                 </form>
             </div>
             <div id="caption"></div>

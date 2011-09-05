@@ -166,8 +166,8 @@ extendedObject.prototype = {
                 scene.g.fillText("tau = " + (Math.round((this.COM.tau / c))), textX, textY - 40); 
             }
         } else {
-            xview = this.X0[0] / scene.zoom + scene.origin[0];
-            yview = -this.X0[1] / scene.zoom + scene.origin[1];
+            xview = this.COM.X0[0] / scene.zoom + scene.origin[0];
+            yview = -this.COM.X0[1] / scene.zoom + scene.origin[1];
             if (xview > 0 && xview < scene.width &&
                 yview > 0 && yview < scene.height) {
                 scene.g.beginPath();
@@ -290,13 +290,13 @@ extendedObject.prototype = {
                 i++;
             }
              if (this.options.showPos || scene.options.showPos) {                                                              
-                 scene.g.fillText("XYZ: " + Math.round(this.XView[0]) + ", " + Math.round(this.XView[1]) + ", " + Math.round(this.XView[2]), 
+                 scene.g.fillText("XYZ: " + Math.round(this.COM.XView[0]) + ", " + Math.round(this.COM.XView[1]) + ", " + Math.round(this.COM.XView[2]), 
                                   textX, textY - 10 * i);
                  i++;
             }
         } else {
-            xview = this.XView[0] / scene.zoom + scene.origin[0];
-            yview = -this.XView[1] / scene.zoom + scene.origin[1];
+            xview = this.COM.XView[0] / scene.zoom + scene.origin[0];
+            yview = -this.COM.XView[1] / scene.zoom + scene.origin[1];
             if (xview > 0 && xview < scene.width &&
                 yview > 0 && yview < scene.height) {
                 if (doDoppler) 
@@ -355,8 +355,8 @@ extendedObject.prototype = {
             scene.TDC.stroke();
         } else {
 			var coeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
-			var xview = this.XView[0] * coeff + scene.origin[0];
-			var yview = -this.XView[2] * coeff + scene.origin[1];
+			var xview = this.COM.XView[0] * coeff + scene.origin[0];
+			var yview = -this.COM.XView[2] * coeff + scene.origin[1];
 			var viewSize = Math.max(this.boundingBoxP[3] - this.boundingBoxP[2],
 								this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff / 2;
 			if (xview > 0 && xview < scene.tWidth &&
@@ -417,8 +417,8 @@ extendedObject.prototype = {
             scene.TDC.stroke();
         } else {
 			var coeff = 40 / (scene.zoom * (this.COM.X0[1] + scene.camBack));
-			var xview = this.X0[0] * coeff + scene.origin[0];
-			var yview = -this.X0[2] * coeff + scene.origin[1];
+			var xview = this.COM.X0[0] * coeff + scene.origin[0];
+			var yview = -this.COM.X0[2] * coeff + scene.origin[1];
 			var viewSize = Math.max(this.boundingBox[1] - this.boundingBox[0],
 								this.boundingBox[3] - this.boundingBox[2]) * coeff / 2;
 			if (xview > 0 && xview < scene.tWidth &&
@@ -569,20 +569,18 @@ extendedObject.prototype = {
         }
     },
 
-    // get V() {
-        // return this.COM.V;
-    // },
+    getV: function() {
+        return this.COM.V;
+    },
 
-    // get X0() {
-        // return this.COM.X0;
-    // },
+    getX0: function() {
+        return this.COM.X0;
+    },
 
-    // get XView() {
-        // return this.COM.XView;
-    // },
-	V : [0,0,0,0],
-	XView : [0,0,0,0],
-	X0 : [0,0,0,0],
+    getXView: function() {
+        return this.COM.XView;
+    },
+
     /**
      * Determine the distance from a given point to this object, returning
      * the minimum of the distance between (a) the point and this object's

@@ -180,10 +180,10 @@ var demos = [
                          "frame": 0}
                        ]
              },
-            ];
+            
 
-if (window.console && window.console.firebug || 1) {
-    demos.push({"name": "Test thingies.",
+
+    {"name": "Test thingies.",
                 "steps": [{"caption": "Test for some things",
                            "objects": [{"object": extendedObject, "x": [0, -32, 0], "p": [0,0,0], "m": 1, "shape": aSphere(10,100)},
                                        {"object": extendedObject, "x": [-50, -50, 0], "p": [0,0,0], "m": 1, "shape": aMan(10,100)},
@@ -197,6 +197,7 @@ if (window.console && window.console.firebug || 1) {
                            "options": {"showFramePos": true, "showVisualPos": true, "show3D": true, "canShoot": true}
                           }],
                 "options": {"canShoot": true}
-                });
-}
+                }
 
+
+];

@@ -37,7 +37,7 @@ function Scene() {
         // Update c with the demo's chosen value
         c = (this.curOptions.c) ? this.curOptions.c : 1;
 
-        // drawLightCone(this);
+        drawLightCone(this);
 
         this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
                       "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
@@ -120,8 +120,9 @@ function Scene() {
         this.clear();
 		if (typeof FlashCanvas != "undefined") {
 			//Ie draw light cone here.
+			
 		}else {
-        this.h.drawImage(this.lightConeCanvas, 0, 0);
+			this.h.drawImage(this.lightConeCanvas, 0, 0);
 		}
 		for ( var i = 0; i < this.carray.length; i++) {
 			this.carray[i].update(timeStep, this);
@@ -179,11 +180,12 @@ function Scene() {
         scene.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
         scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 50);
         scene.g.fillText("Time speedup: " + Math.round(this.timeScale * 10000) / 10 + "x", 30, 70);
-        if (window.console && window.console.firebug) {
+        if (window.console) {
             scene.g.fillText("Fps: " + Math.round((1000 / (-this.lastFrameEndTime + this.frameEndTime))), 30, 80);
             scene.g.fillText("c: " + c, 30, 90);
-            scene.g.fillText("keyCode: " + this.kC, 30, 100); 
+
         }
+		            scene.g.fillText("keyCode: " + this.kC, 30, 100); 
     };
 
     this.drawCrosshairs = function () {
@@ -281,9 +283,10 @@ function Scene() {
 
     // Take a given inertialObject and switch to its reference frame
     this.shiftToFrameOfObject = function(obj, shift) {
-        if (shift) { this.changeArrayFrame(quat4.create(obj.X0), cBoostMat(obj.V, c), shift);}
-        else { this.changeArrayFrame(quat4.create(obj.X0), cBoostMat(obj.V, c));}
+        if (shift) { this.changeArrayFrame(quat4.create(obj.getX0()), cBoostMat(obj.getV(), c), shift);}
+        else { this.changeArrayFrame(quat4.create(obj.getX0()), cBoostMat(obj.getV(), c));}
     };
+	
 
     /**
      * Switch every object in the scene to a new reference frame given by
@@ -291,11 +294,11 @@ function Scene() {
      */
     this.changeArrayFrame = function(translation1, boost, translation2) {
         if (translation2){
-            for (i=0;i < this.carray.length; i++) {
+            for (var i=0;i < this.carray.length; i++) {
 				this.carray[i].changeFrame(translation1, boost, translation2);
 			}
         } else {
-		     for (i=0;i < this.carray.length; i++) {
+		     for (var i=0;i < this.carray.length; i++) {
 				this.carray[i].changeFrame(translation1, boost);
 			}
         }
@@ -363,7 +366,6 @@ function Scene() {
                     "alwaysShowVisualPos": false,
                     "neverShowVisualPos": false,
                     "showTime": false,
-					"show3D": false
                    };
 
     this.drawing = true;
