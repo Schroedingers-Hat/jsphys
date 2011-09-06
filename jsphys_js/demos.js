@@ -35,7 +35,7 @@ var demos = [
                          "options": {"showVisualPos": false, "showFramePos": true},
                          "shift": [0,0,0,-10]
                         },
-                        {"caption": "Let's look at the same scene again from Luke's point of view -- if we make a Galilean transform. Can you see something wrong?",
+                        /*{"caption": "Let's look at the same scene again from Luke's point of view -- if we make a Galilean transform. Can you see something wrong?",
                          "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [-1,0,0], "m": 1, 
                                             "label": "Greedo", "shape": aMan(5,10)},
                                      {"object": extendedObject, "x": [ 100, 0, 0], "p": [-1,0,0], "m": 1, 
@@ -51,7 +51,7 @@ var demos = [
                          "timeScale": 0.005,
                          "options": {"showVisualPos": false, "showFramePos": true},
                          "shift": [0,0,0,-10]
-                        },
+                        },*/
                         {"caption": "Let's try that again with a Lorentz transform. If the distance from Luke to Han is the same as the distance from Luke to Greedo, then the only conclusion is that Han shot first.",
                          "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [0,0,0], "m": 1, 
                                             "label": "Greedo", "shape": aMan(5,10)},
