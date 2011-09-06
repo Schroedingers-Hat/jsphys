@@ -64,6 +64,7 @@ function Scene() {
                      "c": 3,
                      "showText": true,
                      "timeScale": 0.01,
+                     "showMinkowski": true,
                      "canShoot": false};
 
     this.options = {"alwaysDoppler": false,

@@ -169,8 +169,8 @@ extendedObject.prototype = {
 
     draw: function(scene) {
 
-        if (scene.options.alwaysShowVisualPos ||
-            (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
+        if ((!this.endPt || this.endPt[3] > this.COM.XView[3]) &&(scene.options.alwaysShowVisualPos ||
+            (this.options.showVisualPos && !scene.options.neverShowVisualPos))) {
             this.drawPast(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawPast3D(scene);
@@ -793,12 +793,18 @@ extendedObject.prototype = {
     
     // futPos will wind up being an associative array, could get some performance by flattening it.
     photonCollisionTime : function(photon) {
-        for (var j = 0; j < (this.boundingIdx.length); j++) {
+        for (var j = 0; j < (this.boundingIdx.length); j++)
+            {
                 var i = this.boundingIdx[j];
-                quat4.add(this.COM.X0, this.shapePoints[i], this.futPos[i]);
-                quat4.scale(this.COM.V, -this.futPos[i][3] / this.COM.V[3], tempQuat4);
-                quat4.add(this.futPos[i], tempQuat4, this.futPos[i]);
-        }
+                var xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
+                var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V);
+                var vDotv = quat4.spaceDot(this.COM.V,this.COM.V);
+                var a = c*c - vDotv;
+
+                var futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
+                quat4.scale(this.COM.V, futTime / c, this.uDisplacement);
+                quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPos[i]);
+            }
         this.findBB(this.futPos, this.boundingBoxF);
         var yAtFut = photon.V[1] * this.COM.XFut[3] / c;
         if (this.boundingBoxF[0] <= 0 &&
