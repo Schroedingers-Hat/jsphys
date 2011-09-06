@@ -38,6 +38,7 @@ function onKeyDown(evt)
         else if (evt.keyCode == 83) downDown = true;
         else if (evt.keyCode == 221) speedUp = true;
         else if (evt.keyCode == 219) speedDown = true;
+        else if (evt.keyCode == 192) scene.curOptions.showText = !scene.curOptions.showText;
         else if (evt.keyCode == 220) {
             scene.timeScale = -scene.timeScale;
             updateSliders();

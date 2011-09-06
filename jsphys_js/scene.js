@@ -125,18 +125,20 @@ function Scene() {
         }else {
             this.h.drawImage(this.lightConeCanvas, 0, 0);
         }
+        if(this.curOptions.showText) {
+            this.h.beginPath();
+            this.h.fillText("t(s)", 5 + scene.origin[0], 10);
+            this.h.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
+            this.h.fill();
+        }
         for ( var i = 0; i < this.carray.length; i++) {
             this.carray[i].update(timeStep, this);
             this.carray[i].draw(this);
             this.carray[i].drawXT(this);
         }
-        // this.carray.forEach(function(obj) {
-            // obj.update(timeStep, this);
-            // obj.draw(this);
-           //obj.drawXT(this);
-        // }, this);
+        
         this.drawCrosshairs();
-        this.drawInfo();
+        if(this.curOptions.showText) this.drawInfo();
         this.t = this.t + (timeStep);
 
         if (leftDown === true)     this.changeArrayFrame(nullQuat4, this.boost.left );
@@ -357,9 +359,9 @@ function Scene() {
                      "show3D": false,
                      "showPos": false,
                      "c": 3,
+                     "showText": true,
                      "timeScale": 0.01,
-                     "canShoot": false,
-                     "showText": true};
+                     "canShoot": false};
 
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
@@ -414,9 +416,5 @@ function drawLightCone(scene,ctx){
     ctx.stroke();
     ctx.lineWidth = 1;
     ctx.fillStyle = "#fff";
-    if(typeof(opera) != "undefined" && opera.version()[0] == 9){
-        ctx.fillText("t(s)", 5 + scene.origin[0], 10);
-        ctx.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
-    }
     return;
 }
