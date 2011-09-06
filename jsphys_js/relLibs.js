@@ -221,7 +221,7 @@ function rAsteroid(size,detail) {
                    Math.sin(6.283 * i / 10) * randRadius,
                    0,
                    0]);
-        rAsteroid = rAsteroid.concat(linesPadder([prevPt,nextPt],size / detail / 2));
+        rAsteroid = rAsteroid.concat(linesPadder([prevPt,nextPt],size / detail / 0.2));
     }
     rAsteroid.push(rAsteroid[0]);
     return rAsteroid;
