@@ -30,12 +30,13 @@ function extendedObject(X, P, label, options, shape)
     this.COM = new inertialObject(X, P, 1);
     this.uDisplacement = quat4.create([0,0,0,0]);
     this.pointPos = [];
-
+    this.futPos = [];
     // Make a rectangular prism which, when placed at the position or view pos
     // of COM, must always contain part of the object.
-    this.boundingBox = [0, 0, 0, 0, 0, 0];
+    this.boundingBox  = [0, 0, 0, 0, 0, 0];
     this.boundingBoxP = [0, 0, 0, 0, 0, 0];
-    this.boundingIdx = [0, 0, 0, 0, 0, 0];
+    this.boundingIdx  = [0, 0, 0, 0, 0, 0];
+    this.boundingBoxF = [0, 0, 0, 0, 0, 0];
     this.initialBoost = cBoostMat([-this.COM.V[0],
                                    -this.COM.V[1],
                                    -this.COM.V[2],
@@ -60,6 +61,7 @@ function extendedObject(X, P, label, options, shape)
         }
         this.pastPoints[i] = quat4.create([0,0,0,0]);
         this.pointPos[i] = quat4.create([0,0,0,0]);
+        this.futPos[i] = quat4.create([0,0,0,0]);
     }
 }
 
@@ -71,7 +73,9 @@ extendedObject.prototype = {
      */
     update: function(timeStep, scene) {
         this.COM.updateX0(timeStep);
+        if(this.endPt) this.endPt[3] = this.endPt[3] - timeStep * this.COM.V[3]/c;
         this.COM.calcPast();
+        this.COM.calcFut();
         
         // See if we might want to draw the whole thing this frame.
         this.wI3d = this.wasInteresting3D(scene);
@@ -150,6 +154,7 @@ extendedObject.prototype = {
      * translation2 is a translation in the new frame
      */
     changeFrame: function(translation1, rotation, translation2) {
+        if(this.endPt) quat4.subtract(this.endPt, translation1);
         if (translation2){
             this.COM.changeFrame(translation1, rotation, translation2);
         } else this.COM.changeFrame(translation1, rotation);
@@ -158,9 +163,12 @@ extendedObject.prototype = {
         {
             this.shapePoints[i] = mat4.multiplyVec4(rotation, this.shapePoints[i]);
         }
+        if (this.endPt) mat4.multiplyVec4(rotation, this.endPt);
+        if(this.endPt && translation2) quat4.subtract(this.endPt, translation2);
     },
 
     draw: function(scene) {
+
         if (scene.options.alwaysShowVisualPos ||
             (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
             this.drawPast(scene);
@@ -168,14 +176,16 @@ extendedObject.prototype = {
                 this.drawPast3D(scene);
             }
         }
-        if (scene.options.alwaysShowFramePos ||
-            (!scene.options.neverShowFramePos && this.options.showFramePos)) {
-            this.drawNow(scene);
-            if (this.options.show3D || scene.curOptions.show3D) {
-                this.drawNow3D(scene);
+        if (!this.endPt || this.endPt[3] > 0){
+            if (scene.options.alwaysShowFramePos ||
+                (!scene.options.neverShowFramePos && this.options.showFramePos)) {
+                this.drawNow(scene);
+                if (this.options.show3D || scene.curOptions.show3D) {
+                    this.drawNow3D(scene);
+                }
             }
         }
-        this.drawXT(scene);
+        if(this.options.showMinkowski) this.drawXT(scene);
     },
     
     /**
@@ -562,8 +572,12 @@ extendedObject.prototype = {
         // Some relevant points scaled for zoom.
         var xvis  = this.COM.X0[0] / scene.zoom;
         var xvisP = this.COM.XView[0] / scene.zoom;
-        var xyScale = scene.width / scene.height;
         var tvisP = this.COM.XView[3] / scene.zoom;
+        var xvisF = this.COM.XFut[0] / scene.zoom;
+        var tvisF = this.COM.XFut[3] / scene.zoom;
+
+        
+        var xyScale = scene.width / scene.height;
         var dxdtVis = this.COM.V[0] / this.COM.V[3] * c;
 
         // Points in space time that represent the beginning and end of visible worldlines.
@@ -600,7 +614,18 @@ extendedObject.prototype = {
                         5, 0, twopi, true);
             scene.h.fill();
         }
-
+        // Dot at the future cone.
+        if (scene.options.alwaysShowVisualPos ||
+            (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
+            scene.h.fillStyle = tempToColor(dopplerShiftColor(this.temp,
+                                                              this.COM.radialVFut,
+                                                              this.COM.V[3] / c));
+            scene.h.beginPath();
+            scene.h.arc(xvisF + scene.origin[0],
+                        - tvisF / c + scene.origin[2],
+                        5, 0, twopi, true);
+            scene.h.fill();
+        }
         if (this.label !== "" && scene.curOptions.showText) {
             scene.h.beginPath();
             scene.h.fillStyle = "#444";
@@ -688,6 +713,10 @@ extendedObject.prototype = {
         return this.COM.XView;
     },
 
+    getXFut: function() {
+        return this.COM.XFut;
+    },
+    
     /**
      * Determine the distance from a given point to this object, returning
      * the minimum of the distance between (a) the point and this object's
@@ -760,5 +789,27 @@ extendedObject.prototype = {
                (this.boundingBoxP[3] - this.boundingBoxP[2]) / scene.zoom > 5)
             ) return true;
         else return false;
+    },
+    
+    // futPos will wind up being an associative array, could get some performance by flattening it.
+    photonCollisionTime : function(photon) {
+        for (var j = 0; j < (this.boundingIdx.length); j++) {
+                var i = this.boundingIdx[j];
+                quat4.add(this.COM.X0, this.shapePoints[i], this.futPos[i]);
+                quat4.scale(this.COM.V, -this.futPos[i][3] / this.COM.V[3], tempQuat4);
+                quat4.add(this.futPos[i], tempQuat4, this.futPos[i]);
+        }
+        this.findBB(this.futPos, this.boundingBoxF);
+        var yAtFut = photon.V[1] * this.COM.XFut[3] / c;
+        if (this.boundingBoxF[0] <= 0 &&
+            this.boundingBoxF[1] >= 0 &&
+            this.boundingBoxF[2] <= yAtFut &&
+            this.boundingBoxF[3] >= yAtFut &&
+            this.boundingBoxF[4] <= 0 &&
+            this.boundingBoxF[5] >= 0) {
+            return this.COM.XFut[3];
+        } else {
+            return Infinity;
+        }
     }
 }

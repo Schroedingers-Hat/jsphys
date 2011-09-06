@@ -188,6 +188,7 @@ var demos = [
                            "objects": [{"object": extendedObject, "x": [0, -32, 0], "p": [0,0,0], "m": 1, "shape": aSphere(10,100)},
                                        {"object": extendedObject, "x": [-50, -50, 0], "p": [0,0,0], "m": 1, "shape": aMan(10,100)},
                                        {"object": extendedObject, "x": [50, -50, 0], "p": [0,0,0], "m": 1, "shape": potPlant(10,100)},
+                                       {"object": extendedObject, "x": [0, 0, 0], "p": [0,0,0], "m": 1, "shape": rAsteroid(10,100)},
                                        {"object": extendedObject, "x": [20, -20, -20], "p": [0,0,0], "m": 1,
                                             "options": {"temperature": 3000},
                                             "label": "A circle",   "shape": aCircle(10,30)},
@@ -199,5 +200,23 @@ var demos = [
                 "options": {"canShoot": true}
                 }
 
+    
 
 ];
+var rasteroid;
+var rasteroids = [];
+for (var i = 0; i < 400; i++){
+    rasteroid = {"object": extendedObject, 
+                 "x": [Math.random()*2000 - 1000, Math.random()*2000 - 1000, 0], 
+                 "p": [Math.random()*0.5,Math.random()*0.5,0], "m": 1, 
+                 "shape": rAsteroid(Math.random()*40,10),
+                 "options": {"showMinkowski": false}};
+    rasteroids.push(rasteroid);
+    }
+    demos[demos.length] = {"name": "RASTEROIDS!",
+                "steps": [{"caption": "Test for some things",
+                           "objects": rasteroids,
+                           "options": {"showFramePos": true, "showVisualPos": false, "show3D": false, "canShoot": true, "showGamma": false, "showVelocity": false}
+                          }],
+                "options": {"canShoot": true}
+                };

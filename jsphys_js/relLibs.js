@@ -205,3 +205,24 @@ function potPlant(size, detail) {
                                [0,         -size,     0, 0]], 8 * size / detail);
     return flower.concat(stemPot);
 }
+
+function rAsteroid(size,detail) {
+    var rAsteroid = [];
+    var randRadius = size / 2 * (Math.abs(Math.random()) + 0.2);
+    var prevPt, nextPt;
+    nextPt =[Math.cos(6.283 * i / 10) * randRadius,
+             Math.sin(6.283 * i / 10) * randRadius,
+             0,
+             0];
+    for (var i = 0; i < 10; i++) {
+        randRadius = size / 2 * (Math.abs(Math.random()) + 0.2);
+        prevPt = nextPt;
+        nextPt = ([Math.cos(6.283 * i / 10) * randRadius,
+                   Math.sin(6.283 * i / 10) * randRadius,
+                   0,
+                   0]);
+        rAsteroid = rAsteroid.concat(linesPadder([prevPt,nextPt],size / detail / 2));
+    }
+    rAsteroid.push(rAsteroid[0]);
+    return rAsteroid;
+}

@@ -8,6 +8,8 @@ function photon(X, V, label, options) {
     this.options = options;
     this.X0 = X;
     this.rPast = 1;
+    if (this.options.fired) this.fired = this.options.fired;
+    else this.fired = false
     this.XView = quat4.create();
     this.V = V;
     this.nonTimeLike = true;
@@ -88,7 +90,8 @@ photon.prototype.changeFrame = function(translation1, rotation, translation2) {
 
 photon.prototype.draw = function(scene) {
     // Only makes sense to display if we're showing the current position.
-    if (scene.curOptions.showFramePos) {
+    if (scene.options.alwaysShowFramePos || 
+        (this.options.showFramePos && !scene.options.neverShowFramePos)) {
         if (this.endPt){
             if ( (this.initialPt[3] < 0) && (this.endPt[3] > 0)){
                 this.drawNow(scene);
@@ -102,6 +105,7 @@ photon.prototype.draw = function(scene) {
         }
     }
     this.drawXT(scene);
+    if(scene.options.alwaysShowVisualPos) this.drawPast(scene);
 };
 
 photon.prototype.drawXT = function(scene) {
@@ -169,6 +173,22 @@ photon.prototype.drawNow = function(scene) {
     }
 };
 
+/**
+ * For now just draw a little line the way the photon is going.
+ * Solving for lightcone intersection may produce NaNs and infinities, so I'd
+ * Need to account for that.
+ */
+photon.prototype.drawPast = function(scene) {
+    if ((Math.sqrt(Math.abs(quat4.spaceTimeDot(this.X0, this.X0))) < 20) &&
+        this.fired) {
+        scene.g.strokeStyle = "#fff";
+        scene.g.moveTo(scene.origin[0],scene.origin[1]);
+        scene.g.lineTo(this.X0[0] / scene.zoom + scene.origin[0],
+                       -this.X0[1] / scene.zoom + scene.origin[1]);
+        scene.g.stroke();
+    }
+}
+
 photon.prototype.drawCircle = function(scene) {
     scene.g.strokeStyle = "#fff";
     scene.g.beginPath();
@@ -176,4 +196,8 @@ photon.prototype.drawCircle = function(scene) {
                -this.initialPt[1] / scene.zoom + scene.origin[1],
                 Math.max(0, -this.initialPt[3])  / scene.zoom, 0, twopi, true);
     scene.g.stroke();
+};
+
+photon.prototype.getFut = function() {
+    return Infinity;
 };
