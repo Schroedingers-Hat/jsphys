@@ -358,7 +358,8 @@ function Scene() {
                      "showPos": false,
                      "c": 3,
                      "timeScale": 0.01,
-                     "canShoot": false};
+                     "canShoot": false,
+                     "showText": true};
 
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,

@@ -78,7 +78,7 @@ var demos = [
               "steps": [{"caption": "We have here two knives a fixed distance apart, moving upwards. A special breed of high-speed snake, <em>Crotalus relativisticus</em>, is moving at a speed close to the speed of light. It's just short enough to fit between the blades.",
                          "objects": [{"object": extendedObject, "x": [-27, -60, 0], "p": [0, 4, 0], "m": 1, "shape": [[5, -10, 0, 0], [5, 10, 0, 0], [-5, -10, 0, 0], [5, -10, 0, 0]]},
                                      {"object": extendedObject, "x": [27, -60, 0], "p": [0, 4, 0], "m": 1, "shape": [[-5, -10, 0, 0], [-5, 10, 0, 0], [5, -10, 0, 0], [-5, -10, 0, 0]]},
-                                     {"object": extendedObject, "x": [-70, 0, 0], "p": [8, 0, 0], "m": 1, "shape": linesPadder([[-38, 0, 0, 0], [38, 0, 0, 0]],3)}
+                                     {"object": extendedObject, "x": [-70, 0, 0], "p": [8, 0, 0], "m": 1, "shape": [[-38, 0, 0, 0], [38, 0, 0, 0]]}
                                     ],
                          "options": {"showFramePos": true, "showVisualPos": false, "showVelocity": true}},
                         {"caption": "But then consider the perspective of the snake. It's not length-contracted &mdash; the knives are. They're much closer together. How does the snake survive the knives?",

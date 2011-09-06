@@ -85,7 +85,9 @@
     <body onKeyDown="onKeyDown(event);" onKeyUp="onKeyUp(event);">
         <div style="position:relative">
             <canvas id="canvas" height="500">You need a modern browser (Firefox 4 or greater, recent versions of Google Chrome, recent versions of Safari) to view this simulation.</canvas>
+            <!--[if lt IE 9]>
             <div style="width:1000px;height:500px;position:absolute;float:left;z-index:6000;" onclick="clickHandler(event)">&nbsp;</div>
+            <![endif]-->
             </div>
             <div id="demo-chooser">
                 <h3>Choose a demo</h3>
