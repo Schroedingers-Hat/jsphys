@@ -17,8 +17,12 @@ function photon(X, V, label, options) {
         this.endPt[3] = Math.sqrt(quat4.spaceDot(quat4.subtract(this.endPt, this.initialPt, tempQuat4), tempQuat4)) + this.initialPt[3];
         quat4.subtract(this.endPt, this.initialPt, this.V);
     }
-    // Normalize V such that V[3] = 1 and V[3]^2-V[2]^2-V[1]^2-V[0]^2 = 0
-    // (i.e. |V| (including the metric) is 0)
+    /**
+     * Normalize V such that V[3] = c and V[3]^2-V[2]^2-V[1]^2-V[0]^2 = 0
+     * (i.e. |V| (including the metric) is 0)
+     * Note that this means V represents dX/dt not dX/dtau in this case, as each
+     * Component of dX/dtau would be infinite.
+     */
     this.V[3] = c;
     vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
     this.displace = quat4.create();
@@ -37,13 +41,13 @@ function photon(X, V, label, options) {
 }
 
 photon.prototype.update = function(timeStep) {
-    quat4.scale(this.V, timeStep/c, this.displace);
-
     // Bring it to now.
+    quat4.scale(this.V, timeStep/c, this.displace);
     quat4.add(this.X0, this.displace);
-
+    // Move it back in time one timeStep (so we go forward in time.
     this.X0[3] = this.X0[3] - timeStep * this.V[3]/c;
     this.initialPt[3] = this.initialPt[3] - timeStep * this.V[3]/c;
+    // If there's an end point, move that back in time, too.
     if(this.endPt) this.endPt[3] = this.endPt[3] - timeStep * this.V[3]/c;
 };
 
@@ -60,6 +64,7 @@ photon.prototype.changeFrame = function(translation1, rotation, translation2) {
     mat4.multiplyVec4(rotation, this.V);
 
     // Renormalize this.V.
+    // The photon traces a null path, so the four-magnitude of its velocity should be zero.
     this.V[3] = c;
     vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
 
@@ -82,18 +87,21 @@ photon.prototype.changeFrame = function(translation1, rotation, translation2) {
 };
 
 photon.prototype.draw = function(scene) {
-    if (this.endPt){
-    if ( (this.initialPt[3] < 0) && (this.endPt[3] > 0)){
-        this.drawNow(scene);
-        if (this.options.showCircle) this.drawCircle(scene);
+    // Only makes sense to display if we're showing the current position.
+    if (scene.curOptions.showFramePos) {
+        if (this.endPt){
+            if ( (this.initialPt[3] < 0) && (this.endPt[3] > 0)){
+                this.drawNow(scene);
+                if (this.options.showCircle) this.drawCircle(scene);
+            }
+        } else {
+            if (this.initialPt[3] < 0){
+                this.drawNow(scene);
+                if (this.options.showCircle) this.drawCircle(scene);
+            }
+        }
     }
-    } else {
-    if (this.initialPt[3] < 0){
-        this.drawNow(scene);
-        if (this.options.showCircle) this.drawCircle(scene);
-    }
-    }
-    this.drawXT;
+    this.drawXT(scene);
 };
 
 photon.prototype.drawXT = function(scene) {
@@ -106,9 +114,6 @@ photon.prototype.drawXT = function(scene) {
 
     var xyScale = scene.mWidth / scene.mHeight;
     var dxdtVis = this.V[0] / this.V[3] * c;
-
-    // Points in space time that represent the beginning and end of visible worldlines.
-    // Some redundant calculations, but much easier to think about.
     var tOfLinet = scene.origin[2];
     var tOfLinex = tOfLinet * dxdtVis + this.X0[0] / scene.zoom;
     var bOfLinet = -(scene.height + scene.origin[2]);
@@ -120,6 +125,7 @@ photon.prototype.drawXT = function(scene) {
     // A world Line.
     if ( -tvis + scene.origin[2] > 0) {
         if ( (-tvis + scene.origin[2]) < scene.mHeight) {
+            // A dot at its creation.
             scene.h.beginPath();
             scene.h.arc(xvis + scene.origin[0],
                        -tvis + scene.origin[2],
@@ -135,12 +141,20 @@ photon.prototype.drawXT = function(scene) {
                           -bOfLinet + scene.origin[2]);
         }
         if ( (-tvisE + scene.origin[2]) >0){
+            // A dot at its destruction.
             scene.h.lineTo(xvisE + scene.origin[0],
                           -tvisE + scene.origin[2]);
-
-        } else  scene.h.lineTo(tOfLinex + scene.origin[0],
-                              -tOfLinet + scene.origin[2]);
-        scene.h.stroke();
+            scene.h.stroke();
+            scene.h.beginPath();
+            scene.h.arc(xvisE + scene.origin[0],
+                       -tvisE + scene.origin[2],
+                        3,0,twopi,true);
+            scene.h.fill();
+        } else  {
+            scene.h.lineTo(tOfLinex + scene.origin[0],
+                          -tOfLinet + scene.origin[2]);
+            scene.h.stroke();
+        }
     }
 };
 

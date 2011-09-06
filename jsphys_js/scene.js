@@ -1,9 +1,81 @@
 "use strict";
 function Scene() {
+
+    /**
+     * Various state variables and options.
+     */
     if (typeof Float64Array !== "undefined") {
         glMatrixArrayType = Float64Array;
     }
 
+    this.initialTime = new Date().getTime();
+    if (typeof FlashCanvas != "undefined") {
+
+        FlashCanvas.initElement($('#canvas')[0]);
+        FlashCanvas.initElement($('#minkowski')[0]);
+        FlashCanvas.initElement($('#3DCanvas')[0]);
+    }
+    this.g = $('#canvas')[0].getContext("2d");
+    this.h = $('#minkowski')[0].getContext("2d");
+    this.TDC = $('#3DCanvas')[0].getContext("2d");
+
+    this.width = $("#canvas").width();
+    this.height = $("#canvas").height();
+    this.mWidth = $("#minkowski").width();
+    this.mHeight = $("#minkowski").height();
+    this.tWidth = $("#3DCanvas").width();
+    this.tHeight = $("#3DCanvas").height();
+
+    this.lightConeCanvas = document.createElement('canvas');
+    this.lightConeCanvas.width =  this.mWidth;
+    this.lightConeCanvas.height =  this.mHeight;
+    if (typeof FlashCanvas != "undefined") {
+        FlashCanvas.initElement(this.lightConeCanvas);
+    }
+
+
+    this.lCCtx = this.lightConeCanvas.getContext('2d');
+    if(!this.TDC.fillText){
+        this.TDC.fillText   = function(){};
+        this.g.fillText     = function(){};
+        this.h.fillText     = function(){};
+    }
+    this.kC = 0;
+    this.camBack = 0;
+    this.hwidth = this.width / 2;
+    this.hheight = this.height / 2;
+    this.origin = [this.hwidth, this.hheight, this.hheight];
+    this.carray = [];
+    this.zoom = 0.25;
+    this.t = 0;
+    this.keyDown = false;
+    this.defaults = {"showDoppler": true,
+                     "showVisualPos": true,
+                     "showFramePos": false,
+                     "showVelocity": true,
+                     "showTime": false,
+                     "showGamma": true,
+                     "show3D": false,
+                     "showPos": false,
+                     "c": 3,
+                     "showText": true,
+                     "timeScale": 0.01,
+                     "canShoot": false};
+
+    this.options = {"alwaysDoppler": false,
+                    "neverDoppler": false,
+                    "alwaysShowFramePos": false,
+                    "neverShowFramePos": false,
+                    "alwaysShowVisualPos": false,
+                    "neverShowVisualPos": false,
+                    "showTime": false,
+                   };
+
+    this.drawing = true;    
+    
+    
+    
+    
     /** Demo loading functions **/
 
     /**
@@ -58,6 +130,8 @@ function Scene() {
         this.frameStartTime = new Date().getTime();
     };
 
+    
+    
     /**
      * Called by scene.load() to create each individual object in a scene.
      * Hence obj is an object from the demo system specifying options,
@@ -97,27 +171,28 @@ function Scene() {
         this.carray.push(thingy);
     };
 
+    
+    
+    
+    
     /** Scene drawing functions **/
-
     /**
      * Draw the scene onto the canvas. Uses requestAnimFrame to schedule the
      * next frame.
      */
     this.draw = function() {
-        if (fireDown && this.curOptions.canShoot) {
-            var newPhoton = new photon(quat4.create([0, 0, 0, 0]),
-                                       quat4.create([0, 1, 0, 0]), "photon", {"showCircle": false});
-            this.carray.push(newPhoton);
-            fireDown = false;
-        }
-
+        this.processInput();
+        
         this.oldFrameStartTime = this.frameStartTime;
         this.frameStartTime = new Date().getTime();
         var timeStep = 0;
         if (this.drawing){
             timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale * c;
         }
+        
         this.clear();
+        
+        // Draw the light cone, if we're using flashCanvas, don't use offscreen canvas.
         if (typeof FlashCanvas != "undefined") {
             //Ie draw light cone here.
             drawLightCone(this,this.h);
@@ -125,22 +200,41 @@ function Scene() {
         }else {
             this.h.drawImage(this.lightConeCanvas, 0, 0);
         }
+        // Put some text on the light cone. Doesn't seem to work in opera 9, not sure why.
         if(this.curOptions.showText) {
             this.h.beginPath();
             this.h.fillText("t(s)", 5 + scene.origin[0], 10);
             this.h.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
             this.h.fill();
         }
+        
+        // Where the meat of the work is done.
         for ( var i = 0; i < this.carray.length; i++) {
             this.carray[i].update(timeStep, this);
             this.carray[i].draw(this);
-            this.carray[i].drawXT(this);
         }
         
+        // Some UI drawing.
         this.drawCrosshairs();
         if(this.curOptions.showText) this.drawInfo();
+        
+        // Get ready for the next frame.
         this.t = this.t + (timeStep);
+        if (this.drawing || this.keyDown) {
+            requestAnimFrame(drawScene);
+        }
 
+    };
+
+    this.processInput = function() {
+    
+        // Create a new photon. Careful with this, photons are tracked even after they disappear.
+        if (fireDown && this.curOptions.canShoot) {
+            var newPhoton = new photon(quat4.create([0, 0, 0, 0]),
+                                       quat4.create([0, 1, 0, 0]), "photon", {"showCircle": false});
+            this.carray.push(newPhoton);
+            fireDown = false;
+        }
         if (leftDown === true)     this.changeArrayFrame(nullQuat4, this.boost.left );
         if (upDown === true)       this.changeArrayFrame(nullQuat4, this.boost.up   );
         if (downDown === true)     this.changeArrayFrame(nullQuat4, this.boost.down );
@@ -163,14 +257,11 @@ function Scene() {
             this.timeScale = this.timeScale * 1.1;
             updateSliders();
         }
-        if (this.drawing || this.keyDown) {
-            requestAnimFrame(drawScene);
-        }
-        this.lastFrameEndTime = this.frameEndTime;
-        this.frameEndTime = new Date().getTime();
-    };
-
+    }
+    
+    
     this.drawInfo = function() {
+    
         scene.g.fillStyle = "rgba(100,100,100,0.3)";
         scene.g.beginPath();
         scene.g.moveTo(10,10);
@@ -183,12 +274,12 @@ function Scene() {
         scene.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
         scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 50);
         scene.g.fillText("Time speedup: " + Math.round(this.timeScale * 10000) / 10 + "x", 30, 70);
-        if (window.console) {
-            scene.g.fillText("Fps: " + Math.round((1000 / (-this.lastFrameEndTime + this.frameEndTime))), 30, 80);
+        if (window.console && window.console.firebug) {
+            scene.g.fillText("Fps: " + Math.round((1000 / (-this.oldFrameStartTime + this.frameStartTime))), 30, 80);
             scene.g.fillText("c: " + c, 30, 90);
-
+            scene.g.fillText("keyCode: " + this.kC, 30, 100);
         }
-                    scene.g.fillText("keyCode: " + this.kC, 30, 100);
+        
     };
 
     this.drawCrosshairs = function () {
@@ -309,70 +400,6 @@ function Scene() {
 
     };
 
-    this.initialTime = new Date().getTime();
-    if (typeof FlashCanvas != "undefined") {
-
-        FlashCanvas.initElement($('#canvas')[0]);
-        FlashCanvas.initElement($('#minkowski')[0]);
-        FlashCanvas.initElement($('#3DCanvas')[0]);
-    }
-    this.g = $('#canvas')[0].getContext("2d");
-    this.h = $('#minkowski')[0].getContext("2d");
-    this.TDC = $('#3DCanvas')[0].getContext("2d");
-
-    this.width = $("#canvas").width();
-    this.height = $("#canvas").height();
-    this.mWidth = $("#minkowski").width();
-    this.mHeight = $("#minkowski").height();
-    this.tWidth = $("#3DCanvas").width();
-    this.tHeight = $("#3DCanvas").height();
-
-     this.lightConeCanvas = document.createElement('canvas');
-     this.lightConeCanvas.width =  this.mWidth;
-     this.lightConeCanvas.height =  this.mHeight;
-    if (typeof FlashCanvas != "undefined") {
-        FlashCanvas.initElement(this.lightConeCanvas);
-    }
-
-
-    this.lCCtx = this.lightConeCanvas.getContext('2d');
-    if(!this.TDC.fillText){
-        this.TDC.fillText   = function(){};
-        this.g.fillText     = function(){};
-        this.h.fillText     = function(){};
-    }
-    this.kC = 0;
-    this.camBack = 0;
-    this.hwidth = this.width / 2;
-    this.hheight = this.height / 2;
-    this.origin = [this.hwidth, this.hheight, this.hheight];
-    this.carray = [];
-    this.zoom = 0.25;
-    this.t = 0;
-    this.keyDown = false;
-    this.defaults = {"showDoppler": true,
-                     "showVisualPos": true,
-                     "showFramePos": false,
-                     "showVelocity": true,
-                     "showTime": false,
-                     "showGamma": true,
-                     "show3D": false,
-                     "showPos": false,
-                     "c": 3,
-                     "showText": true,
-                     "timeScale": 0.01,
-                     "canShoot": false};
-
-    this.options = {"alwaysDoppler": false,
-                    "neverDoppler": false,
-                    "alwaysShowFramePos": false,
-                    "neverShowFramePos": false,
-                    "alwaysShowVisualPos": false,
-                    "neverShowVisualPos": false,
-                    "showTime": false,
-                   };
-
-    this.drawing = true;
 }
 
 /**
@@ -383,7 +410,11 @@ function drawScene(event) {
     scene.draw();
 }
 
-function drawLightCone(scene,ctx){
+/**
+ * Function to draw a light cone. ctx is there for drawing either on an offscreen canvas
+ * or onscreen (used if FlashCanvas is active). They are assumed to be the same size.
+ */
+function drawLightCone(scene, ctx){
     var size = Math.max(scene.mHeight - scene.origin[2], scene.origin[2]);
     ctx.fillStyle = "#300";
     ctx.beginPath();

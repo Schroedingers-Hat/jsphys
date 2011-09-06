@@ -175,6 +175,7 @@ extendedObject.prototype = {
                 this.drawNow3D(scene);
             }
         }
+        this.drawXT(scene);
     },
     
     /**
@@ -345,7 +346,7 @@ extendedObject.prototype = {
             if(currentColor == prevColor) scene.g.stroke();
 
             // If we've got a debug console open we probably want a bit more information.
-            if (window.console) {
+            if (window.console && window.console.firebug) {
                 scene.g.beginPath();
                 scene.g.arc(this.COM.XView[0] / scene.zoom + scene.origin[0],
                             -this.COM.XView[1]  / scene.zoom + scene.origin[1] ,
@@ -421,6 +422,7 @@ extendedObject.prototype = {
                 currentColor = tempToColor(dopplerShiftColor(this.temp,
                                                              this.pastRadialV[0],
                                                              this.COM.V[3] / c));
+                scene.TDC.strokeStyle = currentColor;
             } else {
                 scene.TDC.strokeStyle = this.stillColor;
             }
