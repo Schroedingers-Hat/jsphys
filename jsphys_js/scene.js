@@ -15,10 +15,13 @@ function Scene() {
         FlashCanvas.initElement($('#minkowski')[0]);
         FlashCanvas.initElement($('#3DCanvas')[0]);
     }
+    var defFont = "0.8em Optimer";
     this.g = $('#canvas')[0].getContext("2d");
     this.h = $('#minkowski')[0].getContext("2d");
     this.TDC = $('#3DCanvas')[0].getContext("2d");
-
+    this.g.font = defFont;
+    this.h.font = defFont;
+    this.TDC.font = defFont;
     this.width = $("#canvas").width();
     this.height = $("#canvas").height();
     this.mWidth = $("#minkowski").width();
@@ -35,6 +38,7 @@ function Scene() {
 
 
     this.lCCtx = this.lightConeCanvas.getContext('2d');
+    this.lCCtx.font = defFont;
     if(!this.TDC.fillText){
         this.TDC.fillText   = function(){};
         this.g.fillText     = function(){};
