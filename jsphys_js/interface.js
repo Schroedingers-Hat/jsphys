@@ -25,53 +25,53 @@ var scene;
 //Will allow changing the controls to boot.
 
 // Get Key Input
-function onKeyDown(evt) 
+function onKeyDown(evt)
 {
-		
+
         keyIsUseful = true;
         scene.kC = evt.keyCode;
-    	if (evt.keyCode == 81) rotLeftDown = true;
-    	else if (evt.keyCode == 69) rotRightDown = true;
+        if (evt.keyCode == 81) rotLeftDown = true;
+        else if (evt.keyCode == 69) rotRightDown = true;
         else if (evt.keyCode == 68) rightDown = true;
-    	else if (evt.keyCode == 65) leftDown = true;
-    	else if (evt.keyCode == 87) upDown = true;
-    	else if (evt.keyCode == 83) downDown = true;
-    	else if (evt.keyCode == 221) speedUp = true;
-    	else if (evt.keyCode == 219) speedDown = true;
-    	else if (evt.keyCode == 220) {
+        else if (evt.keyCode == 65) leftDown = true;
+        else if (evt.keyCode == 87) upDown = true;
+        else if (evt.keyCode == 83) downDown = true;
+        else if (evt.keyCode == 221) speedUp = true;
+        else if (evt.keyCode == 219) speedDown = true;
+        else if (evt.keyCode == 220) {
             scene.timeScale = -scene.timeScale;
             updateSliders();
         }
-		else if (evt.keyCode == 51) scene.curOptions.show3D = !scene.curOptions.show3D;
+        else if (evt.keyCode == 51) scene.curOptions.show3D = !scene.curOptions.show3D;
         else if (evt.keyCode == 17) {
             if (ctrlDown == false) fireDown = true;
             ctrlDown = true;
         }
-//    	else if (evt.keyCode == 49) rotUpDown = true; //Not needed for 2D 
-//    	else if (evt.keyCode == 50) rotDownDown = true;  //Not needed for 2D
+//        else if (evt.keyCode == 49) rotUpDown = true; //Not needed for 2D
+//        else if (evt.keyCode == 50) rotDownDown = true;  //Not needed for 2D
 
         else if (evt.keyCode == 84) scene.options.showTime = !scene.options.showTime;
         else if (evt.keyCode == 90)
         {
             // $('#doppler').click();
-			dopplerButtonClick(evt);
+            dopplerButtonClick(evt);
         }
         else if (evt.keyCode == 88)
         {
-			framePosClick(evt);
+            framePosClick(evt);
         }
         else if (evt.keyCode == 67)
         {
-			vPosClick(evt);
+            vPosClick(evt);
         }
-    	else if (evt.keyCode == 61 || evt.keyCode == 107 || evt.keyCode == 187) 
-    	{
+        else if (evt.keyCode == 61 || evt.keyCode == 107 || evt.keyCode == 187)
+        {
             zoomIn = true;
-    	}
-    	else if (evt.keyCode == 109 || evt.keyCode == 189) 
-    	{
-           zoomOut = true; 
-    	}
+        }
+        else if (evt.keyCode == 109 || evt.keyCode == 189)
+        {
+           zoomOut = true;
+        }
         else if (evt.keyCode == 80)
         {
             scene.options.showPos = !scene.options.showPos;
@@ -83,23 +83,23 @@ function onKeyDown(evt)
         }
 }
 
-function onKeyUp(evt) 
+function onKeyUp(evt)
 {
-	
-	
-	if (evt.keyCode == 68) rightDown = false;
-	else if (evt.keyCode == 65) leftDown = false;
-	else if(evt.keyCode == 87) upDown = false;
-	else if(evt.keyCode == 83) downDown = false;
+
+
+    if (evt.keyCode == 68) rightDown = false;
+    else if (evt.keyCode == 65) leftDown = false;
+    else if(evt.keyCode == 87) upDown = false;
+    else if(evt.keyCode == 83) downDown = false;
     else if (evt.keyCode == 61 || evt.keyCode == 107 || evt.keyCode == 187) zoomIn = false;
     else if (evt.keyCode == 109 || evt.keyCode == 189) zoomOut = false;
-	else if (evt.keyCode == 69) rotRightDown = false;
-	else if (evt.keyCode == 81) rotLeftDown = false;
+    else if (evt.keyCode == 69) rotRightDown = false;
+    else if (evt.keyCode == 81) rotLeftDown = false;
     else if (evt.keyCode == 219) speedDown = false;
     else if (evt.keyCode == 221) speedUp = false;
     else if (evt.keyCode == 17) ctrlDown = false;
-//	else if (evt.keyCode == 49) rotUpDown = false;  
-//	else if (evt.keyCode == 50) rotDownDown = false;  
+//    else if (evt.keyCode == 49) rotUpDown = false;
+//    else if (evt.keyCode == 50) rotDownDown = false;
     scene.keyDown = false;
 }
 
@@ -158,7 +158,7 @@ function doPause(event) {
     scene.pause();
     updateSliders();
     if(event.preventDefault) event.preventDefault();
-	else event.returnValue = false;
+    else event.returnValue = false;
 }
 
 function setAnimSpeed(event, ui) {
@@ -175,11 +175,11 @@ function setAnimSpeed(event, ui) {
  * requestAnim shim layer by Paul Irish
  */
 window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       || 
-          window.webkitRequestAnimationFrame || 
-          window.mozRequestAnimationFrame    || 
-          window.oRequestAnimationFrame      || 
-          window.msRequestAnimationFrame     || 
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          window.oRequestAnimationFrame      ||
+          window.msRequestAnimationFrame     ||
           function(/* function */ callback, /* DOMElement */ element){
             window.setTimeout(callback, 1000 / 60);
           };
@@ -191,14 +191,14 @@ window.requestAnimFrame = (function(){
 function loadDemo(idx) {
     return function() {
         scene.load(demos[idx], 0);
-		if (typeof FlashCanvas != "undefined") {
+        if (typeof FlashCanvas != "undefined") {
 
-		} else {
+        } else {
         $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider,
                                    value: -(Math.log(scene.zoom) / Math.LN2)});
-        $("#speed-slider").slider({min: -2 , max: 2, step: 0.01, slide: setAnimSpeed, 
+        $("#speed-slider").slider({min: -2 , max: 2, step: 0.01, slide: setAnimSpeed,
                                     value: (Math.log(scene.timeScale + 1) / Math.LN2)});
-		}
+        }
          $("#demo-chooser").hide();
         scene.startAnimation();
         requestAnimFrame(drawScene);
@@ -208,7 +208,7 @@ function loadDemo(idx) {
 function updateSliders() {
     $("#zoom-slider").slider("option", "value", -(Math.log(scene.zoom) / Math.LN2));
 
-    $("#speed-slider").slider("option", "value", 
+    $("#speed-slider").slider("option", "value",
                               (Math.log(scene.timeScale + 1) / Math.LN2));
 }
 
@@ -216,12 +216,12 @@ function updateSliders() {
  * Builds the demo chooser menu by iterating through our provided demos array.
  */
 function loadDemoList() {
-	var e;
-	var demo;
-	for (var idx=0; idx < demos.length; idx++) {
-		e = $("<li>" + demos[idx].name + "</li>").click(loadDemo(idx));
-		$("#demo-list").append(e);
-	}
+    var e;
+    var demo;
+    for (var idx=0; idx < demos.length; idx++) {
+        e = $("<li>" + demos[idx].name + "</li>").click(loadDemo(idx));
+        $("#demo-list").append(e);
+    }
 }
 
 /**
@@ -248,7 +248,7 @@ function dopplerButtonClick(event) {
         $("#doppler").html("Force off");
     }
     if(event.preventDefault) event.preventDefault();
-	else event.returnValue = false;
+    else event.returnValue = false;
 }
 
 /**
@@ -272,7 +272,7 @@ function framePosClick(event) {
         $("#framePos").html("Force on");
     }
     if(event.preventDefault) event.preventDefault();
-	else event.returnValue = false;
+    else event.returnValue = false;
 }
 
 function vPosClick(event) {
@@ -292,9 +292,9 @@ function vPosClick(event) {
         scene.options.alwaysShowVisualPos = false;
         $("#vPos").html("Force on");
     }
-	
+
     if(event.preventDefault) event.preventDefault();
-	else event.returnValue = false;
+    else event.returnValue = false;
 }
 // Use JQuery to wait for document load
 $(document).ready(function()
@@ -302,7 +302,7 @@ $(document).ready(function()
     var viewportWidth = $('body').width() - 16;
     $("#canvas").attr('width', viewportWidth);
     scene = new Scene();
-    
+
     loadDemoList();
     //$(document).keydown(onKeyDown);
     //$(document).keyup(onKeyUp);

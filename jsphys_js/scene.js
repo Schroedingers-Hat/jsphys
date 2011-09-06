@@ -43,11 +43,11 @@ function Scene() {
                       "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
                       "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
                       "down": boostFrom3Vel(0, -0.005, 0, this.zoom)};
-  
+
         // demo.steps[step].objects.forEach(this.createObject, this);
-		for ( var i = 0; i < demo.steps[step].objects.length; i++) {
-			this.createObject(demo.steps[step].objects[i]);
-		}
+        for ( var i = 0; i < demo.steps[step].objects.length; i++) {
+            this.createObject(demo.steps[step].objects[i]);
+        }
 
         $('#caption').html(demo.steps[step].caption);
 
@@ -83,7 +83,7 @@ function Scene() {
         }
         var thingy;
         if (obj.shape) {
-            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
+            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, obj.shape);
         } else if (obj.v) {
             if (obj.x[3]) thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
@@ -91,7 +91,7 @@ function Scene() {
             else thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
                                     quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), obj.label, obj.options);
         } else {
-            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]), 
+            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
         }
         this.carray.push(thingy);
@@ -118,22 +118,22 @@ function Scene() {
             timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale * c;
         }
         this.clear();
-		if (typeof FlashCanvas != "undefined") {
-			//Ie draw light cone here.
-			drawLightCone(this,this.h);
-			
-		}else {
-			this.h.drawImage(this.lightConeCanvas, 0, 0);
-		}
-		for ( var i = 0; i < this.carray.length; i++) {
-			this.carray[i].update(timeStep, this);
-			this.carray[i].draw(this);
-			this.carray[i].drawXT(this);
-		}
+        if (typeof FlashCanvas != "undefined") {
+            //Ie draw light cone here.
+            drawLightCone(this,this.h);
+
+        }else {
+            this.h.drawImage(this.lightConeCanvas, 0, 0);
+        }
+        for ( var i = 0; i < this.carray.length; i++) {
+            this.carray[i].update(timeStep, this);
+            this.carray[i].draw(this);
+            this.carray[i].drawXT(this);
+        }
         // this.carray.forEach(function(obj) {
             // obj.update(timeStep, this);
             // obj.draw(this);
-           //obj.drawXT(this); 
+           //obj.drawXT(this);
         // }, this);
         this.drawCrosshairs();
         this.drawInfo();
@@ -186,7 +186,7 @@ function Scene() {
             scene.g.fillText("c: " + c, 30, 90);
 
         }
-		            scene.g.fillText("keyCode: " + this.kC, 30, 100); 
+                    scene.g.fillText("keyCode: " + this.kC, 30, 100);
     };
 
     this.drawCrosshairs = function () {
@@ -266,14 +266,14 @@ function Scene() {
         var minElement = -1;
 
         for (var i = 0; i < this.carray.length; i++) {
-			if (!this.carray[i].nonTimeLike) {
+            if (!this.carray[i].nonTimeLike) {
                 var dist = this.carray[i].minDistanceTo([(x - this.origin[0]) * this.zoom,
                                                          -(y - this.origin[1]) * this.zoom, 0, 0], this);
-				if (dist < minDist) {
-					minDist = dist;
-					minElement = i;
-				}
-			}
+                if (dist < minDist) {
+                    minDist = dist;
+                    minElement = i;
+                }
+            }
         }
 
         if (minDist < maxDist && minElement >= 0) {
@@ -287,7 +287,7 @@ function Scene() {
         if (shift) { this.changeArrayFrame(quat4.create(obj.getX0()), cBoostMat(obj.getV(), c), shift);}
         else { this.changeArrayFrame(quat4.create(obj.getX0()), cBoostMat(obj.getV(), c));}
     };
-	
+
 
     /**
      * Switch every object in the scene to a new reference frame given by
@@ -296,28 +296,28 @@ function Scene() {
     this.changeArrayFrame = function(translation1, boost, translation2) {
         if (translation2){
             for (var i=0;i < this.carray.length; i++) {
-				this.carray[i].changeFrame(translation1, boost, translation2);
-			}
+                this.carray[i].changeFrame(translation1, boost, translation2);
+            }
         } else {
-		     for (var i=0;i < this.carray.length; i++) {
-				this.carray[i].changeFrame(translation1, boost);
-			}
+             for (var i=0;i < this.carray.length; i++) {
+                this.carray[i].changeFrame(translation1, boost);
+            }
         }
 
 
     };
 
     this.initialTime = new Date().getTime();
-	if (typeof FlashCanvas != "undefined") {
+    if (typeof FlashCanvas != "undefined") {
 
-		FlashCanvas.initElement($('#canvas')[0]);
-		FlashCanvas.initElement($('#minkowski')[0]);
-		FlashCanvas.initElement($('#3DCanvas')[0]);
-	}
+        FlashCanvas.initElement($('#canvas')[0]);
+        FlashCanvas.initElement($('#minkowski')[0]);
+        FlashCanvas.initElement($('#3DCanvas')[0]);
+    }
     this.g = $('#canvas')[0].getContext("2d");
     this.h = $('#minkowski')[0].getContext("2d");
     this.TDC = $('#3DCanvas')[0].getContext("2d");
-	
+
     this.width = $("#canvas").width();
     this.height = $("#canvas").height();
     this.mWidth = $("#minkowski").width();
@@ -328,17 +328,17 @@ function Scene() {
      this.lightConeCanvas = document.createElement('canvas');
      this.lightConeCanvas.width =  this.mWidth;
      this.lightConeCanvas.height =  this.mHeight;
-	if (typeof FlashCanvas != "undefined") {
-		FlashCanvas.initElement(this.lightConeCanvas);
-	}
-	
+    if (typeof FlashCanvas != "undefined") {
+        FlashCanvas.initElement(this.lightConeCanvas);
+    }
+
 
     this.lCCtx = this.lightConeCanvas.getContext('2d');
-	if(!this.TDC.fillText){
-		this.TDC.fillText   = function(){};
-		this.g.fillText     = function(){};
-		this.h.fillText     = function(){};
-	}
+    if(!this.TDC.fillText){
+        this.TDC.fillText   = function(){};
+        this.g.fillText     = function(){};
+        this.h.fillText     = function(){};
+    }
     this.kC = 0;
     this.camBack = 0;
     this.hwidth = this.width / 2;
@@ -359,7 +359,7 @@ function Scene() {
                      "c": 3,
                      "timeScale": 0.01,
                      "canShoot": false};
-  
+
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
                     "alwaysShowFramePos": false,
@@ -409,13 +409,13 @@ function drawLightCone(scene,ctx){
     ctx.moveTo(0, scene.origin[2]);
     ctx.lineTo(scene.mWidth, scene.origin[2]);
     ctx.moveTo(scene.origin[0], 0);
-    ctx.lineTo(scene.origin[0], scene.mHeight); 
+    ctx.lineTo(scene.origin[0], scene.mHeight);
     ctx.stroke();
     ctx.lineWidth = 1;
     ctx.fillStyle = "#fff";
-	if(typeof(opera) != "undefined" && opera.version()[0] == 9){
-		ctx.fillText("t(s)", 5 + scene.origin[0], 10);
-		ctx.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
-	}
-	return;
+    if(typeof(opera) != "undefined" && opera.version()[0] == 9){
+        ctx.fillText("t(s)", 5 + scene.origin[0], 10);
+        ctx.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
+    }
+    return;
 }

@@ -10,7 +10,7 @@ function photon(X, V, label, options) {
     this.rPast = 1;
     this.XView = quat4.create();
     this.V = V;
-	this.nonTimeLike = true;
+    this.nonTimeLike = true;
     this.initialPt = quat4.create(X);
     if (this.options.endPt){
         this.endPt = quat4.create(this.options.endPt);
@@ -65,14 +65,14 @@ photon.prototype.changeFrame = function(translation1, rotation, translation2) {
 
     // Point is now at wrong time. Find displacement to current time.
     quat4.scale(this.V, -this.X0[3] / this.V[3], this.uDisplacement);
-    
+
     // Bring to current time.
     quat4.add(this.X0, this.uDisplacement);
     if ( translation2) {
         quat4.subtract(this.X0, translation2);
         // Point is now at wrong time. Find displacement to current time.
         quat4.scale(this.V, -this.X0[3] / this.V[3], this.uDisplacement);
-    
+
         // Bring to current time.
         quat4.add(this.X0, this.uDisplacement);
         // Wrong time again;
@@ -103,7 +103,7 @@ photon.prototype.drawXT = function(scene) {
         var xvisE  = this.endPt[0] / scene.zoom;
         var tvisE  = this.endPt[3] / scene.zoom / c;
     }
-    
+
     var xyScale = scene.mWidth / scene.mHeight;
     var dxdtVis = this.V[0] / this.V[3] * c;
 
@@ -126,7 +126,7 @@ photon.prototype.drawXT = function(scene) {
                         3,0,twopi,true);
             scene.h.fill();
             scene.h.beginPath();
-            scene.h.moveTo(xvis + scene.origin[0], 
+            scene.h.moveTo(xvis + scene.origin[0],
                           -tvis + scene.origin[2]);
 
         } else {
@@ -137,7 +137,7 @@ photon.prototype.drawXT = function(scene) {
         if ( (-tvisE + scene.origin[2]) >0){
             scene.h.lineTo(xvisE + scene.origin[0],
                           -tvisE + scene.origin[2]);
-           
+
         } else  scene.h.lineTo(tOfLinex + scene.origin[0],
                               -tOfLinet + scene.origin[2]);
         scene.h.stroke();
@@ -148,7 +148,7 @@ photon.prototype.drawNow = function(scene) {
     if (this.initialPt[3] < 0){
         scene.g.fillStyle = "#fff";
         scene.g.beginPath();
-        scene.g.arc(this.X0[0] / scene.zoom + scene.origin[0], 
+        scene.g.arc(this.X0[0] / scene.zoom + scene.origin[0],
                     -this.X0[1] / scene.zoom + scene.origin[1],
                     2, 0, twopi,true);
         scene.g.fill();
