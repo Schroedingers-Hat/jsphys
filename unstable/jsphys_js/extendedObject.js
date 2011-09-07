@@ -186,25 +186,25 @@ extendedObject.prototype = {
             }
         }
         if(this.options.showMinkowski) this.drawXT(scene);
-		    var gamma = this.COM.V[3] / c;
-			var v = quat4.scale(this.COM.V, 1/ gamma, tempQuat4);
-		     for (var j = 0; j < (this.boundingIdx.length); j++)
-            {
-                var i = this.boundingIdx[j];
-                var xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
-                var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V);
-                var vDotv = quat4.spaceDot(v,v);
-                var a = c*c - vDotv;
-
-                var futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
-                quat4.scale(v, futTime / c, this.uDisplacement);
-                quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPos[i]);
-				scene.g.beginPath();
-				scene.g.fillStyle = "#f00";
-				scene.g.arc(this.futPos[i][0] / scene.zoom + scene.origin[0],
-							-this.futPos[i][1] / scene.zoom + scene.origin[1],2,0,twopi,true);
-				scene.g.fill();
-            }
+//		    var gamma = this.COM.V[3] / c;
+//			var v = quat4.scale(this.COM.V, 1/ gamma, tempQuat4);
+//		     for (var j = 0; j < (this.boundingIdx.length); j++)
+//            {
+//                var i = this.boundingIdx[j];
+//                var xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
+//                var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V);
+//                var vDotv = quat4.spaceDot(v,v);
+//                var a = c*c - vDotv;
+//
+//                var futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
+//                quat4.scale(v, futTime / c, this.uDisplacement);
+//                quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPos[i]);
+//				scene.g.beginPath();
+//				scene.g.fillStyle = "#f00";
+//				scene.g.arc(this.futPos[i][0] / scene.zoom + scene.origin[0],
+//							-this.futPos[i][1] / scene.zoom + scene.origin[1],2,0,twopi,true);
+//				scene.g.fill();
+//            }
 			
     },
     

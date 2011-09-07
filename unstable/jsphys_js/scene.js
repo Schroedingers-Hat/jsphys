@@ -116,10 +116,10 @@ function Scene() {
 
         drawLightCone(this, this.lCCtx);
 
-        this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
-                      "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
-                      "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
-                      "down": boostFrom3Vel(0, -0.005, 0, this.zoom)};
+        this.boost = {"left": boostFrom3Vel(-0.05, 0, 0, this.zoom),
+                      "right": boostFrom3Vel(0.05, 0, 0, this.zoom),
+                      "up": boostFrom3Vel(0, 0.05, 0, this.zoom),
+                      "down": boostFrom3Vel(0, -0.05, 0, this.zoom)};
 
         // demo.steps[step].objects.forEach(this.createObject, this);
         for ( var i = 0; i < demo.steps[step].objects.length; i++) {
