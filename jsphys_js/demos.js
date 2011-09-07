@@ -185,7 +185,10 @@ var demos = [
 
     {"name": "Test thingies.",
                 "steps": [{"caption": "Test for some things",
-                           "objects": [{"object": extendedObject, "x": [0, 0, 10], "p": [0,0,0], "m": 1, "shape": filledSphere(10,200)[1], "polys": filledSphere(10,200)[0]}                             ],
+                           "objects": [
+{"object": extendedObject, "x": [0, 0, 0], "p": [0,0,0], "m": 1, "shape": filledSphere(10,400)[1], "polys": filledSphere(10,400)[0]},
+{"object": extendedObject, "x": [-20, 0, 0], "p": [0,0,0], "m": 1, "shape": filledSphere(10,400)[1], "polys": filledSphere(10,400)[0]},
+{"object": extendedObject, "x": [20, 0, 0], "p": [0,0,0], "m": 1, "shape": filledSphere(10,400)[1], "polys": filledSphere(10,400)[0]}                             ],
                            "options": {"showFramePos": true, "showVisualPos": true, "show3D": false, "canShoot": true}
                           }],
                 "options": {"canShoot": true}

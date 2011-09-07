@@ -10,7 +10,7 @@ function extendedObject(X, P, label, options, shape, polys)
     this.pastPoints = [];
     this.pastRadialV = [];
     this.pastR = [];
-    this.polys = filledSphere(10,200)[0];
+    this.polys = filledSphere(10,400)[0];
     this.iI3d = true;
     this.wI3d = true;
     this.iI2d = true;
@@ -170,42 +170,42 @@ extendedObject.prototype = {
 
     draw: function(scene) {
 
-        if ((!this.endPt || this.endPt[3] > this.COM.XView[3]) &&(scene.options.alwaysShowVisualPos ||
-            (this.options.showVisualPos && !scene.options.neverShowVisualPos))) {
-            this.drawPast(scene);
-            if (this.options.show3D || scene.curOptions.show3D) {
-                this.drawPast3D(scene);
-            }
-        }
-        if (!this.endPt || this.endPt[3] > 0){
-            if (scene.options.alwaysShowFramePos ||
-                (!scene.options.neverShowFramePos && this.options.showFramePos)) {
-                this.drawNow(scene);
-                if (this.options.show3D || scene.curOptions.show3D) {
-                    this.drawNow3D(scene);
-                }
-            }
-        }
-        if(this.options.showMinkowski) this.drawXT(scene);
-		    var gamma = this.COM.V[3] / c;
-			var v = quat4.scale(this.COM.V, 1/ gamma, tempQuat4);
-		     for (var j = 0; j < (this.boundingIdx.length); j++)
-            {
-                var i = this.boundingIdx[j];
-                var xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
-                var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V);
-                var vDotv = quat4.spaceDot(v,v);
-                var a = c*c - vDotv;
-
-                var futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
-                quat4.scale(v, futTime / c, this.uDisplacement);
-                quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPos[i]);
-				scene.g.beginPath();
-				scene.g.fillStyle = "#f00";
-				scene.g.arc(this.futPos[i][0] / scene.zoom + scene.origin[0],
-							-this.futPos[i][1] / scene.zoom + scene.origin[1],2,0,twopi,true);
-				scene.g.fill();
-            }
+   //     if ((!this.endPt || this.endPt[3] > this.COM.XView[3]) &&(scene.options.alwaysShowVisualPos ||
+   //         (this.options.showVisualPos && !scene.options.neverShowVisualPos))) {
+// //           this.drawPast(scene);
+   //         if (this.options.show3D || scene.curOptions.show3D) {
+  ////              this.drawPast3D(scene);
+   //         }
+   //     }
+   //     if (!this.endPt || this.endPt[3] > 0){
+   //         if (scene.options.alwaysShowFramePos ||
+   //             (!scene.options.neverShowFramePos && this.options.showFramePos)) {
+   //             this.drawNow(scene);
+   //             if (this.options.show3D || scene.curOptions.show3D) {
+   //                 this.drawNow3D(scene);
+   //             }
+   //         }
+   //     }
+//        if(this.options.showMinkowski) this.drawXT(scene);
+//		    var gamma = this.COM.V[3] / c;
+//			var v = quat4.scale(this.COM.V, 1/ gamma, tempQuat4);
+//		     for (var j = 0; j < (this.boundingIdx.length); j++)
+//            {
+//                var i = this.boundingIdx[j];
+//                var xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
+//                var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V);
+//                var vDotv = quat4.spaceDot(v,v);
+//                var a = c*c - vDotv;
+//
+//                var futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
+//                quat4.scale(v, futTime / c, this.uDisplacement);
+//                quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPos[i]);
+//				scene.g.beginPath();
+//				scene.g.fillStyle = "#f00";
+//				scene.g.arc(this.futPos[i][0] / scene.zoom + scene.origin[0],
+//							-this.futPos[i][1] / scene.zoom + scene.origin[1],2,0,twopi,true);
+//				scene.g.fill();
+//            }
 //        this.drawPolys(scene);		
         this.drawPastPolys(scene);		
     },
@@ -625,7 +625,6 @@ extendedObject.prototype = {
                     fillVal = quat4.spaceDot([1,0,0,0],this.shapePoints[this.polys[i][0]]) / vec3.length(this.shapePoints[this.polys[i][0]]);
                     scene.TDC.moveTo(this.pastPoints[this.polys[i][0]][0] * coeff + scene.origin[0],
                                   -this.pastPoints[this.polys[i][0]][2] * coeff + scene.origin[1]);
-                }
                 for (var j = 1; j < this.polys[i].length; j++) {
 
                     fillVal += quat4.spaceDot([1,0,0,0],this.shapePoints[this.polys[i][j]]) / vec3.length(this.shapePoints[this.polys[i][j]]);
@@ -634,6 +633,7 @@ extendedObject.prototype = {
                     scene.TDC.lineTo(this.pastPoints[this.polys[i][j]][0] * coeff + scene.origin[0],
                                   -this.pastPoints[this.polys[i][j]][2] * coeff + scene.origin[1]);
                     }
+                }
                 }
         scene.TDC.fillStyle = tempToColor(dopplerShiftColor(this.temp,
                                                             this.pastRadialV[i],

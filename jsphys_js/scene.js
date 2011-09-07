@@ -296,7 +296,7 @@ function Scene() {
         scene.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
         scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 50);
         scene.g.fillText("Time speedup: " + Math.round(this.timeScale * 10000) / 10 + "x", 30, 70);
-        if (window.console && window.console.firebug) {
+        if (window.console && window.console.firebug || true) {
             scene.g.fillText("Fps: " + Math.round((1000 / (-this.oldFrameStartTime + this.frameStartTime))), 30, 80);
             scene.g.fillText("c: " + c, 30, 90);
             scene.g.fillText("keyCode: " + this.kC, 30, 100);

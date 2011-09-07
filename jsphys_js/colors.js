@@ -23,20 +23,21 @@ function tempToColor(colorTemp, scale)
     if (!tempToColor.cache)
         tempToColor.cache = {};
     
-    var roundedTemp = Math.exp(Math.round(Math.log(colorTemp) * dopplerRoundVal) / dopplerRoundVal);
+    var roundedTemp = Math.round(Math.exp(Math.round(Math.log(colorTemp) * dopplerRoundVal) / dopplerRoundVal));
     
-    if (!(roundedTemp.toString() in tempToColor.cache))
+    if (!(roundedTemp.toString() in tempToColor.cache) || !tempToColor.cache[roundedTemp.toString()][scale])
     {
         var xyz = spectrum_to_xyz(bb_spectrum(roundedTemp));
         var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
         
-        var color = "#" + padRGB(Math.floor(rgb[0] * scale *255).toString(16)) + 
-                          padRGB(Math.floor(rgb[1] * scale *255).toString(16)) +
-                          padRGB(Math.floor(rgb[2] * scale *255).toString(16));
-        tempToColor.cache[roundedTemp.toString(),scale] = color;
+        var color = "rgba(" + Math.floor(rgb[0] * scale *255) + ","
+                            + Math.floor(rgb[1] * scale *255) + ","
+                            + Math.floor(rgb[2] * scale *255) + ",0.5)";
+        tempToColor.cache[roundedTemp.toString()] = tempToColor.cache[roundedTemp.toString()] || [];
+        tempToColor.cache[roundedTemp.toString()][scale] = color;
     }
     
-    return tempToColor.cache[roundedTemp.toString(),scale];
+    return tempToColor.cache[roundedTemp.toString()][scale];
 }
 
 /**
