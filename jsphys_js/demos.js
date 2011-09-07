@@ -205,9 +205,9 @@ var demos = [
 ];
 var rasteroid;
 var rasteroids = [];
-for (var i = 0; i < 400; i++){
+for (var i = 0; i < 40; i++){
     rasteroid = {"object": extendedObject, 
-                 "x": [Math.random()*2000 - 1000, Math.random()*2000 - 1000, 0], 
+                 "x": [Math.random()*200 - 100, Math.random()*200 - 100, 0], 
                  "p": [Math.random()*0.5,Math.random()*0.5,0], "m": 1, 
                  "shape": rAsteroid(Math.random()*40,10),
                  "options": {"showMinkowski": false}};
