@@ -48,8 +48,8 @@ function onKeyDown(evt)
             if (ctrlDown == false) fireDown = true;
             ctrlDown = true;
         }
-//        else if (evt.keyCode == 49) rotUpDown = true; //Not needed for 2D
-//        else if (evt.keyCode == 50) rotDownDown = true;  //Not needed for 2D
+        else if (evt.keyCode == 49) rotUpDown = true; //Not needed for 2D
+        else if (evt.keyCode == 50) rotDownDown = true;  //Not needed for 2D
 
         else if (evt.keyCode == 84) scene.options.showTime = !scene.options.showTime;
         else if (evt.keyCode == 90)
@@ -99,8 +99,8 @@ function onKeyUp(evt)
     else if (evt.keyCode == 219) speedDown = false;
     else if (evt.keyCode == 221) speedUp = false;
     else if (evt.keyCode == 17) ctrlDown = false;
-//    else if (evt.keyCode == 49) rotUpDown = false;
-//    else if (evt.keyCode == 50) rotDownDown = false;
+    else if (evt.keyCode == 49) rotUpDown = false;
+    else if (evt.keyCode == 50) rotDownDown = false;
     scene.keyDown = false;
 }
 

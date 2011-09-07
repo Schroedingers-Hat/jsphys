@@ -22,14 +22,14 @@ var rotRight = mat4.create([ Math.cos(0.1),  Math.sin(-0.1), 0, 0,
                              0,              0,             1, 0,
                              0,              0,             0, 1]);
 //Not needed for 2D, not right for A[3] is timelike.
-//var rotUp = mat4.create([1, 0, 0, 0,
-//                         0, 1, 0, 0,
-//                         0, 0, Math.cos(0.1), Math.sin(0.1),
-//                         0, 0, Math.sin( -0.1), Math.cos(0.1)]);
-//var rotDown = mat4.create([1, 0, 0, 0,
-//                           0, 1, 0, 0,
-//                           0, 0, Math.cos(0.1), Math.sin(-0.1),
-//                           0, 0, Math.sin(0.1), Math.cos(0.1)]);
+var rotUp = mat4.create([1, 0,              0,             0,
+                         0, Math.cos( 0.1), Math.sin(0.1), 0,
+                         0, Math.sin(-0.1), Math.cos(0.1), 0,
+                         0, 0,               0,            1]);
+var rotDown = mat4.create([1, 0,              0,             0,
+                         0, Math.cos(0.1), Math.sin(-0.1), 0,
+                         0, Math.sin(0.1), Math.cos( 0.1), 0,
+                         0, 0,               0,            1]);
 
 //Convention of using Velocity not multiplied by gamma.
 
@@ -225,4 +225,31 @@ function rAsteroid(size,detail) {
     }
     rAsteroid.push(rAsteroid[0]);
     return rAsteroid;
+}
+
+function filledSphere(r, numPts){
+   var Sphere = [];
+   var polys = [];
+   var i;
+    var j;
+   var numAngles = Math.ceil(Math.sqrt(numPts));
+   for (i = 0; i <= (numAngles); i++){
+       for (j = 0; j <= numAngles; j++) {
+           Sphere.push( quat4.create([
+               Math.cos(6.283 * j / numAngles) * Math.sin(3.1416 * (i) / numAngles) * r,
+               Math.sin(6.283 * j / numAngles) * Math.sin(3.1416 * (i) / numAngles) * r,
+               Math.cos(3.1416 * (i) /  numAngles) * r,
+               0]));
+       }
+    }
+    for (i = 0; i < numAngles; i++) {
+        for(j = 0; j < numAngles; j++) {
+            polys.push([i * numAngles + j,
+                        i * numAngles + j + 1,
+                        (i+1) * numAngles + j + 1,
+                        (i+1) * numAngles + j ]);
+
+        }
+    }
+    return [polys, Sphere];
 }

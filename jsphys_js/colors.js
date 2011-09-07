@@ -16,8 +16,10 @@ function dopplerShiftColor(colorTemp, velocity, gamma)
  * Uses a temperature cache to avoid recalculating colors for similar color
  * temperatures needlessly, saving significant computation time.
  */
-function tempToColor(colorTemp)
+function tempToColor(colorTemp, scale)
 {
+    if (!scale) var scale = 1;
+    else scale = Math.round(10*scale)/10;
     if (!tempToColor.cache)
         tempToColor.cache = {};
     
@@ -28,13 +30,13 @@ function tempToColor(colorTemp)
         var xyz = spectrum_to_xyz(bb_spectrum(roundedTemp));
         var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
         
-        var color = "#" + padRGB(Math.floor(rgb[0] * 255).toString(16)) + 
-                          padRGB(Math.floor(rgb[1] * 255).toString(16)) +
-                          padRGB(Math.floor(rgb[2] * 255).toString(16));
-        tempToColor.cache[roundedTemp.toString()] = color;
+        var color = "#" + padRGB(Math.floor(rgb[0] * scale *255).toString(16)) + 
+                          padRGB(Math.floor(rgb[1] * scale *255).toString(16)) +
+                          padRGB(Math.floor(rgb[2] * scale *255).toString(16));
+        tempToColor.cache[roundedTemp.toString(),scale] = color;
     }
     
-    return tempToColor.cache[roundedTemp.toString()];
+    return tempToColor.cache[roundedTemp.toString(),scale];
 }
 
 /**

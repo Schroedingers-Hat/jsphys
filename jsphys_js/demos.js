@@ -185,17 +185,8 @@ var demos = [
 
     {"name": "Test thingies.",
                 "steps": [{"caption": "Test for some things",
-                           "objects": [{"object": extendedObject, "x": [0, -32, 0], "p": [0,0,0], "m": 1, "shape": aSphere(10,100)},
-                                       {"object": extendedObject, "x": [-50, -50, 0], "p": [0,0,0], "m": 1, "shape": aMan(10,100)},
-                                       {"object": extendedObject, "x": [50, -50, 0], "p": [0,0,0], "m": 1, "shape": potPlant(10,100)},
-                                       {"object": extendedObject, "x": [0, 0, 0], "p": [0,0,0], "m": 1, "shape": rAsteroid(10,100)},
-                                       {"object": extendedObject, "x": [20, -20, -20], "p": [0,0,0], "m": 1,
-                                            "options": {"temperature": 3000},
-                                            "label": "A circle",   "shape": aCircle(10,30)},
-                                       {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0], "label": "photon",
-                                        "options": {"showCircle": true, "endPt": [300, 10, 0, 0] }}
-                                       ],
-                           "options": {"showFramePos": true, "showVisualPos": true, "show3D": true, "canShoot": true}
+                           "objects": [{"object": extendedObject, "x": [0, 0, 10], "p": [0,0,0], "m": 1, "shape": filledSphere(10,200)[1], "polys": filledSphere(10,200)[0]}                             ],
+                           "options": {"showFramePos": true, "showVisualPos": true, "show3D": false, "canShoot": true}
                           }],
                 "options": {"canShoot": true}
                 }

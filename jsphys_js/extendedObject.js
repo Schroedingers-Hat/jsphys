@@ -3,13 +3,14 @@
 
 "use strict";
 
-function extendedObject(X, P, label, options, shape)
+function extendedObject(X, P, label, options, shape, polys)
 {
     this.options = options;
     this.shapePoints = [];
     this.pastPoints = [];
     this.pastRadialV = [];
     this.pastR = [];
+    this.polys = filledSphere(10,200)[0];
     this.iI3d = true;
     this.wI3d = true;
     this.iI2d = true;
@@ -87,7 +88,7 @@ extendedObject.prototype = {
          * If so, find out where all the points are.
          * Putting checks for drawing 3d/2d would save some computation at times.
          */
-        if (this.iI3d || this.iI2d || this.wI2d || this.wI3d) {
+        if (1||this.iI3d || this.iI2d || this.wI2d || this.wI3d) {
             for (var i = 0; i < (this.shapePoints.length); i++) {
                 quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
                 quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
@@ -205,7 +206,8 @@ extendedObject.prototype = {
 							-this.futPos[i][1] / scene.zoom + scene.origin[1],2,0,twopi,true);
 				scene.g.fill();
             }
-			
+//        this.drawPolys(scene);		
+        this.drawPastPolys(scene);		
     },
     
     /**
@@ -585,8 +587,62 @@ extendedObject.prototype = {
 
     },
 
-    
+    drawPolys: function(scene) {
+        for (var i = 0; i < this.polys.length; i++) {
 
+        var fillVal = 0;
+        scene.TDC.beginPath();
+                var coeff = 40/(scene.zoom * (this.pointPos[this.polys[i][0]][1] + scene.camBack));
+                if ( coeff > 0){
+                    fillVal = quat4.spaceDot([1,0,0,0],this.shapePoints[this.polys[i][0]]) / vec3.length(this.shapePoints[this.polys[i][0]]);
+                    scene.TDC.moveTo(this.pointPos[this.polys[i][0]][0] * coeff + scene.origin[0],
+                                  -this.pointPos[this.polys[i][0]][2] * coeff + scene.origin[1]);
+                }
+                for (var j = 1; j < this.polys[i].length; j++) {
+
+                    fillVal += quat4.spaceDot([1,0,0,0],this.shapePoints[this.polys[i][j]]) / vec3.length(this.shapePoints[this.polys[i][j]]);
+                    var coeff = 40/(scene.zoom * (this.pointPos[this.polys[i][j]][1] + scene.camBack));
+                    if(coeff > 0){
+                    scene.TDC.lineTo(this.pointPos[this.polys[i][j]][0] * coeff + scene.origin[0],
+                                  -this.pointPos[this.polys[i][j]][2] * coeff + scene.origin[1]);
+                    }
+                }
+        scene.TDC.fillStyle = tempToColor(dopplerShiftColor(this.temp,
+                                                            this.pastRadialV[i],
+                                                            this.COM.V[3] / c), fillVal / 8 + 0.5);
+        scene.TDC.closePath();
+        scene.TDC.fill();
+        }
+
+    },
+    drawPastPolys: function(scene) {
+        for (var i = 0; i < this.polys.length; i++) {
+
+        var fillVal = 0;
+        scene.TDC.beginPath();
+                var coeff = 40/(scene.zoom * (this.pastPoints[this.polys[i][0]][1] + scene.camBack));
+                if ( coeff > 0){
+                    fillVal = quat4.spaceDot([1,0,0,0],this.shapePoints[this.polys[i][0]]) / vec3.length(this.shapePoints[this.polys[i][0]]);
+                    scene.TDC.moveTo(this.pastPoints[this.polys[i][0]][0] * coeff + scene.origin[0],
+                                  -this.pastPoints[this.polys[i][0]][2] * coeff + scene.origin[1]);
+                }
+                for (var j = 1; j < this.polys[i].length; j++) {
+
+                    fillVal += quat4.spaceDot([1,0,0,0],this.shapePoints[this.polys[i][j]]) / vec3.length(this.shapePoints[this.polys[i][j]]);
+                    var coeff = 40/(scene.zoom * (this.pastPoints[this.polys[i][j]][1] + scene.camBack));
+                    if(coeff > 0){
+                    scene.TDC.lineTo(this.pastPoints[this.polys[i][j]][0] * coeff + scene.origin[0],
+                                  -this.pastPoints[this.polys[i][j]][2] * coeff + scene.origin[1]);
+                    }
+                }
+        scene.TDC.fillStyle = tempToColor(dopplerShiftColor(this.temp,
+                                                            this.pastRadialV[i],
+                                                            this.COM.V[3] / c), fillVal / 8 + 0.5);
+        scene.TDC.closePath();
+        scene.TDC.fill();
+        }
+
+    },
     drawXT: function(scene) {
     
         // Some relevant points scaled for zoom.
@@ -720,7 +776,7 @@ extendedObject.prototype = {
             scene.h.fill();
         }
     },
-
+    
     getV: function() {
         return this.COM.V;
     },

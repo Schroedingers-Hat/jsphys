@@ -45,7 +45,7 @@ function Scene() {
         this.h.fillText     = function(){};
     }
     this.kC = 0;
-    this.camBack = 0;
+    this.camBack = 30;
     this.hwidth = this.width / 2;
     this.hheight = this.height / 2;
     this.origin = [this.hwidth, this.hheight, this.hheight];
