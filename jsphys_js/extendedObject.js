@@ -272,11 +272,11 @@ extendedObject.prototype = {
                     i++;
                 }
                 if (this.label !== "") {
-                    scene.g.fillText(this.label, textX, textY - 10);
+                    scene.g.fillText(this.label, textX, textY - 10 * i);
                     i++;
                 }
                 if (this.options.showTime || scene.options.showTime) {
-                    scene.g.fillText("tau = " + (Math.round((this.COM.tau / c))), textX, textY - 10);
+                    scene.g.fillText("tau = " + (Math.round((this.COM.tau / c))), textX, textY - 10 * i);
                     i++;
                 }
             }
