@@ -16,12 +16,14 @@
  * - radialVPast is the radial XView velocity past the origin, used for Doppler
  *   shifting.
  */
-function inertialObject(X, P, m)
+function inertialObject(X, P, m, endPt)
 {
     this.X0 = X;
     this.initialPt = quat4.create(X);
     this.rPast = 1;
     this.rFut = 1;
+    // TODO: Allow given velocity to be ignored if an endPt is supplied.
+    if (endPt) this.endPt = endPt;
     this.XView = quat4.create();
     this.XFut = quat4.create();
     this.V = quat4.scale(P, 1 / m); 
@@ -47,6 +49,7 @@ inertialObject.prototype.updateX0 = function(timeStep)
     quat4.add(this.X0, this.displace);
     this.X0[3] = this.X0[3] - timeStep;
     this.initialPt[3] = this.initialPt[3] - timeStep;
+    if (this.endPt) this.endPt[3] -= timeStep;
 };
 
 inertialObject.prototype.changeFrame = function(translation1, rotation, translation2)
@@ -55,10 +58,15 @@ inertialObject.prototype.changeFrame = function(translation1, rotation, translat
     quat4.subtract(this.X0, translation1);
     quat4.subtract(this.initialPt, translation1);
 
+    if (this.endPt) {
+        quat4.subtract(this.endPt[3], translation1);
+        mat4.multiplyVec4(rotation, this.endPt);
+    } 
     //Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
     mat4.multiplyVec4(rotation, this.V);
     mat4.multiplyVec4(rotation, this.initialPt);
+
     //Point is now at wrong time
     
     //Find displacement to current time.
@@ -78,29 +86,32 @@ inertialObject.prototype.changeFrame = function(translation1, rotation, translat
         this.tau += this.uDisplacement[3] / this.V[3] * c;
 
         quat4.subtract(this.initialPt, translation2);
+        if(this.endPt) quat4.subtract(this.endPt, translation2);
     }
 };
 
 // Solve for intersection of world line with light cone.
+// Does future cone too for now. May be a good idea to rename it at some point.
 inertialObject.prototype.calcPast = function() {
     var vDotv = quat4.spaceDot(this.V, this.V) / Math.pow(this.V[3] / c, 2);
     var xDotx = quat4.spaceDot(this.X0, this.X0);
     var vDotx = quat4.spaceDot(this.X0, this.V) / this.V[3] * c;
     var a = (c*c - vDotv);
-    if (xDotx === 0 || vDotv === 0) {
+    var timeSqrt;
+    if (xDotx === 0) {
         this.radialVPast = 0;
-        this.rPast = Math.sqrt(xDotx);
-        this.viewTime = this.rPast;
-        this.XView[0] = this.X0[0];
-        this.XView[1] = this.X0[1];
-        this.XView[2] = this.X0[2];
-        this.XView[3] = -this.viewTime;
+        this.viewTime = 0
+        quat4.set(nullQuat4,this.XView);
         this.tauPast = this.tau;
+        this.futTime = 0;
+        this.tauFut = this.tau;
+        quat4.set(nullQuat4,this.XFut);
         return;
     }
 
-    this.viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ) / a * c;
-    
+    timeSqrt = Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ;
+
+    this.viewTime = -(vDotx - timeSqrt) / a * c ;
     quat4.scale(this.V, this.viewTime / this.V[3], this.uDisplacement);
     quat4.subtract(this.X0, this.uDisplacement, this.XView);
     
@@ -108,33 +119,13 @@ inertialObject.prototype.calcPast = function() {
     this.radialVPast = (quat4.spaceDot(this.XView, this.V) / 
                         Math.max(this.rPast,1e-10) / this.V[3] * c);
     this.tauPast = this.tau - this.uDisplacement[3]/this.V[3] * c;
-};
 
-// Solve for intersection of world line with light cone.
-inertialObject.prototype.calcFut = function() {
-    var vDotv = quat4.spaceDot(this.V, this.V) / Math.pow(this.V[3] / c, 2);
-    var xDotx = quat4.spaceDot(this.X0, this.X0);
-    var vDotx = quat4.spaceDot(this.X0, this.V) / this.V[3] * c;
-    var a = (c*c - vDotv);
-    if (xDotx === 0) {
-        this.radialVFut = 0;
-        this.rFut = 0;
-        this.viewTime = 0;
-        this.XFut[0] = 0;
-        this.XFut[1] = 0;
-        this.XFut[2] = 0;
-        this.XFut[3] = 0;
-        this.tauFut = this.tau;
-        return;
-    }
-
-    this.futTime = -(vDotx + Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ) / a * c;
+    this.futTime = -(vDotx + timeSqrt ) / a * c;
     
     quat4.scale(this.V, this.futTime / this.V[3], this.uDisplacement);
     quat4.subtract(this.X0, this.uDisplacement, this.XFut);
     
-    this.rFut = Math.sqrt(Math.max(quat4.spaceDot(this.XFut, this.XFut), 1e-10)); 
-    this.radialVFut = (quat4.spaceDot(this.XFut, this.V) / 
-                        Math.max(this.rPast,1e-10) / this.V[3] * c);
     this.tauFut = this.tau - this.uDisplacement[3]/this.V[3] * c;
 };
+
+
