@@ -75,7 +75,7 @@ function Scene() {
                     "showTime": false,
                    };
 
-    this.drawing = true;    
+    this.drawing = false;
     
     
     

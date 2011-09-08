@@ -202,7 +202,6 @@ function loadDemo(idx) {
         }
          $("#demo-chooser").hide();
         scene.startAnimation();
-        requestAnimFrame(drawScene);
     };
 }
 
