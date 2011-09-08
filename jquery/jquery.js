@@ -1008,6 +1008,9 @@ jQuery.extend({
 								callbacks.shift().apply( context, args );
 							}
 						}
+						catch(e){
+							//do nothing to satisfy ie.
+						}
 						finally {
 							fired = [ context, args ];
 							firing = 0;

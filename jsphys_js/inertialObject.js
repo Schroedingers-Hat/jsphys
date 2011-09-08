@@ -76,6 +76,7 @@ inertialObject.prototype.changeFrame = function(translation1, rotation, translat
     }
 };
 
+// Solve for intersection of world line with light cone.
 inertialObject.prototype.calcPast = function() {
     var vDotv = quat4.spaceDot(this.V, this.V) / Math.pow(this.V[3] / c, 2);
     var xDotx = quat4.spaceDot(this.X0, this.X0);

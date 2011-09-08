@@ -18,17 +18,17 @@ var demos = [
             },
             { "name" : "Simultaneity: Han and Greedo",
               "steps": [{"caption": "Han and Greedo are standing at a bar. They both shoot their laser guns, but miss each other due to hitting a pot-plant. Luke walks by at close to light speed as they do this.",
-                         "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [0,0,0], "m": 1, 
+                         "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [0,0,0], "m": 1,
                                             "label": "Greedo", "shape": aMan(5,10)},
-                                     {"object": extendedObject, "x": [ 100, 0, 0], "p": [0,0,0], "m": 1, 
+                                     {"object": extendedObject, "x": [ 100, 0, 0], "p": [0,0,0], "m": 1,
                                             "label": "Han", "shape": aMan(5,10)},
-                                     {"object": extendedObject, "x": [ 0, -30, 0], "p": [1,0,0], "m": 1, 
+                                     {"object": extendedObject, "x": [ 0, -30, 0], "p": [1,0,0], "m": 1,
                                             "label": "Luke", "shape": aMan(5,10)},
 
                                      {"object": extendedObject, "x": [0, 0, 0], "p": [0,0,0], "m": 1, "shape": potPlant(5,30)},
-                                     {"object": photon, "x": [-90, 0, 0], "v": [-1, 0, 0], 
+                                     {"object": photon, "x": [-90, 0, 0], "v": [-1, 0, 0],
                                          "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }},
-                                     {"object": photon, "x": [90, 0, 0], "v": [-1, 0, 0], 
+                                     {"object": photon, "x": [90, 0, 0], "v": [-1, 0, 0],
                                          "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }}
                                     ],
                          "timeScale": 0.005,
@@ -38,14 +38,14 @@ var demos = [
                         /*{"caption": "Let's look at the same scene again from Luke's point of view -- if we make a Galilean transform. Can you see something wrong?",
                          "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [-1,0,0], "m": 1, 
                                             "label": "Greedo", "shape": aMan(5,10)},
-                                     {"object": extendedObject, "x": [ 100, 0, 0], "p": [-1,0,0], "m": 1, 
+                                     {"object": extendedObject, "x": [ 100, 0, 0], "p": [-1,0,0], "m": 1,
                                             "label": "Han", "shape": aMan(5,10)},
-                                     {"object": extendedObject, "x": [ 0, -30, 0], "p": [0,0,0], "m": 1, 
+                                     {"object": extendedObject, "x": [ 0, -30, 0], "p": [0,0,0], "m": 1,
                                             "label": "Luke", "shape": aMan(5,10)},
                                      {"object": extendedObject, "x": [0, 0, 0], "p": [-1,0,0], "m": 1, "shape": potPlant(5,30)},
-                                     {"object": photon, "x": [-90, 0, 0], "v": [-1, 0, 0], 
+                                     {"object": photon, "x": [-90, 0, 0], "v": [-1, 0, 0],
                                          "options": {"showCircle": false, "endPt": [-22, 0, 0, 0] }},
-                                     {"object": photon, "x": [90, 0, 0], "v": [-1, 0, 0], 
+                                     {"object": photon, "x": [90, 0, 0], "v": [-1, 0, 0],
                                          "options": {"showCircle": false, "endPt": [-40, 0, 0, 0] }}
                                     ],
                          "timeScale": 0.005,
@@ -53,17 +53,17 @@ var demos = [
                          "shift": [0,0,0,-10]
                         },*/
                         {"caption": "Let's try that again with a Lorentz transform. If the distance from Luke to Han is the same as the distance from Luke to Greedo, then the only conclusion is that Han shot first.",
-                         "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [0,0,0], "m": 1, 
+                         "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [0,0,0], "m": 1,
                                             "label": "Greedo", "shape": aMan(5,10)},
-                                     {"object": extendedObject, "x": [ 100, 0, 0], "p": [0,0,0], "m": 1, 
+                                     {"object": extendedObject, "x": [ 100, 0, 0], "p": [0,0,0], "m": 1,
                                             "label": "Han", "shape": aMan(5,10)},
-                                     {"object": extendedObject, "x": [ 0, -30, 0], "p": [1,0,0], "m": 1, 
+                                     {"object": extendedObject, "x": [ 0, -30, 0], "p": [1,0,0], "m": 1,
                                             "label": "Luke", "shape": aMan(5,10)},
 
                                      {"object": extendedObject, "x": [0, 0, 0], "p": [0,0,0], "m": 1, "shape": potPlant(5,30)},
-                                     {"object": photon, "x": [-90, 0, 0], "v": [-1, 0, 0], 
+                                     {"object": photon, "x": [-90, 0, 0], "v": [-1, 0, 0],
                                          "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }},
-                                     {"object": photon, "x": [90, 0, 0], "v": [-1, 0, 0], 
+                                     {"object": photon, "x": [90, 0, 0], "v": [-1, 0, 0],
                                          "options": {"showCircle": false, "endPt": [0, 0, 0, 0] }}
                                     ],
                          "timeScale": 0.005,
@@ -78,7 +78,7 @@ var demos = [
               "steps": [{"caption": "We have here two knives a fixed distance apart, moving upwards. A special breed of high-speed snake, <em>Crotalus relativisticus</em>, is moving at a speed close to the speed of light. It's just short enough to fit between the blades.",
                          "objects": [{"object": extendedObject, "x": [-27, -60, 0], "p": [0, 4, 0], "m": 1, "shape": [[5, -10, 0, 0], [5, 10, 0, 0], [-5, -10, 0, 0], [5, -10, 0, 0]]},
                                      {"object": extendedObject, "x": [27, -60, 0], "p": [0, 4, 0], "m": 1, "shape": [[-5, -10, 0, 0], [-5, 10, 0, 0], [5, -10, 0, 0], [-5, -10, 0, 0]]},
-                                     {"object": extendedObject, "x": [-70, 0, 0], "p": [8, 0, 0], "m": 1, "shape": linesPadder([[-38, 0, 0, 0], [38, 0, 0, 0]],3)}
+                                     {"object": extendedObject, "x": [-70, 0, 0], "p": [8, 0, 0], "m": 1, "shape": [[-38, 0, 0, 0], [38, 0, 0, 0]]}
                                     ],
                          "options": {"showFramePos": true, "showVisualPos": false, "showVelocity": true}},
                         {"caption": "But then consider the perspective of the snake. It's not length-contracted &mdash; the knives are. They're much closer together. How does the snake survive the knives?",
@@ -116,18 +116,18 @@ var demos = [
                                     {"object": photon, "x": [ 10,0,0, 60], "v": [0,0,0], "options": {"endPt": [-10,0,0,120]}},
                                     {"object": photon, "x": [-10,0,0, 80], "v": [0,0,0], "options": {"endPt": [ 10,0,0,120]}},
                                     {"object": photon, "x": [ 10,0,0,100], "v": [0,0,0], "options": {"endPt": [-10,0,0,120]}},
-                                    {"object": extendedObject, "x": [-10, 0, 0], "p": [0, 0, 0], "m": 1, 
+                                    {"object": extendedObject, "x": [-10, 0, 0], "p": [0, 0, 0], "m": 1,
                                      "shape": linesPadder([[0, -5, 0, 0], [0, 5, 0, 0]], 5), "label": "Mirror"},
-                                    {"object": extendedObject, "x": [10, 0, 0], "p": [0, 0, 0], "m": 1, 
+                                    {"object": extendedObject, "x": [10, 0, 0], "p": [0, 0, 0], "m": 1,
                                      "shape": linesPadder([[0, -5, 0, 0], [0, 5, 0, 0]], 5), "label": "Mirror"},
-                                    {"object": extendedObject, "x": [40, -60, 0], "p": [0, 1.73, 0], "m": 1, 
+                                    {"object": extendedObject, "x": [40, -60, 0], "p": [0, 1.73, 0], "m": 1,
                                      "shape": aCircle(5, 20), "label": "Observer", "options": {"showVelocity": true}}
                                    ],
                         "options": {"showFramePos": true, "showVisualPos": false, "showGamma": false, "c": 1, "showVelocity": false},
                         "timeScale": 0.02
                         },
                         {"caption": "In the observer's frame, the light is travelling on the diagonal. It must travel further to hit the mirror, so the clock runs slower.",
-                         "objects": [{"object": extendedObject, "x": [40, -60, 0], "p": [0, 1.73, 0], "m": 1, 
+                         "objects": [{"object": extendedObject, "x": [40, -60, 0], "p": [0, 1.73, 0], "m": 1,
                                      "shape": aCircle(5, 20), "label": "Observer", "options": {"showVelocity": true}},
                                     {"object": photon, "x": [-10,0,0,  0], "v": [0,0,0], "options": {"endPt": [ 10,0,0]}},
                                     {"object": photon, "x": [ 10,0,0, 20], "v": [0,0,0], "options": {"endPt": [-10,0,0,120]}},
@@ -135,9 +135,9 @@ var demos = [
                                     {"object": photon, "x": [ 10,0,0, 60], "v": [0,0,0], "options": {"endPt": [-10,0,0,120]}},
                                     {"object": photon, "x": [-10,0,0, 80], "v": [0,0,0], "options": {"endPt": [ 10,0,0,120]}},
                                     {"object": photon, "x": [ 10,0,0,100], "v": [0,0,0], "options": {"endPt": [-10,0,0,120]}},
-                                    {"object": extendedObject, "x": [-10, 0, 0], "p": [0, 0, 0], "m": 1, 
+                                    {"object": extendedObject, "x": [-10, 0, 0], "p": [0, 0, 0], "m": 1,
                                      "shape": linesPadder([[0, -5, 0, 0], [0, 5, 0, 0]], 5), "label": "Mirror"},
-                                    {"object": extendedObject, "x": [10, 0, 0], "p": [0, 0, 0], "m": 1, 
+                                    {"object": extendedObject, "x": [10, 0, 0], "p": [0, 0, 0], "m": 1,
                                      "shape": linesPadder([[0, -5, 0, 0], [0, 5, 0, 0]], 5), "label": "Mirror"}
                                    ],
                         "options": {"showFramePos": true, "showVisualPos": false, "showGamma": false, "c": 1, "showVelocity": false},
@@ -149,8 +149,8 @@ var demos = [
                       ]
             },
 
-            
-            {"name": "Velocity addition", 
+
+            {"name": "Velocity addition",
              "steps": [{"caption": "Three stars. The left and right stars approach the center star at high speed - 0.9 times the speed of light.",
                          "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Center", "shape": aSphere(5,64)},
                                      {"object": extendedObject, "x": [-30, -20, 0], "p": [2.1, 0], "m": 1, "label": "Left", "shape": aSphere(5,64)},
@@ -180,23 +180,24 @@ var demos = [
                          "frame": 0}
                        ]
              },
-            ];
 
-if (window.console && window.console.firebug || 1) {
-    demos.push({"name": "Test thingies.",
+
+
+    {"name": "Test thingies.",
                 "steps": [{"caption": "Test for some things",
                            "objects": [{"object": extendedObject, "x": [0, -32, 0], "p": [0,0,0], "m": 1, "shape": aSphere(10,100)},
                                        {"object": extendedObject, "x": [-50, -50, 0], "p": [0,0,0], "m": 1, "shape": aMan(10,100)},
                                        {"object": extendedObject, "x": [50, -50, 0], "p": [0,0,0], "m": 1, "shape": potPlant(10,100)},
-                                       {"object": extendedObject, "x": [20, -20, -20], "p": [0,0,0], "m": 1, 
-                                            "options": {"temperature": 3000}, 
+                                       {"object": extendedObject, "x": [20, -20, -20], "p": [0,0,0], "m": 1,
+                                            "options": {"temperature": 3000},
                                             "label": "A circle",   "shape": aCircle(10,30)},
-                                       {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0], "label": "photon", 
+                                       {"object": photon, "x": [0, 10, 0], "v": [-1, 0, 0], "label": "photon",
                                         "options": {"showCircle": true, "endPt": [300, 10, 0, 0] }}
                                        ],
                            "options": {"showFramePos": true, "showVisualPos": true, "show3D": true, "canShoot": true}
                           }],
                 "options": {"canShoot": true}
-                });
-}
+                }
 
+
+];
