@@ -21,16 +21,21 @@ function inertialObject(X, P, m)
     this.X0 = X;
     this.initialPt = quat4.create(X);
     this.rPast = 1;
+    this.rFut = 1;
     this.XView = quat4.create();
+    this.XFut = quat4.create();
     this.V = quat4.scale(P, 1 / m); 
     // Relativistic velocity, or momentum/mass.
     genEnergy(this.V, c, m);
     this.displace = quat4.create([0, 0, 0, 0]);
     this.tau = 0;
     this.tauPast = 0;
+    this.tauFut = 0;
     this.uDisplacement = quat4.create();
     this.viewTime = 0;
+    this.futTime = 0;
     this.radialVPast = 0;
+    this.radialVFut = 0;
 }
 
 inertialObject.prototype.updateX0 = function(timeStep)
@@ -103,4 +108,33 @@ inertialObject.prototype.calcPast = function() {
     this.radialVPast = (quat4.spaceDot(this.XView, this.V) / 
                         Math.max(this.rPast,1e-10) / this.V[3] * c);
     this.tauPast = this.tau - this.uDisplacement[3]/this.V[3] * c;
+};
+
+// Solve for intersection of world line with light cone.
+inertialObject.prototype.calcFut = function() {
+    var vDotv = quat4.spaceDot(this.V, this.V) / Math.pow(this.V[3] / c, 2);
+    var xDotx = quat4.spaceDot(this.X0, this.X0);
+    var vDotx = quat4.spaceDot(this.X0, this.V) / this.V[3] * c;
+    var a = (c*c - vDotv);
+    if (xDotx === 0) {
+        this.radialVFut = 0;
+        this.rFut = 0;
+        this.viewTime = 0;
+        this.XFut[0] = 0;
+        this.XFut[1] = 0;
+        this.XFut[2] = 0;
+        this.XFut[3] = 0;
+        this.tauFut = this.tau;
+        return;
+    }
+
+    this.futTime = -(vDotx + Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ) / a * c;
+    
+    quat4.scale(this.V, this.futTime / this.V[3], this.uDisplacement);
+    quat4.subtract(this.X0, this.uDisplacement, this.XFut);
+    
+    this.rFut = Math.sqrt(Math.max(quat4.spaceDot(this.XFut, this.XFut), 1e-10)); 
+    this.radialVFut = (quat4.spaceDot(this.XFut, this.V) / 
+                        Math.max(this.rPast,1e-10) / this.V[3] * c);
+    this.tauFut = this.tau - this.uDisplacement[3]/this.V[3] * c;
 };
