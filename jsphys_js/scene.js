@@ -28,7 +28,7 @@ function Scene() {
     this.mHeight = $("#minkowski").height();
     this.tWidth = $("#3DCanvas").width();
     this.tHeight = $("#3DCanvas").height();
-
+    this.firstDemo = true;
     this.lightConeCanvas = document.createElement('canvas');
     this.lightConeCanvas.width =  this.mWidth;
     this.lightConeCanvas.height =  this.mHeight;
@@ -64,6 +64,7 @@ function Scene() {
                      "c": 3,
                      "showText": true,
                      "timeScale": 0.01,
+                     "showMinkowski": true,
                      "canShoot": false};
 
     this.options = {"alwaysDoppler": false,
@@ -73,6 +74,7 @@ function Scene() {
                     "alwaysShowVisualPos": false,
                     "neverShowVisualPos": false,
                     "showTime": false,
+                    "interactions": true
                    };
 
     this.drawing = false;
@@ -132,6 +134,10 @@ function Scene() {
             this.shiftToFrameOfObject(this.carray[demo.steps[step].frame], demo.steps[step].shift);
         }
         this.frameStartTime = new Date().getTime();
+        if (this.firstDemo) {
+            requestAnimFrame(drawScene);
+            this.firstDemo = false;
+        }
     };
 
     
@@ -234,8 +240,26 @@ function Scene() {
     
         // Create a new photon. Careful with this, photons are tracked even after they disappear.
         if (fireDown && this.curOptions.canShoot) {
+            var firstCollisionIdx = 0;
+            var collisionTime;
+            var firstCollisionTime = Infinity;
             var newPhoton = new photon(quat4.create([0, 0, 0, 0]),
-                                       quat4.create([0, 1, 0, 0]), "photon", {"showCircle": false});
+                                       quat4.create([0, 1, 0, 0]), "photon", {"showCircle": false, "fired": true, "showFramePos": true});
+            for ( var i = 0; i < this.carray.length; i++) {
+                if (this.carray[i].photonCollisionTime){
+                    collisionTime = this.carray[i].photonCollisionTime(newPhoton);
+                    if ( collisionTime < firstCollisionTime &&
+                        (!this.carray[i].COM.endPt || (this.carray[i].COM.endPt[3] > collisionTime))) {
+                        firstCollisionTime = collisionTime;
+                        firstCollisionIdx = i;
+                    }
+                }
+            }
+            if (firstCollisionTime < Infinity) {
+                newPhoton.endPt = this.carray[firstCollisionIdx].photonCollision(newPhoton);
+//                newPhoton.endPt = quat4.create(this.carray[firstCollisionIdx].getXFut());
+                this.carray[firstCollisionIdx].COM.endPt = quat4.create(newPhoton.endPt);
+            }
             this.carray.push(newPhoton);
             fireDown = false;
         }

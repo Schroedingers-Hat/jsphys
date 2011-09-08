@@ -35,8 +35,8 @@ var demos = [
                          "options": {"showVisualPos": false, "showFramePos": true},
                          "shift": [0,0,0,-10]
                         },
-                        /*{"caption": "Let's look at the same scene again from Luke's point of view -- if we make a Galilean transform. Can you see something wrong?",
-                         "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [-1,0,0], "m": 1, 
+                        {"caption": "Let's look at the same scene again from Luke's point of view -- if we make a Galilean transform. Can you see something wrong?",
+                         "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [-1,0,0], "m": 1,
                                             "label": "Greedo", "shape": aMan(5,10)},
                                      {"object": extendedObject, "x": [ 100, 0, 0], "p": [-1,0,0], "m": 1,
                                             "label": "Han", "shape": aMan(5,10)},
@@ -51,7 +51,7 @@ var demos = [
                          "timeScale": 0.005,
                          "options": {"showVisualPos": false, "showFramePos": true},
                          "shift": [0,0,0,-10]
-                        },*/
+                        },
                         {"caption": "Let's try that again with a Lorentz transform. If the distance from Luke to Han is the same as the distance from Luke to Greedo, then the only conclusion is that Han shot first.",
                          "objects": [{"object": extendedObject, "x": [-100, 0, 0], "p": [0,0,0], "m": 1,
                                             "label": "Greedo", "shape": aMan(5,10)},
@@ -188,6 +188,7 @@ var demos = [
                            "objects": [{"object": extendedObject, "x": [0, -32, 0], "p": [0,0,0], "m": 1, "shape": aSphere(10,100)},
                                        {"object": extendedObject, "x": [-50, -50, 0], "p": [0,0,0], "m": 1, "shape": aMan(10,100)},
                                        {"object": extendedObject, "x": [50, -50, 0], "p": [0,0,0], "m": 1, "shape": potPlant(10,100)},
+                                       {"object": extendedObject, "x": [0, 0, 0], "p": [0,0,0], "m": 1, "shape": rAsteroid(10,100)},
                                        {"object": extendedObject, "x": [20, -20, -20], "p": [0,0,0], "m": 1,
                                             "options": {"temperature": 3000},
                                             "label": "A circle",   "shape": aCircle(10,30)},
@@ -199,5 +200,23 @@ var demos = [
                 "options": {"canShoot": true}
                 }
 
+    
 
 ];
+var rasteroid;
+var rasteroids = [];
+for (var i = 0; i < 40; i++){
+    rasteroid = {"object": extendedObject, 
+                 "x": [Math.random()*200 - 100, Math.random()*200 - 100, 0], 
+                 "p": [Math.random()*0.5,Math.random()*0.5,0], "m": 1, 
+                 "shape": rAsteroid(Math.random()*40,10),
+                 "options": {"showMinkowski": false}};
+    rasteroids.push(rasteroid);
+    }
+    demos[demos.length] = {"name": "RASTEROIDS!",
+                "steps": [{"caption": "Test for some things",
+                           "objects": rasteroids,
+                           "options": {"showFramePos": true, "showVisualPos": false, "show3D": false, "canShoot": true, "showGamma": false, "showVelocity": false}
+                          }],
+                "options": {"canShoot": true}
+                };

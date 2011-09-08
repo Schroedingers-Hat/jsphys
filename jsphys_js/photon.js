@@ -8,7 +8,9 @@ function photon(X, V, label, options) {
     this.options = options;
     this.X0 = X;
     this.rPast = 1;
-    this.XView = quat4.create();
+    if (this.options.fired) this.fired = this.options.fired;
+    else this.fired = false
+    this.XInt = quat4.create();
     this.V = V;
     this.nonTimeLike = true;
     this.initialPt = quat4.create(X);
@@ -49,7 +51,30 @@ photon.prototype.update = function(timeStep) {
     this.initialPt[3] = this.initialPt[3] - timeStep * this.V[3]/c;
     // If there's an end point, move that back in time, too.
     if(this.endPt) this.endPt[3] = this.endPt[3] - timeStep * this.V[3]/c;
+    this.calcLightCone();
 };
+
+/** 
+ * Photons will at some point cross your light cone if vDotx != 0.
+ * It's hard to classify what this means exactly, but one of the uses
+ * is when and where you would see the reflection of a light beam.
+ */
+photon.prototype.calcLightCone = function() {
+    var xDotx = quat4.spaceDot(this.X0, this.X0);
+    var vDotx = quat4.spaceDot(this.X0, this.V) / c;
+    var intTime;
+    if (vDotx == 0) {
+    // I guess NaN would be the appropriate concept here, but ensuring it's positive Infinity will do for now.
+    // Just so I can have a single case (XInt[3] > 0) for refusing to draw anything.
+    this.XInt[0] = Infinity;
+    this.XInt[1] = Infinity;
+    this.XInt[2] = Infinity;
+    this.XInt[3] = Infinity;
+    }
+    intTime = -xDotx / (2 * vDotx); 
+    // Assuming V is dX/dt
+    quat4.add(this.X0, quat4.scale(this.V, intTime / c, tempQuat4), this.XInt);
+}
 
 photon.prototype.changeFrame = function(translation1, rotation, translation2) {
     // Translate.
@@ -88,7 +113,8 @@ photon.prototype.changeFrame = function(translation1, rotation, translation2) {
 
 photon.prototype.draw = function(scene) {
     // Only makes sense to display if we're showing the current position.
-    if (scene.curOptions.showFramePos) {
+    if (scene.options.alwaysShowFramePos || 
+        (this.options.showFramePos && !scene.options.neverShowFramePos)) {
         if (this.endPt){
             if ( (this.initialPt[3] < 0) && (this.endPt[3] > 0)){
                 this.drawNow(scene);
@@ -102,6 +128,11 @@ photon.prototype.draw = function(scene) {
         }
     }
     this.drawXT(scene);
+    if(scene.options.alwaysShowVisualPos && this.XInt[3] < Infinity &&
+       this.initialPt[3] < this.XInt[3] &&
+       (!this.endPt || this.endPt[3] > this.XInt[3])) {
+        this.drawPast(scene);
+    }
 };
 
 photon.prototype.drawXT = function(scene) {
@@ -120,8 +151,17 @@ photon.prototype.drawXT = function(scene) {
     var bOfLinex = bOfLinet * dxdtVis + this.X0[0] / scene.zoom;
 
     scene.h.strokeStyle = "#fff";
-    scene.h.fillStyle = "#fff";
+    if(window.console && window.console.firebug) {
+    scene.h.beginPath();
+    scene.h.fillStyle = "#ff0";
+    scene.h.arc(this.XInt[0] / scene.zoom + scene.origin[0],
+               -this.XInt[3] / c / scene.zoom + scene.origin[2],2,0,twopi,true);
+    scene.h.arc(this.X0[0] / scene.zoom + scene.origin[0],
+               -this.X0[3] / c / scene.zoom + scene.origin[2],2,0,twopi,true);
 
+    scene.h.fill();
+    }
+    scene.h.fillStyle = "#fff";
     // A world Line.
     if ( -tvis + scene.origin[2] > 0) {
         if ( (-tvis + scene.origin[2]) < scene.mHeight) {
@@ -146,6 +186,7 @@ photon.prototype.drawXT = function(scene) {
                           -tvisE + scene.origin[2]);
             scene.h.stroke();
             scene.h.beginPath();
+            scene.h.fillStyle = "#f00";
             scene.h.arc(xvisE + scene.origin[0],
                        -tvisE + scene.origin[2],
                         3,0,twopi,true);
@@ -169,6 +210,16 @@ photon.prototype.drawNow = function(scene) {
     }
 };
 
+photon.prototype.drawPast = function(scene) {
+    if (this.XInt[3] < 0) {
+        scene.g.beginPath();
+        scene.g.fillStyle = "#00f";
+        scene.g.arc(this.XInt[0] / scene.zoom + scene.origin[0],
+                       -this.XInt[1] / scene.zoom + scene.origin[1], 2, 0, twopi, true);
+        scene.g.fill();
+    }
+}
+
 photon.prototype.drawCircle = function(scene) {
     scene.g.strokeStyle = "#fff";
     scene.g.beginPath();
@@ -176,4 +227,8 @@ photon.prototype.drawCircle = function(scene) {
                -this.initialPt[1] / scene.zoom + scene.origin[1],
                 Math.max(0, -this.initialPt[3])  / scene.zoom, 0, twopi, true);
     scene.g.stroke();
+};
+
+photon.prototype.getFut = function() {
+    return Infinity;
 };

@@ -8,6 +8,7 @@ function extendedObject(X, P, label, options, shape)
     this.options = options;
     this.shapePoints = [];
     this.pastPoints = [];
+    this.futPoints = [];
     this.pastRadialV = [];
     this.pastR = [];
     this.iI3d = true;
@@ -35,6 +36,7 @@ function extendedObject(X, P, label, options, shape)
     // of COM, must always contain part of the object.
     this.boundingBox = [0, 0, 0, 0, 0, 0];
     this.boundingBoxP = [0, 0, 0, 0, 0, 0];
+    this.boundingBoxF = [0, 0, 0, 0, 0, 0];
     this.boundingIdx = [0, 0, 0, 0, 0, 0];
     this.initialBoost = cBoostMat([-this.COM.V[0],
                                    -this.COM.V[1],
@@ -59,6 +61,7 @@ function extendedObject(X, P, label, options, shape)
             }
         }
         this.pastPoints[i] = quat4.create([0,0,0,0]);
+        this.futPoints[i] = quat4.create([0,0,0,0]); // Do we even want to track the whole thing on the future light cone?
         this.pointPos[i] = quat4.create([0,0,0,0]);
     }
 }
@@ -109,12 +112,13 @@ extendedObject.prototype = {
          * See if we need the light delayed points. Note that calPastPoints also
          * takes care of is/was interesting.
          */
-        if (scene.options.alwaysShowVisualPos ||
+        if (scene.options.alwaysShowVisualPos || scene.options.interactions ||
             (!scene.options.neverShowVisualPos && this.options.showVisualPos)) {
             this.calcPastPoints();
             this.findBB(this.pastPoints, this.boundingBoxP);
         }
         this.findBB(this.pointPos, this.boundingBox);
+        this.findBB(this.futPoints, this.boundingBoxF);
 
     },
 
@@ -161,36 +165,50 @@ extendedObject.prototype = {
     },
 
     draw: function(scene) {
-        if (scene.options.alwaysShowVisualPos ||
-            (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
+        if ((scene.options.alwaysShowVisualPos ||
+             (this.options.showVisualPos && !scene.options.neverShowVisualPos)) &&
+            (!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3])) {
             this.drawPast(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawPast3D(scene);
             }
         }
-        if (scene.options.alwaysShowFramePos ||
-            (!scene.options.neverShowFramePos && this.options.showFramePos)) {
+        if ((scene.options.alwaysShowFramePos ||
+             (!scene.options.neverShowFramePos && this.options.showFramePos)) &&
+            (!this.COM.endPt || 0 < this.COM.endPt[3]))  {
             this.drawNow(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawNow3D(scene);
             }
         }
         this.drawXT(scene);
+        if(window.console && window.console.firebug) {
+            for (var i = 0; i < this.boundingBox.length; i++) {
+                scene.g.beginPath();
+                scene.g.fillStyle = "#f00";
+                scene.g.arc(this.futPoints[this.boundingIdx[i]][0] / scene.zoom + scene.origin[0],
+                           -this.futPoints[this.boundingIdx[i]][1] / scene.zoom + scene.origin[1], 3,0,twopi,true);
+                scene.g.fill();
+            }
+        }
     },
     
     /**
      * NB: these methods assume a model of Born rigidity.
      * Objects are assumed to have an infinite speed of sound.
      * This can lead to non-local effects under high acceleration.
+     * Future cone is calculated in here for now as there is a lot of redundant calculation.
      */
     calcPastPoints: function() {
         var gamma = this.COM.V[3] / c;
+        // Probably doesn't need to be worked out every frame.
         var vDotv = quat4.spaceDot(this.COM.V, this.COM.V) / Math.pow(gamma, 2);
         var xDotx;
         var vDotx;
         var a;
         var viewTime;
-        
+        var futTime;
+
         //Dangerous, might accidentally use tempQuat4 and I /think/ this is a reference.
         var v = quat4.scale(this.COM.V, 1/ gamma, tempQuat4);
         
@@ -199,6 +217,7 @@ extendedObject.prototype = {
          * For every point.
          */
         if (this.wI3d || this.wI2d) {
+            var j = 0;
             for (var i = 0; i < (this.shapePoints.length); i++)
             {
                 xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
@@ -212,6 +231,15 @@ extendedObject.prototype = {
                 this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) /
                                         Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
                                         this.pastPoints[i], this.pastPoints[i]))), 1e-16);
+                /** 
+                 * May as well do the future cone intersection in here seeing as we've already done most of the
+                 * calculations. Don't think we want the whole thing at the future for any reason.
+                 * Just calculate the bounding box for now.
+                 * 
+                 */
+                    futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
+                    quat4.scale(v, futTime / c, this.uDisplacement);
+                    quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPoints[i]);
             }
         }
         // If it's not interesting, just find the appropriate bounding box.
@@ -230,6 +258,14 @@ extendedObject.prototype = {
                 this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) /
                                         Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
                                         this.pastPoints[i], this.pastPoints[i]))), 1e-16);
+                /** 
+                 * May as well do the future cone intersection in here seeing as we've already done most of the
+                 * calculations.
+                 */
+                futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
+                quat4.scale(v, futTime / c, this.uDisplacement);
+                quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPoints[i]);
+                
             }
         }
     },
@@ -555,15 +591,54 @@ extendedObject.prototype = {
 
     },
 
-    
+    /**
+      * PhotonCollisionTime and photonCollision. Set up for the case the photon is moving in the
+      * positive y direction.
+      * photonCollision is slightly more sophisticated and makes the collision event the edge of the
+      * asteroid. 
+      * Needs checking for c, or reworking with more elegant methods.
+      * TODO: ^
+      */
+    photonCollisionTime : function(photon) {
 
+        var yAtFut = photon.V[1] * this.COM.XFut[3] / c;
+        if (this.boundingBoxF[0] <= 0 &&
+            this.boundingBoxF[1] >= 0 &&
+            this.boundingBoxF[2] <= yAtFut &&
+            this.boundingBoxF[3] >= yAtFut &&
+            this.boundingBoxF[4] <= 0 &&
+            this.boundingBoxF[5] >= 0) {
+            return this.COM.XFut[3];
+        } else {
+            return Infinity;
+        } 
+    },    
+
+    photonCollision : function(photon) {
+
+        var yAtFut = photon.V[1] * this.COM.XFut[3] / c;
+        if (this.boundingBoxF[0] <= 0 &&
+            this.boundingBoxF[1] >= 0 &&
+            this.boundingBoxF[2] <= yAtFut &&
+            this.boundingBoxF[3] >= yAtFut &&
+            this.boundingBoxF[4] <= 0 &&
+            this.boundingBoxF[5] >= 0) {
+            return quat4.create([0,this.COM.XFut[1] - (yAtFut - this.boundingBoxF[2]), 0,this.COM.XFut[3] - (yAtFut - this.boundingBoxF[2])]) ;
+        } else {
+            return Infinity;
+        } 
+    },   
+
+ 
     drawXT: function(scene) {
     
         // Some relevant points scaled for zoom.
         var xvis  = this.COM.X0[0] / scene.zoom;
         var xvisP = this.COM.XView[0] / scene.zoom;
+        var xvisF = this.COM.XFut[0] / scene.zoom;
         var xyScale = scene.width / scene.height;
         var tvisP = this.COM.XView[3] / scene.zoom;
+        var tvisF = this.COM.XFut[3] / scene.zoom;
         var dxdtVis = this.COM.V[0] / this.COM.V[3] * c;
 
         // Points in space time that represent the beginning and end of visible worldlines.
@@ -600,6 +675,21 @@ extendedObject.prototype = {
                         5, 0, twopi, true);
             scene.h.fill();
         }
+
+        // A dot at the future light cone.
+        // TODO: A separate condition for showFuturePos
+        if (scene.options.alwaysShowVisualPos ||
+            (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
+            scene.h.fillStyle = "#f00";
+            scene.h.beginPath();
+            scene.h.arc(xvisF + scene.origin[0],
+                        - tvisF / c + scene.origin[2],
+                        5, 0, twopi, true);
+            scene.h.fill();
+        }
+
+
+
 
         if (this.label !== "" && scene.curOptions.showText) {
             scene.h.beginPath();
@@ -686,6 +776,9 @@ extendedObject.prototype = {
 
     getXView: function() {
         return this.COM.XView;
+    },
+    getXFut: function() {
+        return this.COM.XFut;
     },
 
     /**
