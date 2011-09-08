@@ -28,7 +28,6 @@ function Scene() {
     this.mHeight = $("#minkowski").height();
     this.tWidth = $("#3DCanvas").width();
     this.tHeight = $("#3DCanvas").height();
-    this.firstDemo = true;
     this.lightConeCanvas = document.createElement('canvas');
     this.lightConeCanvas.width =  this.mWidth;
     this.lightConeCanvas.height =  this.mHeight;
@@ -134,10 +133,6 @@ function Scene() {
             this.shiftToFrameOfObject(this.carray[demo.steps[step].frame], demo.steps[step].shift);
         }
         this.frameStartTime = new Date().getTime();
-        if (this.firstDemo) {
-            requestAnimFrame(drawScene);
-            this.firstDemo = false;
-        }
     };
 
     
