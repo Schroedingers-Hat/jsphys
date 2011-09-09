@@ -42,7 +42,7 @@ fourEvent.prototype.draw = function(scene) {
     // Later is also back in time if time is reversed.
     if((this.X0[3] < 0 && this.later >= 0) ||
        (this.X0[3] > 0 && this.later <=0) && this.caption) {
-        scene.pushCaption(this.caption, this.X0[3]);
+        scene.pushCaption(this.caption);
     }
 };
 
