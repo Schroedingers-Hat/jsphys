@@ -180,7 +180,7 @@ var demos = [
                          "frame": 0}
                        ]
              },
-			{"name": "Twin's paradox",
+			{"name": "Twins' paradox",
               "steps": [{"caption": "From the point of view of observer 1 who is in an inertial reference frame, we see one twin travelling and returning. From this frame he is younger when he returns because he has been moving.",
 						"timeScale": 0.008,
                          "options": {"showFramePos": true, "showVisualPos": false, "showTime": true, "showDoppler": false, "showGamma": false,"c": 1},
@@ -193,7 +193,12 @@ var demos = [
 									 "label": "Travelling Twin", "shape": aMan(5,49), 
 									 "options": {"created": true, "endPt": quat4.create([86.6, 0, 0, 100])}},
 									 {"object": extendedObject, "x": [86.6, 0, 0, 100], "p": [-1.732, 0], "m": 1, 
-									 "label": "Travelling Twin", "shape": aMan(5,49), "options": {"created": true, "initialTau": 50}}
+									 "label": "Travelling Twin", "shape": aMan(5,49), "options": {"created": true, "initialTau": 50}},
+									 {"object": extendedObject, "x": [0, 0, 0, 0], "p": [-1.732, 0], "m": 1, 
+									 "label": "Travelling Twin 2", "shape": aMan(5,49), 
+									 "options": {"created": true, "endPt": quat4.create([-86.6, 0, 0, 100])}},
+									 {"object": extendedObject, "x": [-86.6, 0, 0, 100], "p": [1.732, 0], "m": 1, 
+									 "label": "Travelling Twin 2", "shape": aMan(5,49), "options": {"created": true, "initialTau": 50}}
                                     ],
                          "frame": 0},
 						{"caption": "Now watch from the point of view of observer 2. At first it looks the same, but watch. When the travelling twin turns around the amount of time dilation changes.",
@@ -208,7 +213,12 @@ var demos = [
 									 "label": "Travelling Twin", "shape": aMan(5,49), 
 									 "options": {"created": true, "endPt": quat4.create([86.6, 0, 0, 100])}},
 									 {"object": extendedObject, "x": [86.6, 0, 0, 100], "p": [-1.732, 0], "m": 1, 
-									 "label": "Travelling Twin", "shape": aMan(5,49), "options": {"created": true, "initialTau": 50}}
+									 "label": "Travelling Twin", "shape": aMan(5,49), "options": {"created": true, "initialTau": 50}},
+									 {"object": extendedObject, "x": [0, 0, 0, 0], "p": [-1.732, 0], "m": 1, 
+									 "label": "Travelling Twin 2", "shape": aMan(5,49), 
+									 "options": {"created": true, "endPt": quat4.create([-86.6, 0, 0, 100])}},
+									 {"object": extendedObject, "x": [-86.6, 0, 0, 100], "p": [1.732, 0], "m": 1, 
+									 "label": "Travelling Twin 2", "shape": aMan(5,49), "options": {"created": true, "initialTau": 50}}
                                     ],
                          "frame": 1},
 						{"caption": "Finally we can look at it from the point of view of observer 3, the Travelling twin left quite some time ago in this frame, so let's start part-way through the journey. <p> This marks the end of the demo, the next step button won't work anymore. Feel free to explore, or watch it again looking at the Minkowski diagram below, you can accelerate with w, a, s and d. rotate with q and e. x toggles a light-delayed view, x toggles the measured view you see now.",
@@ -223,7 +233,12 @@ var demos = [
 									 "label": "Travelling Twin", "shape": aMan(5,49), 
 									 "options": {"created": true, "endPt": quat4.create([86.6, 0, 0, 100])}},
 									 {"object": extendedObject, "x": [86.6, 0, 0, 100], "p": [-1.732, 0], "m": 1, 
-									 "label": "Travelling Twin", "shape": aMan(5,49), "options": {"created": true, "initialTau": 50}}
+									 "label": "Travelling Twin", "shape": aMan(5,49), "options": {"created": true, "initialTau": 50}},
+									 {"object": extendedObject, "x": [0, 0, 0, 0], "p": [-1.732, 0], "m": 1, 
+									 "label": "Travelling Twin 2", "shape": aMan(5,49), 
+									 "options": {"created": true, "endPt": quat4.create([-86.6, 0, 0, 100])}},
+									 {"object": extendedObject, "x": [-86.6, 0, 0, 100], "p": [1.732, 0], "m": 1, 
+									 "label": "Travelling Twin 2", "shape": aMan(5,49), "options": {"created": true, "initialTau": 50}}
                                     ],
 						 "shift":[0,0,0,-100],
                          "frame": 2}
