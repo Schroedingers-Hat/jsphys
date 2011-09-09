@@ -37,7 +37,7 @@ function onKeyDown(evt)
         keyIsUseful = true;
         scene.kC = evt.keyCode;
         if (evt.keyCode == 81) rotLeftDown = true;
-		else if (evt.keyCode == 19) doPause(event);
+		else if (evt.keyCode == 19) doPause(evt);
         else if (evt.keyCode == 69) rotRightDown = true;
         else if (evt.keyCode == 68) rightDown = true;
         else if (evt.keyCode == 65) leftDown = true;
