@@ -4,11 +4,10 @@
         <title>Relativity Simulator</title>
         <!--[if IE 8]>
         <script type="text/javascript" src="FlashCanvas/bin/flashcanvas.js"></script>
+        <script type="text/javascript" src="jsphys_js/ieLibs.js"></script>
         <![endif]-->
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <script type="text/javascript" src="jquery/jquery.js"></script>
-        <script type="text/javascript" src="canvas-text/canvas.text.js"></script>
-        <script type="text/javascript" src="canvas-text/faces/optimer-normal-normal.js"></script>
         <script type="text/javascript" src="jsphys_js/ruler.js"></script>
         <script type="text/javascript" src="jsphys_js/extendedObject.js"></script>
         <script type="text/javascript" src="jsphys_js/glMatrix-0.9.5.min.js"></script>
@@ -82,7 +81,7 @@
         </style>
     </head>
 
-    <body onKeyDown="onKeyDown(event);" onKeyUp="onKeyUp(event);">
+    <body onKeyPress = "onKeyPress(event);" onKeyDown="onKeyDown(event);" onKeyUp="onKeyUp(event);">
         <div style="position:relative">
             <canvas id="canvas" height="500">You need a browser that supports canvas to view this simulation.
             <p>Firefox 3.6+, A recent version of Google Chrome, Safari 4+ or Opera 10+ are recommended.
@@ -104,7 +103,7 @@
                     <p>Apparent positions: <button id="vPos" onclick="vPosClick(event)">Force on</button></p>
                     <p>Zoom: </p><div id="zoom-slider"></div>
                     <p>Speed: </p><div id="speed-slider"></div>
-                    <p><button id="pause" onclick="doPause(event)">Pause</button></p>
+                    <p><button id="pause" onclick="doPause(event)">Play</button></p>
                 </form>
             </div>
             <div id="caption"></div>
@@ -120,6 +119,15 @@
         </div>
         <div style="position:relative">
             <canvas id="3DCanvas" height = "500" width = "1000"></canvas>
+		
         </div>
+		<script type="text/javascript">
+		/* load canvas.text.js only when needed */
+		if($('#canvas')[0].getContext && !$('#canvas')[0].getContext("2d").fillText) {
+			document.write('<script src="canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
+			document.write('<script src="canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
+		    document.write('<script src="canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
+		}
+		</script>
     </body>
 </html>
