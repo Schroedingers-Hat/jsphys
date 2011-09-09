@@ -8,8 +8,6 @@
         <![endif]-->
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <script type="text/javascript" src="jquery/jquery.js"></script>
-        <script type="text/javascript" src="canvas-text/canvas.text.js"></script>
-        <script type="text/javascript" src="canvas-text/faces/helvetiker-normal-normal.js"></script>
         <script type="text/javascript" src="jsphys_js/ruler.js"></script>
         <script type="text/javascript" src="jsphys_js/extendedObject.js"></script>
         <script type="text/javascript" src="jsphys_js/glMatrix-0.9.5.min.js"></script>
@@ -121,6 +119,15 @@
         </div>
         <div style="position:relative">
             <canvas id="3DCanvas" height = "500" width = "1000"></canvas>
+		
         </div>
+		<script type="text/javascript">
+		/* load canvas.text.js only when needed */
+		if($('#canvas')[0].getContext && !$('#canvas')[0].getContext("2d").fillText) {
+			document.write('<script src="canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
+			document.write('<script src="canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
+		    document.write('<script src="canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
+		}
+		</script>
     </body>
 </html>
