@@ -134,7 +134,9 @@ function Scene() {
         this.frameStartTime = new Date().getTime();
     };
 
-    
+    this.pushCaption = function(caption) {
+            $('#caption').html(caption);
+    };
     
     /**
      * Called by scene.load() to create each individual object in a scene.
@@ -171,9 +173,11 @@ function Scene() {
                                     quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), obj.label, obj.options);
             else thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
                                     quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), obj.label, obj.options);
-        } else {
+        } else if (obj.p) {
             thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
+        } else {
+            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]), obj.options);
         }
         thingy.update(0, this);
         this.carray.push(thingy);
@@ -197,7 +201,6 @@ function Scene() {
         if (this.drawing){
             timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale * c;
         }
-        
         this.clear();
         
         // Draw the light cone, if we're using flashCanvas, don't use offscreen canvas.

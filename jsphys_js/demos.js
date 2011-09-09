@@ -202,6 +202,8 @@ var demos = [
                          "objects": [{"object": extendedObject, "x": [0, -20, 0], "p": [0, 0], "m": 1, "label": "Observer 1", "options": {"showVelocity": false, "showMinkowski": false}, "shape": aSphere(5,49)},
 									 {"object": extendedObject, "x": [0, -40, 0], "p": [1.732, 0], "m": 1, "label": "Observer 2", "options": {"showVelocity": false, "showMinkowski": false}, "shape": aSphere(5,49)},
 									 {"object": extendedObject, "x": [173.2, -60, 0], "p": [-1.732, 0], "m": 1, "label": "Observer 3", "options": {"showVelocity": false, "showMinkowski": false}, "shape": aSphere(5,49)},
+                                     {"object": fourEvent, "x": [86.6, 0, 0, 100], "options":{"caption": "This is the asymmetric part of the paradox."}},
+                                     {"object": fourEvent, "x": [0, -40, 0, 0], "options":{"caption": "Now watch from the point of view of observer 2. At first it looks the same, but watch. When the travelling twin turns around the amount of time dilation changes."}},
                                      {"object": extendedObject, "x": [0, 0, 0], "p": [0, 0], "m": 1, 
 									 "label": "Stationary Twin", "shape": aMan(5,49), "options": {"created": true}},
 									 {"object": extendedObject, "x": [0, 0, 0, 0], "p": [1.732, 0], "m": 1, 
