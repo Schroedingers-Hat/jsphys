@@ -19,8 +19,9 @@
 function inertialObject(X, P, m, endPt)
 {
     this.X0 = X;
-    this.initialPt = quat4.create(X);
+	this.initialPt = quat4.create(X);
     this.rPast = 1;
+	this.initialTau = 0;
     this.rFut = 1;
     // TODO: Allow given velocity to be ignored if an endPt is supplied.
     if (endPt) this.endPt = endPt;
@@ -48,7 +49,7 @@ inertialObject.prototype.updateX0 = function(timeStep)
     //Bring it to now.
     quat4.add(this.X0, this.displace);
     this.X0[3] = this.X0[3] - timeStep;
-    this.initialPt[3] = this.initialPt[3] - timeStep;
+    if (this.initialPt) this.initialPt[3] -= timeStep;
     if (this.endPt) this.endPt[3] -= timeStep;
 };
 
@@ -59,13 +60,13 @@ inertialObject.prototype.changeFrame = function(translation1, rotation, translat
     quat4.subtract(this.initialPt, translation1);
 
     if (this.endPt) {
-        quat4.subtract(this.endPt[3], translation1);
+        quat4.subtract(this.endPt, translation1);
         mat4.multiplyVec4(rotation, this.endPt);
     } 
     //Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
     mat4.multiplyVec4(rotation, this.V);
-    mat4.multiplyVec4(rotation, this.initialPt);
+    if (this.initialPt) mat4.multiplyVec4(rotation, this.initialPt);
 
     //Point is now at wrong time
     
@@ -85,8 +86,8 @@ inertialObject.prototype.changeFrame = function(translation1, rotation, translat
         quat4.add(this.X0, this.uDisplacement);
         this.tau += this.uDisplacement[3] / this.V[3] * c;
 
-        quat4.subtract(this.initialPt, translation2);
-        if(this.endPt) quat4.subtract(this.endPt, translation2);
+        if (this.initialPt) quat4.subtract(this.initialPt, translation2);
+        if (this.endPt) quat4.subtract(this.endPt, translation2);
     }
 };
 

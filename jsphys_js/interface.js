@@ -210,7 +210,7 @@ function loadDemo(idx) {
         } else {
         $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider,
                                    value: -(Math.log(scene.zoom) / Math.LN2)});
-        $("#speed-slider").slider({min: -2 , max: 2, step: 0.01, slide: setAnimSpeed,
+        $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed,
                                     value: (Math.log(scene.timeScale + 1) / Math.LN2)});
         }
          $("#demo-chooser").hide();

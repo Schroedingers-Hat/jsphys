@@ -12,6 +12,7 @@ function extendedObject(X, P, label, options, shape)
     this.pastRadialV = [];
     this.pastR = [];
     this.iI3d = true;
+	if (typeof this.options.created != "undefined") this.created = this.options.created;
     this.wI3d = true;
     this.iI2d = true;
     this.wI2d = true;
@@ -29,6 +30,12 @@ function extendedObject(X, P, label, options, shape)
     }
 
     this.COM = new inertialObject(X, P, 1);
+	if (options.endPt) this.COM.endPt = quat4.create(options.endPt);
+	if (options.initialPt) this.COM.initialPt = options.initialPt;
+	if (options.initialTau) {
+		this.COM.tau = options.initialTau;
+		this.COM.initialTau = options.initialTau;
+	}
     this.uDisplacement = quat4.create([0,0,0,0]);
     this.pointPos = [];
 
@@ -167,7 +174,8 @@ extendedObject.prototype = {
     draw: function(scene) {
         if ((scene.options.alwaysShowVisualPos ||
              (this.options.showVisualPos && !scene.options.neverShowVisualPos)) &&
-            (!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3])) {
+            (!this.created || (!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3]) &&
+			(!this.COM.initialPt || this.COM.XView[3] > this.COM.initialPt[3]))) {
             this.drawPast(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawPast3D(scene);
@@ -175,13 +183,14 @@ extendedObject.prototype = {
         }
         if ((scene.options.alwaysShowFramePos ||
              (!scene.options.neverShowFramePos && this.options.showFramePos)) &&
-            (!this.COM.endPt || 0 < this.COM.endPt[3]))  {
+            (!this.created || (!this.COM.endPt || 0 < this.COM.endPt[3]) &&
+			(!this.COM.initialPt || 0 > this.COM.initialPt[3])))  {
             this.drawNow(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawNow3D(scene);
             }
         }
-        this.drawXT(scene);
+        if (this.options.showMinkowski) this.drawXT(scene);
         if(window.console && window.console.firebug) {
             for (var i = 0; i < this.boundingBox.length; i++) {
                 scene.g.beginPath();
@@ -652,16 +661,29 @@ extendedObject.prototype = {
 
         // A world Line.
         scene.h.beginPath()
-        scene.h.moveTo(tOfLinex + scene.origin[0],
-                      -tOfLinet + scene.origin[2]);
-        scene.h.lineTo(bOfLinex + scene.origin[0],
-                      -bOfLinet + scene.origin[2]);
+		if( this.COM.initialPt ){
+			scene.h.moveTo(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
+							-this.COM.initialPt[3] / scene.zoom * c + scene.origin[2]);
+		} else {
+			scene.h.moveTo(bOfLinex + scene.origin[0],
+							-bOfLinet + scene.origin[2]);
+		}
+		if( this.COM.endPt ) {
+			scene.h.lineTo(this.COM.endPt[0] / scene.zoom + scene.origin[0],
+			 			-this.COM.endPt[3] / scene.zoom * c + scene.origin[2]);
+		} else{
+			scene.h.lineTo(tOfLinex + scene.origin[0],
+						-tOfLinet + scene.origin[2]);
+		}
         scene.h.stroke();
 
         // A dot at t=0.
-        scene.h.beginPath();
-        scene.h.arc(xvis + scene.origin[0], scene.origin[2], 5, 0, twopi, true);
-        scene.h.fill();
+		if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
+			(!this.COM.endPt || this.COM.endPt[3] > 0)){
+			scene.h.beginPath();
+			scene.h.arc(xvis + scene.origin[0], scene.origin[2], 5, 0, twopi, true);
+			scene.h.fill();
+		}
 
         // A dot at the light cone.
         if (scene.options.alwaysShowVisualPos ||
@@ -692,12 +714,14 @@ extendedObject.prototype = {
 
 
         if (this.label !== "" && scene.curOptions.showText) {
-            scene.h.beginPath();
-            scene.h.fillStyle = "#444";
-            scene.h.fillText(this.label + " present position",
-                              xvis + scene.origin[0] + 5,
-                              -5 + scene.origin[2]);
-
+		if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
+			(!this.COM.endPt || this.COM.endPt[3] > 0)){
+				scene.h.beginPath();
+				scene.h.fillStyle = "#444";
+				scene.h.fillText(this.label + " present position",
+								  xvis + scene.origin[0] + 5,
+								  -5 + scene.origin[2]);
+			}
             if (scene.options.alwaysShowVisualPos ||
                 (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
                 scene.h.fillText(this.label + " visual position",
@@ -716,7 +740,7 @@ extendedObject.prototype = {
             var dotR, roundedTauParam, tDotPos, xDotPos;
 
             for (var i = -hNumDots; i < hNumDots; i++) {
-                roundedTauParam = Math.round(this.COM.tau / dotScale / c) * dotScale;
+                roundedTauParam = Math.round((this.COM.tau - this.COM.initialTau) / dotScale / c) * dotScale;
 
                 quat4.scale(this.COM.V, roundedTauParam, tempQuat4);
                 quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
@@ -730,30 +754,33 @@ extendedObject.prototype = {
                 if ((i + roundedTauParam / dotScale) % 10 === 0) dotR = 2 * dotScaleR;
                 else if ((i + roundedTauParam / dotScale) % 5 === 0) dotR = 1.41 * dotScaleR;
                 else dotR = dotScaleR;
+				//Rounding error somewhere causing flickering, hence the +1
+				if ((!this.COM.endPt || tempQuat42[3] <= this.COM.endPt[3]+1) &&
+					(!this.COM.initialPt || tempQuat42[3] >= this.COM.initialPt[3]-1)){
+					scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
+								   tempQuat42[3] / c / scene.zoom + scene.origin[2]);
+					scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
+								-tempQuat42[3]/c / scene.zoom + scene.origin[2], dotR,
+								0, twopi, true);
+					
+					if (scene.curOptions.showText && 
+						((i + roundedTauParam / dotScale) % 5 === 0)) {
+						scene.h.fill();
+						scene.h.beginPath();
+						scene.h.fillStyle = "#0f0";
+						scene.h.fillText("Tau: " + (this.COM.initialTau +  Math.round((roundedTauParam + i * dotScale))) + "s", xDotPos + 3, tDotPos + 3);
 
-                scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
-                               tempQuat42[3] / c / scene.zoom + scene.origin[2]);
-                scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
-                            -tempQuat42[3]/c / scene.zoom + scene.origin[2], dotR,
-                            0, twopi, true);
+						if (scene.options.showPos || this.options.showPos){
+							scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " +
+														   -Math.round((tDotPos - scene.origin[2]) * scene.zoom) + "]",
+											xDotPos + 3, tDotPos + 13);
+						}
 
-                if (scene.curOptions.showText && 
-                    ((i + roundedTauParam / dotScale) % 5 === 0)) {
-                    scene.h.fill();
-                    scene.h.beginPath();
-                    scene.h.fillStyle = "#0f0";
-                    scene.h.fillText("Tau: " + Math.round((roundedTauParam + i * dotScale)) + "s", xDotPos + 3, tDotPos + 3);
-
-                    if (scene.options.showPos || this.options.showPos){
-                        scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " +
-                                                       -Math.round((tDotPos - scene.origin[2]) * scene.zoom) + "]",
-                                        xDotPos + 3, tDotPos + 13);
-                    }
-
-                    scene.h.fill();
-                    scene.h.fillStyle = "#aaa";
-                    scene.h.beginPath();
-                }
+						scene.h.fill();
+						scene.h.fillStyle = "#aaa";
+						scene.h.beginPath();
+					}
+				}
             }
             scene.h.fill();
         }
