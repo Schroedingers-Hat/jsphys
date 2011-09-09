@@ -8,9 +8,11 @@ function extendedObject(X, P, label, options, shape)
     this.options = options;
     this.shapePoints = [];
     this.pastPoints = [];
+    this.futPoints = [];
     this.pastRadialV = [];
     this.pastR = [];
     this.iI3d = true;
+	if (typeof this.options.created != "undefined") this.created = this.options.created;
     this.wI3d = true;
     this.iI2d = true;
     this.wI2d = true;
@@ -28,15 +30,21 @@ function extendedObject(X, P, label, options, shape)
     }
 
     this.COM = new inertialObject(X, P, 1);
+	if (options.endPt) this.COM.endPt = quat4.create(options.endPt);
+	if (options.initialPt) this.COM.initialPt = options.initialPt;
+	if (options.initialTau) {
+		this.COM.tau = options.initialTau;
+		this.COM.initialTau = options.initialTau;
+	}
     this.uDisplacement = quat4.create([0,0,0,0]);
     this.pointPos = [];
-    this.futPos = [];
+
     // Make a rectangular prism which, when placed at the position or view pos
     // of COM, must always contain part of the object.
-    this.boundingBox  = [0, 0, 0, 0, 0, 0];
+    this.boundingBox = [0, 0, 0, 0, 0, 0];
     this.boundingBoxP = [0, 0, 0, 0, 0, 0];
-    this.boundingIdx  = [0, 0, 0, 0, 0, 0];
     this.boundingBoxF = [0, 0, 0, 0, 0, 0];
+    this.boundingIdx = [0, 0, 0, 0, 0, 0];
     this.initialBoost = cBoostMat([-this.COM.V[0],
                                    -this.COM.V[1],
                                    -this.COM.V[2],
@@ -60,8 +68,8 @@ function extendedObject(X, P, label, options, shape)
             }
         }
         this.pastPoints[i] = quat4.create([0,0,0,0]);
+        this.futPoints[i] = quat4.create([0,0,0,0]); // Do we even want to track the whole thing on the future light cone?
         this.pointPos[i] = quat4.create([0,0,0,0]);
-        this.futPos[i] = quat4.create([0,0,0,0]);
     }
 }
 
@@ -73,9 +81,7 @@ extendedObject.prototype = {
      */
     update: function(timeStep, scene) {
         this.COM.updateX0(timeStep);
-        if(this.endPt) this.endPt[3] = this.endPt[3] - timeStep * this.COM.V[3]/c;
         this.COM.calcPast();
-        this.COM.calcFut();
         
         // See if we might want to draw the whole thing this frame.
         this.wI3d = this.wasInteresting3D(scene);
@@ -113,12 +119,13 @@ extendedObject.prototype = {
          * See if we need the light delayed points. Note that calPastPoints also
          * takes care of is/was interesting.
          */
-        if (scene.options.alwaysShowVisualPos ||
+        if (scene.options.alwaysShowVisualPos || scene.options.interactions ||
             (!scene.options.neverShowVisualPos && this.options.showVisualPos)) {
             this.calcPastPoints();
             this.findBB(this.pastPoints, this.boundingBoxP);
         }
         this.findBB(this.pointPos, this.boundingBox);
+        this.findBB(this.futPoints, this.boundingBoxF);
 
     },
 
@@ -154,7 +161,6 @@ extendedObject.prototype = {
      * translation2 is a translation in the new frame
      */
     changeFrame: function(translation1, rotation, translation2) {
-        if(this.endPt) quat4.subtract(this.endPt, translation1);
         if (translation2){
             this.COM.changeFrame(translation1, rotation, translation2);
         } else this.COM.changeFrame(translation1, rotation);
@@ -163,44 +169,55 @@ extendedObject.prototype = {
         {
             this.shapePoints[i] = mat4.multiplyVec4(rotation, this.shapePoints[i]);
         }
-        if (this.endPt) mat4.multiplyVec4(rotation, this.endPt);
-        if(this.endPt && translation2) quat4.subtract(this.endPt, translation2);
     },
 
     draw: function(scene) {
-
-        if ((!this.endPt || this.endPt[3] > this.COM.XView[3]) &&(scene.options.alwaysShowVisualPos ||
-            (this.options.showVisualPos && !scene.options.neverShowVisualPos))) {
+        if ((scene.options.alwaysShowVisualPos ||
+             (this.options.showVisualPos && !scene.options.neverShowVisualPos)) &&
+            (!this.created || (!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3]) &&
+			(!this.COM.initialPt || this.COM.XView[3] > this.COM.initialPt[3]))) {
             this.drawPast(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawPast3D(scene);
             }
         }
-        if (!this.endPt || this.endPt[3] > 0){
-            if (scene.options.alwaysShowFramePos ||
-                (!scene.options.neverShowFramePos && this.options.showFramePos)) {
-                this.drawNow(scene);
-                if (this.options.show3D || scene.curOptions.show3D) {
-                    this.drawNow3D(scene);
-                }
+        if ((scene.options.alwaysShowFramePos ||
+             (!scene.options.neverShowFramePos && this.options.showFramePos)) &&
+            (!this.created || (!this.COM.endPt || 0 < this.COM.endPt[3]) &&
+			(!this.COM.initialPt || 0 > this.COM.initialPt[3])))  {
+            this.drawNow(scene);
+            if (this.options.show3D || scene.curOptions.show3D) {
+                this.drawNow3D(scene);
             }
         }
-        if(this.options.showMinkowski) this.drawXT(scene);
+        if (this.options.showMinkowski) this.drawXT(scene);
+        if(window.console && window.console.firebug) {
+            for (var i = 0; i < this.boundingBox.length; i++) {
+                scene.g.beginPath();
+                scene.g.fillStyle = "#f00";
+                scene.g.arc(this.futPoints[this.boundingIdx[i]][0] / scene.zoom + scene.origin[0],
+                           -this.futPoints[this.boundingIdx[i]][1] / scene.zoom + scene.origin[1], 3,0,twopi,true);
+                scene.g.fill();
+            }
+        }
     },
     
     /**
      * NB: these methods assume a model of Born rigidity.
      * Objects are assumed to have an infinite speed of sound.
      * This can lead to non-local effects under high acceleration.
+     * Future cone is calculated in here for now as there is a lot of redundant calculation.
      */
     calcPastPoints: function() {
         var gamma = this.COM.V[3] / c;
+        // Probably doesn't need to be worked out every frame.
         var vDotv = quat4.spaceDot(this.COM.V, this.COM.V) / Math.pow(gamma, 2);
         var xDotx;
         var vDotx;
         var a;
         var viewTime;
-        
+        var futTime;
+
         //Dangerous, might accidentally use tempQuat4 and I /think/ this is a reference.
         var v = quat4.scale(this.COM.V, 1/ gamma, tempQuat4);
         
@@ -209,6 +226,7 @@ extendedObject.prototype = {
          * For every point.
          */
         if (this.wI3d || this.wI2d) {
+            var j = 0;
             for (var i = 0; i < (this.shapePoints.length); i++)
             {
                 xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
@@ -222,6 +240,15 @@ extendedObject.prototype = {
                 this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) /
                                         Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
                                         this.pastPoints[i], this.pastPoints[i]))), 1e-16);
+                /** 
+                 * May as well do the future cone intersection in here seeing as we've already done most of the
+                 * calculations. Don't think we want the whole thing at the future for any reason.
+                 * Just calculate the bounding box for now.
+                 * 
+                 */
+                    futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
+                    quat4.scale(v, futTime / c, this.uDisplacement);
+                    quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPoints[i]);
             }
         }
         // If it's not interesting, just find the appropriate bounding box.
@@ -240,6 +267,14 @@ extendedObject.prototype = {
                 this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) /
                                         Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
                                         this.pastPoints[i], this.pastPoints[i]))), 1e-16);
+                /** 
+                 * May as well do the future cone intersection in here seeing as we've already done most of the
+                 * calculations.
+                 */
+                futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
+                quat4.scale(v, futTime / c, this.uDisplacement);
+                quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPoints[i]);
+                
             }
         }
     },
@@ -282,11 +317,11 @@ extendedObject.prototype = {
                     i++;
                 }
                 if (this.label !== "") {
-                    scene.g.fillText(this.label, textX, textY - 10);
+                    scene.g.fillText(this.label, textX, textY - 10 * i);
                     i++;
                 }
                 if (this.options.showTime || scene.options.showTime) {
-                    scene.g.fillText("tau = " + (Math.round((this.COM.tau / c))), textX, textY - 10);
+                    scene.g.fillText("tau = " + (Math.round((this.COM.tau / c))), textX, textY - 10 * i);
                     i++;
                 }
             }
@@ -565,19 +600,54 @@ extendedObject.prototype = {
 
     },
 
-    
+    /**
+      * PhotonCollisionTime and photonCollision. Set up for the case the photon is moving in the
+      * positive y direction.
+      * photonCollision is slightly more sophisticated and makes the collision event the edge of the
+      * asteroid. 
+      * Needs checking for c, or reworking with more elegant methods.
+      * TODO: ^
+      */
+    photonCollisionTime : function(photon) {
 
+        var yAtFut = photon.V[1] * this.COM.XFut[3] / c;
+        if (this.boundingBoxF[0] <= 0 &&
+            this.boundingBoxF[1] >= 0 &&
+            this.boundingBoxF[2] <= yAtFut &&
+            this.boundingBoxF[3] >= yAtFut &&
+            this.boundingBoxF[4] <= 0 &&
+            this.boundingBoxF[5] >= 0) {
+            return this.COM.XFut[3];
+        } else {
+            return Infinity;
+        } 
+    },    
+
+    photonCollision : function(photon) {
+
+        var yAtFut = photon.V[1] * this.COM.XFut[3] / c;
+        if (this.boundingBoxF[0] <= 0 &&
+            this.boundingBoxF[1] >= 0 &&
+            this.boundingBoxF[2] <= yAtFut &&
+            this.boundingBoxF[3] >= yAtFut &&
+            this.boundingBoxF[4] <= 0 &&
+            this.boundingBoxF[5] >= 0) {
+            return quat4.create([0,this.COM.XFut[1] - (yAtFut - this.boundingBoxF[2]), 0,this.COM.XFut[3] - (yAtFut - this.boundingBoxF[2])]) ;
+        } else {
+            return Infinity;
+        } 
+    },   
+
+ 
     drawXT: function(scene) {
     
         // Some relevant points scaled for zoom.
         var xvis  = this.COM.X0[0] / scene.zoom;
         var xvisP = this.COM.XView[0] / scene.zoom;
-        var tvisP = this.COM.XView[3] / scene.zoom;
         var xvisF = this.COM.XFut[0] / scene.zoom;
-        var tvisF = this.COM.XFut[3] / scene.zoom;
-
-        
         var xyScale = scene.width / scene.height;
+        var tvisP = this.COM.XView[3] / scene.zoom;
+        var tvisF = this.COM.XFut[3] / scene.zoom;
         var dxdtVis = this.COM.V[0] / this.COM.V[3] * c;
 
         // Points in space time that represent the beginning and end of visible worldlines.
@@ -591,16 +661,29 @@ extendedObject.prototype = {
 
         // A world Line.
         scene.h.beginPath()
-        scene.h.moveTo(tOfLinex + scene.origin[0],
-                      -tOfLinet + scene.origin[2]);
-        scene.h.lineTo(bOfLinex + scene.origin[0],
-                      -bOfLinet + scene.origin[2]);
+		if( this.COM.initialPt ){
+			scene.h.moveTo(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
+							-this.COM.initialPt[3] / scene.zoom * c + scene.origin[2]);
+		} else {
+			scene.h.moveTo(bOfLinex + scene.origin[0],
+							-bOfLinet + scene.origin[2]);
+		}
+		if( this.COM.endPt ) {
+			scene.h.lineTo(this.COM.endPt[0] / scene.zoom + scene.origin[0],
+			 			-this.COM.endPt[3] / scene.zoom * c + scene.origin[2]);
+		} else{
+			scene.h.lineTo(tOfLinex + scene.origin[0],
+						-tOfLinet + scene.origin[2]);
+		}
         scene.h.stroke();
 
         // A dot at t=0.
-        scene.h.beginPath();
-        scene.h.arc(xvis + scene.origin[0], scene.origin[2], 5, 0, twopi, true);
-        scene.h.fill();
+		if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
+			(!this.COM.endPt || this.COM.endPt[3] > 0)){
+			scene.h.beginPath();
+			scene.h.arc(xvis + scene.origin[0], scene.origin[2], 5, 0, twopi, true);
+			scene.h.fill();
+		}
 
         // A dot at the light cone.
         if (scene.options.alwaysShowVisualPos ||
@@ -614,25 +697,31 @@ extendedObject.prototype = {
                         5, 0, twopi, true);
             scene.h.fill();
         }
-        // Dot at the future cone.
+
+        // A dot at the future light cone.
+        // TODO: A separate condition for showFuturePos
         if (scene.options.alwaysShowVisualPos ||
             (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
-            scene.h.fillStyle = tempToColor(dopplerShiftColor(this.temp,
-                                                              this.COM.radialVFut,
-                                                              this.COM.V[3] / c));
+            scene.h.fillStyle = "#f00";
             scene.h.beginPath();
             scene.h.arc(xvisF + scene.origin[0],
                         - tvisF / c + scene.origin[2],
                         5, 0, twopi, true);
             scene.h.fill();
         }
-        if (this.label !== "" && scene.curOptions.showText) {
-            scene.h.beginPath();
-            scene.h.fillStyle = "#444";
-            scene.h.fillText(this.label + " present position",
-                              xvis + scene.origin[0] + 5,
-                              -5 + scene.origin[2]);
 
+
+
+
+        if (this.label !== "" && scene.curOptions.showText) {
+		if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
+			(!this.COM.endPt || this.COM.endPt[3] > 0)){
+				scene.h.beginPath();
+				scene.h.fillStyle = "#444";
+				scene.h.fillText(this.label + " present position",
+								  xvis + scene.origin[0] + 5,
+								  -5 + scene.origin[2]);
+			}
             if (scene.options.alwaysShowVisualPos ||
                 (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
                 scene.h.fillText(this.label + " visual position",
@@ -651,7 +740,7 @@ extendedObject.prototype = {
             var dotR, roundedTauParam, tDotPos, xDotPos;
 
             for (var i = -hNumDots; i < hNumDots; i++) {
-                roundedTauParam = Math.round(this.COM.tau / dotScale / c) * dotScale;
+                roundedTauParam = Math.round((this.COM.tau - this.COM.initialTau) / dotScale / c) * dotScale;
 
                 quat4.scale(this.COM.V, roundedTauParam, tempQuat4);
                 quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
@@ -665,30 +754,33 @@ extendedObject.prototype = {
                 if ((i + roundedTauParam / dotScale) % 10 === 0) dotR = 2 * dotScaleR;
                 else if ((i + roundedTauParam / dotScale) % 5 === 0) dotR = 1.41 * dotScaleR;
                 else dotR = dotScaleR;
+				//Rounding error somewhere causing flickering, hence the +1
+				if ((!this.COM.endPt || tempQuat42[3] <= this.COM.endPt[3]+1) &&
+					(!this.COM.initialPt || tempQuat42[3] >= this.COM.initialPt[3]-1)){
+					scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
+								   tempQuat42[3] / c / scene.zoom + scene.origin[2]);
+					scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
+								-tempQuat42[3]/c / scene.zoom + scene.origin[2], dotR,
+								0, twopi, true);
+					
+					if (scene.curOptions.showText && 
+						((i + roundedTauParam / dotScale) % 5 === 0)) {
+						scene.h.fill();
+						scene.h.beginPath();
+						scene.h.fillStyle = "#0f0";
+						scene.h.fillText("Tau: " + (this.COM.initialTau +  Math.round((roundedTauParam + i * dotScale))) + "s", xDotPos + 3, tDotPos + 3);
 
-                scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
-                               tempQuat42[3] / c / scene.zoom + scene.origin[2]);
-                scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
-                            -tempQuat42[3]/c / scene.zoom + scene.origin[2], dotR,
-                            0, twopi, true);
+						if (scene.options.showPos || this.options.showPos){
+							scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " +
+														   -Math.round((tDotPos - scene.origin[2]) * scene.zoom) + "]",
+											xDotPos + 3, tDotPos + 13);
+						}
 
-                if (scene.curOptions.showText && 
-                    ((i + roundedTauParam / dotScale) % 5 === 0)) {
-                    scene.h.fill();
-                    scene.h.beginPath();
-                    scene.h.fillStyle = "#0f0";
-                    scene.h.fillText("Tau: " + Math.round((roundedTauParam + i * dotScale)) + "s", xDotPos + 3, tDotPos + 3);
-
-                    if (scene.options.showPos || this.options.showPos){
-                        scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " +
-                                                       -Math.round((tDotPos - scene.origin[2]) * scene.zoom) + "]",
-                                        xDotPos + 3, tDotPos + 13);
-                    }
-
-                    scene.h.fill();
-                    scene.h.fillStyle = "#aaa";
-                    scene.h.beginPath();
-                }
+						scene.h.fill();
+						scene.h.fillStyle = "#aaa";
+						scene.h.beginPath();
+					}
+				}
             }
             scene.h.fill();
         }
@@ -712,11 +804,10 @@ extendedObject.prototype = {
     getXView: function() {
         return this.COM.XView;
     },
-
     getXFut: function() {
         return this.COM.XFut;
     },
-    
+
     /**
      * Determine the distance from a given point to this object, returning
      * the minimum of the distance between (a) the point and this object's
@@ -789,33 +880,5 @@ extendedObject.prototype = {
                (this.boundingBoxP[3] - this.boundingBoxP[2]) / scene.zoom > 5)
             ) return true;
         else return false;
-    },
-    
-    // futPos will wind up being an associative array, could get some performance by flattening it.
-    photonCollisionTime : function(photon) {
-        for (var j = 0; j < (this.boundingIdx.length); j++)
-            {
-                var i = this.boundingIdx[j];
-                var xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
-                var vDotx = quat4.spaceDot(this.pointPos[i], this.COM.V);
-                var vDotv = quat4.spaceDot(this.COM.V,this.COM.V);
-                var a = c*c - vDotv;
-
-                var futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
-                quat4.scale(this.COM.V, futTime / c, this.uDisplacement);
-                quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPos[i]);
-            }
-        this.findBB(this.futPos, this.boundingBoxF);
-        var yAtFut = photon.V[1] * this.COM.XFut[3] / c;
-        if (this.boundingBoxF[0] <= 0 &&
-            this.boundingBoxF[1] >= 0 &&
-            this.boundingBoxF[2] <= yAtFut &&
-            this.boundingBoxF[3] >= yAtFut &&
-            this.boundingBoxF[4] <= 0 &&
-            this.boundingBoxF[5] >= 0) {
-            return this.COM.XFut[3];
-        } else {
-            return Infinity;
-        }
     }
 }

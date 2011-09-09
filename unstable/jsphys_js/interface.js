@@ -3,7 +3,6 @@
  */
 
 "use strict";
-
 var rightDown = false;
 var leftDown = false;
 var upDown = false;
@@ -23,7 +22,14 @@ var scene;
 
 //TODO: Pull all the keycodes out of here and put them in an array or something.
 //Will allow changing the controls to boot.
+function onKeyPress(event)
+{
+		if(event.preventDefault) event.preventDefault();
+		else event.returnValue = false;
+		event.cancel = true;
+		return false;
 
+}
 // Get Key Input
 function onKeyDown(evt)
 {
@@ -31,6 +37,7 @@ function onKeyDown(evt)
         keyIsUseful = true;
         scene.kC = evt.keyCode;
         if (evt.keyCode == 81) rotLeftDown = true;
+		else if (evt.keyCode == 19) doPause(evt);
         else if (evt.keyCode == 69) rotRightDown = true;
         else if (evt.keyCode == 68) rightDown = true;
         else if (evt.keyCode == 65) leftDown = true;
@@ -44,7 +51,7 @@ function onKeyDown(evt)
             updateSliders();
         }
         else if (evt.keyCode == 51) scene.curOptions.show3D = !scene.curOptions.show3D;
-        else if (evt.keyCode == 17) {
+        else if (evt.keyCode == 32) {
             if (ctrlDown == false) fireDown = true;
             ctrlDown = true;
         }
@@ -82,6 +89,12 @@ function onKeyDown(evt)
             requestAnimFrame(drawScene);
             scene.keyDown = true;
         }
+
+		if(evt.preventDefault) evt.preventDefault();
+		else evt.returnValue = false;
+		evt.cancel = true;
+		return false;
+
 }
 
 function onKeyUp(evt)
@@ -98,7 +111,7 @@ function onKeyUp(evt)
     else if (evt.keyCode == 81) rotLeftDown = false;
     else if (evt.keyCode == 219) speedDown = false;
     else if (evt.keyCode == 221) speedUp = false;
-    else if (evt.keyCode == 17) ctrlDown = false;
+    else if (evt.keyCode == 32) ctrlDown = false;
 //    else if (evt.keyCode == 49) rotUpDown = false;
 //    else if (evt.keyCode == 50) rotDownDown = false;
     scene.keyDown = false;
@@ -165,7 +178,7 @@ function doPause(event) {
 function setAnimSpeed(event, ui) {
     if (ui.value > 0) {
         scene.timeScale = Math.pow(2, ui.value) - 1;
-    }
+    }16
     if (ui.value < 0) {
         scene.timeScale = -Math.pow(2, -ui.value) + 1;
     }
@@ -182,7 +195,7 @@ window.requestAnimFrame = (function(){
           window.oRequestAnimationFrame      ||
           window.msRequestAnimationFrame     ||
           function(/* function */ callback, /* DOMElement */ element){
-            window.setTimeout(callback, 1000 / 60);
+            window.setTimeout(callback, 1000 / 60 );
           };
 })();
 
@@ -197,12 +210,11 @@ function loadDemo(idx) {
         } else {
         $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider,
                                    value: -(Math.log(scene.zoom) / Math.LN2)});
-        $("#speed-slider").slider({min: -2 , max: 2, step: 0.01, slide: setAnimSpeed,
+        $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed,
                                     value: (Math.log(scene.timeScale + 1) / Math.LN2)});
         }
          $("#demo-chooser").hide();
         scene.startAnimation();
-        requestAnimFrame(drawScene);
     };
 }
 

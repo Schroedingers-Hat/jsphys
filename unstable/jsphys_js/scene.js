@@ -15,7 +15,7 @@ function Scene() {
         FlashCanvas.initElement($('#minkowski')[0]);
         FlashCanvas.initElement($('#3DCanvas')[0]);
     }
-    var defFont = "0.8em Optimer";
+    var defFont = "0.7em Helvetiker, helvetica, arial, sans-serif";
     this.g = $('#canvas')[0].getContext("2d");
     this.h = $('#minkowski')[0].getContext("2d");
     this.TDC = $('#3DCanvas')[0].getContext("2d");
@@ -28,7 +28,6 @@ function Scene() {
     this.mHeight = $("#minkowski").height();
     this.tWidth = $("#3DCanvas").width();
     this.tHeight = $("#3DCanvas").height();
-
     this.lightConeCanvas = document.createElement('canvas');
     this.lightConeCanvas.width =  this.mWidth;
     this.lightConeCanvas.height =  this.mHeight;
@@ -73,10 +72,10 @@ function Scene() {
                     "neverShowFramePos": false,
                     "alwaysShowVisualPos": false,
                     "neverShowVisualPos": false,
-                    "showTime": false,
+                    "interactions": true
                    };
 
-    this.drawing = true;    
+    this.drawing = false;
     
     
     
@@ -116,10 +115,10 @@ function Scene() {
 
         drawLightCone(this, this.lCCtx);
 
-        this.boost = {"left": boostFrom3Vel(-0.005, 0, 0, this.zoom),
-                      "right": boostFrom3Vel(0.005, 0, 0, this.zoom),
-                      "up": boostFrom3Vel(0, 0.005, 0, this.zoom),
-                      "down": boostFrom3Vel(0, -0.005, 0, this.zoom)};
+        this.boost = {"left": boostFrom3Vel(-0.05 * c, 0, 0),
+                      "right": boostFrom3Vel(0.05 * c, 0, 0),
+                      "up": boostFrom3Vel(0, 0.05 * c, 0),
+                      "down": boostFrom3Vel(0, -0.05 * c, 0)};
 
         // demo.steps[step].objects.forEach(this.createObject, this);
         for ( var i = 0; i < demo.steps[step].objects.length; i++) {
@@ -156,13 +155,16 @@ function Scene() {
         // Upgrade 2D to 3D
         if (obj.x.length == 2) {
             obj.x[2] = 0;
-        }
+        } else if (obj.x.length == 3) {
+			obj.x[3] = 0;
+		}
         if (obj.p && obj.p.length == 2) {
             obj.p[2] = 0;
         }
+		
         var thingy;
         if (obj.shape) {
-            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
+            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, obj.shape);
         } else if (obj.v) {
             if (obj.x[3]) thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
@@ -170,9 +172,10 @@ function Scene() {
             else thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
                                     quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), obj.label, obj.options);
         } else {
-            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
+            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
                                     quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
         }
+        thingy.update(0, this);
         this.carray.push(thingy);
     };
 
@@ -244,15 +247,16 @@ function Scene() {
                 if (this.carray[i].photonCollisionTime){
                     collisionTime = this.carray[i].photonCollisionTime(newPhoton);
                     if ( collisionTime < firstCollisionTime &&
-                        (!this.carray[i].endPt || (this.carray[i].endPt[3] > collisionTime))) {
+                        (!this.carray[i].COM.endPt || (this.carray[i].COM.endPt[3] > collisionTime))) {
                         firstCollisionTime = collisionTime;
                         firstCollisionIdx = i;
                     }
                 }
             }
             if (firstCollisionTime < Infinity) {
-                newPhoton.endPt = quat4.create(this.carray[firstCollisionIdx].getXFut());
-                this.carray[firstCollisionIdx].endPt = quat4.create(newPhoton.endPt);
+                newPhoton.endPt = this.carray[firstCollisionIdx].photonCollision(newPhoton);
+//                newPhoton.endPt = quat4.create(this.carray[firstCollisionIdx].getXFut());
+                this.carray[firstCollisionIdx].COM.endPt = quat4.create(newPhoton.endPt);
             }
             this.carray.push(newPhoton);
             fireDown = false;
