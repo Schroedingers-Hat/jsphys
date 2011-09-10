@@ -20,7 +20,7 @@ var speedDown = false;
 var speedUp = false;
 var zoomOut = false;
 var keyIsUseful = false;
-var scene;
+//var scene;
 
 //TODO: Pull all the keycodes out of here and put them in an array or something.
 //Will allow changing the controls to boot.
@@ -35,14 +35,82 @@ window.onresize = function(event) {
     }
 };
 
-function onKeyPress(event)
-{
-		if(event.preventDefault) event.preventDefault();
-		else event.returnValue = false;
-		event.cancel = true;
-		return false;
+/**
+ * Bind all keyboard shortcuts for the given scene.
+ */
+function bindKeys(scene) {
+    // Display settings
+    $(document).bind('keydown', 't', function() {
+        scene.options.showTime = !scene.options.showTime;
+    });
 
+    $(document).bind('keydown', 'z', function(evt) {
+        dopplerButtonClick(scene, evt);
+    });
+
+    $(document).bind('keydown', 'p', function() {
+        scene.options.showPos = !scene.options.showPos;
+    });
+
+    // Navigation keys
+    $(document).bind('keydown', 'q', function() {
+        scene.actions.rotateLeft = true;
+    });
+    $(document).bind('keyup', 'q', function() {
+        scene.actions.rotateLeft = false;
+    });
+
+    $(document).bind('keydown', 'w', function() {
+        scene.actions.boostUp = true;
+    });
+    $(document).bind('keyup', 'w', function() {
+        scene.actions.boostUp = false;
+    });
+
+    $(document).bind('keydown', 'e', function() {
+        scene.actions.rotateRight = true;
+    });
+    $(document).bind('keyup', 'e', function() {
+        scene.actions.rotateRight = false;
+    });
+
+    $(document).bind('keydown', 'a', function() {
+        scene.actions.boostLeft = true;
+    });
+    $(document).bind('keyup', 'a', function() {
+        scene.actions.boostLeft = false;
+    });
+
+    $(document).bind('keydown', 's', function() {
+        scene.actions.boostDown = true;
+    });
+    $(document).bind('keyup', 's', function() {
+        scene.actions.boostDown = false;
+    });
+
+    $(document).bind('keydown', 'd', function() {
+        scene.actions.boostRight = true;
+    });
+    $(document).bind('keyup', 'd', function() {
+        scene.actions.boostRight = false;
+    });
+
+    // Time controls
+    $(document).bind('keydown', '[', function() {
+        scene.actions.slowDown = true;
+    });
+    $(document).bind('keyup', '[', function() {
+        scene.actions.slowDown = false;
+    });
+    
+    $(document).bind('keydown', ']', function() {
+        scene.actions.speedUp = true;
+    });
+    $(document).bind('keyup', ']', function() {
+        scene.actions.speedUp = false;
+    });    
 }
+
 // Get Key Input
 function onKeyDown(evt)
 {
@@ -190,16 +258,18 @@ function zoomToSlider(event, ui) {
 /**
  * Pause animation
  */
-function doPause(event) {
-    if (!scene.drawing) {
-        $("#pause").html("Pause");
-    } else {
-        $("#pause").html("Play");
+function doPause(scene) {
+    return function(event) {
+        if (!scene.drawing) {
+            $("#pause").html("Pause");
+        } else {
+            $("#pause").html("Play");
+        }
+        scene.pause();
+        updateSliders(scene);
+        if(event.preventDefault) event.preventDefault();
+        else event.returnValue = false;
     }
-    scene.pause();
-    updateSliders();
-    if(event.preventDefault) event.preventDefault();
-    else event.returnValue = false;
 }
 
 function setAnimSpeed(event, ui) {
@@ -229,7 +299,7 @@ window.requestAnimFrame = (function(){
 /**
  * Take an index into the demos array and play the matching demo.
  */
-function loadDemo(idx) {
+function loadDemo(idx, scene) {
     return function() {
         scene.load(demos[idx], 0);
         if (typeof FlashCanvas != "undefined") {
@@ -245,7 +315,7 @@ function loadDemo(idx) {
     };
 }
 
-function updateSliders() {
+function updateSliders(scene) {
     $("#zoom-slider").slider("option", "value", -(Math.log(scene.zoom) / Math.LN2));
 
     $("#speed-slider").slider("option", "value",
@@ -255,11 +325,11 @@ function updateSliders() {
 /**
  * Builds the demo chooser menu by iterating through our provided demos array.
  */
-function loadDemoList() {
+function loadDemoList(scene) {
     var e;
     var demo;
     for (var idx=0; idx < demos.length; idx++) {
-        e = $("<li>" + demos[idx].name + "</li>").click(loadDemo(idx));
+        e = $("<li>" + demos[idx].name + "</li>").click(loadDemo(idx, scene));
         $("#demo-list").append(e);
     }
 }
@@ -270,7 +340,7 @@ function loadDemoList() {
  * - Force on: Force Doppler shifting to be enabled for all objects in the scene.
  * - Default: Do whatever the demo wants.
  */
-function dopplerButtonClick(event) {
+function dopplerButtonClick(scene, evt) {
     if (!scene.options.neverDoppler && !scene.options.alwaysDoppler) {
         // we're currently in default mode. switch to force off.
         scene.options.neverDoppler = true;
@@ -287,8 +357,8 @@ function dopplerButtonClick(event) {
         scene.options.alwaysDoppler = false;
         $("#doppler").html("Force off");
     }
-    if(event.preventDefault) event.preventDefault();
-    else event.returnValue = false;
+    if(evt.preventDefault) evt.preventDefault();
+    else evt.returnValue = false;
 }
 
 /**
@@ -336,17 +406,19 @@ function vPosClick(event) {
     if(event.preventDefault) event.preventDefault();
     else event.returnValue = false;
 }
+
 // Use JQuery to wait for document load
-$(document).ready(function()
-{
+$(document).ready(function() {
     var viewportWidth = $('body').width() - 16;
     $("#canvas").attr('width', viewportWidth);
     $("#minkowski").attr('width', viewportWidth);
     $("#3DCanvas").attr('width', viewportWidth);
     $('#help-screen').hide();
-    scene = new Scene();
+    var scene = new Scene();
 
-    loadDemoList();
+    loadDemoList(scene);
+    bindKeys(scene);
+    $('#pause').click(doPause(scene));
     //$(document).keydown(onKeyDown);
     //$(document).keyup(onKeyUp);
     //$("#pause").click(pause);

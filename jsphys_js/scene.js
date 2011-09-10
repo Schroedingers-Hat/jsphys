@@ -44,7 +44,7 @@ function Scene() {
         this.g.fillText     = function(){};
         this.h.fillText     = function(){};
     }
-    this.kC = 0;
+
     this.camBack = 0;
     this.hwidth = this.width / 2;
     this.hheight = this.height / 2;
@@ -79,7 +79,17 @@ function Scene() {
 
     this.drawing = false;
     
-    
+    this.actions = {"rotateLeft": false,
+                    "rotateRight": false,
+                    "boostLeft": false,
+                    "booostRight": false,
+                    "boostUp": false,
+                    "boostDown": false,
+                    "speedUp": false,
+                    "slowDown": false,
+                    "fire": false,
+                    "zoomIn": false,
+                    "zoomOut": false}
     
     
     /** Demo loading functions **/
@@ -217,8 +227,9 @@ function Scene() {
         // Put some text on the light cone. Doesn't seem to work in opera 9, not sure why.
         if(this.curOptions.showText) {
             this.h.beginPath();
-            this.h.fillText("t(s)", 5 + scene.origin[0], 10);
+
             this.h.fillText("x(m)", scene.mWidth - 30, scene.origin[2] - 10);
+            this.h.fillText("t(s)", 5 + this.origin[0], 10);
             this.h.fill();
         }
         
@@ -235,13 +246,12 @@ function Scene() {
         // Get ready for the next frame.
         this.t = this.t + (timeStep);
         if (this.drawing || this.keyDown) {
-            requestAnimFrame(drawScene);
+            requestAnimFrame(drawScene(this));
         }
 
     };
 
     this.processInput = function() {
-    
         // Create a new photon. Careful with this, photons are tracked even after they disappear.
         if (fireDown && this.curOptions.canShoot) {
             var firstCollisionIdx = 0;
@@ -267,19 +277,27 @@ function Scene() {
             this.carray.push(newPhoton);
             fireDown = false;
         }
-        if (leftDown === true)     this.changeArrayFrame(nullQuat4, this.boost.left );
-        if (upDown === true)       this.changeArrayFrame(nullQuat4, this.boost.up   );
-        if (downDown === true)     this.changeArrayFrame(nullQuat4, this.boost.down );
-        if (rightDown === true)    this.changeArrayFrame(nullQuat4, this.boost.right);
-        if (rotLeftDown === true)  this.changeArrayFrame(nullQuat4, rotRight);
-        if (rotRightDown === true) this.changeArrayFrame(nullQuat4, rotLeft );
+
+        // Determine whether we need to change frames
+        var boost = false;
+        if (this.actions.boostLeft)   boost = this.boost.left;
+        if (this.actions.boostRight)  boost = this.boost.right;
+        if (this.actions.boostUp)     boost = this.boost.up;
+        if (this.actions.boostDown)   boost = this.boost.down;
+        
+        if (this.actions.rotateLeft)  boost = rotRight;
+        if (this.actions.rotateRight) boost = rotLeft;
+        
         if (rotUpDown === true)    this.changeArrayFrame(nullQuat4, rotUp   );
         if (rotDownDown === true)  this.changeArrayFrame(nullQuat4, rotDown );
+        if (boost !== false) {
+            this.changeArrayFrame(nullQuat4, boost);
+        }
         if (zoomOut == true) {
-            zoomTo(scene.zoom * 1.05);
+            zoomTo(this.zoom * 1.05);
         }
         if (zoomIn == true) {
-            zoomTo(scene.zoom / 1.05);
+            zoomTo(this.zoom / 1.05);
         }
         if (timeZoomIn == true) {
             this.timeZoom = this.timeZoom / 1.05;
@@ -289,37 +307,34 @@ function Scene() {
             this.timeZoom = this.timeZoom * 1.05;
             drawLightCone(this, this.lCCtx);
         }
-        if (speedDown == true) {
+        if (this.actions.slowDown) {
             this.timeScale = this.timeScale / 1.1;
-            updateSliders();
+            updateSliders(this);
         }
-        if (speedUp == true) {
+        if (this.actions.speedUp) {
             this.timeScale = this.timeScale * 1.1;
-            updateSliders();
+            updateSliders(this);
         }
     }
     
     
     this.drawInfo = function() {
-    
-        scene.g.fillStyle = "rgba(100,100,100,0.3)";
-        scene.g.beginPath();
-        scene.g.moveTo(10,10);
-        scene.g.lineTo(150,10);
-        scene.g.lineTo(150,110);
-        scene.g.lineTo(10,110);
-        scene.g.closePath();
-        scene.g.fill();
-        scene.g.fillStyle = "rgba(150,0,150,1)";
-        scene.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
-        scene.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 50);
-        scene.g.fillText("Time speedup: " + Math.round(this.timeScale * 10000) / 10 + "x", 30, 70);
+        this.g.fillStyle = "rgba(100,100,100,0.3)";
+        this.g.beginPath();
+        this.g.moveTo(10,10);
+        this.g.lineTo(150,10);
+        this.g.lineTo(150,110);
+        this.g.lineTo(10,110);
+        this.g.closePath();
+        this.g.fill();
+        this.g.fillStyle = "rgba(150,0,150,1)";
+        this.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
+        this.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 50);
+        this.g.fillText("Time speedup: " + Math.round(this.timeScale * 10000) / 10 + "x", 30, 70);
         if (window.console && window.console.firebug) {
-            scene.g.fillText("Fps: " + Math.round((1000 / (-this.oldFrameStartTime + this.frameStartTime))), 30, 80);
-            scene.g.fillText("c: " + c, 30, 90);
-            scene.g.fillText("keyCode: " + this.kC, 30, 100);
+            this.g.fillText("Fps: " + Math.round((1000 / (-this.oldFrameStartTime + this.frameStartTime))), 30, 80);
+            this.g.fillText("c: " + c, 30, 90);
         }
-        
     };
 
     this.drawCrosshairs = function () {
@@ -446,8 +461,10 @@ function Scene() {
  * Helper function to draw the scene. Necessary because of the setInterval()
  * this problem.
  */
-function drawScene(event) {
-    if(scene.loaded) scene.draw();
+function drawScene(scene) {
+    return function (event) {
+        scene.draw();
+    }
 }
 
 /**
