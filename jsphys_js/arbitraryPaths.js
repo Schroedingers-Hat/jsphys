@@ -27,9 +27,9 @@ function pathObject(pts, params) {
 
 };
 
-pathObject.prototype.changeFrame(time,rotation,translation) {
+pathObject.prototype.changeFrame = function(time,rotation,translation) {
 
-}
+};
 pathObject.prototype.draw = function(time, scene){
     this.pos = this.findEvt(time, this.pos);
     var xvis = this.pos[0] / scene.zoom;
