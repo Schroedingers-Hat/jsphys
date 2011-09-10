@@ -22,6 +22,14 @@ var scene;
 
 //TODO: Pull all the keycodes out of here and put them in an array or something.
 //Will allow changing the controls to boot.
+window.onresize = function(event) {
+    var viewportWidth = $('body').width() - 16;
+    $("#canvas").attr('width', viewportWidth);
+    $("#minkowski").attr('width', viewportWidth);
+    $("#3DCanvas").attr('width', viewportWidth);
+    setSize(scene); 
+};
+
 function onKeyPress(event)
 {
 		if(event.preventDefault) event.preventDefault();
@@ -314,6 +322,8 @@ $(document).ready(function()
 {
     var viewportWidth = $('body').width() - 16;
     $("#canvas").attr('width', viewportWidth);
+    $("#minkowski").attr('width', viewportWidth);
+    $("#3DCanvas").attr('width', viewportWidth);
     scene = new Scene();
 
     loadDemoList();
@@ -326,3 +336,5 @@ $(document).ready(function()
     //$('#vPos').click(vPosClick);
 
 });
+
+

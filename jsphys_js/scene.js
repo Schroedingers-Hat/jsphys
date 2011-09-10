@@ -215,7 +215,7 @@ function Scene() {
         if(this.curOptions.showText) {
             this.h.beginPath();
             this.h.fillText("t(s)", 5 + scene.origin[0], 10);
-            this.h.fillText("x(m)", scene.width - 30, scene.origin[2] - 10);
+            this.h.fillText("x(m)", scene.mWidth - 30, scene.origin[2] - 10);
             this.h.fill();
         }
         
@@ -477,4 +477,19 @@ function drawLightCone(scene, ctx){
     ctx.lineWidth = 1;
     ctx.fillStyle = "#fff";
     return;
+}
+
+function setSize(scene) {
+    scene.width = $("#canvas").width();
+    scene.height = $("#canvas").height();
+    scene.mWidth = $("#minkowski").width();
+    scene.mHeight = $("#minkowski").height();
+    scene.tWidth = $("#3DCanvas").width();
+    scene.tHeight = $("#3DCanvas").height();
+    scene.lightConeCanvas.width =  scene.mWidth;
+    scene.lightConeCanvas.height =  scene.mHeight;
+    scene.hwidth = scene.width / 2;
+    scene.hheight = scene.height / 2;
+    scene.origin = [scene.hwidth, scene.hheight, scene.hheight];
+    drawLightCone(scene,scene.lCCtx);
 }
