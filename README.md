@@ -13,12 +13,12 @@ changing their reference frames, zooming in and out, and changing the playback
 speed. Currently supported effects are:
 
 * Relativistic Doppler shifting
-* Length contraction of distances (but not of individual objects)
+* Length contraction of distances and of objects
 * Time dilation
+* Simple, arbitrarily shaped objects
 
-Planned effects include relativistic beaming, contraction and aberration of
-individual objects, and arbitrarily shaped objects. (Currently the system
-only displays main sequence stars.)
+Planned effects include relativistic beaming, arbirary object paths, and
+detailed Minkowski diagrams of events as they unfold.
 
 Requirements
 ------------

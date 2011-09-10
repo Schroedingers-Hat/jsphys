@@ -21,7 +21,7 @@ function tempToColor(colorTemp)
     if (!tempToColor.cache)
         tempToColor.cache = {};
     
-    var roundedTemp = (Math.round(colorTemp / 100) * 100);
+    var roundedTemp = Math.exp(Math.round(Math.log(colorTemp) * dopplerRoundVal) / dopplerRoundVal);
     
     if (!(roundedTemp.toString() in tempToColor.cache))
     {
@@ -35,6 +35,32 @@ function tempToColor(colorTemp)
     }
     
     return tempToColor.cache[roundedTemp.toString()];
+}
+
+/**
+ * Take a wavelength, in nanometers, and return an RGB color.
+ *
+ * Represents the wavelength as a Gaussian centered at the wavelength with
+ * a finite width, so that spectrum_to_xyz will have something to work with.
+ */
+function wavelengthToColor(wavelength) {
+    if (!wavelengthToColor.cache)
+        wavelengthToColor.cache = {};
+
+    var roundedWl = Math.round(wavelength / 20) * 20;
+    
+    if (!(roundedWl.toString() in wavelengthToColor.cache))
+    {
+        var xyz = spectrum_to_xyz(gauss_spectrum(roundedWl, 100, 20));
+        var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
+        
+        var color = "#" + padRGB(Math.floor(rgb[0] * 255).toString(16)) + 
+                          padRGB(Math.floor(rgb[1] * 255).toString(16)) +
+                          padRGB(Math.floor(rgb[2] * 255).toString(16));
+        wavelengthToColor.cache[roundedWl.toString()] = color;
+    }
+    
+    return wavelengthToColor.cache[roundedWl.toString()];
 }
 
 /**
@@ -78,7 +104,7 @@ function xyz_to_rgb(xyz)
     var xc = xyz[0];
     var yc = xyz[1];
     var zc = xyz[2];
-    
+    var Y  = Math.pow(xyz[3],0.05) / colorFilter; 
     // HDTV/sRGB color space
     var cs = { "red":   {"x": 0.670, "y": 0.330, "z": 0},
                "green": {"x": 0.210, "y": 0.710, "z": 0.080},
@@ -118,7 +144,7 @@ function xyz_to_rgb(xyz)
     var g = (gx * xc) + (gy * yc) + (gz * zc);
     var b = (bx * xc) + (by * yc) + (bz * zc);
     
-    return [r, g, b];
+    return [Y*r, Y*g, Y*b];
 }
 
 /*                          CONSTRAIN_RGB
@@ -133,22 +159,22 @@ function xyz_to_rgb(xyz)
 function constrain_rgb(rgb)
 {
     var w;
-    var r = rgb[0];
-    var g = rgb[1];
-    var b = rgb[2];
+    var r = Math.max(rgb[0], 0);
+    var g = Math.max(rgb[1], 0);
+    var b = Math.max(rgb[2], 0);
     
-    /* Amount of white needed is w = - min(0, *r, *g, *b) */
-    
-    w = (0 < r) ? 0 : r;
-    w = (w < g) ? w : g;
-    w = (w < b) ? w : b;
-    w = -w;
-
-    /* Add just enough white to make r, g, b all positive. */
-    
-    if (w > 0) {
-        r += w;  g += w; b += w;
-    }
+//    /* Amount of white needed is w = - min(0, *r, *g, *b) */
+//    
+//    w = (0 < r) ? 0 : r;
+//    w = (w < g) ? w : g;
+//    w = (w < b) ? w : b;
+//    w = -w;
+//
+//    /* Add just enough white to make r, g, b all positive. */
+//    
+//    if (w > 0) {
+//        r += w;  g += w; b += w;
+//    }
     return [r, g, b];
 }
 
@@ -242,7 +268,7 @@ function spectrum_to_xyz(spectrum)
         [0.0001,0.0000,0.0000], [0.0001,0.0000,0.0000], [0.0000,0.0000,0.0000]
     ];
 
-    for (i = 0, lambda = 380; lambda < 780.1; i++, lambda += 5) {
+    for (var i = 0, lambda = 380; lambda < 780.1; i++, lambda += 5) {
         var Me;
 
         Me = spectrum(lambda);
@@ -251,7 +277,7 @@ function spectrum_to_xyz(spectrum)
         Z += Me * cie_colour_match[i][2];
     }
     XYZ = (X + Y + Z);
-    return [X / XYZ, Y / XYZ, Z / XYZ];
+    return [X / XYZ, Y / XYZ, Z / XYZ, Y];
 }
 
 /*                            BB_SPECTRUM
@@ -266,4 +292,18 @@ function bb_spectrum(temperature)
         return (3.74183e-16 * Math.pow(wlm, -5.0)) /
                (Math.exp(1.4388e-2 / (wlm * temperature)) - 1.0);
     };
+}
+
+/** Here ends specrend.c code. **/
+
+/**
+ * Return a spectrum function defined by a Gaussian distribution centered
+ * at wavelength `center` (in nm) with amplitude `a` and standard deviation 
+ * `stddev`
+ */
+function gauss_spectrum(center, a, stddev) {
+    return function(wavelength) {
+        return a * Math.pow(Math.E, -(Math.pow(wavelength - center, 2)) / 
+               (2 * Math.pow(stddev, 2)));
+    }
 }

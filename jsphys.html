@@ -2,44 +2,36 @@
 <html>
     <head>
         <title>Relativity Simulator</title>
+        <!--[if IE 8]>
+        <script type="text/javascript" src="FlashCanvas/bin/flashcanvas.js"></script>
+        <script type="text/javascript" src="jsphys_js/ieLibs.js"></script>
+        <![endif]-->
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <script type="text/javascript" src="jsphys_js/jquery.js"></script>
+        <script type="text/javascript" src="jquery/jquery.js"></script>
         <script type="text/javascript" src="jsphys_js/ruler.js"></script>
         <script type="text/javascript" src="jsphys_js/extendedObject.js"></script>
         <script type="text/javascript" src="jsphys_js/glMatrix-0.9.5.min.js"></script>
         <script type="text/javascript" src="jsphys_js/glMatrix-extensions.js"></script>
-        <script type="text/javascript" src="jsphys_js/mainSequenceStar.js"></script>
         <script type="text/javascript" src="jsphys_js/inertialObject.js"></script>
-        <script type="text/javascript" src="jsphys_js/worldLine.js"></script>
+        <script type="text/javascript" src="jsphys_js/photon.js"></script>
         <script type="text/javascript" src="jsphys_js/relLibs.js"></script>
-        <script type="text/javascript" src="jsphys_js/interface.js"></script>
+        <script type="text/javascript" src="jsphys_js/fourEvent.js"></script>
         <script type="text/javascript" src="jsphys_js/colors.js"></script>
         <script type="text/javascript" src="jsphys_js/arbitraryPaths.js"></script>
         <script type="text/javascript" src="jsphys_js/demos.js"></script>
+        <script type="text/javascript" src="jsphys_js/interface.js"></script>
         <script type="text/javascript" src="jsphys_js/scene.js"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="css/ui-lightness.css" />
+        <script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.8.16.custom.css" />
         <style type="text/css">
             body {
                 color: #ccc;
                 font-family: sans-serif;
-                background-color: #212124;
+                background-color: #000000;
             }
 
-            #infobox  {
-                width: 150px;
-                position: absolute;
-                top: 0.5em;
-                left: 0.5em;
-                color: #f0f;
-                font-size: 9pt;
-                font-family: sans-serif;
-                background-color: #333;
-                opacity: 0.8;
-                padding: 0.5em;
-            }
-            
-            #infobox p, #controls p {
+
+            #controls p {
                 padding: 0;
                 margin: 0;
             }
@@ -83,35 +75,69 @@
             #demo-chooser h3 {
                 margin: 0;
             }
-
+            #help-screen {
+                position: absolute;
+                opacity: 0.8;
+                background-color: #333;
+                width: 400px;
+                left: 50%;
+                margin-left: -200px;
+                top: 100px;
+                padding: 1em;
+            }
             #steps {
                 text-align: center;
             }
         </style>
     </head>
- 
-    <body>
+
+    <body onKeyPress = "onKeyPress(event);" onKeyDown="onKeyDown(event);" onKeyUp="onKeyUp(event);">
         <div style="position:relative">
-            <canvas id="canvas" height="500"></canvas>
+            <canvas id="canvas" height="500">You need a browser that supports canvas to view this simulation.
+            <p>Firefox 3.6+, A recent version of Google Chrome, Safari 4+ or Opera 10+ are recommended.
+            <p>Firefox 2+, Any version of Google Chrome, Safari 3.2+, Opera 9+ and IE8 should work with some missing features.</canvas>
+            <!--[if IE 8]>
+            <div style="width:1000px;height:500px;position:absolute;float:left;z-index:6000;" onclick="clickHandler(event)">&nbsp;</div>
+            <![endif]-->
+            </div>
             <div id="demo-chooser">
                 <h3>Choose a demo</h3>
                 <ul id="demo-list">
 
                 </ul>
             </div>
-            <div id="infobox">
-                <p>FPS: <span id="fps"></span></p>
-                <p>Home system gamma: <span id="hsg"></span></p>
-                <p>Game clock: <span id="gameclock"></span></p>
-                <p>Real time: <span id="time"></span></p>
+            <div id="help-screen">
+                <h3>Keyboard Controls</h3>
+                <ul id="controls-list">
+                <li> w, a, s and d: Accelerate </li>
+                <li> q and e: Rotate left and right (yaw) </li>
+                <li> 1 and 2: Rotate up and down (pitch)</li>
+                <li> 3: Show 3D </li>
+                <li> z: Toggle Doppler effect, 3 state -- on, default, off.</li>
+                <li> x: Toggle absolute positions. Also 3 state.</li>
+                <li> c: Toggle visible positions. Also 3 state.</li>
+                <li> t: Toggle display time.</li>
+                <li> p: Toggle display positions.</li>
+                <li> - and =: Zoom in and out</li>
+                <li> [ and ]: Speedup, slowdown time</li>
+                <li> \: Reverse time</li>
+                <li> , and .: Zoom in and out in time axis on Minkowski diagram</li>
+                <li> space: Fire photon (rasteroids only).</li>
+                <li> h: Toggle this screen.
+                </ul>
             </div>
             <div id="controls">
                 <form name="controls">
-                    <p>Doppler effect: <input type="checkbox" name="doppler" id="doppler" checked="checked" /></p>
-                    <p>Show absolute positions: <input type="checkbox" name="framePos" id="framePos" /></p>
+                    <p>Doppler effect: <button id="doppler" onclick="dopplerButtonClick(event)">Force off</button></p>
+                    <p>Absolute positions: <button id="framePos" onclick="framePosClick(event)">Force on</button></p>
+                    <p>Apparent positions: <button id="vPos" onclick="vPosClick(event)">Force on</button></p>
                     <p>Zoom: </p><div id="zoom-slider"></div>
                     <p>Speed: </p><div id="speed-slider"></div>
-                    <p><button id="pause">Pause</button></p>
+                    <p><button id="pause" onclick="doPause(event)">Play</button>
+                    <button id="Help" onclick="$('#help-screen').toggle(); 
+                                               if(event.preventDefault) event.preventDefault(); 
+                                               else event.returnValue = false; 
+                                               return false;">Help</button></p>
                 </form>
             </div>
             <div id="caption"></div>
@@ -123,7 +149,19 @@
             </div>
         </div>
         <div style="position:relative">
-            <canvas id="minkowski" height = "500" width = "1000"></canvas>
+            <canvas id="minkowski" height = "500"></canvas>
         </div>
+        <div style="position:relative">
+            <canvas id="3DCanvas" height = "500"></canvas>
+		
+        </div>
+		<script type="text/javascript">
+		/* load canvas.text.js only when needed */
+		if($('#canvas')[0].getContext && !$('#canvas')[0].getContext("2d").fillText) {
+			document.write('<script src="canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
+			document.write('<script src="canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
+		    document.write('<script src="canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
+		}
+		</script>
     </body>
 </html>
