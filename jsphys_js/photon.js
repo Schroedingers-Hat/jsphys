@@ -6,6 +6,13 @@
  */
 function photon(X, V, label, options) {
     this.options = options;
+    
+    if (this.options.wavelength) {
+        this.wavelength = this.options.wavelength;
+    } else {
+        this.wavelength = 680;
+    }
+
     this.X0 = X;
     this.rPast = 1;
     if (this.options.fired) this.fired = this.options.fired;
@@ -201,7 +208,7 @@ photon.prototype.drawXT = function(scene) {
 
 photon.prototype.drawNow = function(scene) {
     if (this.initialPt[3] < 0){
-        scene.g.fillStyle = "#fff";
+        scene.g.fillStyle = wavelengthToColor(this.wavelength);
         scene.g.beginPath();
         scene.g.arc(this.X0[0] / scene.zoom + scene.origin[0],
                     -this.X0[1] / scene.zoom + scene.origin[1],
