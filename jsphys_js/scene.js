@@ -21,6 +21,7 @@ function Scene() {
     this.TDC = $('#3DCanvas')[0].getContext("2d");
     this.g.font = defFont;
     this.h.font = defFont;
+    this.loaded = false;
     this.TDC.font = defFont;
     this.width = $("#canvas").width();
     this.height = $("#canvas").height();
@@ -133,6 +134,7 @@ function Scene() {
             this.shiftToFrameOfObject(this.carray[demo.steps[step].frame], demo.steps[step].shift);
         }
         this.frameStartTime = new Date().getTime();
+        this.loaded = true;
     };
 
     this.pushCaption = function(caption) {
@@ -445,7 +447,7 @@ function Scene() {
  * this problem.
  */
 function drawScene(event) {
-    scene.draw();
+    if(scene.loaded) scene.draw();
 }
 
 /**

@@ -47,6 +47,9 @@ function onKeyDown(evt)
         keyIsUseful = true;
         scene.kC = evt.keyCode;
         if (evt.keyCode == 81) rotLeftDown = true;
+        else if (evt.keyCode == 72) {
+            $('#help-screen').toggle();
+        }
 		else if (evt.keyCode == 19) doPause(evt);
         else if (evt.keyCode == 69) rotRightDown = true;
         else if (evt.keyCode == 68) rightDown = true;
@@ -337,6 +340,7 @@ $(document).ready(function()
     $("#canvas").attr('width', viewportWidth);
     $("#minkowski").attr('width', viewportWidth);
     $("#3DCanvas").attr('width', viewportWidth);
+    $('#help-screen').hide();
     scene = new Scene();
 
     loadDemoList();

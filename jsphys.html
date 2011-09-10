@@ -74,7 +74,16 @@
             #demo-chooser h3 {
                 margin: 0;
             }
-
+            #help-screen {
+                position: absolute;
+                opacity: 0.8;
+                background-color: #333;
+                width: 400px;
+                left: 50%;
+                margin-left: -200px;
+                top: 100px;
+                padding: 1em;
+            }
             #steps {
                 text-align: center;
             }
@@ -96,6 +105,26 @@
 
                 </ul>
             </div>
+            <div id="help-screen">
+                <h3>Keyboard Controls</h3>
+                <ul id="controls-list">
+                w, a, s and d: Accelerate <br>
+                q and e: Rotate left and right (yaw) <br>
+                1 and 2: Rotate up and down (pitch)<br>
+                3: Show 3D <br>
+                z: Toggle Doppler effect, 3 state -- on, default, off.<br>
+                x: Toggle absolute positions. Also 3 state.<br>
+                c: Toggle visible positions. Also 3 state.<br>
+                t: Toggle display time.<br>
+                p: Toggle display positions.<br>
+                - and =: Zoom in and out<br>
+                [ and ]: Speedup, slowdown time<br>
+                \: Reverse time<br>
+                , and .: Zoom in and out in time axis on Minkowski diagram<br>
+                space: Fire photon (rasteroids only).<br>
+                h: Toggle this screen.
+                </ul>
+            </div>
             <div id="controls">
                 <form name="controls">
                     <p>Doppler effect: <button id="doppler" onclick="dopplerButtonClick(event)">Force off</button></p>
@@ -103,7 +132,11 @@
                     <p>Apparent positions: <button id="vPos" onclick="vPosClick(event)">Force on</button></p>
                     <p>Zoom: </p><div id="zoom-slider"></div>
                     <p>Speed: </p><div id="speed-slider"></div>
-                    <p><button id="pause" onclick="doPause(event)">Play</button></p>
+                    <p><button id="pause" onclick="doPause(event)">Play</button>
+                    <button id="Help" onclick="$('#help-screen').toggle(); 
+                                               if(event.preventDefault) event.preventDefault(); 
+                                               else event.returnValue = false; 
+                                               return false;">Help</button></p>
                 </form>
             </div>
             <div id="caption"></div>
