@@ -455,11 +455,11 @@ function drawScene(event) {
  * or onscreen (used if FlashCanvas is active). They are assumed to be the same size.
  */
 function drawLightCone(scene, ctx){
- ctx.clearRect(0, 0, scene.mWidth, scene.mHeight);
+ var size = Math.max(scene.origin[0], scene.origin[2]);
  var ycoeff;
- var xcoeff = Math.min(scene.origin[0], scene.origin[0] * c / scene.zoom * scene.timeZoom);
- if (xcoeff == scene.origin[0]) ycoeff = scene.origin[2] / c * scene.zoom / scene.timeZoom;
- else ycoeff = scene.origin[2];
+ var xcoeff = Math.min(size, size * c / scene.zoom * scene.timeZoom);
+ if (xcoeff == size) ycoeff = size / c * scene.zoom / scene.timeZoom;
+ else ycoeff = size;
     ctx.fillStyle = "#300";
     ctx.beginPath();
     ctx.moveTo(0,0);
