@@ -663,14 +663,14 @@ extendedObject.prototype = {
         scene.h.beginPath()
 		if( this.COM.initialPt ){
 			scene.h.moveTo(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
-							-this.COM.initialPt[3] / scene.zoom * c + scene.origin[2]);
+							-this.COM.initialPt[3] / scene.zoom / c + scene.origin[2]);
 		} else {
 			scene.h.moveTo(bOfLinex + scene.origin[0],
 							-bOfLinet + scene.origin[2]);
 		}
 		if( this.COM.endPt ) {
 			scene.h.lineTo(this.COM.endPt[0] / scene.zoom + scene.origin[0],
-			 			-this.COM.endPt[3] / scene.zoom * c + scene.origin[2]);
+			 			-this.COM.endPt[3] / scene.zoom / c+ scene.origin[2]);
 		} else{
 			scene.h.lineTo(tOfLinex + scene.origin[0],
 						-tOfLinet + scene.origin[2]);
