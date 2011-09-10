@@ -137,14 +137,14 @@ photon.prototype.draw = function(scene) {
 
 photon.prototype.drawXT = function(scene) {
     var xvis  = this.initialPt[0] / scene.zoom;
-    var tvis  = this.initialPt[3] / scene.zoom / c;
+    var tvis  = this.initialPt[3] / scene.timeZoom / c;
     if(this.endPt){
         var xvisE  = this.endPt[0] / scene.zoom;
-        var tvisE  = this.endPt[3] / scene.zoom / c;
+        var tvisE  = this.endPt[3] / scene.timeZoom / c;
     }
 
     var xyScale = scene.mWidth / scene.mHeight;
-    var dxdtVis = this.V[0] / this.V[3] * c;
+    var dxdtVis = this.V[0] / this.V[3] * c * scene.timeZoom / scene.zoom;
     var tOfLinet = scene.origin[2];
     var tOfLinex = tOfLinet * dxdtVis + this.X0[0] / scene.zoom;
     var bOfLinet = -(scene.height + scene.origin[2]);
@@ -155,9 +155,9 @@ photon.prototype.drawXT = function(scene) {
     scene.h.beginPath();
     scene.h.fillStyle = "#ff0";
     scene.h.arc(this.XInt[0] / scene.zoom + scene.origin[0],
-               -this.XInt[3] / c / scene.zoom + scene.origin[2],2,0,twopi,true);
+               -this.XInt[3] / c / scene.timeZoom + scene.origin[2],2,0,twopi,true);
     scene.h.arc(this.X0[0] / scene.zoom + scene.origin[0],
-               -this.X0[3] / c / scene.zoom + scene.origin[2],2,0,twopi,true);
+               -this.X0[3] / c / scene.timeZoom + scene.origin[2],2,0,twopi,true);
 
     scene.h.fill();
     }

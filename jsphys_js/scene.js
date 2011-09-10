@@ -50,6 +50,7 @@ function Scene() {
     this.origin = [this.hwidth, this.hheight, this.hheight];
     this.carray = [];
     this.zoom = 0.25;
+    this.timeZoom = 0.25;
     this.t = 0;
     this.keyDown = false;
     this.defaults = {"showDoppler": true,
@@ -278,6 +279,14 @@ function Scene() {
         if (zoomIn == true) {
             zoomTo(scene.zoom / 1.05);
         }
+        if (timeZoomIn == true) {
+            this.timeZoom = this.timeZoom / 1.05;
+            drawLightCone(this, this.lCCtx);
+        }
+        if (timeZoomOut == true) {
+            this.timeZoom = this.timeZoom * 1.05;
+            drawLightCone(this, this.lCCtx);
+        }
         if (speedDown == true) {
             this.timeScale = this.timeScale / 1.1;
             updateSliders();
@@ -445,25 +454,26 @@ function drawScene(event) {
  */
 function drawLightCone(scene, ctx){
     var size = Math.max(scene.mHeight - scene.origin[2], scene.origin[2]);
+    var cVis = c / scene.zoom * scene.timeZoom;
     ctx.fillStyle = "#300";
     ctx.beginPath();
     ctx.moveTo(0,0);
     ctx.lineTo(0, scene.mHeight);
-    ctx.lineTo(-size * c + scene.origin[0], size + scene.origin[2]);
-    ctx.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
+    ctx.lineTo(-size *cVis+ scene.origin[0], size + scene.origin[2]);
+    ctx.lineTo( size *cVis+ scene.origin[0], -size + scene.origin[2]);
     ctx.lineTo(scene.mWidth, 0);
     ctx.lineTo(scene.mWidth, scene.mHeight);
-    ctx.lineTo( size * c + scene.origin[0], size + scene.origin[2]);
-    ctx.lineTo(-size * c + scene.origin[0], -size + scene.origin[2]);
+    ctx.lineTo( size *cVis+ scene.origin[0], size + scene.origin[2]);
+    ctx.lineTo(-size *cVis+ scene.origin[0], -size + scene.origin[2]);
     ctx.closePath();
     ctx.fill();
     ctx.fillStyle = "#003";
     ctx.beginPath();
-    ctx.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
-    ctx.lineTo( size * c + scene.origin[0], -size + scene.origin[2]);
-    ctx.lineTo(-size * c + scene.origin[0],  size + scene.origin[2]);
-    ctx.lineTo( size * c + scene.origin[0],  size + scene.origin[2]);
-    ctx.moveTo(-size * c + scene.origin[0], -size + scene.origin[2]);
+    ctx.moveTo(-size *cVis+ scene.origin[0], -size + scene.origin[2]);
+    ctx.lineTo( size *cVis+ scene.origin[0], -size + scene.origin[2]);
+    ctx.lineTo(-size *cVis+ scene.origin[0],  size + scene.origin[2]);
+    ctx.lineTo( size *cVis+ scene.origin[0],  size + scene.origin[2]);
+    ctx.moveTo(-size *cVis+ scene.origin[0], -size + scene.origin[2]);
     ctx.closePath();
     ctx.fill();
     ctx.strokeStyle = "#FFF";

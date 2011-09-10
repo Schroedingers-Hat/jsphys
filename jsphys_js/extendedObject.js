@@ -646,15 +646,15 @@ extendedObject.prototype = {
         var xvisP = this.COM.XView[0] / scene.zoom;
         var xvisF = this.COM.XFut[0] / scene.zoom;
         var xyScale = scene.width / scene.height;
-        var tvisP = this.COM.XView[3] / scene.zoom;
-        var tvisF = this.COM.XFut[3] / scene.zoom;
-        var dxdtVis = this.COM.V[0] / this.COM.V[3] * c;
+        var tvisP = this.COM.XView[3] / scene.timeZoom;
+        var tvisF = this.COM.XFut[3] / scene.timeZoom;
+        var dxdtVis = this.COM.V[0] / this.COM.V[3] * c * scene.timeZoom / scene.zoom;
 
         // Points in space time that represent the beginning and end of visible worldlines.
         var tOfLinet = scene.origin[2];
-        var tOfLinex = tOfLinet * dxdtVis + this.COM.X0[0] / scene.zoom;
+        var tOfLinex = tOfLinet * dxdtVis + this.COM.X0[0]  / scene.zoom;
         var bOfLinet = -(scene.height + scene.origin[2]);
-        var bOfLinex = bOfLinet * dxdtVis + this.COM.X0[0] / scene.zoom;
+        var bOfLinex = bOfLinet * dxdtVis + this.COM.X0[0]  / scene.zoom;
 
         scene.h.strokeStyle = "#666";
         scene.h.fillStyle = "#0a0";
@@ -663,14 +663,14 @@ extendedObject.prototype = {
         scene.h.beginPath()
 		if( this.COM.initialPt ){
 			scene.h.moveTo(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
-							-this.COM.initialPt[3] / scene.zoom / c + scene.origin[2]);
+							-this.COM.initialPt[3] / scene.timeZoom / c + scene.origin[2]);
 		} else {
 			scene.h.moveTo(bOfLinex + scene.origin[0],
 							-bOfLinet + scene.origin[2]);
 		}
 		if( this.COM.endPt ) {
 			scene.h.lineTo(this.COM.endPt[0] / scene.zoom + scene.origin[0],
-			 			-this.COM.endPt[3] / scene.zoom / c+ scene.origin[2]);
+			 			-this.COM.endPt[3] / scene.timeZoom / c+ scene.origin[2]);
 		} else{
 			scene.h.lineTo(tOfLinex + scene.origin[0],
 						-tOfLinet + scene.origin[2]);
@@ -734,9 +734,9 @@ extendedObject.prototype = {
         scene.h.fillStyle = "#aaa";
         if (this.options.showTime || scene.options.showTime) {
 
-            var dotScale  = 25 * Math.pow(2, Math.round(Math.log(scene.zoom) / Math.log(2)));
-            var dotScaleR = 15 * Math.sqrt(scene.zoom / dotScale);
-            var hNumDots  = Math.ceil(scene.mHeight / dotScale / 2 * scene.zoom / this.COM.V[3] * c);
+            var dotScale  = 25 * Math.pow(2, Math.round(Math.log(scene.timeZoom) / Math.log(2)));
+            var dotScaleR = 15 * Math.sqrt(scene.timeZoom / dotScale);
+            var hNumDots  = Math.ceil(scene.mHeight / dotScale / 2 * scene.timeZoom / this.COM.V[3] * c);
             var dotR, roundedTauParam, tDotPos, xDotPos;
 
             for (var i = -hNumDots; i < hNumDots; i++) {
@@ -749,7 +749,7 @@ extendedObject.prototype = {
                 quat4.add(tempQuat4, tempQuat42, tempQuat42);
 
                 xDotPos = tempQuat42[0] / scene.zoom + scene.origin[0];
-                tDotPos = -tempQuat42[3] / c / scene.zoom + scene.origin[2];
+                tDotPos = -tempQuat42[3] / c / scene.timeZoom + scene.origin[2];
 
                 if ((i + roundedTauParam / dotScale) % 10 === 0) dotR = 2 * dotScaleR;
                 else if ((i + roundedTauParam / dotScale) % 5 === 0) dotR = 1.41 * dotScaleR;
@@ -758,9 +758,9 @@ extendedObject.prototype = {
 				if ((!this.COM.endPt || tempQuat42[3] <= this.COM.endPt[3]+1) &&
 					(!this.COM.initialPt || tempQuat42[3] >= this.COM.initialPt[3]-1)){
 					scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
-								   tempQuat42[3] / c / scene.zoom + scene.origin[2]);
-					scene.h.arc(tempQuat42[0] / scene.zoom + scene.origin[0],
-								-tempQuat42[3]/c / scene.zoom + scene.origin[2], dotR,
+								   tempQuat42[3] / c / scene.timeZoom + scene.origin[2]);
+					scene.h.arc(xDotPos,
+							    tDotPos, dotR,
 								0, twopi, true);
 					
 					if (scene.curOptions.showText && 
@@ -772,7 +772,7 @@ extendedObject.prototype = {
 
 						if (scene.options.showPos || this.options.showPos){
 							scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " +
-														   -Math.round((tDotPos - scene.origin[2]) * scene.zoom) + "]",
+														   -Math.round((tDotPos - scene.origin[2]) * scene.timeZoom) + "]",
 											xDotPos + 3, tDotPos + 13);
 						}
 
@@ -788,7 +788,7 @@ extendedObject.prototype = {
         if (window.console && window.console.firebug) {
             scene.h.beginPath();
             scene.h.arc(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
-                        -this.COM.initialPt[3] / c / scene.zoom + scene.origin[2],6,0,twopi,true);
+                        -this.COM.initialPt[3] / c / scene.timeZoom + scene.origin[2],6,0,twopi,true);
             scene.h.fill();
         }
     },

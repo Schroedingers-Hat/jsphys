@@ -14,6 +14,8 @@ var rotDownDown = false;
 var ctrlDown = false;
 var fireDown = false;
 var zoomIn = false;
+var timeZoomOut = false;
+var timeZoomIn = false;
 var speedDown = false;
 var speedUp = false;
 var zoomOut = false;
@@ -80,13 +82,21 @@ function onKeyDown(evt)
         {
             vPosClick(evt);
         }
+        else if (evt.keyCode == 109 || evt.keyCode == 189)
+        {
+           zoomOut = true;
+        }
         else if (evt.keyCode == 61 || evt.keyCode == 107 || evt.keyCode == 187)
         {
             zoomIn = true;
         }
-        else if (evt.keyCode == 109 || evt.keyCode == 189)
+        else if (evt.keyCode == 188)
         {
-           zoomOut = true;
+           timeZoomOut = true;
+        }
+        else if (evt.keyCode == 190)
+        {
+            timeZoomIn = true;
         }
         else if (evt.keyCode == 80)
         {
@@ -115,6 +125,8 @@ function onKeyUp(evt)
     else if(evt.keyCode == 83) downDown = false;
     else if (evt.keyCode == 61 || evt.keyCode == 107 || evt.keyCode == 187) zoomIn = false;
     else if (evt.keyCode == 109 || evt.keyCode == 189) zoomOut = false;
+    else if (evt.keyCode == 188) timeZoomOut = false;
+    else if (evt.keyCode == 190) timeZoomIn = false;
     else if (evt.keyCode == 69) rotRightDown = false;
     else if (evt.keyCode == 81) rotLeftDown = false;
     else if (evt.keyCode == 219) speedDown = false;
@@ -154,6 +166,7 @@ function zoomTo(zoom) {
     scene.boost.up    = boostFrom3Vel(0,  0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
     scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
 
+    drawLightCone(scene, scene.lCCtx);
     updateSliders();
 }
 

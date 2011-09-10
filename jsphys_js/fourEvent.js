@@ -54,7 +54,7 @@ fourEvent.prototype.drawXT = function(scene) {
     scene.h.beginPath();
     scene.h.fillStyle = "#ff0";
     scene.h.arc(this.X0[0] / scene.zoom + scene.origin[0],
-               -this.X0[3] / c / scene.zoom + scene.origin[2],2,0,twopi,true);
+               -this.X0[3] / c / scene.timeZoom + scene.origin[2],2,0,twopi,true);
 
     scene.h.fill();
 
