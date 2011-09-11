@@ -62,7 +62,7 @@ function Scene() {
                      "showGamma": true,
                      "show3D": false,
                      "showPos": false,
-                     "c": 3,
+                     "c": 1,
                      "showText": true,
                      "timeScale": 0.01,
                      "showMinkowski": true,
@@ -135,6 +135,16 @@ function Scene() {
         }
         this.frameStartTime = new Date().getTime();
         this.loaded = true;
+        this.testPath = new pathObject([0,0,0,0],
+            [{alpha: 0.1, 
+              rot  : mat4.create([
+                1,0,0,0,
+                0,1,0,0,
+                0,0,1,0,
+                0,0,0,1]), 
+              type  : 0
+            }]);
+
     };
 
     this.pushCaption = function(caption) {
@@ -146,15 +156,6 @@ function Scene() {
      * Hence obj is an object from the demo system specifying options,
      * a label, coordinates, and momentum.
      */
-    this.testPath = new pathObject([0,0,0,0],
-        [{alpha: 0.01, 
-          rot  : mat4.create([
-            1,0,0,0,
-            0,1,0,0,
-            0,0,1,0,
-            0,0,0,1]), 
-          type  : 0
-        }]);
     this.createObject = function (obj) {
         if (typeof obj.options === "undefined") {
             obj.options = {};
@@ -206,7 +207,6 @@ function Scene() {
      */
     this.draw = function() {
         this.processInput();
-        
         this.oldFrameStartTime = this.frameStartTime;
         this.frameStartTime = new Date().getTime();
         var timeStep = 0;
@@ -215,6 +215,8 @@ function Scene() {
         }
         this.clear();
         
+        this.testPath.update(timeStep);        
+        this.testPath.draw(this);        
         // Draw the light cone, if we're using flashCanvas, don't use offscreen canvas.
         if (typeof FlashCanvas != "undefined") {
             //Ie draw light cone here.
@@ -445,7 +447,7 @@ function Scene() {
                 this.carray[i].changeFrame(translation1, boost);
             }
         }
-
+        this.testPath.changeFrame(0,boost,0);
 
     };
 
