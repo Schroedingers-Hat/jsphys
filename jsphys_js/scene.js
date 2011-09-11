@@ -136,7 +136,7 @@ function Scene() {
         this.frameStartTime = new Date().getTime();
         this.loaded = true;
         this.testPath = new pathObject([0,0,0,0],
-            [{alpha: 0.1, 
+            [{alpha: 0.001, 
               rot  : mat4.create([
                 1,0,0,0,
                 0,1,0,0,
@@ -447,7 +447,7 @@ function Scene() {
                 this.carray[i].changeFrame(translation1, boost);
             }
         }
-        this.testPath.changeFrame(0,boost,0);
+        this.testPath.changeFrame(nullQuat4,boost,nullQuat4);
 
     };
 

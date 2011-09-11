@@ -15,41 +15,48 @@ function pathObject(pts, params) {
     // or position according to some frame.
     this.motionParams       = [];
     this.motionParams[0] = {
-        refPt   : quat4.create([-Math.pow(c, 1) / Math.pow(params[0].alpha, 1),0,0,0]),
+        refPt   : quat4.create([0,0,0,0]),
+        refPt0   : quat4.create([-Math.pow(c, 1) / Math.pow(params[0].alpha, 1),0,0,0]),
         refV    : quat4.create([0,0,0,c]),
         refTau  : 0,
         alpha   : params[0].alpha,
         coeffs  : this.calcHypCoeff(c, params[0].alpha, params[0].rot),
         type    : params[0].type
     };
+    this.timeVec = quat4.create([0,0,0,0]);
     this.pos = quat4.create(pts[0]);
+    this.boostMat = [];
+    this.boostMatInv = [];
     this.V   = quat4.create([0,0,0,c]);
     this.pastPos = quat4.create(pts[0]);
     this.pastV   = quat4.create([0,0,0,c]);
-
+    this.refWorldLine = new inertialObject(quat4.create([  -Math.pow(c, 1) / Math.pow(params[0].alpha, 1)   ,0,0,0]),quat4.create([0,0,0,c]),1);
 };
-
 pathObject.prototype = {
 
     update: function(timeStep) {
-       this.motionParams[0].refPt[3] -= timeStep;
-       this.motionParams[0].refTau = -this.motionParams[0].refPt[3] / 
-                                     this.motionParams[0].refV[3] * c;
-       this.pos = this.hypEvt(this.getPathTau(this.motionParams[0],this.motionParams[0].refPt[3]),
+       this.refWorldLine.updateX0(timeStep); 
+       // TODO: Make this so it's not horrible for GC.
+       this.boostMat = cBoostMat(this.refWorldLine.V,c);
+       this.boostMatInv = cBoostMatInv(this.refWorldLine.V,c);
+
+       this.pos = this.hypEvt(this.getPathTau(this.motionParams[0],-this.refWorldLine.initialPt[3]),
                               this.motionParams[0].alpha,
                               this.motionParams[0].coeffs,
                               this.pos);
-       quat4.add(this.pos,this.motionParams[0].refPt,this.pos);
+       quat4.add(this.pos,this.refWorldLine.initialPt);
     },
     draw: function(scene) {
         scene.g.beginPath();
-        scene.g.arc(this.motionParams[0].refPt[0] / scene.zoom + scene.origin[0],
-                    -this.motionParams[0].refPt[1] / scene.zoom + scene.origin[2],10,0,twopi,true);
+//        scene.g.arc(this.refWorldLine.initialPt / scene.zoom + scene.origin[0],
+//                    -this.refWorldLine.initialPt / scene.zoom + scene.origin[2],10,0,twopi,true);
          scene.g.arc(this.pos[0] / scene.zoom + scene.origin[0],
                     -this.pos[1] / scene.zoom + scene.origin[2],10,0,twopi,true);
        
         scene.g.closePath();
         scene.g.fill();
+        scene.g.fillText(this.pos[0]+' '+ this.pos[1]+' '+this.pos[3],100,110);
+        scene.g.fillText(this.timeVec[0]+' '+ this.timeVec[1]+' '+this.timeVec[3],100,130);
     },
     getPathTau: function(Params, t) {
         var a = Params.coeffs[0][3];
@@ -57,8 +64,10 @@ pathObject.prototype = {
         return Math.log((t+Math.sqrt(t*t-4*a*b))/(2*a))/Params.alpha;
     },
     changeFrame: function(translation1,rotation,translation2) {
-        mat4.multiplyVec4(rotation,this.motionParams[0].refPt);
-        mat4.multiplyVec4(rotation,this.motionParams[0].refV);
+        this.refWorldLine.changeFrame(translation1,rotation,translation2);
+        for(var i = 0;i<this.motionParams[0].coeffs.length;i++) {
+            mat4.multiplyVec4(rotation,this.motionParams[0].coeffs[i]);
+        }
     },
     // hypEvt. Produces an event corresponding to hyperbolic motion.
     // dest represents the vector c^4/alpha^2 [cosh(alpha*tau),0,0,sinh(alpha*tau)]

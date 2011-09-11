@@ -100,7 +100,22 @@ function cBoostMat(boostV, c) {
                          0,                                      0,                                      1, 0,
                          -bx * gamma,                            -by * gamma,                            0, gamma]));
 }
+function cBoostMatInv(boostV, c) {
+    var gamma = boostV[3] / c;
+    if (gamma - 1 < 0.0000001)
+    {
+        return (mat4.create([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]));
+    }
+    var bx = -boostV[0] / boostV[3];
+    var by = -boostV[1] / boostV[3];
 
+    var boostMagSq = (bx * bx) + (by * by);
+
+	return (mat4.create([1 + (gamma - 1) * bx * bx / boostMagSq, (gamma - 1) * bx * by / boostMagSq,     0, -bx * gamma,
+                         (gamma - 1) * bx * by / boostMagSq,     1 + (gamma - 1) * by * by / boostMagSq, 0, -by * gamma,
+                         0,                                      0,                                      1, 0,
+                         -bx * gamma,                            -by * gamma,                            0, gamma]));
+}
 /**
  * Take a 3-velocity and return a boost matrix from cBoostMat.
  *
