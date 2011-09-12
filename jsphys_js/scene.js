@@ -216,7 +216,6 @@ function Scene() {
         this.clear();
         
         this.testPath.update(timeStep);        
-        this.testPath.draw(this);        
         // Draw the light cone, if we're using flashCanvas, don't use offscreen canvas.
         if (typeof FlashCanvas != "undefined") {
             //Ie draw light cone here.
@@ -233,6 +232,7 @@ function Scene() {
             this.h.fill();
         }
         
+        this.testPath.draw(this);        
         // Where the meat of the work is done.
         for ( var i = 0; i < this.carray.length; i++) {
             this.carray[i].update(timeStep, this);

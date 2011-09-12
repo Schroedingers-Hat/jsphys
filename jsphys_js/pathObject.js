@@ -25,7 +25,9 @@ function pathObject(pts, params) {
     };
     this.timeVec = quat4.create([0,0,0,0]);
     this.pos = quat4.create(pts[0]);
+    this.xTPos = quat4.create([0,0,0,0]);
     this.boostMat = [];
+    this.tau = 0;
     this.boostMatInv = [];
     this.V   = quat4.create([0,0,0,c]);
     this.pastPos = quat4.create(pts[0]);
@@ -39,12 +41,14 @@ pathObject.prototype = {
        // TODO: Make this so it's not horrible for GC.
        this.boostMat = cBoostMat(this.refWorldLine.V,c);
        this.boostMatInv = cBoostMatInv(this.refWorldLine.V,c);
-
-       this.pos = this.hypEvt(this.getPathTau(this.motionParams[0],-this.refWorldLine.initialPt[3]),
+       this.tau = this.getPathTau(this.motionParams[0],-this.refWorldLine.initialPt[3]);
+       this.pos = this.hypEvt(this.tau,
                               this.motionParams[0].alpha,
                               this.motionParams[0].coeffs,
                               this.pos);
        quat4.add(this.pos,this.refWorldLine.initialPt);
+
+
     },
     draw: function(scene) {
         scene.g.beginPath();
@@ -57,6 +61,7 @@ pathObject.prototype = {
         scene.g.fill();
         scene.g.fillText(this.pos[0]+' '+ this.pos[1]+' '+this.pos[3],100,110);
         scene.g.fillText(this.timeVec[0]+' '+ this.timeVec[1]+' '+this.timeVec[3],100,130);
+        this.drawXT(scene);
     },
     getPathTau: function(Params, t) {
         var a = Params.coeffs[0][3];
@@ -68,6 +73,28 @@ pathObject.prototype = {
         for(var i = 0;i<this.motionParams[0].coeffs.length;i++) {
             mat4.multiplyVec4(rotation,this.motionParams[0].coeffs[i]);
         }
+    },
+    drawXT: function(scene) {
+
+       scene.h.beginPath();
+       for (var i = -10; i<10; i++) {
+           this.hypEvt(Math.round(this.tau /50 / scene.timeZoom)*50 * scene.timeZoom + 50*i*scene.timeZoom,
+                       this.motionParams[0].alpha,
+                       this.motionParams[0].coeffs,
+                       this.xTPos);
+           quat4.add(this.xTPos,this.refWorldLine.initialPt);
+           scene.h.fillStyle = "#f0f";
+           scene.h.lineTo(this.xTPos[0] / scene.zoom + scene.origin[0],
+                         -this.xTPos[3] / scene.timeZoom / c + scene.origin[2],5,0,twopi,true);
+           scene.h.arc(this.xTPos[0] / scene.zoom + scene.origin[0],
+                      -this.xTPos[3] / scene.timeZoom / c + scene.origin[2],5,0,twopi,true);
+           scene.h.moveTo(this.xTPos[0] / scene.zoom + scene.origin[0],
+                         -this.xTPos[3] / scene.timeZoom / c + scene.origin[2],5,0,twopi,true);
+
+       }
+//       scene.h.closePath();
+       scene.h.stroke();
+
     },
     // hypEvt. Produces an event corresponding to hyperbolic motion.
     // dest represents the vector c^4/alpha^2 [cosh(alpha*tau),0,0,sinh(alpha*tau)]
