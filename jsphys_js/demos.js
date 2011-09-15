@@ -151,17 +151,17 @@ var demos = [
 
 
             {"name": "Velocity addition",
-             "steps": [{"caption": "Three stars. The left and right stars approach the center star at high speed - 0.9 times the speed of light.",
+             "steps": [{"caption": "Three stars. The left and right stars approach the center star at high speed - 0.9 times the speed of light. What would the star on the left see? Would it look like the star on the right is approaching at 1.8c?",
                          "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Center", "shape": aSphere(5,64)},
-                                     {"object": extendedObject, "x": [-30, -20, 0], "p": [2.1, 0], "m": 1, "label": "Left", "shape": aSphere(5,64)},
-                                     {"object": extendedObject, "x": [30, -30, 0], "p": [-2.1, 0], "m": 1, "label": "Right", "shape": aSphere(5,64)}],
-                         "options": {"c": 1},
+                                     {"object": extendedObject, "x": [-70, -20, 0], "p": [10.5, 0], "m": 1, "label": "Left", "shape": aSphere(5,64)},
+                                     {"object": extendedObject, "x": [70, -30, 0], "p": [-10.5, 0], "m": 1, "label": "Right", "shape": aSphere(5,64)}],
+                         "options": {"c": 5, "showGamma": false, "showFramePos": true, "showVisualPos": false},
                          "frame": 0},
-                        {"caption": "Let's see that again, but this time from the perspective of the far-left star. The rightmost star only approaches at 0.995c &mdash; not the 1.8c you'd expect.",
+                        {"caption": "From the left-most star's perspective, the rightmost star only approaches at 0.995c &mdash; not the 1.8c you'd expect.",
                          "objects": [{"object": extendedObject, "x": [0, -10, 0], "p": [0, 0], "m": 1, "label": "Center", "shape": aSphere(5,64)},
-                                     {"object": extendedObject, "x": [-30, -20, 0], "p": [2.1, 0], "m": 1, "label": "Left", "shape": aSphere(5,64)},
-                                     {"object": extendedObject, "x": [30, -30, 0], "p": [-2.1, 0], "m": 1, "label": "Right", "shape": aSphere(5,64)}],
-                         "options": {"c": 1},
+                                     {"object": extendedObject, "x": [-70, -20, 0], "p": [10.5, 0], "m": 1, "label": "Left", "shape": aSphere(5,64)},
+                                     {"object": extendedObject, "x": [70, -30, 0], "p": [-10.5, 0], "m": 1, "label": "Right", "shape": aSphere(5,64)}],
+                         "options": {"c": 5, "showGamma": false, "showFramePos": true, "showVisualPos": false},
                          "frame": 1}
                        ]
             },
