@@ -15,7 +15,7 @@ function Scene() {
         FlashCanvas.initElement($('#minkowski')[0]);
         FlashCanvas.initElement($('#3DCanvas')[0]);
     }
-    var defFont = "0.7em Helvetiker, helvetica, arial, sans-serif";
+    var defFont = "0.8em Helvetiker, helvetica, arial, sans-serif";
     this.g = $('#canvas')[0].getContext("2d");
     this.h = $('#minkowski')[0].getContext("2d");
     this.TDC = $('#3DCanvas')[0].getContext("2d");
