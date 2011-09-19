@@ -38,6 +38,32 @@ function tempToColor(colorTemp)
 }
 
 /**
+ * Take a wavelength, in nanometers, and return an RGB color.
+ *
+ * Represents the wavelength as a Gaussian centered at the wavelength with
+ * a finite width, so that spectrum_to_xyz will have something to work with.
+ */
+function wavelengthToColor(wavelength) {
+    if (!wavelengthToColor.cache)
+        wavelengthToColor.cache = {};
+
+    var roundedWl = Math.round(wavelength / 20) * 20;
+    
+    if (!(roundedWl.toString() in wavelengthToColor.cache))
+    {
+        var xyz = spectrum_to_xyz(gauss_spectrum(roundedWl, 100, 20));
+        var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
+        
+        var color = "#" + padRGB(Math.floor(rgb[0] * 255).toString(16)) + 
+                          padRGB(Math.floor(rgb[1] * 255).toString(16)) +
+                          padRGB(Math.floor(rgb[2] * 255).toString(16));
+        wavelengthToColor.cache[roundedWl.toString()] = color;
+    }
+    
+    return wavelengthToColor.cache[roundedWl.toString()];
+}
+
+/**
  * RGB colors are in the form RRGGBB. If a color component only takes 1
  * digit to represent, pad it with a leading zero, or we'll end up with
  * RGGB or something.
@@ -266,4 +292,18 @@ function bb_spectrum(temperature)
         return (3.74183e-16 * Math.pow(wlm, -5.0)) /
                (Math.exp(1.4388e-2 / (wlm * temperature)) - 1.0);
     };
+}
+
+/** Here ends specrend.c code. **/
+
+/**
+ * Return a spectrum function defined by a Gaussian distribution centered
+ * at wavelength `center` (in nm) with amplitude `a` and standard deviation 
+ * `stddev`
+ */
+function gauss_spectrum(center, a, stddev) {
+    return function(wavelength) {
+        return a * Math.pow(Math.E, -(Math.pow(wavelength - center, 2)) / 
+               (2 * Math.pow(stddev, 2)));
+    }
 }
