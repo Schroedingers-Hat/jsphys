@@ -1,9 +1,3 @@
-// These do not change with time.
-// Instead everything is moved to the current time for transformations, then moved back.
-
-
-// Takes pts -- an array of events
-// params -- an array of invariants that classify the motion between one event and the next.
 function pathObject(pts, params) {
     // Anchor points. Events are calculated forward from the nearest.
     // According to whatever function is associated.
@@ -33,6 +27,7 @@ function pathObject(pts, params) {
     this.pastPos = quat4.create(pts[0]);
     this.pastV   = quat4.create([0,0,0,c]);
     this.refWorldLine = new inertialObject(quat4.create([  -Math.pow(c, 1) / Math.pow(params[0].alpha, 1)   ,0,0,0]),quat4.create([0,0,0,c]),1);
+    this.refWorldLine = new inertialObject(quat4.create([0,0,0,0]),quat4.create([0,0,0,c]),1);
 };
 pathObject.prototype = {
 
@@ -92,7 +87,6 @@ pathObject.prototype = {
                          -this.xTPos[3] / scene.timeZoom / c + scene.origin[2],5,0,twopi,true);
 
        }
-//       scene.h.closePath();
        scene.h.stroke();
 
     },
@@ -114,7 +108,7 @@ pathObject.prototype = {
     },
 
     // CalcHypCoeff: takes invariants, and a matrix to produce
-    // eigenvectors which map the eigenvalues e^(rho), e^(-rho) and 1
+    // eigenvectors which map the eigenvalues e^(rho), e^(-rho)
     // to an event.
     calcHypCoeff: function(c,alpha,rot){
         var base = Math.pow(c, 1) / Math.pow(alpha, 1) * 0.5;
@@ -126,10 +120,7 @@ pathObject.prototype = {
                           rot[1] * base - rot[13] * base, 
                           rot[2] * base - rot[14] * base,
                           rot[3] * base - rot[15] * base]];
-               // The ones come from centering around a pt where obj is stationary.
         return hypCoeffs;
     }
-
-
 
 };
