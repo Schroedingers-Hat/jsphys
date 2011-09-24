@@ -253,7 +253,7 @@ function Scene() {
 
     this.processInput = function() {
         // Create a new photon. Careful with this, photons are tracked even after they disappear.
-        if (fireDown && this.curOptions.canShoot) {
+        if (this.actions.fire && this.curOptions.canShoot) {
             var firstCollisionIdx = 0;
             var collisionTime;
             var firstCollisionTime = Infinity;
@@ -275,7 +275,7 @@ function Scene() {
                 this.carray[firstCollisionIdx].COM.endPt = quat4.create(newPhoton.endPt);
             }
             this.carray.push(newPhoton);
-            fireDown = false;
+            this.actions.fire = false;
         }
 
         // Determine whether we need to change frames
