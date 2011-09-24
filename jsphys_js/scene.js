@@ -228,7 +228,7 @@ function Scene() {
         if(this.curOptions.showText) {
             this.h.beginPath();
 
-            this.h.fillText("x(m)", scene.mWidth - 30, scene.origin[2] - 10);
+            this.h.fillText("x(m)", this.mWidth - 30, this.origin[2] - 10);
             this.h.fillText("t(s)", 5 + this.origin[0], 10);
             this.h.fill();
         }
