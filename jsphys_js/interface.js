@@ -3,25 +3,6 @@
  */
 
 "use strict";
-var rightDown = false;
-var leftDown = false;
-var upDown = false;
-var downDown = false;
-var rotLeftDown = false;
-var rotRightDown = false;
-var rotUpDown = false;
-var rotDownDown = false;
-var ctrlDown = false;
-var fireDown = false;
-var zoomIn = false;
-var timeZoomOut = false;
-var timeZoomIn = false;
-var speedDown = false;
-var speedUp = false;
-var zoomOut = false;
-var keyIsUseful = false;
-//var scene;
-
 //TODO: Pull all the keycodes out of here and put them in an array or something.
 //Will allow changing the controls to boot.
 window.onresize = function(event) {

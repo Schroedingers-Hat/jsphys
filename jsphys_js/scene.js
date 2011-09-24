@@ -81,6 +81,8 @@ function Scene() {
     
     this.actions = {"rotateLeft": false,
                     "rotateRight": false,
+                    "rotateUp": false,
+                    "rotateDown": false,
                     "boostLeft": false,
                     "booostRight": false,
                     "boostUp": false,
@@ -89,7 +91,9 @@ function Scene() {
                     "slowDown": false,
                     "fire": false,
                     "zoomIn": false,
-                    "zoomOut": false}
+                    "zoomOut": false,
+                    "timeZoomIn": false,
+                    "timeZoomOut": false}
     
     
     /** Demo loading functions **/
@@ -288,22 +292,22 @@ function Scene() {
         if (this.actions.rotateLeft)  boost = rotRight;
         if (this.actions.rotateRight) boost = rotLeft;
         
-        if (rotUpDown === true)    this.changeArrayFrame(nullQuat4, rotUp   );
-        if (rotDownDown === true)  this.changeArrayFrame(nullQuat4, rotDown );
+        if (this.actions.rotateUp === true)    this.changeArrayFrame(nullQuat4, rotUp   );
+        if (this.actions.rotateDown === true)  this.changeArrayFrame(nullQuat4, rotDown );
         if (boost !== false) {
             this.changeArrayFrame(nullQuat4, boost);
         }
-        if (zoomOut == true) {
+        if (this.actions.zoomOut == true) {
             zoomTo(this.zoom * 1.05);
         }
-        if (zoomIn == true) {
+        if (this.actions.zoomIn == true) {
             zoomTo(this.zoom / 1.05);
         }
-        if (timeZoomIn == true) {
+        if (this.actions.timeZoomIn == true) {
             this.timeZoom = this.timeZoom / 1.05;
             drawLightCone(this, this.lCCtx);
         }
-        if (timeZoomOut == true) {
+        if (this.actions.timeZoomOut == true) {
             this.timeZoom = this.timeZoom * 1.05;
             drawLightCone(this, this.lCCtx);
         }
