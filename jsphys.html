@@ -8,7 +8,7 @@
         <![endif]-->
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <script type="text/javascript" src="jquery/jquery.js"></script>
-        <script type="text/javascript" src="jquery/jquery.hotkeys.js"></script>
+        <script type="text/javascript" src="lib/kibo.js"></script>
         <script type="text/javascript" src="jsphys_js/ruler.js"></script>
         <script type="text/javascript" src="jsphys_js/extendedObject.js"></script>
         <script type="text/javascript" src="jsphys_js/glMatrix-0.9.5.min.js"></script>
@@ -131,7 +131,7 @@
                     <p>Apparent positions: <button id="vPos" onclick="vPosClick(event)">Force on</button></p>
                     <p>Zoom: </p><div id="zoom-slider"></div>
                     <p>Speed: </p><div id="speed-slider"></div>
-                    <p><button id="pause" onclick="doPause(event)">Play</button>
+                    <p><button id="pause">Play</button>
                     <button id="Help" onclick="$('#help-screen').toggle(); 
                                                if(event.preventDefault) event.preventDefault(); 
                                                else event.returnValue = false; 

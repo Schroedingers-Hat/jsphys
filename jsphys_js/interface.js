@@ -35,196 +35,61 @@ window.onresize = function(event) {
     }
 };
 
+var keys = {'q': 'rotateLeft', 'e': 'rotateRight',
+            'w': 'boostUp', 's': 'boostDown',
+            'a': 'boostLeft', 'd': 'boostRight',
+            'space': 'fire'};
+var k = new Kibo();
+
 /**
  * Bind all keyboard shortcuts for the given scene.
  */
 function bindKeys(scene) {
-    // Display settings
-    $(document).bind('keydown', 't', function() {
+    k.down('any', function() {
+        if (k.lastKey() in keys) {
+            scene.actions[keys[k.lastKey()]] = true;
+            if (!scene.drawing && !scene.keyDown) {
+                scene.beginFrameTime = new Date().time;
+                requestAnimFrame(drawScene(scene));
+                scene.keyDown = true;
+            }
+        }
+    });
+
+    k.up('any', function() {
+        if (k.lastKey() in keys) {
+            scene.actions[keys[k.lastKey()]] = false;
+        }
+    });
+
+    k.down('t', function() {
         scene.options.showTime = !scene.options.showTime;
     });
 
-    $(document).bind('keydown', 'z', function(evt) {
-        dopplerButtonClick(scene, evt);
-    });
-
-    $(document).bind('keydown', 'p', function() {
+    k.down('p', function() {
         scene.options.showPos = !scene.options.showPos;
     });
 
-    // Navigation keys
-    $(document).bind('keydown', 'q', function() {
-        scene.actions.rotateLeft = true;
+    k.down('z', function(evt) {
+        dopplerButtonClick(scene, evt);
     });
-    $(document).bind('keyup', 'q', function() {
-        scene.actions.rotateLeft = false;
-    });
-
-    $(document).bind('keydown', 'w', function() {
-        scene.actions.boostUp = true;
-    });
-    $(document).bind('keyup', 'w', function() {
-        scene.actions.boostUp = false;
-    });
-
-    $(document).bind('keydown', 'e', function() {
-        scene.actions.rotateRight = true;
-    });
-    $(document).bind('keyup', 'e', function() {
-        scene.actions.rotateRight = false;
-    });
-
-    $(document).bind('keydown', 'a', function() {
-        scene.actions.boostLeft = true;
-    });
-    $(document).bind('keyup', 'a', function() {
-        scene.actions.boostLeft = false;
-    });
-
-    $(document).bind('keydown', 's', function() {
-        scene.actions.boostDown = true;
-    });
-    $(document).bind('keyup', 's', function() {
-        scene.actions.boostDown = false;
-    });
-
-    $(document).bind('keydown', 'd', function() {
-        scene.actions.boostRight = true;
-    });
-    $(document).bind('keyup', 'd', function() {
-        scene.actions.boostRight = false;
-    });
-
-    // Time controls
-    $(document).bind('keydown', '[', function() {
-        scene.actions.slowDown = true;
-    });
-    $(document).bind('keyup', '[', function() {
-        scene.actions.slowDown = false;
-    });
-    
-    $(document).bind('keydown', ']', function() {
-        scene.actions.speedUp = true;
-    });
-    $(document).bind('keyup', ']', function() {
-        scene.actions.speedUp = false;
-    });    
-}
-
-// Get Key Input
-function onKeyDown(evt)
-{
-
-        keyIsUseful = true;
-        scene.kC = evt.keyCode;
-        if (evt.keyCode == 81) rotLeftDown = true;
-        else if (evt.keyCode == 72) {
-            $('#help-screen').toggle();
-        }
-		else if (evt.keyCode == 19) doPause(evt);
-        else if (evt.keyCode == 69) rotRightDown = true;
-        else if (evt.keyCode == 68) rightDown = true;
-        else if (evt.keyCode == 65) leftDown = true;
-        else if (evt.keyCode == 87) upDown = true;
-        else if (evt.keyCode == 83) downDown = true;
-        else if (evt.keyCode == 221) speedUp = true;
-        else if (evt.keyCode == 219) speedDown = true;
-        else if (evt.keyCode == 192) scene.curOptions.showText = !scene.curOptions.showText;
-        else if (evt.keyCode == 220) {
-            scene.timeScale = -scene.timeScale;
-            updateSliders();
-        }
-        else if (evt.keyCode == 51) scene.curOptions.show3D = !scene.curOptions.show3D;
-        else if (evt.keyCode == 32) {
-            if (ctrlDown == false) fireDown = true;
-            ctrlDown = true;
-        }
-//        else if (evt.keyCode == 49) rotUpDown = true; //Not needed for 2D
-//        else if (evt.keyCode == 50) rotDownDown = true;  //Not needed for 2D
-
-        else if (evt.keyCode == 84) scene.options.showTime = !scene.options.showTime;
-        else if (evt.keyCode == 90)
-        {
-            // $('#doppler').click();
-            dopplerButtonClick(evt);
-        }
-        else if (evt.keyCode == 88)
-        {
-            framePosClick(evt);
-        }
-        else if (evt.keyCode == 67)
-        {
-            vPosClick(evt);
-        }
-        else if (evt.keyCode == 109 || evt.keyCode == 189)
-        {
-           zoomOut = true;
-        }
-        else if (evt.keyCode == 61 || evt.keyCode == 107 || evt.keyCode == 187)
-        {
-            zoomIn = true;
-        }
-        else if (evt.keyCode == 188)
-        {
-           timeZoomOut = true;
-        }
-        else if (evt.keyCode == 190)
-        {
-            timeZoomIn = true;
-        }
-        else if (evt.keyCode == 80)
-        {
-            scene.options.showPos = !scene.options.showPos;
-        } else keyIsUseful = false;
-        if (!scene.drawing && !scene.keyDown && keyIsUseful){
-            scene.beginFrameTime = new Date().time;
-            requestAnimFrame(drawScene);
-            scene.keyDown = true;
-        }
-
-		if(evt.preventDefault) evt.preventDefault();
-		else evt.returnValue = false;
-		evt.cancel = true;
-		return false;
-
-}
-
-function onKeyUp(evt)
-{
-
-
-    if (evt.keyCode == 68) rightDown = false;
-    else if (evt.keyCode == 65) leftDown = false;
-    else if(evt.keyCode == 87) upDown = false;
-    else if(evt.keyCode == 83) downDown = false;
-    else if (evt.keyCode == 61 || evt.keyCode == 107 || evt.keyCode == 187) zoomIn = false;
-    else if (evt.keyCode == 109 || evt.keyCode == 189) zoomOut = false;
-    else if (evt.keyCode == 188) timeZoomOut = false;
-    else if (evt.keyCode == 190) timeZoomIn = false;
-    else if (evt.keyCode == 69) rotRightDown = false;
-    else if (evt.keyCode == 81) rotLeftDown = false;
-    else if (evt.keyCode == 219) speedDown = false;
-    else if (evt.keyCode == 221) speedUp = false;
-    else if (evt.keyCode == 32) ctrlDown = false;
-//    else if (evt.keyCode == 49) rotUpDown = false;
-//    else if (evt.keyCode == 50) rotDownDown = false;
-    scene.keyDown = false;
 }
 
 /**
  * Change the reference frame to that of the object closest to the mouse
- * cursor when the user clicks. Click on an object and see from its perspective.
+ * cursor when the user clicks. Click on an object and see from its perspective
  */
-function clickHandler(e)
-{
-    var offset = $('#canvas').offset();
-    var x = e.pageX - offset.left;
-    var y = e.pageY - offset.top;
+function clickHandler(scene) {
+    return function (e) {
+        var offset = $('#canvas').offset();
+        var x = e.pageX - offset.left;
+        var y = e.pageY - offset.top;
 
-    var minElement = scene.findClosestObject(x, y, 30);
+        var minElement = scene.findClosestObject(x, y, 30);
 
-    if (minElement != false) {
-        scene.shiftToFrameOfObject(minElement);
+        if (minElement != false) {
+            scene.shiftToFrameOfObject(minElement);
+        }
     }
 }
 
@@ -305,12 +170,12 @@ function loadDemo(idx, scene) {
         if (typeof FlashCanvas != "undefined") {
 
         } else {
-        $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider,
-                                   value: -(Math.log(scene.zoom) / Math.LN2)});
-        $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed,
-                                    value: (Math.log(scene.timeScale + 1) / Math.LN2)});
+            $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider,
+                                      value: -(Math.log(scene.zoom) / Math.LN2)});
+            $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed,
+                                       value: (Math.log(scene.timeScale + 1) / Math.LN2)});
         }
-         $("#demo-chooser").hide();
+        $("#demo-chooser").hide();
         scene.startAnimation();
     };
 }
@@ -419,14 +284,16 @@ $(document).ready(function() {
     loadDemoList(scene);
     bindKeys(scene);
     $('#pause').click(doPause(scene));
-    //$(document).keydown(onKeyDown);
-    //$(document).keyup(onKeyUp);
-    //$("#pause").click(pause);
-    $("#canvas").click(clickHandler);
+    $("#canvas").click(clickHandler(scene));
+
+    // To make spacebar work as fire key, disable its usual behavior
+    $(window).keypress(function (event) {
+        if (event.which == 32) {
+            event.preventDefault();
+        }
+    });
+
     //$("#doppler").click(dopplerButtonClick);
     //$('#framePos').click(framePosClick);
     //$('#vPos').click(vPosClick);
-
 });
-
-
