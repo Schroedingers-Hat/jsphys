@@ -13,7 +13,7 @@ var demos = [
                                     ],
                         "options": {"showFramePos": true, "showVisualPos": false, "showGamma": false},
                         "frame": 2,
-                        "shift": [0, 0, 0, -70]},
+                        "shift": [0, 0, 0, -70]}
                       ]
             },
             { "name" : "Simultaneity: Han and Greedo",
@@ -88,7 +88,7 @@ var demos = [
                                     ],
                          "frame"  : 2,
                          "shift"    : [0,0,0,-100],
-                         "options": {"showFramePos": true, "showVisualPos": false,"showVelocity": true, "showGamma": false}},
+                         "options": {"showFramePos": true, "showVisualPos": false,"showVelocity": true, "showGamma": false}}
                        ]
             },
             {"name": "Simultaneity, c is constant: Ruler",
