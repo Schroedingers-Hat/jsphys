@@ -84,48 +84,48 @@ extendedObject.prototype = {
         this.COM.calcPast();
         
         // See if we might want to draw the whole thing this frame.
-        this.wI3d = this.wasInteresting3D(scene);
-        this.iI3d = this.isInteresting3D(scene);
-        this.wI2d = this.wasInteresting2D(scene);
-        this.iI2d = this.isInteresting2D(scene);
+//        this.wI3d = this.wasInteresting3D(scene);
+//        this.iI3d = this.isInteresting3D(scene);
+//        this.wI2d = this.wasInteresting2D(scene);
+//        this.iI2d = this.isInteresting2D(scene);
 
         /** 
          * If so, find out where all the points are.
          * Putting checks for drawing 3d/2d would save some computation at times.
          */
-        if (this.iI3d || this.iI2d || this.wI2d || this.wI3d) {
-            for (var i = 0; i < (this.shapePoints.length); i++) {
+//        if (this.iI3d || this.iI2d || this.wI2d || this.wI3d) {
+           for (var i = 0; i < (this.shapePoints.length); i++) {
                 quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
                 quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
                 quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
             }
-        } 
+  //      } 
         /**
          * If not, just update the bounding box, we'll need it next frame.
          * Doing things this way means it takes one frame after the object is
          * in view before we start drawing it, but saves redundant computation
          * or further if statements if it is visible.
          */
-        else {
-            for (var j = 0; j < (this.boundingIdx.length); j++) {
-                var i = this.boundingIdx[j];
-                quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
-                quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
-                quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
-            }
-        }
+  //      else {
+  //          for (var j = 0; j < (this.boundingIdx.length); j++) {
+  //              var i = this.boundingIdx[j];
+  //              quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
+  //              quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
+  //              quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
+  //          }
+  //      }
         
         /**
          * See if we need the light delayed points. Note that calPastPoints also
          * takes care of is/was interesting.
          */
-        if (scene.options.alwaysShowVisualPos || scene.options.interactions ||
-            (!scene.options.neverShowVisualPos && this.options.showVisualPos)) {
+  //      if (scene.options.alwaysShowVisualPos || scene.options.interactions ||
+  //          (!scene.options.neverShowVisualPos && this.options.showVisualPos)) {
             this.calcPastPoints();
-            this.findBB(this.pastPoints, this.boundingBoxP);
-        }
+  //          this.findBB(this.pastPoints, this.boundingBoxP);
+  //      }
         this.findBB(this.pointPos, this.boundingBox);
-        this.findBB(this.futPoints, this.boundingBoxF);
+        //this.findBB(this.futPoints, this.boundingBoxF);
 
     },
 
@@ -190,7 +190,7 @@ extendedObject.prototype = {
                 this.drawNow3D(scene);
             }
         }
-        if (this.options.showMinkowski) this.drawXT(scene);
+//        if (this.options.showMinkowski) this.drawXT(scene);
         if(window.console && window.console.firebug && false) {
             for (var i = 0; i < this.boundingBox.length; i++) {
                 scene.g.beginPath();
@@ -300,6 +300,7 @@ extendedObject.prototype = {
                 scene.g.lineTo(this.pointPos[i][0] / scene.zoom + scene.origin[0],
                                -this.pointPos[i][1] / scene.zoom + scene.origin[1]);
             }
+            scene.g.closePath();
             scene.g.fill();
             
             // If we're drawing text, find the appropriate position and draw some text.

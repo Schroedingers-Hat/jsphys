@@ -214,10 +214,8 @@ function Scene() {
         // Draw the light cone, if we're using flashCanvas, don't use offscreen canvas.
         if (typeof FlashCanvas != "undefined") {
             //Ie draw light cone here.
-            drawLightCone(this,this.h);
 
         }else {
-            this.h.drawImage(this.lightConeCanvas, 0, 0);
         }
         // Put some text on the light cone. Doesn't seem to work in opera 9, not sure why.
         if(this.curOptions.showText) {
@@ -227,29 +225,22 @@ function Scene() {
             this.h.fill();
         }
         
-        if ( window.console && window.console.firebug ) { console.timeEnd('profile1');}
         // Where the meat of the work is done.
 
-        if ( window.console && window.console.firebug ) { console.time('Draw loop');}
         for ( var i = 0; i < this.carray.length; i++) {
             this.carray[i].update(timeStep, this);
             this.carray[i].draw(this);
         }
         
-        if ( window.console && window.console.firebug ) { console.timeEnd('Draw loop');}
         // Some UI drawing.
 
-        if ( window.console && window.console.firebug ) { console.time('crosshairs/info');}
-        this.drawCrosshairs();
-        if(this.curOptions.showText) this.drawInfo();
-        
-        if ( window.console && window.console.firebug ) { console.timeEnd('crosshairs/info');}
         // Get ready for the next frame.
         this.t = this.t + (timeStep);
         if (this.drawing || this.keyDown) {
             requestAnimFrame(drawScene);
         }
 
+        if ( window.console && window.console.firebug ) { console.timeEnd('profile1');}
     };
 
     this.processInput = function() {
