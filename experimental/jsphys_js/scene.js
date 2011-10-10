@@ -340,8 +340,8 @@ function Scene() {
 
     this.clear = function() {
         this.g.clearRect(0, 0, this.width, this.height);
-        this.h.clearRect(0, 0, this.mWidth, this.mHeight);
-        this.TDC.clearRect(0, 0, this.tWidth, this.tHeight);
+//        this.h.clearRect(0, 0, this.mWidth, this.mHeight);
+//        this.TDC.clearRect(0, 0, this.tWidth, this.tHeight);
     };
 
     /** Animation and step control functions **/

@@ -27,7 +27,7 @@ var scene;
 window.onresize = function(event) {
 
     if (typeof FlashCanvas == "undefined") {
-        var viewportWidth = $('body').width() - 16;
+        var viewportWidth = 320;
         $("#canvas").attr('width', viewportWidth);
         $("#minkowski").attr('width', viewportWidth);
         $("#3DCanvas").attr('width', viewportWidth);
@@ -339,7 +339,7 @@ function vPosClick(event) {
 // Use JQuery to wait for document load
 $(document).ready(function()
 {
-    var viewportWidth = $('body').width() - 16;
+    var viewportWidth = 320;
     $("#canvas").attr('width', viewportWidth);
     $("#minkowski").attr('width', viewportWidth);
     $("#3DCanvas").attr('width', viewportWidth);
