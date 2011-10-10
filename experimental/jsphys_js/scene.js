@@ -60,7 +60,7 @@ function Scene() {
                      "showVelocity": true,
                      "showTime": false,
                      "showGamma": true,
-                     "show3D": false,
+                     "show3D": true,
                      "showPos": false,
                      "c": 3,
                      "showText": true,
@@ -214,8 +214,10 @@ function Scene() {
         // Draw the light cone, if we're using flashCanvas, don't use offscreen canvas.
         if (typeof FlashCanvas != "undefined") {
             //Ie draw light cone here.
-
+            
+            drawLightCone(this, this.lCCtx);
         }else {
+            
         }
         // Put some text on the light cone. Doesn't seem to work in opera 9, not sure why.
         if(this.curOptions.showText) {
@@ -340,8 +342,8 @@ function Scene() {
 
     this.clear = function() {
         this.g.clearRect(0, 0, this.width, this.height);
-//        this.h.clearRect(0, 0, this.mWidth, this.mHeight);
-//        this.TDC.clearRect(0, 0, this.tWidth, this.tHeight);
+        this.h.clearRect(0, 0, this.mWidth, this.mHeight);
+        this.TDC.clearRect(0, 0, this.tWidth, this.tHeight);
     };
 
     /** Animation and step control functions **/
