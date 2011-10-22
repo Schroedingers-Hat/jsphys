@@ -75,10 +75,10 @@ function clickHandler(scene) {
 }
 
 /**
- * Zoom to a specified zoom level, move the zoom slider to match, and
+ * Zoom a scene to a specified zoom level, move the zoom slider to match, and
  * recalculate the standard boosts to be used when translating with wasd.
  */
-function zoomTo(zoom) {
+function zoomTo(scene, zoom) {
     scene.zoom = zoom;
 
     scene.boost.right = boostFrom3Vel( 0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0, 0);
@@ -87,18 +87,21 @@ function zoomTo(zoom) {
     scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
 
     drawLightCone(scene, scene.lCCtx);
-    updateSliders();
+    updateSliders(scene);
 }
 
 /**
- * Take a slider event and convert it to a zoom event.
+ * Create a callback to work on the specified scene, converting a zoom slider
+ * event into a zoom level.
  *
  * The zoom scale goes 0.06 to 40, but representing that in a slider would be awkward.
  * Current zoom steps work in powers of 2, not in a continuous scale. So, the slider
  * goes -4 to 5.5, and is turned into a power of 2. (2^-4 = 0.06, for example.)
  */
-function zoomToSlider(event, ui) {
-    zoomTo(Math.pow(2, -ui.value));
+function zoomToSlider(scene) {
+    return function(event, ui) {
+        zoomTo(scene, Math.pow(2, -ui.value));
+    }
 }
 
 /**
@@ -151,7 +154,7 @@ function loadDemo(idx, scene) {
         if (typeof FlashCanvas != "undefined") {
 
         } else {
-            $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider,
+            $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider(scene),
                                       value: -(Math.log(scene.zoom) / Math.LN2)});
             $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed,
                                        value: (Math.log(scene.timeScale + 1) / Math.LN2)});
