@@ -52,7 +52,7 @@ function bindKeys(scene) {
     });
 
     k.down('z', function(evt) {
-        dopplerButtonClick(scene, evt);
+        dopplerButtonClick(scene)(evt);
     });
 }
 
@@ -186,71 +186,77 @@ function loadDemoList(scene) {
  * - Force on: Force Doppler shifting to be enabled for all objects in the scene.
  * - Default: Do whatever the demo wants.
  */
-function dopplerButtonClick(scene, evt) {
-    if (!scene.options.neverDoppler && !scene.options.alwaysDoppler) {
-        // we're currently in default mode. switch to force off.
-        scene.options.neverDoppler = true;
-        scene.options.alwaysDoppler = false;
-        $("#doppler").html("Force on");
-    } else if (scene.options.neverDoppler && !scene.options.alwaysDoppler) {
-        // we're in force off mode. switch to force on.
-        scene.options.neverDoppler = false;
-        scene.options.alwaysDoppler = true;
-        $("#doppler").html("Default");
-    } else {
-        // switch to default.
-        scene.options.neverDoppler = false;
-        scene.options.alwaysDoppler = false;
-        $("#doppler").html("Force off");
+function dopplerButtonClick(scene) {
+    return function(evt) {
+        if (!scene.options.neverDoppler && !scene.options.alwaysDoppler) {
+            // we're currently in default mode. switch to force off.
+            scene.options.neverDoppler = true;
+            scene.options.alwaysDoppler = false;
+            $("#doppler").html("Force on");
+        } else if (scene.options.neverDoppler && !scene.options.alwaysDoppler) {
+            // we're in force off mode. switch to force on.
+            scene.options.neverDoppler = false;
+            scene.options.alwaysDoppler = true;
+            $("#doppler").html("Default");
+        } else {
+            // switch to default.
+            scene.options.neverDoppler = false;
+            scene.options.alwaysDoppler = false;
+            $("#doppler").html("Force off");
+        }
+        if (evt.preventDefault) evt.preventDefault();
+        else evt.returnValue = false;
     }
-    if(evt.preventDefault) evt.preventDefault();
-    else evt.returnValue = false;
 }
 
 /**
  * Functions like the Doppler button, but in a different order.
  */
-function framePosClick(event) {
-    if (!scene.options.neverShowFramePos && !scene.options.alwaysShowFramePos) {
-        // we're in default mode. switch to force on.
-        scene.options.neverShowFramePos = false;
-        scene.options.alwaysShowFramePos = true;
-        $("#framePos").html("Force off");
-    } else if (!scene.options.neverShowFramePos && scene.options.alwaysShowFramePos) {
-        // we're currently in force on mode. switch to force off.
-        scene.options.neverShowFramePos = true;
-        scene.options.alwaysShowFramePos = false;
-        $("#framePos").html("Default");
-    } else {
-        // switch to default.
-        scene.options.neverShowFramePos = false;
-        scene.options.alwaysShowFramePos = false;
-        $("#framePos").html("Force on");
+function framePosClick(scene) {
+    return function(event) {
+        if (!scene.options.neverShowFramePos && !scene.options.alwaysShowFramePos) {
+            // we're in default mode. switch to force on.
+            scene.options.neverShowFramePos = false;
+            scene.options.alwaysShowFramePos = true;
+            $("#framePos").html("Force off");
+        } else if (!scene.options.neverShowFramePos && scene.options.alwaysShowFramePos) {
+            // we're currently in force on mode. switch to force off.
+            scene.options.neverShowFramePos = true;
+            scene.options.alwaysShowFramePos = false;
+            $("#framePos").html("Default");
+        } else {
+            // switch to default.
+            scene.options.neverShowFramePos = false;
+            scene.options.alwaysShowFramePos = false;
+            $("#framePos").html("Force on");
+        }
+        if(event.preventDefault) event.preventDefault();
+        else event.returnValue = false;
     }
-    if(event.preventDefault) event.preventDefault();
-    else event.returnValue = false;
 }
 
-function vPosClick(event) {
-    if (!scene.options.neverShowVisualPos && !scene.options.alwaysShowVisualPos) {
-        // we're in default mode. switch to force on.
-        scene.options.neverShowVisualPos = false;
-        scene.options.alwaysShowVisualPos = true;
-        $("#vPos").html("Force off");
-    } else if (!scene.options.neverShowVisualPos && scene.options.alwaysShowVisualPos) {
-        // we're currently in force on mode. switch to force off.
-        scene.options.neverShowVisualPos = true;
-        scene.options.alwaysShowVisualPos = false;
-        $("#vPos").html("Default");
-    } else {
-        // switch to default.
-        scene.options.neverShowVisualPos = false;
-        scene.options.alwaysShowVisualPos = false;
-        $("#vPos").html("Force on");
-    }
+function vPosClick(scene) {
+    return function(event) {
+        if (!scene.options.neverShowVisualPos && !scene.options.alwaysShowVisualPos) {
+            // we're in default mode. switch to force on.
+            scene.options.neverShowVisualPos = false;
+            scene.options.alwaysShowVisualPos = true;
+            $("#vPos").html("Force off");
+        } else if (!scene.options.neverShowVisualPos && scene.options.alwaysShowVisualPos) {
+            // we're currently in force on mode. switch to force off.
+            scene.options.neverShowVisualPos = true;
+            scene.options.alwaysShowVisualPos = false;
+            $("#vPos").html("Default");
+        } else {
+            // switch to default.
+            scene.options.neverShowVisualPos = false;
+            scene.options.alwaysShowVisualPos = false;
+            $("#vPos").html("Force on");
+        }
 
-    if(event.preventDefault) event.preventDefault();
-    else event.returnValue = false;
+        if(event.preventDefault) event.preventDefault();
+        else event.returnValue = false;
+    }
 }
 
 // Use JQuery to wait for document load
@@ -274,7 +280,7 @@ $(document).ready(function() {
         }
     });
 
-    //$("#doppler").click(dopplerButtonClick);
-    //$('#framePos').click(framePosClick);
-    //$('#vPos').click(vPosClick);
+    $("#doppler").click(dopplerButtonClick(scene));
+    $('#framePos').click(framePosClick(scene));
+    $('#vPos').click(vPosClick(scene));
 });
