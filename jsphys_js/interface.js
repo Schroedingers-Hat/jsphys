@@ -121,12 +121,18 @@ function doPause(scene) {
     }
 }
 
-function setAnimSpeed(event, ui) {
-    if (ui.value > 0) {
-        scene.timeScale = Math.pow(2, ui.value) - 1;
-    }16
-    if (ui.value < 0) {
-        scene.timeScale = -Math.pow(2, -ui.value) + 1;
+/**
+ * Create a callback to be used by the speed slider, converting slider values
+ * to a timescale in the specified scene.
+ */
+function setAnimSpeed(scene) {
+    return function(event, ui) {
+        if (ui.value > 0) {
+            scene.timeScale = Math.pow(2, ui.value) - 1;
+        }
+        if (ui.value < 0) {
+            scene.timeScale = -Math.pow(2, -ui.value) + 1;
+        }
     }
 }
 
@@ -156,7 +162,7 @@ function loadDemo(idx, scene) {
         } else {
             $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider(scene),
                                       value: -(Math.log(scene.zoom) / Math.LN2)});
-            $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed,
+            $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed(scene),
                                        value: (Math.log(scene.timeScale + 1) / Math.LN2)});
         }
         $("#demo-chooser").hide();
