@@ -224,6 +224,36 @@ function vPosClick(scene) {
 }
 
 /**
+ * Create callback to advance the given scene to the next step.
+ */
+function nextStep(scene) {
+    return function() {
+        scene.nextStep(); 
+        updateSliders(scene);
+    };
+}
+
+/**
+ * Create callback to move the given scene to the previous step.
+ */
+function prevStep(scene) {
+    return function() {
+        scene.prevStep();
+        updateSliders(scene);
+    };
+}
+
+/**
+ * Create callback to replay the given scene's current step.
+ */
+function replay(scene) {
+    return function() {
+        scene.replay();
+        updateSliders(scene);
+    };
+}
+
+/**
  * Take an index into the demos array and play the matching demo.
  */
 function loadDemo(idx, scene) {
@@ -291,4 +321,8 @@ $(document).ready(function() {
     $("#doppler").click(dopplerButtonClick(scene));
     $('#framePos').click(framePosClick(scene));
     $('#vPos').click(vPosClick(scene));
+
+    $("#nextStep").click(nextStep(scene));
+    $("#prevStep").click(prevStep(scene));
+    $("#replayStep").click(replay(scene));
 });
