@@ -7,7 +7,7 @@
 //Will allow changing the controls to boot.
 window.onresize = function(event) {
 
-    if (typeof FlashCanvas == "undefined") {
+    if (typeof FlashCanvas === "undefined") {
         var viewportWidth = $('body').width() - 16;
         $("#canvas").attr('width', viewportWidth);
         $("#minkowski").attr('width', viewportWidth);
@@ -68,10 +68,10 @@ function clickHandler(scene) {
 
         var minElement = scene.findClosestObject(x, y, 30);
 
-        if (minElement != false) {
+        if (minElement !== false) {
             scene.shiftToFrameOfObject(minElement);
         }
-    }
+    };
 }
 
 /**
@@ -101,11 +101,12 @@ function zoomTo(scene, zoom) {
 function zoomToSlider(scene) {
     return function(event, ui) {
         zoomTo(scene, Math.pow(2, -ui.value));
-    }
+    };
 }
 
 /**
- * Pause animation
+ * Create a pause callback for the specified scene, which will pause it
+ * when called.
  */
 function doPause(scene) {
     return function(event) {
@@ -116,9 +117,9 @@ function doPause(scene) {
         }
         scene.pause();
         updateSliders(scene);
-        if(event.preventDefault) event.preventDefault();
+        if (event.preventDefault) event.preventDefault();
         else event.returnValue = false;
-    }
+    };
 }
 
 /**
@@ -133,40 +134,6 @@ function setAnimSpeed(scene) {
         if (ui.value < 0) {
             scene.timeScale = -Math.pow(2, -ui.value) + 1;
         }
-    }
-}
-
-/**
- * Do not quite comprehend what this does, copypasta from Paul Irish's tutorial
- * requestAnim shim layer by Paul Irish
- */
-window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame    ||
-          window.oRequestAnimationFrame      ||
-          window.msRequestAnimationFrame     ||
-          function(/* function */ callback, /* DOMElement */ element){
-            window.setTimeout(callback, 1000 / 60 );
-          };
-})();
-
-/**
- * Take an index into the demos array and play the matching demo.
- */
-function loadDemo(idx, scene) {
-    return function() {
-        scene.load(demos[idx], 0);
-        if (typeof FlashCanvas != "undefined") {
-
-        } else {
-            $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider(scene),
-                                      value: -(Math.log(scene.zoom) / Math.LN2)});
-            $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed(scene),
-                                       value: (Math.log(scene.timeScale + 1) / Math.LN2)});
-        }
-        $("#demo-chooser").hide();
-        scene.startAnimation();
     };
 }
 
@@ -175,18 +142,6 @@ function updateSliders(scene) {
 
     $("#speed-slider").slider("option", "value",
                               (Math.log(scene.timeScale + 1) / Math.LN2));
-}
-
-/**
- * Builds the demo chooser menu by iterating through our provided demos array.
- */
-function loadDemoList(scene) {
-    var e;
-    var demo;
-    for (var idx=0; idx < demos.length; idx++) {
-        e = $("<li>" + demos[idx].name + "</li>").click(loadDemo(idx, scene));
-        $("#demo-list").append(e);
-    }
 }
 
 /**
@@ -215,7 +170,7 @@ function dopplerButtonClick(scene) {
         }
         if (evt.preventDefault) evt.preventDefault();
         else evt.returnValue = false;
-    }
+    };
 }
 
 /**
@@ -241,7 +196,7 @@ function framePosClick(scene) {
         }
         if(event.preventDefault) event.preventDefault();
         else event.returnValue = false;
-    }
+    };
 }
 
 function vPosClick(scene) {
@@ -265,8 +220,52 @@ function vPosClick(scene) {
 
         if(event.preventDefault) event.preventDefault();
         else event.returnValue = false;
+    };
+}
+
+/**
+ * Take an index into the demos array and play the matching demo.
+ */
+function loadDemo(idx, scene) {
+    return function() {
+        scene.load(demos[idx], 0);
+        if (typeof FlashCanvas === "undefined") {
+            $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider(scene),
+                                      value: -(Math.log(scene.zoom) / Math.LN2)});
+            $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed(scene),
+                                       value: (Math.log(scene.timeScale + 1) / Math.LN2)});
+        }
+        $("#demo-chooser").hide();
+        scene.startAnimation();
+    };
+}
+
+/**
+ * Builds the demo chooser menu by iterating through our provided demos array.
+ */
+function loadDemoList(scene) {
+    var e;
+    var demo;
+    for (var idx = 0; idx < demos.length; idx++) {
+        e = $("<li>" + demos[idx].name + "</li>").click(loadDemo(idx, scene));
+        $("#demo-list").append(e);
     }
 }
+
+/**
+ * Do not quite comprehend what this does, copypasta from Paul Irish's tutorial
+ * requestAnim shim layer by Paul Irish
+ */
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          window.oRequestAnimationFrame      ||
+          window.msRequestAnimationFrame     ||
+          function(/* function */ callback, /* DOMElement */ element){
+            window.setTimeout(callback, 1000 / 60 );
+          };
+})();
 
 // Use JQuery to wait for document load
 $(document).ready(function() {
@@ -284,7 +283,7 @@ $(document).ready(function() {
 
     // To make spacebar work as fire key, disable its usual behavior
     $(window).keypress(function (event) {
-        if (event.which == 32) {
+        if (event.which === 32) {
             event.preventDefault();
         }
     });
