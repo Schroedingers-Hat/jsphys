@@ -3,11 +3,11 @@
     <head>
         <title>Relativity Simulator</title>
         <!--[if lt IE 9]>
-        <script type="text/javascript" src="ie7/ie9.js"></script>
-        <script type="text/javascript" src="FlashCanvas/bin/flashcanvas.js"></script>
+        <script type="text/javascript" src="lib/ie7/ie9.js"></script>
+        <script type="text/javascript" src="lib/FlashCanvas/bin/flashcanvas.js"></script>
         <![endif]-->
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <script type="text/javascript" src="jquery/jquery.js"></script>
+        <script type="text/javascript" src="lib/jquery/jquery.js"></script>
         <script type="text/javascript" src="lib/kibo.js"></script>
         <script type="text/javascript" src="jsphys_js/ruler.js"></script>
         <script type="text/javascript" src="jsphys_js/extendedObject.js"></script>
@@ -21,7 +21,7 @@
         <script type="text/javascript" src="jsphys_js/demos.js"></script>
         <script type="text/javascript" src="jsphys_js/interface.js"></script>
         <script type="text/javascript" src="jsphys_js/scene.js"></script>
-        <script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
+        <script type="text/javascript" src="lib/jquery/jquery-ui-1.8.16.custom.min.js"></script>
         <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.8.16.custom.css" />
         <style type="text/css">
             body {
@@ -156,9 +156,9 @@
 		<script type="text/javascript">
 		/* load canvas.text.js only when needed */
 		if($('#canvas')[0].getContext && !$('#canvas')[0].getContext("2d").fillText) {
-			document.write('<script src="canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
-			document.write('<script src="canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
-		    document.write('<script src="canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
+			document.write('<script src="lib/canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
+			document.write('<script src="lib/canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
+		    document.write('<script src="lib/canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
 		}
 		</script>
     </body>
