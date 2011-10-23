@@ -1,18 +1,18 @@
 /** Global variables for processing.js access **/
 var waveSpeed = 3;
 var timestep = 0.3
-var k = 0.1;
-var k2 = 0.15;
+var w = 0.3;
+var w2 = 0.45;
 var playing = false;
 
 /** Page setup **/
 $(document).ready(function() {
     $("#speed-slider").slider({min: -5, max: 5, step: 0.1, slide: setAnimSpeed,
                            value: timestep});
-    $("#wave1-k-slider").slider({min: 0, max: 0.2, step: 0.0125, slide: setK1,
-                           value: k});
-    $("#wave2-k-slider").slider({min: 0, max: 0.2, step: 0.0125, slide: setK2,
-                           value: k2});
+    $("#wave1-w-slider").slider({min: 0, max: 0.6, step: 0.03, slide: setW1,
+                           value: w});
+    $("#wave2-w-slider").slider({min: 0, max: 0.6, step: 0.03, slide: setW2,
+                           value: w2});
     $("#play").click(function() {
         var processing = Processing.getInstanceById("wave-sum-sim");
         if (playing) {
@@ -31,10 +31,10 @@ function setAnimSpeed(event, ui) {
     timestep = ui.value;
 }
 
-function setK1(event, ui) {
-    k = ui.value;
+function setW1(event, ui) {
+    w = ui.value;
 }
 
-function setK2(event, ui) {
-    k2 = ui.value;
+function setW2(event, ui) {
+    w2 = ui.value;
 }

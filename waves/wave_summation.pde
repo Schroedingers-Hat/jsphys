@@ -11,13 +11,13 @@
 
 float py, pyprev;
 float angle, angle2;
-float w, w2;
+float k, k2;
 float amplitude = 50;
 float amplitude2 = 50;
 float t = 0;
 
 void setup(){
-  size(600, 200);
+  size(600, 210);
   background (0);
   smooth();
   noLoop();
@@ -29,30 +29,32 @@ void draw(){
   // flashing during redrawing
   angle = 0;
   angle2 = 0;
-  w = waveSpeed * k;
-  w2 = waveSpeed * k2;
-  
-  stroke(127);
+  k = w / waveSpeed;
+  k2 = w2 / waveSpeed;
   
   // Draw first traveling wave -- y1 = sin(k1 x - w1 t)
+  stroke(0, 127, 0);
+  strokeWeight(1);
   for (int i = 0; i < width; i++) {
-    py = 100 + sin(k * i - (w * t)) * amplitude;
-    pyprev = 100 + sin(k * (i-1) - (w * t)) * amplitude;
+    py = 105 + sin(k * i - (w * t)) * amplitude;
+    pyprev = 105 + sin(k * (i-1) - (w * t)) * amplitude;
     line(i-1, pyprev, i, py);
   }
-  
+
   // Draw second traveling wave -- y1 = sin(k2 x - w2 t)
+  stroke(0, 0, 127);
   for (int i = 0; i < width; i++) {
-    py = 100 + sin(k2 * i - (w2 * t)) * amplitude2;
-    pyprev = 100 + sin(k2 * (i-1) - (w2 * t)) * amplitude2;
+    py = 105 + sin(k2 * i - (w2 * t)) * amplitude2;
+    pyprev = 105 + sin(k2 * (i-1) - (w2 * t)) * amplitude2;
     line(i-1, pyprev, i, py);
   }
   
-  stroke(0);
   // Draw sum wave
+  stroke(0);
+  strokeWeight(2);
   for (int i = 0; i < width; i++) {
-    py = 100 + sin(k2 * i - (w2 * t)) * amplitude2 + sin(k * i - (w * t)) * amplitude;
-    pyprev = 100 + sin(k * (i-1) - (w * t)) * amplitude + 
+    py = 105 + sin(k2 * i - (w2 * t)) * amplitude2 + sin(k * i - (w * t)) * amplitude;
+    pyprev = 105 + sin(k * (i-1) - (w * t)) * amplitude + 
              sin(k2 * (i-1) - (w2 * t)) * amplitude2;
     line(i-1, pyprev, i, py);
   }
