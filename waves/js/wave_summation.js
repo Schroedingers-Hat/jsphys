@@ -1,7 +1,7 @@
 /** Global variables for processing.js access **/
 var waveSpeed = 3;
 var timestep = 0.3
-var w = 0.3;
+var w = 0.25;
 var w2 = 0.45;
 var playing = false;
 
