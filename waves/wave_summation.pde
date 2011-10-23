@@ -7,6 +7,8 @@
  * Computational Art
  * By Ira Greenberg */
 
+/* @pjs pauseOnBlur="true"; */
+
 float py, pyprev;
 float angle, angle2;
 float w, w2;
@@ -18,6 +20,7 @@ void setup(){
   size(600, 200);
   background (0);
   smooth();
+  noLoop();
 }
 
 void draw(){

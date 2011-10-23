@@ -1,48 +1,26 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Wave Interference</title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<script type="text/javascript" src="../lib/processing-1.3.6.min.js"></script>
-		<script type="text/javascript" src="../lib/jquery/jquery.js"></script>
-		<script type="text/javascript" src="../lib/jquery/jquery-ui-1.8.16.custom.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="../css/ui-lightness/jquery-ui-1.8.16.custom.css" />
-		<script type="text/javascript">
-			/** Global variables for processing.js access **/
-			var waveSpeed = 3;
-			var timestep = 0.3
-			var k = 0.1;
-			var k2 = 0.15;
+    <head>
+        <title>Wave Interference</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="../lib/processing-1.3.6.min.js"></script>
+        <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
+        <script type="text/javascript" src="../lib/jquery/jquery-ui-1.8.16.custom.min.js"></script>
+        <script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <link rel="stylesheet" type="text/css" href="../css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+        <script type="text/javascript" src="js/wave_summation.js"></script>
 
-			/** Page setup **/
-			$(document).ready(function() {
-				$("#speed-slider").slider({min: -5, max: 5, step: 0.1, slide: setAnimSpeed,
-                                       value: timestep});
-                $("#wave1-k-slider").slider({min: 0, max: 0.2, step: 0.0125, slide: setK1,
-                                       value: k});
-                $("#wave2-k-slider").slider({min: 0, max: 0.2, step: 0.0125, slide: setK2,
-                                       value: k2});
-			});
-            
-            function setAnimSpeed(event, ui) {
-            	timestep = ui.value;
+        <style type="text/css">
+            body {
+                font-family: sans-serif;
             }
 
-            function setK1(event, ui) {
-            	k = ui.value;
+            .simulation {
+                position: relative;
             }
 
-            function setK2(event, ui) {
-            	k2 = ui.value;
-            }
-		</script>
-
-		<style type="text/css">
-			body {
-				font-family: sans-serif;
-			}
-
-			#controls p {
+            #controls p {
                 padding: 0;
                 margin: 0;
             }
@@ -67,13 +45,106 @@
                 font-size: 50%;
             }
         </style>
-	</head>
-	<body>
-		<canvas data-processing-sources="wave_summation.pde"></canvas>  
-		<div id="controls">
-			<p>Speed: </p><div id="speed-slider"></div>
-			<p>Wave 1 wavenumber:</p><div id="wave1-k-slider"></div>
-			<p>Wave 2 wavenumber:</p><div id="wave2-k-slider"></div>
-		</div>
-	</body>
+    </head>
+    <body>
+        <h1>Wave Interference</h2>
+<p>There's an important principle in wave mechanics: the principle of 
+<strong>superposition</strong>. Two waves can pass through the same space in the same time,
+and the result is a wave that is the *sum* of those two waves. And if you have
+three or four or seventy-seven waves, the net effect is again simply the sum.</p>
+
+<p>You've seen this before in a swimming pool. If the water were perfectly still,
+you could drop a rock in and see the waves spread outward from the splash, in
+neat little circles. But if there are people diving, practicing their
+backstrokes, and playing water polo, there are waves coming from every
+direction with a huge variety of amplitudes, frequencies, and wavelengths.
+If you put a rubber ducky in the water at a specific location, it'll seem to
+bob up and down almost at random. All the waves added together made a new,
+complicated wave.</p>
+
+<p>This principle can lead to constructive and destructive interference of waves.
+Consider what happens if I have two separate waves, described by:</p>
+
+\[ 
+y_1(x,t) = A_1 \sin (kx - \omega t)
+\]
+
+\[
+y_2(x,t) = A_2 \sin (kx - \omega t)
+\]
+
+<p>These waves have identical frequencies (they both have frequency \(\omega\)), but
+different amplitudes (\(A_1\) and \(A_2\)). What happens when you add them
+together? Well, we get:</p>
+
+\[
+y_1(x,t) + y_2(x,y) = (A_1 + A_2)\sin (kx - \omega t)
+\]
+
+<p>The result? A wave with an amplitude of \(A_1 + A_2\). This is 
+<strong>constructive</strong> interference: the two waves combine to form a larger 
+wave.</p>
+
+<p>You can imagine how this makes sense. If you have two speakers playing music
+side-by-side (and the speakers are playing the same music at the same time),
+then the sound is louder than it would be if you only had one speaker. The
+sound waves constructively interfere to form sound of a higher amplitude.</p>
+
+<p>Now, suppose you have two waves that are <em>out of phase.</em> Mathematically, that
+would look like this:</p>
+
+\[ 
+y_1(x,t) = A \sin (kx - \omega t)
+\]
+
+\[
+y_2(x,t) = A \sin (kx - \omega t - \phi)
+\]
+
+<p>\(\phi\) is a number called the <em>phase angle</em>. If the phase angle is zero, then
+we're back to the situation from before, and there is constructive
+interference. But suppose the phase angle is exactly \(\pi\). What happens
+then?</p>
+
+<p>Let's draw a picture of those two waves:</p>
+
+<img src="img/summation_pi_phase.png" alt="Two waves with a phase angle of pi" />
+
+<p>What happens when you add them together? When one wave is positive, the other
+is negative, with exactly the same amplitude. When you add them, you get zero.</p>
+
+<p>Now, it could be more complicated. I chose two waves with exactly the same
+amplitude above. But I could choose to have one wave bigger than the other:</p>
+
+<img src="img/summation_amplitude_difference.png" alt="Two waves with different amplitudes" /> 
+
+<p>What's the sum of those waves? It looks like this:</p>
+
+<img src="img/summation_amplitude_sum.png" alt="Sum of two waves with different amplitudes" /> 
+
+<p>Note how it's smaller. This is still destructive intereference, although the
+"cancelling out" is not total; some of the wave is still left behind.</p>
+
+<p>Those of you with noise-cancelling headphones experience this effect all the
+time. How can the headphones make a loud airplane seem nearly silent? Well,
+they have a small microphone which picks up all the outside sound coming toward
+your ears, and quickly generate a new sound wave that exactly cancels out the
+outside sound. The effect? Destructive interference. You barely hear a thing.</p>
+
+<p>Now, there's a third possibility I haven't mentioned yet. What if the two waves
+don't have the same wavelenth? We can represent those mathematically as having different phase angles \(\phi_1\)
+and \(\phi_2\), but also different frequencies \(\omega_1\) and \(\omega_2\). Their
+sum is rather interesting. In the simulation below, we have two waves with different wavenumbers (in grey) and their sum (in black). Try playing with different wavenumbers
+to see what happens.</p>
+
+        <div class="simulation">
+            <canvas id="wave-sum-sim" data-processing-sources="wave_summation.pde"></canvas>  
+            <div id="controls">
+                <p>Speed: </p><div id="speed-slider"></div>
+                <p>Wave 1 wavenumber:</p><div id="wave1-k-slider"></div>
+                <p>Wave 2 wavenumber:</p><div id="wave2-k-slider"></div>
+                <p><button id="play" onclick="return false;">Play</button></p>
+            </div>
+        </div>
+    </body>
 </html>
