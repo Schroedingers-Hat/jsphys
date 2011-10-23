@@ -31,10 +31,15 @@ void draw(){
   angle2 = 0;
   k = w / waveSpeed;
   k2 = w2 / waveSpeed;
-  
+
+  // Draw axes
+  stroke(127);
+  strokeWeight(1);
+  line(1, 105, width, 105);
+  line(width/2, 1, width/2, height)
+
   // Draw first traveling wave -- y1 = sin(k1 x - w1 t)
   stroke(0, 127, 0);
-  strokeWeight(1);
   for (int i = 0; i < width; i++) {
     py = 105 + sin(k * i - (w * t)) * amplitude;
     pyprev = 105 + sin(k * (i-1) - (w * t)) * amplitude;
