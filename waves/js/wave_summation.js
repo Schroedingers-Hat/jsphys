@@ -9,9 +9,9 @@ var playing = false;
 $(document).ready(function() {
     $("#speed-slider").slider({min: -5, max: 5, step: 0.1, slide: setAnimSpeed,
                            value: timestep});
-    $("#wave1-w-slider").slider({min: 0, max: 0.6, step: 0.03, slide: setW1,
+    $("#wave1-w-slider").slider({min: 0, max: 1, step: 0.03, slide: setW1,
                            value: w});
-    $("#wave2-w-slider").slider({min: 0, max: 0.6, step: 0.03, slide: setW2,
+    $("#wave2-w-slider").slider({min: 0, max: 1, step: 0.03, slide: setW2,
                            value: w2});
     $("#play").click(function() {
         var processing = Processing.getInstanceById("wave-sum-sim");
