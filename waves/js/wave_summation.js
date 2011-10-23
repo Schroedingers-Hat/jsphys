@@ -25,6 +25,8 @@ $(document).ready(function() {
         }
         playing = !playing;
     });
+
+    $("#listen").click(playSound);
 });
 
 function setAnimSpeed(event, ui) {
@@ -37,4 +39,23 @@ function setW1(event, ui) {
 
 function setW2(event, ui) {
     w2 = ui.value;
+}
+
+function playSound() {
+    var audio = new Audio(); // create the HTML5 audio element
+    var wave = new RIFFWAVE(); // create an empty wave file
+    var data = []; // yes, it's an array
+
+    wave.header.sampleRate = 44100; // set sample rate to 44KHz
+    wave.header.numChannels = 1; // one channel
+
+    var i = 0;
+    while (i < 100000) { 
+      data[i++] = 127 + (Math.round(127*Math.sin((w / 10) * i)) + 
+                  Math.round(127*Math.sin((w2 / 10) * i))) / 2;
+    }
+
+    wave.Make(data); // make the wave file
+    audio.src = wave.dataURI; // set audio source
+    audio.play(); // we should hear two tones one on each speaker
 }
