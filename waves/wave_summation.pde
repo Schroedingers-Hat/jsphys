@@ -58,6 +58,11 @@ void draw(){
              sin(k2 * (i-1) - (w2 * t)) * amplitude2;
     line(i-1, pyprev, i, py);
   }
+
+  // Draw a spot in the middle, floating on the sum wave
+  i = width/2;
+  py = 105 + sin(k2 * i - (w2 * t)) * amplitude2 + sin(k * i - (w * t)) * amplitude;
+  ellipse(i, py, 4, 4);
   
   t += timestep;
 }
