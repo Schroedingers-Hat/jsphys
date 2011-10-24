@@ -1,11 +1,16 @@
-jsphys: javascript relativity simulator
-=======================================
+jsphys: javascript physics simulation
+=====================================
 
-Provides a canvas-based JavaScript relativistic physics system for use in
-demonstrating features of special relativity.
+Provides canvas-based JavaScript physics demonstrations for classroom use,
+including a live special relativity simulator.
 
 Features
 --------
+
+jsphys encapsulates a growing library of simulations and explanations of
+physical phenomena, from wave interference to special relativity.
+
+### Relativity simulation
 
 jsphys provies a framework for relativistic demos, using predefined scenarios
 to demonstrate relativistic effects. Users can interact with the demos,
@@ -16,9 +21,9 @@ speed. Currently supported effects are:
 * Length contraction of distances and of objects
 * Time dilation
 * Simple, arbitrarily shaped objects
+* Minkowski diagrams of events as they unfold.
 
-Planned effects include relativistic beaming, arbirary object paths, and
-detailed Minkowski diagrams of events as they unfold.
+Planned effects include relativistic beaming and arbirary object paths.
 
 Requirements
 ------------
@@ -32,4 +37,4 @@ Demo
 
 A demo of the work-in-progress version of jsphys is available:
 
-http://schroedingers-hat.github.com/jsphys/jsphys.html
+http://schroedingers-hat.github.com/jsphys/index.html

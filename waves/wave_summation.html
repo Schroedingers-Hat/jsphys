@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wave Interference</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="../lib/processing-1.3.6.min.js"></script>
+        <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
+        <script type="text/javascript" src="../lib/jquery/jquery-ui-1.8.16.custom.min.js"></script>
+        <script type="text/javascript" src="../lib/riffwave.js"></script>
+        <script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <link rel="stylesheet" type="text/css" href="../css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+        <script type="text/javascript" src="js/wave_summation.js"></script>
+
+        <style type="text/css">
+            body {
+                font-family: sans-serif;
+            }
+
+            .simulation {
+                position: relative;
+            }
+
+            #controls p {
+                padding: 0;
+                margin: 0;
+            }
+
+            #controls {
+                width: 200px;
+                position: absolute;
+                right: 0.5em;
+                top: 0.5em;
+                color: #000;
+                font-size: 9pt;
+                background-color: #999;
+                opacity: 0.8;
+                padding: 0.5em;
+            }
+
+            #controls div {
+                margin: 0 0 3pt;
+            }
+
+            #speed-slider, #wave1-w-slider, #wave2-w-slider {
+                font-size: 50%;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Wave Interference</h2>
+<p>There's an important principle in wave mechanics: the principle of 
+<strong>superposition</strong>. Two waves can pass through the same space in
+the same time, and the result is a wave that is the <em>sum</em> of those two
+waves. And if you have three or four or seventy-seven waves, the net effect is
+again simply the sum.</p>
+
+<p>You've seen this before in a swimming pool. If the water were perfectly still,
+you could drop a rock in and see the waves spread outward from the splash, in
+neat little circles. But if there are people diving, practicing their
+backstrokes, and playing water polo, there are waves coming from every
+direction with a huge variety of amplitudes, frequencies, and wavelengths.
+If you put a rubber ducky in the water at a specific location, it'll seem to
+bob up and down almost at random. All the waves added together made a new,
+complicated wave.</p>
+
+<p>The complicated wave pattern comes from constructive and destructive
+interference of waves, and it happens with water waves, sound waves, light
+waves, waves on a string, and essentially any kind of wave.</p>
+
+<p>How does it work? Consider what happens if I have two separate waves,
+described by:</p>
+
+\[ 
+y_1(x,t) = A_1 \sin (kx - \omega t)
+\]
+
+\[
+y_2(x,t) = A_2 \sin (kx - \omega t)
+\]
+
+<p>These waves have identical frequencies (they both have frequency \(\omega\)),
+but different amplitudes (\(A_1\) and \(A_2\)). What happens when we add them
+together? Well, we get:</p>
+
+\[
+y_1(x,t) + y_2(x,t) = (A_1 + A_2)\sin (kx - \omega t)
+\]
+
+<p>The result? A wave with an amplitude of \(A_1 + A_2\). This is 
+<strong>constructive</strong> interference: the two waves combine to form a 
+larger wave.</p>
+
+<p>You can imagine how this makes sense. If you have two speakers playing music
+side-by-side (and the speakers are playing the same music at the same time),
+then the sound is louder than it would be if you only had one speaker. The
+sound waves constructively interfere to form sound of a higher amplitude.
+Likewise, if two large people jump into the swimming pool simultaneously,
+the resulting waves are tremendous.</p>
+
+<p>Now, suppose you have two waves that are <em>out of phase.</em> 
+Mathematically, that would look like this:</p>
+
+\[ 
+y_1(x,t) = A \sin (kx - \omega t)
+\]
+
+\[
+y_2(x,t) = A \sin (kx - \omega t - \phi)
+\]
+
+<p>\(\phi\) is a number called the <em>phase angle</em>. If the phase angle is
+zero, then we're back to the situation from before, and there is constructive
+interference. But suppose the phase angle is exactly \(\pi\). What happens
+then? Let's draw a picture of those two waves:</p>
+
+<img src="img/summation_pi_phase.png" alt="Two waves with a phase angle of pi" />
+
+<p>When one wave is positive, the other is negative, with exactly the same
+(but opposite) amplitude. When you add them, you get zero. This is
+<strong>destructive</strong> interference.</p>
+
+<p>Now, it could be more complicated. I chose two waves with exactly the same
+amplitude above. But I could choose to have one wave bigger than the other:</p>
+
+<img src="img/summation_amplitude_difference.png" alt="Two waves with different amplitudes" /> 
+
+<p>What's the sum of those waves? It looks like this:</p>
+
+<img src="img/summation_amplitude_sum.png" alt="Sum of two waves with different amplitudes" /> 
+
+<p>Note how it's smaller. This is still destructive intereference, although the
+"cancelling out" is not total; some of the wave is still left behind.</p>
+
+<p>Those of you with noise-cancelling headphones experience this effect all the
+time. How can the headphones make a loud airplane seem nearly silent? Well,
+they have a small microphone which picks up all the outside sound coming toward
+your ears, and quickly generate a new sound wave that exactly cancels out the
+outside sound. The effect? Destructive interference. You barely hear a thing.</p>
+
+<p>Now, there's a third possibility I haven't mentioned yet. What if the two
+waves don't have the same frequency? We can represent those mathematically as
+having different frequencies \(\omega_1\) and \(\omega_2\). Their sum is rather
+interesting. In the simulation below, we have two waves with different
+frequencies (in color) and their sum (in black). Try playing with different
+frequencies to see what happens. (Press Play to start the simulation.)</p>
+
+        <div class="simulation">
+            <canvas id="wave-sum-sim" data-processing-sources="wave_summation.pde"></canvas>  
+            <div id="controls">
+                <p>Speed: </p><div id="speed-slider"></div>
+                <p><span style="color:rgb(0,127,0)">Wave 1</span> frequency:</p><div id="wave1-w-slider"></div>
+                <p><span style="color:rgb(0,0,127)">Wave 2</span> frequency:</p><div id="wave2-w-slider"></div>
+                <p><button id="play" onclick="return false;">Play</button></p>
+                <p><button id="listen" onclic="return false;">Listen</button></p>
+            </div>
+        </div>
+
+<p>Press the Listen button to see how interfering waves sound. When you listen
+to music, or even speech, you're listening to exactly this effect: even a pure
+note played by a musical instrument is actually a combination of many
+frequencies played together, interfering. That's why two instruments playing
+the same note still sound different &mdash; the lowest frequency is the same,
+but the combination of other interfering frequencies is different.</p>
+    </body>
+</html>

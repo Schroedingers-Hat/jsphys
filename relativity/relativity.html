@@ -2,27 +2,27 @@
 <html>
     <head>
         <title>Relativity Simulator</title>
-        <!--[if IE 8]>
-        <script type="text/javascript" src="FlashCanvas/bin/flashcanvas.js"></script>
-        <script type="text/javascript" src="jsphys_js/ieLibs.js"></script>
+        <!--[if lt IE 9]>
+        <script type="text/javascript" src="../lib/ie7/ie9.js"></script>
+        <script type="text/javascript" src="../lib/FlashCanvas/bin/flashcanvas.js"></script>
         <![endif]-->
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <script type="text/javascript" src="jquery/jquery.js"></script>
-        <script type="text/javascript" src="lib/kibo.js"></script>
-        <script type="text/javascript" src="jsphys_js/ruler.js"></script>
-        <script type="text/javascript" src="jsphys_js/extendedObject.js"></script>
-        <script type="text/javascript" src="jsphys_js/glMatrix-0.9.5.min.js"></script>
-        <script type="text/javascript" src="jsphys_js/glMatrix-extensions.js"></script>
-        <script type="text/javascript" src="jsphys_js/inertialObject.js"></script>
-        <script type="text/javascript" src="jsphys_js/photon.js"></script>
-        <script type="text/javascript" src="jsphys_js/relLibs.js"></script>
-        <script type="text/javascript" src="jsphys_js/fourEvent.js"></script>
-        <script type="text/javascript" src="jsphys_js/colors.js"></script>
-        <script type="text/javascript" src="jsphys_js/demos.js"></script>
-        <script type="text/javascript" src="jsphys_js/interface.js"></script>
-        <script type="text/javascript" src="jsphys_js/scene.js"></script>
-        <script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+        <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
+        <script type="text/javascript" src="../lib/kibo.js"></script>
+        <script type="text/javascript" src="js/ruler.js"></script>
+        <script type="text/javascript" src="js/extendedObject.js"></script>
+        <script type="text/javascript" src="js/glMatrix-0.9.5.min.js"></script>
+        <script type="text/javascript" src="js/glMatrix-extensions.js"></script>
+        <script type="text/javascript" src="js/inertialObject.js"></script>
+        <script type="text/javascript" src="js/photon.js"></script>
+        <script type="text/javascript" src="js/relLibs.js"></script>
+        <script type="text/javascript" src="js/fourEvent.js"></script>
+        <script type="text/javascript" src="js/colors.js"></script>
+        <script type="text/javascript" src="js/demos.js"></script>
+        <script type="text/javascript" src="js/interface.js"></script>
+        <script type="text/javascript" src="js/scene.js"></script>
+        <script type="text/javascript" src="../lib/jquery/jquery-ui-1.8.16.custom.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../css/ui-lightness/jquery-ui-1.8.16.custom.css" />
         <style type="text/css">
             body {
                 color: #ccc;
@@ -126,9 +126,9 @@
             </div>
             <div id="controls">
                 <form name="controls">
-                    <p>Doppler effect: <button id="doppler" onclick="dopplerButtonClick(event)">Force off</button></p>
-                    <p>Absolute positions: <button id="framePos" onclick="framePosClick(event)">Force on</button></p>
-                    <p>Apparent positions: <button id="vPos" onclick="vPosClick(event)">Force on</button></p>
+                    <p>Doppler effect: <button id="doppler">Force off</button></p>
+                    <p>Absolute positions: <button id="framePos">Force on</button></p>
+                    <p>Apparent positions: <button id="vPos">Force on</button></p>
                     <p>Zoom: </p><div id="zoom-slider"></div>
                     <p>Speed: </p><div id="speed-slider"></div>
                     <p><button id="pause">Play</button>
@@ -140,9 +140,9 @@
             </div>
             <div id="caption"></div>
             <div id="steps">
-                <button onclick="scene.prevStep(); updateSliders()">&lt; Previous step</button>
-                <button onclick="scene.replay(); updateSliders();">Replay</button>
-                <button onclick="scene.nextStep(); updateSliders();">Next step &gt;</button><br/>
+                <button id="prevStep">&lt; Previous step</button>
+                <button id="replayStep">Replay</button>
+                <button id="nextStep">Next step &gt;</button><br/>
                 <button onclick="$('#demo-chooser').show();">Choose new demo</button>
             </div>
         </div>
@@ -156,9 +156,9 @@
 		<script type="text/javascript">
 		/* load canvas.text.js only when needed */
 		if($('#canvas')[0].getContext && !$('#canvas')[0].getContext("2d").fillText) {
-			document.write('<script src="canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
-			document.write('<script src="canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
-		    document.write('<script src="canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
+			document.write('<script src="../lib/canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
+			document.write('<script src="../lib/canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
+		    document.write('<script src="../lib/canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
 		}
 		</script>
     </body>
