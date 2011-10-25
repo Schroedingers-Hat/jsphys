@@ -26,7 +26,7 @@ void draw(){
   background (255);
   // keep reinitializing to 255, to avoid
   // flashing during redrawing
-  
+
   k = w / waveSpeed;
   k2 = w2 / waveSpeed;
 
@@ -47,8 +47,8 @@ void draw(){
   // Draw second traveling wave -- y1 = sin(k2 x - w2 t)
   stroke(0, 0, 127);
   for (int i = 0; i < width; i++) {
-    py = 105 + sin(k2 * i - (w2 * t)) * amplitude2;
-    pyprev = 105 + sin(k2 * (i-1) - (w2 * t)) * amplitude2;
+    py = 105 + sin(k2 * i - (w2 * t) - phaseAngle) * amplitude2;
+    pyprev = 105 + sin(k2 * (i-1) - (w2 * t) - phaseAngle) * amplitude2;
     line(i-1, pyprev, i, py);
   }
   
@@ -56,15 +56,15 @@ void draw(){
   stroke(0);
   strokeWeight(2);
   for (int i = 0; i < width; i++) {
-    py = 105 + sin(k2 * i - (w2 * t)) * amplitude2 + sin(k * i - (w * t)) * amplitude;
+    py = 105 + sin(k2 * i - (w2 * t) - phaseAngle) * amplitude2 + sin(k * i - (w * t)) * amplitude;
     pyprev = 105 + sin(k * (i-1) - (w * t)) * amplitude + 
-             sin(k2 * (i-1) - (w2 * t)) * amplitude2;
+             sin(k2 * (i-1) - (w2 * t) - phaseAngle) * amplitude2;
     line(i-1, pyprev, i, py);
   }
 
   // Draw a spot in the middle, floating on the sum wave
   i = width/2;
-  py = 105 + sin(k2 * i - (w2 * t)) * amplitude2 + sin(k * i - (w * t)) * amplitude;
+  py = 105 + sin(k2 * i - (w2 * t)- phaseAngle) * amplitude2 + sin(k * i - (w * t)) * amplitude;
   ellipse(i, py, 4, 4);
   
   t += timestep;
