@@ -3,6 +3,7 @@ var waveSpeed = 3;
 var timestep = 0.3;
 var w = 0.25;
 var w2 = 0.45;
+var phaseAngle = 0;
 var playing = false;
 var pianoPlaying = false;
 var pianoNote = 262; // Play middle C
@@ -19,6 +20,8 @@ $(document).ready(function() {
                            value: w});
     $("#wave2-w-slider").slider({min: 0, max: 1, step: 0.01, slide: setW2,
                            value: w2});
+    $("#wave-phase-slider").slider({min: 0, max: 6, step: 0.1, slide: setPhase,
+                                    value: phaseAngle});
     $("#play").click(function() {
         var processing = Processing.getInstanceById("wave-sum-sim");
         if (playing) {
@@ -61,6 +64,10 @@ function setW1(event, ui) {
 
 function setW2(event, ui) {
     w2 = ui.value;
+}
+
+function setPhase(event, ui) {
+    phaseAngle = ui.value;
 }
 
 function playSound() {
