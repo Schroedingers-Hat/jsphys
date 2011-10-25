@@ -1,9 +1,15 @@
 /** Global variables for processing.js access **/
 var waveSpeed = 3;
-var timestep = 0.3
+var timestep = 0.3;
 var w = 0.25;
 var w2 = 0.45;
 var playing = false;
+var pianoPlaying = false;
+var pianoNote = 262; // Play middle C
+// Relative amplitudes of each harmonic, starting with the fundamental
+// Normalized to sum to 1
+var pianoAmplitudes = [0.414, 0.275, 0.110, 0.103, 0.097];
+var pureAmplitudes = [1, 0, 0, 0, 0];
 
 /** Page setup **/
 $(document).ready(function() {
@@ -27,6 +33,22 @@ $(document).ready(function() {
     });
 
     $("#listen").click(playSound);
+
+    $("#piano-listen").click(playPiano(pianoAmplitudes));
+    $("#piano-play").click(function() {
+        var processing = Processing.getInstanceById("piano-sim");
+        if (pianoPlaying) {
+            processing.noLoop();
+            $("#piano-play").html("Play");
+        } else {
+            processing.loop();
+            processing.draw();
+            $("#piano-play").html("Pause");
+        }
+        pianoPlaying = !pianoPlaying;
+    });
+
+    $("#sine-listen").click(playPiano(pureAmplitudes));
 });
 
 function setAnimSpeed(event, ui) {
@@ -57,5 +79,30 @@ function playSound() {
 
     wave.Make(data); // make the wave file
     audio.src = wave.dataURI; // set audio source
-    audio.play(); // we should hear two tones one on each speaker
+    audio.play();
+}
+
+function playPiano(amplitudes) {
+    return function () {
+        var audio = new Audio(); // create the HTML5 audio element
+        var wave = new RIFFWAVE(); // create an empty wave file
+        var data = []; // yes, it's an array
+
+        wave.header.sampleRate = 8000; // set sample rate to 8KHz
+        wave.header.numChannels = 1; // one channel
+
+        var i = 0;
+        while (i < 16000) { 
+          var sum = 0;
+          for (var j = 0; j < amplitudes.length; j++) {
+              sum += Math.round(127 * amplitudes[j] * Math.sin((pianoNote * 2 * (j + 1) * Math.PI / 8000) * i));
+          }
+
+          data[i++] = Math.round((127 + sum) * Math.pow(Math.E, -(Math.LOG2E / 4000 * i))) / 2;
+        }
+
+        wave.Make(data); // make the wave file
+        audio.src = wave.dataURI; // set audio source
+        audio.play();
+    }
 }
