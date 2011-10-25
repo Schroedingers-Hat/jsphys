@@ -52,7 +52,7 @@ function playSound() {
     var i = 0;
     while (i < 100000) { 
       data[i++] = 127 + (Math.round(127*Math.sin((w / 10) * i)) + 
-                  Math.round(127*Math.sin((w2 / 10) * i))) / 2;
+                  Math.round(127*Math.sin((w2 / 10) * i + phaseAngle))) / 2;
     }
 
     wave.Make(data); // make the wave file
