@@ -10,7 +10,6 @@
 /* @pjs pauseOnBlur="true"; */
 
 float py, pyprev;
-float angle, angle2;
 float k, k2;
 float amplitude = 50;
 float amplitude2 = 50;
@@ -18,17 +17,16 @@ float t = 0;
 
 void setup(){
   size(600, 210);
-  background (0);
+  background (255);
   smooth();
   noLoop();
 }
 
 void draw(){
   background (255);
-  // keep reinitializing to 0, to avoid
+  // keep reinitializing to 255, to avoid
   // flashing during redrawing
-  angle = 0;
-  angle2 = 0;
+  
   k = w / waveSpeed;
   k2 = w2 / waveSpeed;
 

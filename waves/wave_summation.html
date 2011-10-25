@@ -21,12 +21,12 @@
                 position: relative;
             }
 
-            #controls p {
+            .controls p {
                 padding: 0;
                 margin: 0;
             }
 
-            #controls {
+            .controls {
                 width: 200px;
                 position: absolute;
                 right: 0.5em;
@@ -38,7 +38,7 @@
                 padding: 0.5em;
             }
 
-            #controls div {
+            .controls div {
                 margin: 0 0 3pt;
             }
 
@@ -145,16 +145,16 @@ interesting. In the simulation below, we have two waves with different
 frequencies (in color) and their sum (in black). Try playing with different
 frequencies to see what happens. (Press Play to start the simulation.)</p>
 
-        <div class="simulation">
-            <canvas id="wave-sum-sim" data-processing-sources="wave_summation.pde"></canvas>  
-            <div id="controls">
-                <p>Speed: </p><div id="speed-slider"></div>
-                <p><span style="color:rgb(0,127,0)">Wave 1</span> frequency:</p><div id="wave1-w-slider"></div>
-                <p><span style="color:rgb(0,0,127)">Wave 2</span> frequency:</p><div id="wave2-w-slider"></div>
-                <p><button id="play" onclick="return false;">Play</button></p>
-                <p><button id="listen" onclic="return false;">Listen</button></p>
-            </div>
-        </div>
+<div class="simulation">
+    <canvas id="wave-sum-sim" data-processing-sources="wave_summation.pde"></canvas>  
+    <div class="controls">
+        <p>Speed: </p><div id="speed-slider"></div>
+        <p><span style="color:rgb(0,127,0)">Wave 1</span> frequency:</p><div id="wave1-w-slider"></div>
+        <p><span style="color:rgb(0,0,127)">Wave 2</span> frequency:</p><div id="wave2-w-slider"></div>
+        <p><button id="play" onclick="return false;">Play</button></p>
+        <p><button id="listen" onclic="return false;">Listen</button></p>
+    </div>
+</div>
 
 <p>Press the Listen button to see how interfering waves sound. When you listen
 to music, or even speech, you're listening to exactly this effect: even a pure
@@ -162,5 +162,28 @@ note played by a musical instrument is actually a combination of many
 frequencies played together, interfering. That's why two instruments playing
 the same note still sound different &mdash; the lowest frequency is the same,
 but the combination of other interfering frequencies is different.</p>
+
+<p>For example, let's synthesize a piano playing the same middle C, at 262 Hz.
+We'll plot it along with a pure sine wave at that frequency, showing how the
+harmonics add up to make the piano sound entirely different, even when it plays
+the same note.</p>
+
+<p>A harmonic is a sound at a multiple of the original frequency. For example,
+there might be harmonics of 262 Hz at 524 Hz, 786 Hz, 1048 Hz, and so on.
+Different instrument designs produce different sets of harmonics. Here, let's
+see a simulation of a piano:</p>
+
+<div class="simulation">
+    <canvas id="piano-sim" data-processing-sources="piano.pde"></canvas>
+    <div class="controls">
+        <p><button id="piano-play" onclick="return false;">Play</button></p>
+        <p><button id="piano-listen" onclick="return false;">Listen to Piano</button></p>
+        <p><button id="sine-listen" onclick="return false;">Listen to Pure Note</button></p>
+    </div>
+</div>
+
+<p>You can see that a pure note at 262 Hz looks very different from a piano
+playing 262 Hz, and sounds very different as well.</p>
+
     </body>
 </html>
