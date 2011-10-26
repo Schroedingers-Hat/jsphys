@@ -29,7 +29,6 @@ $(document).ready(function() {
             $("#play").html("Play");
         } else {
             processing.loop();
-            processing.draw();
             $("#play").html("Pause");
         }
         playing = !playing;
@@ -60,14 +59,26 @@ function setAnimSpeed(event, ui) {
 
 function setW1(event, ui) {
     w = ui.value;
+    if (!playing) {
+        var processing = Processing.getInstanceById("wave-sum-sim");
+        processing.redraw();
+    }
 }
 
 function setW2(event, ui) {
     w2 = ui.value;
+    if (!playing) {
+        var processing = Processing.getInstanceById("wave-sum-sim");
+        processing.redraw();
+    }
 }
 
 function setPhase(event, ui) {
     phaseAngle = ui.value;
+    if (!playing) {
+        var processing = Processing.getInstanceById("wave-sum-sim");
+        processing.redraw();
+    }
 }
 
 function playSound() {
