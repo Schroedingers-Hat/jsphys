@@ -40,6 +40,16 @@ void draw(){
   line(width/2, 1, width/2, height);
 
   stroke(0);
+
+  // Calculate initial point
+  sum = 0;
+  for (int j = 0; j < 5; j++) {
+      sum += 50 * pianoAmplitudes[j] * sin(ks[j] * (- 1) - (pianoNote * (j + 1) / pianoScaleFactor * t));
+  }
+  pyprev = 105 + sum;
+
+  // Calculate all subsequent points, connecting dots by connecting to the
+  // previously drawn point
   for (int i = 0; i < width; i++) {
     float sum = 0;
     for (int j = 0; j < 5; j++) {
@@ -48,20 +58,16 @@ void draw(){
 
     py = 105 + sum;
 
-    sum = 0;
-    for (int j = 0; j < 5; j++) {
-        sum += 50 * pianoAmplitudes[j] * sin(ks[j] * (i - 1) - (pianoNote * (j + 1) / pianoScaleFactor * t));
-    }
-
-    pyprev = 105 + sum;
     line(i - 1, pyprev, i, py);
+    pyprev = py;
   }
 
   stroke(0, 0, 127);
+  pyprev = 105 + sin(ks[0] * (-1) - (pianoNote / pianoScaleFactor * t)) * amplitude;
   for (int i = 0; i < width; i++) {
       py = 105 + sin(ks[0] * i - (pianoNote / pianoScaleFactor * t)) * amplitude;
-      pyprev = 105 + sin(ks[0] * (i-1) - (pianoNote / pianoScaleFactor * t)) * amplitude;
       line(i-1, pyprev, i, py);
+      pyprev = py;
   }
   
   t += timestep;
