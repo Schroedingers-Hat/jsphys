@@ -42,7 +42,7 @@
                 margin: 0 0 3pt;
             }
 
-            #speed-slider, #wave1-w-slider, #wave2-w-slider, #wave-phase-slider {
+            .slider {
                 font-size: 50%;
             }
         </style>
@@ -118,19 +118,9 @@ then? Let's draw a picture of those two waves:</p>
 
 <p>When one wave is positive, the other is negative, with exactly the same
 (but opposite) amplitude. When you add them, you get zero. This is
-<strong>destructive</strong> interference.</p>
-
-<p>Now, it could be more complicated. I chose two waves with exactly the same
-amplitude above. But I could choose to have one wave bigger than the other:</p>
-
-<img src="img/summation_amplitude_difference.png" alt="Two waves with different amplitudes" /> 
-
-<p>What's the sum of those waves? It looks like this:</p>
-
-<img src="img/summation_amplitude_sum.png" alt="Sum of two waves with different amplitudes" /> 
-
-<p>Note how it's smaller. This is still destructive intereference, although the
-"cancelling out" is not total; some of the wave is still left behind.</p>
+<strong>destructive</strong> interference. Destructive interference is not
+always total; it's possible for one wave to be larger than the other, and hence
+only be partially canceled out.</p>
 
 <p>Those of you with noise-cancelling headphones experience this effect all the
 time. How can the headphones make a loud airplane seem nearly silent? Well,
@@ -148,10 +138,13 @@ frequencies to see what happens. (Press Play to start the simulation.)</p>
 <div class="simulation">
     <canvas id="wave-sum-sim" data-processing-sources="wave_summation.pde"></canvas>  
     <div class="controls">
-        <p>Speed: </p><div id="speed-slider"></div>
-        <p><span style="color:rgb(0,127,0)">Wave 1</span> frequency:</p><div id="wave1-w-slider"></div>
-        <p><span style="color:rgb(0,0,127)">Wave 2</span> frequency:</p><div id="wave2-w-slider"></div>
-        <p>Phase angle:</p><div id="wave-phase-slider"></div>
+        <p>Speed: </p><div class="slider" id="speed-slider"></div>
+        <p><span style="color:rgb(0,127,0)">Wave 1</span> frequency:</p>
+        <div class="slider" id="wave1-w-slider"></div>
+        <p><span style="color:rgb(0,0,127)">Wave 2</span> frequency:</p>
+        <div class="slider" id="wave2-w-slider"></div>
+        <p>Phase angle:</p>
+        <div class="slider" id="wave-phase-slider"></div>
         <p><button id="play" onclick="return false;">Play</button></p>
         <p><button id="listen" onclic="return false;">Listen</button></p>
     </div>

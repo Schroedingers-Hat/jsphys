@@ -67,5 +67,7 @@ void draw(){
   py = 105 + sin(k2 * i - (w2 * t)- phaseAngle) * amplitude2 + sin(k * i - (w * t)) * amplitude;
   ellipse(i, py, 4, 4);
   
-  t += timestep;
+  if (playing) {
+    t += timestep;
+  }
 }
