@@ -81,10 +81,6 @@ function setPhase(event, ui) {
     }
 }
 
-function setPhase(event, ui) {
-    phaseAngle = ui.value;
-}
-
 function playSound() {
     var audio = new Audio(); // create the HTML5 audio element
     var wave = new RIFFWAVE(); // create an empty wave file
