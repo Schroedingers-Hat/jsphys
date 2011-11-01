@@ -368,8 +368,8 @@ extendedObject.prototype = {
                 if (doDoppler) {
                     prevColor = currentColor;
                     currentColor = tempToColor(dopplerShiftColor(this.temp,
-                                 this.pastRadialV[i],
-                                 this.COM.V[3] / c));
+                                                                 this.pastRadialV[i],
+                                                                 this.COM.V[3] / c));
                     if ((currentColor != prevColor)) {
                         scene.g.strokeStyle = currentColor;
                     }
