@@ -10,20 +10,16 @@ function extendedObject(X, P, label, options, shape)
     this.pastPoints = [];
     this.futPoints = [];
     this.pastRadialV = [];
-    this.pastR = [];
-    this.iI3d = true;
 	if (typeof this.options.created != "undefined") this.created = this.options.created;
+    this.iI3d = true;
     this.wI3d = true;
     this.iI2d = true;
     this.wI2d = true;
-    if (options.temperature) {
-        this.temp = options.temperature;
-    } else {
-        this.temp = 5600;
-    }
+
+    this.temp = (options.temperature) ? options.temperature : 5600;
+    this.stillColor = tempToColor(this.temp);
 
     this.label = label;
-    this.stillColor = tempToColor(this.temp);
 
     if (options.interestingPts) {
         this.interestingPts = options.interestingPts;
@@ -45,30 +41,30 @@ function extendedObject(X, P, label, options, shape)
     this.boundingBoxP = [0, 0, 0, 0, 0, 0];
     this.boundingBoxF = [0, 0, 0, 0, 0, 0];
     this.boundingIdx = [0, 0, 0, 0, 0, 0];
-    this.initialBoost = cBoostMat([-this.COM.V[0],
-                                   -this.COM.V[1],
-                                   -this.COM.V[2],
-                                    this.COM.V[3]], c);
+    var initialBoost = cBoostMat([-this.COM.V[0],
+                                  -this.COM.V[1],
+                                  -this.COM.V[2],
+                                   this.COM.V[3]], c);
 
     /**
      * Iterate through the shape, map it onto the starting frame.
      * Find the largest and smallest x,y,z values, store their indeces.
      */
-    for (var i = 0; i < (shape.length); i++)
-    {
-
-        this.shapePoints[i] = quat4.create(mat4.multiplyVec4(this.initialBoost, shape[i], tempQuat4));
-        for(var j = 0; j < 3; j++)
-        {
-            if (this.shapePoints[i][j] < this.shapePoints[this.boundingIdx[2 * j + 1]][j]){
+    for (var i = 0; i < shape.length; i++) {
+        this.shapePoints[i] = quat4.create(mat4.multiplyVec4(initialBoost, shape[i],
+							     tempQuat4));
+        for(var j = 0; j < 3; j++) {
+            if (this.shapePoints[i][j] < 
+		this.shapePoints[this.boundingIdx[2 * j + 1]][j]) {
                 this.boundingIdx[2 * j + 1] = i;
             }
-            if (this.shapePoints[i][j] > this.shapePoints[this.boundingIdx[2 * j]][j]){
+            if (this.shapePoints[i][j] > this.shapePoints[this.boundingIdx[2 * j]][j]) {
                 this.boundingIdx[2 *j] = i;
             }
         }
         this.pastPoints[i] = quat4.create([0,0,0,0]);
-        this.futPoints[i] = quat4.create([0,0,0,0]); // Do we even want to track the whole thing on the future light cone?
+	// Do we even want to track the whole thing on the future light cone?
+        this.futPoints[i] = quat4.create([0,0,0,0]);
         this.pointPos[i] = quat4.create([0,0,0,0]);
     }
 }
@@ -96,7 +92,8 @@ extendedObject.prototype = {
         if (this.iI3d || this.iI2d || this.wI2d || this.wI3d) {
             for (var i = 0; i < (this.shapePoints.length); i++) {
                 quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
-                quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
+                quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3],
+			    tempQuat4);
                 quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
             }
         } 
@@ -110,7 +107,8 @@ extendedObject.prototype = {
             for (var j = 0; j < (this.boundingIdx.length); j++) {
                 var i = this.boundingIdx[j];
                 quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
-                quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3], tempQuat4);
+                quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3],
+			    tempQuat4);
                 quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
             }
         }
@@ -126,31 +124,29 @@ extendedObject.prototype = {
         }
         this.findBB(this.pointPos, this.boundingBox);
         this.findBB(this.futPoints, this.boundingBoxF);
-
     },
 
     /**
-     * Find the bounding boxes from the updated points and the indeces.
+     * Find the bounding boxes from the updated points and the indices.
      * The bounding box does not always contain the whole object, but it comes close.
      * Best case is a circle/sphere (always contained), worst case is a 
      * slightly oblate square/cube.
      */
     findBB: function(pointsArr, BB) {
-        BB[0] = Math.min(pointsArr[this.boundingIdx[0]][0],pointsArr[this.boundingIdx[1]][0]);
-        BB[1] = Math.max(pointsArr[this.boundingIdx[0]][0],pointsArr[this.boundingIdx[1]][0]);
-        BB[2] = Math.min(pointsArr[this.boundingIdx[0]][1],pointsArr[this.boundingIdx[1]][1]);
-        BB[3] = Math.max(pointsArr[this.boundingIdx[0]][1],pointsArr[this.boundingIdx[1]][1]);
-        BB[4] = Math.min(pointsArr[this.boundingIdx[0]][2],pointsArr[this.boundingIdx[1]][2]);
-        BB[5] = Math.max(pointsArr[this.boundingIdx[0]][2],pointsArr[this.boundingIdx[1]][2]);
+        BB[0] = Math.min(pointsArr[this.boundingIdx[0]][0], pointsArr[this.boundingIdx[1]][0]);
+        BB[1] = Math.max(pointsArr[this.boundingIdx[0]][0], pointsArr[this.boundingIdx[1]][0]);
+        BB[2] = Math.min(pointsArr[this.boundingIdx[0]][1], pointsArr[this.boundingIdx[1]][1]);
+        BB[3] = Math.max(pointsArr[this.boundingIdx[0]][1], pointsArr[this.boundingIdx[1]][1]);
+        BB[4] = Math.min(pointsArr[this.boundingIdx[0]][2], pointsArr[this.boundingIdx[1]][2]);
+        BB[5] = Math.max(pointsArr[this.boundingIdx[0]][2], pointsArr[this.boundingIdx[1]][2]);
 
-        for (var i = 2; i < 5; i++){
-            BB[0] = Math.min(BB[0],pointsArr[this.boundingIdx[i]][0]);
-            BB[1] = Math.max(BB[1],pointsArr[this.boundingIdx[i]][0]);
-            BB[2] = Math.min(BB[2],pointsArr[this.boundingIdx[i]][1]);
-            BB[3] = Math.max(BB[3],pointsArr[this.boundingIdx[i]][1]);
-            BB[4] = Math.min(BB[4],pointsArr[this.boundingIdx[i]][2]);
-            BB[5] = Math.max(BB[5],pointsArr[this.boundingIdx[i]][2]);
-
+        for (var i = 2; i < 5; i++) {
+            BB[0] = Math.min(BB[0], pointsArr[this.boundingIdx[i]][0]);
+            BB[1] = Math.max(BB[1], pointsArr[this.boundingIdx[i]][0]);
+            BB[2] = Math.min(BB[2], pointsArr[this.boundingIdx[i]][1]);
+            BB[3] = Math.max(BB[3], pointsArr[this.boundingIdx[i]][1]);
+            BB[4] = Math.min(BB[4], pointsArr[this.boundingIdx[i]][2]);
+            BB[5] = Math.max(BB[5], pointsArr[this.boundingIdx[i]][2]);
         }
     },
 
@@ -161,21 +157,19 @@ extendedObject.prototype = {
      * translation2 is a translation in the new frame
      */
     changeFrame: function(translation1, rotation, translation2) {
-        if (translation2){
-            this.COM.changeFrame(translation1, rotation, translation2);
-        } else this.COM.changeFrame(translation1, rotation);
+        this.COM.changeFrame(translation1, rotation, translation2);
 
-        for (var i = 0; i < this.shapePoints.length; i++)
-        {
+        for (var i = 0; i < this.shapePoints.length; i++) {
             this.shapePoints[i] = mat4.multiplyVec4(rotation, this.shapePoints[i]);
         }
     },
 
     draw: function(scene) {
-        if ((scene.options.alwaysShowVisualPos ||
-             (this.options.showVisualPos && !scene.options.neverShowVisualPos)) &&
-            (!this.created || (!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3]) &&
-			(!this.COM.initialPt || this.COM.XView[3] > this.COM.initialPt[3]))) {
+        if ((scene.options.alwaysShowVisualPos || 
+	     (this.options.showVisualPos && !scene.options.neverShowVisualPos)) &&
+	    (!this.created ||
+	     (!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3]) &&
+	     (!this.COM.initialPt || this.COM.XView[3] > this.COM.initialPt[3]))) {
             this.drawPast(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawPast3D(scene);
@@ -191,12 +185,14 @@ extendedObject.prototype = {
             }
         }
         if (this.options.showMinkowski) this.drawXT(scene);
-        if(window.console && window.console.firebug) {
+        if (window.console && window.console.firebug) {
             for (var i = 0; i < this.boundingBox.length; i++) {
                 scene.g.beginPath();
                 scene.g.fillStyle = "#f00";
-                scene.g.arc(this.futPoints[this.boundingIdx[i]][0] / scene.zoom + scene.origin[0],
-                           -this.futPoints[this.boundingIdx[i]][1] / scene.zoom + scene.origin[1], 3,0,twopi,true);
+                scene.g.arc(this.futPoints[this.boundingIdx[i]][0] / scene.zoom + 
+			    scene.origin[0],
+                           -this.futPoints[this.boundingIdx[i]][1] / scene.zoom + 
+			    scene.origin[1], 3, 0, twopi, true);
                 scene.g.fill();
             }
         }
@@ -227,19 +223,21 @@ extendedObject.prototype = {
          */
         if (this.wI3d || this.wI2d) {
             var j = 0;
-            for (var i = 0; i < (this.shapePoints.length); i++)
-            {
+            for (var i = 0; i < (this.shapePoints.length); i++) {
                 xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
                 vDotx = quat4.spaceDot(this.pointPos[i], v);
                 a = c*c - vDotv;
 
                 viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
                 quat4.scale(v, viewTime / c, this.uDisplacement);
-                quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
+                quat4.subtract(this.pointPos[i], this.uDisplacement, 
+			       this.pastPoints[i]);
 
                 this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) /
-                                        Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
-                                        this.pastPoints[i], this.pastPoints[i]))), 1e-16);
+		    Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
+						    this.pastPoints[i], 
+						    this.pastPoints[i]))),
+			     1e-16);
                 /** 
                  * May as well do the future cone intersection in here seeing as we've already done most of the
                  * calculations. Don't think we want the whole thing at the future for any reason.
@@ -248,13 +246,13 @@ extendedObject.prototype = {
                  */
                     futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
                     quat4.scale(v, futTime / c, this.uDisplacement);
-                    quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPoints[i]);
+                    quat4.subtract(this.pointPos[i], this.uDisplacement,
+				   this.futPoints[i]);
             }
         }
         // If it's not interesting, just find the appropriate bounding box.
         else {
-            for (var j = 0; j < (this.boundingIdx.length); j++)
-            {
+            for (var j = 0; j < (this.boundingIdx.length); j++) {
                 var i = this.boundingIdx[j];
                 xDotx = quat4.spaceDot(this.pointPos[i], this.pointPos[i]);
                 vDotx = quat4.spaceDot(this.pointPos[i], v);
@@ -262,11 +260,14 @@ extendedObject.prototype = {
 
                 viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
                 quat4.scale(v, viewTime / c, this.uDisplacement);
-                quat4.subtract(this.pointPos[i], this.uDisplacement, this.pastPoints[i]);
+                quat4.subtract(this.pointPos[i], this.uDisplacement,
+			       this.pastPoints[i]);
 
                 this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) /
-                                        Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
-                                        this.pastPoints[i], this.pastPoints[i]))), 1e-16);
+		    Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
+						    this.pastPoints[i],
+						    this.pastPoints[i]))),
+			     1e-16);
                 /** 
                  * May as well do the future cone intersection in here seeing as we've already done most of the
                  * calculations.
@@ -274,7 +275,6 @@ extendedObject.prototype = {
                 futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
                 quat4.scale(v, futTime / c, this.uDisplacement);
                 quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPoints[i]);
-                
             }
         }
     },
@@ -295,8 +295,7 @@ extendedObject.prototype = {
             scene.g.beginPath();
             scene.g.moveTo(this.pointPos[0][0] / scene.zoom + scene.origin[0],
                            -this.pointPos[0][1] / scene.zoom + scene.origin[1]);
-            for (var i = 0; i < (this.shapePoints.length); i++)
-            {
+            for (var i = 0; i < (this.shapePoints.length); i++) {
                 scene.g.lineTo(this.pointPos[i][0] / scene.zoom + scene.origin[0],
                                -this.pointPos[i][1] / scene.zoom + scene.origin[1]);
             }
@@ -305,10 +304,11 @@ extendedObject.prototype = {
             // If we're drawing text, find the appropriate position and draw some text.
             if(scene.curOptions.showText) {
                 var i = 0;
-                var textX =  (this.boundingBox[0] + this.boundingBox[1]) / (2 * scene.zoom) + scene.origin[0] - 10;
+                var textX =  (this.boundingBox[0] + this.boundingBox[1]) /
+		    (2 * scene.zoom) + scene.origin[0] - 10;
                 var textY = -this.boundingBox[3] / scene.zoom + scene.origin[1];
                 if (this.options.showVelocity) {
-                    scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1)))/1000) + "c",
+                    scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1))) / 1000) + "c",
                                      textX, textY - 10 * i);
                     i++;
                 }
@@ -326,6 +326,7 @@ extendedObject.prototype = {
                 }
             }
         }
+
         /**
          * If we're not drawing the whole thing we might be drawing a point.
          * Some redundant calculation with isInteresting.
@@ -337,12 +338,10 @@ extendedObject.prototype = {
                 yview > 0 && yview < scene.height) {
                 scene.g.beginPath();
                 scene.g.arc(xview, yview, 2.5, 0, twopi, true);
-                scene.g.fill()
+                scene.g.fill();
             }
         }
-
     },
-
 
     /**
      * Draw the intersection with the light cone on the 2d context.
@@ -357,24 +356,21 @@ extendedObject.prototype = {
         var doDoppler = (scene.options.alwaysDoppler ||
                         (!scene.options.neverDoppler && this.options.showDoppler));
 
-        if (this.wI2d)
-        {
+        if (this.wI2d) {
             var currentColor;
             var prevColor;
             if (!doDoppler) scene.g.strokeStyle = this.stillColor;
             scene.g.beginPath();
-            for (var i = 1; i < (this.pastPoints.length); i++)
-            {
-                if(doDoppler) {
+            for (var i = 1; i < (this.pastPoints.length); i++) {
+                if (doDoppler) {
                     prevColor = currentColor;
                     currentColor = tempToColor(dopplerShiftColor(this.temp,
-                                                             this.pastRadialV[i],
-                                                             this.COM.V[3] / c));
+								 this.pastRadialV[i],
+								 this.COM.V[3] / c));
                     if((currentColor != prevColor)) {
                         scene.g.strokeStyle = currentColor;
                     }
                 } 
-                
                 
                 scene.g.moveTo(this.pastPoints[i-1][0] / scene.zoom + scene.origin[0],
                                -this.pastPoints[i-1][1] / scene.zoom + scene.origin[1]);
@@ -382,13 +378,13 @@ extendedObject.prototype = {
                                -this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
 
                 // If we've changed color stroke, and begin a new path too -- unless we're at the end.
-                if((currentColor != prevColor)) {
+                if (currentColor != prevColor) {
                     scene.g.stroke();
                     if (i < (this.pastPoints.length - 1)) scene.g.beginPath();
                 }
             }
             // Might have one more stroke to do.
-            if(currentColor == prevColor) scene.g.stroke();
+            if (currentColor == prevColor) scene.g.stroke();
 
             // If we've got a debug console open we probably want a bit more information.
             if (window.console && window.console.firebug) {
@@ -446,7 +442,7 @@ extendedObject.prototype = {
 
                 scene.g.beginPath();
                 scene.g.arc(xview, yview, 2.5, 0, twopi, true);
-                scene.g.fill()
+                scene.g.fill();
             }
         }
     },
@@ -660,8 +656,8 @@ extendedObject.prototype = {
         scene.h.fillStyle = "#0a0";
 
         // A world Line.
-        scene.h.beginPath()
-		if( this.COM.initialPt ){
+        scene.h.beginPath();
+		if(this.COM.initialPt) {
 			scene.h.moveTo(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
 							-this.COM.initialPt[3] / scene.timeZoom / c + scene.origin[2]);
 		} else {

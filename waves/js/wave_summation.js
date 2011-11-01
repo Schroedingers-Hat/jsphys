@@ -15,11 +15,11 @@ var pureAmplitudes = [1, 0, 0, 0, 0];
 /** Page setup **/
 $(document).ready(function() {
     $("#speed-slider").slider({min: -5, max: 5, step: 0.1, slide: setAnimSpeed,
-                           value: timestep});
+                               value: timestep});
     $("#wave1-w-slider").slider({min: 0, max: 1, step: 0.01, slide: setW1,
-                           value: w});
+				 value: w});
     $("#wave2-w-slider").slider({min: 0, max: 1, step: 0.01, slide: setW2,
-                           value: w2});
+				 value: w2});
     $("#wave-phase-slider").slider({min: 0, max: 6, step: 0.1, slide: setPhase,
                                     value: phaseAngle});
     $("#play").click(function() {
@@ -122,5 +122,5 @@ function playPiano(amplitudes) {
         wave.Make(data); // make the wave file
         audio.src = wave.dataURI; // set audio source
         audio.play();
-    }
+    };
 }
