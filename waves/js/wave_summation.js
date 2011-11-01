@@ -113,10 +113,13 @@ function playPiano(amplitudes) {
         while (i < 16000) { 
           var sum = 0;
           for (var j = 0; j < amplitudes.length; j++) {
-              sum += Math.round(127 * amplitudes[j] * Math.sin((pianoNote * 2 * (j + 1) * Math.PI / 8000) * i));
+              sum += Math.round(127 * amplitudes[j] * 
+				Math.sin((pianoNote * 2 * (j + 1) * Math.PI / 8000) *
+					 i));
           }
 
-          data[i++] = Math.round((127 + sum) * Math.pow(Math.E, -(Math.LOG2E / 4000 * i))) / 2;
+          data[i++] = Math.round((127 + sum) * 
+				 Math.pow(Math.E, -(Math.LOG2E / 4000 * i))) / 2;
         }
 
         wave.Make(data); // make the wave file

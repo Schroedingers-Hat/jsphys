@@ -10,7 +10,7 @@ function extendedObject(X, P, label, options, shape)
     this.pastPoints = [];
     this.futPoints = [];
     this.pastRadialV = [];
-	if (typeof this.options.created != "undefined") this.created = this.options.created;
+    if (typeof this.options.created != "undefined") this.created = this.options.created;
     this.iI3d = true;
     this.wI3d = true;
     this.iI2d = true;
@@ -26,12 +26,12 @@ function extendedObject(X, P, label, options, shape)
     }
 
     this.COM = new inertialObject(X, P, 1);
-	if (options.endPt) this.COM.endPt = quat4.create(options.endPt);
-	if (options.initialPt) this.COM.initialPt = options.initialPt;
-	if (options.initialTau) {
-		this.COM.tau = options.initialTau;
-		this.COM.initialTau = options.initialTau;
-	}
+    if (options.endPt) this.COM.endPt = quat4.create(options.endPt);
+    if (options.initialPt) this.COM.initialPt = options.initialPt;
+    if (options.initialTau) {
+        this.COM.tau = options.initialTau;
+        this.COM.initialTau = options.initialTau;
+    }
     this.uDisplacement = quat4.create([0,0,0,0]);
     this.pointPos = [];
 
@@ -48,14 +48,14 @@ function extendedObject(X, P, label, options, shape)
 
     /**
      * Iterate through the shape, map it onto the starting frame.
-     * Find the largest and smallest x,y,z values, store their indeces.
+     * Find the largest and smallest x,y,z values, store their indices.
      */
     for (var i = 0; i < shape.length; i++) {
         this.shapePoints[i] = quat4.create(mat4.multiplyVec4(initialBoost, shape[i],
-							     tempQuat4));
+                                                             tempQuat4));
         for(var j = 0; j < 3; j++) {
             if (this.shapePoints[i][j] < 
-		this.shapePoints[this.boundingIdx[2 * j + 1]][j]) {
+                this.shapePoints[this.boundingIdx[2 * j + 1]][j]) {
                 this.boundingIdx[2 * j + 1] = i;
             }
             if (this.shapePoints[i][j] > this.shapePoints[this.boundingIdx[2 * j]][j]) {
@@ -63,7 +63,7 @@ function extendedObject(X, P, label, options, shape)
             }
         }
         this.pastPoints[i] = quat4.create([0,0,0,0]);
-	// Do we even want to track the whole thing on the future light cone?
+        // Do we even want to track the whole thing on the future light cone?
         this.futPoints[i] = quat4.create([0,0,0,0]);
         this.pointPos[i] = quat4.create([0,0,0,0]);
     }
@@ -72,8 +72,6 @@ function extendedObject(X, P, label, options, shape)
 extendedObject.prototype = {
     /**
      * Update the COM and the surrounding points.
-     * 
-     * 
      */
     update: function(timeStep, scene) {
         this.COM.updateX0(timeStep);
@@ -93,7 +91,7 @@ extendedObject.prototype = {
             for (var i = 0; i < (this.shapePoints.length); i++) {
                 quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
                 quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3],
-			    tempQuat4);
+                            tempQuat4);
                 quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
             }
         } 
@@ -108,7 +106,7 @@ extendedObject.prototype = {
                 var i = this.boundingIdx[j];
                 quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
                 quat4.scale(this.COM.V, -this.pointPos[i][3] / this.COM.V[3],
-			    tempQuat4);
+                            tempQuat4);
                 quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
             }
         }
@@ -133,12 +131,18 @@ extendedObject.prototype = {
      * slightly oblate square/cube.
      */
     findBB: function(pointsArr, BB) {
-        BB[0] = Math.min(pointsArr[this.boundingIdx[0]][0], pointsArr[this.boundingIdx[1]][0]);
-        BB[1] = Math.max(pointsArr[this.boundingIdx[0]][0], pointsArr[this.boundingIdx[1]][0]);
-        BB[2] = Math.min(pointsArr[this.boundingIdx[0]][1], pointsArr[this.boundingIdx[1]][1]);
-        BB[3] = Math.max(pointsArr[this.boundingIdx[0]][1], pointsArr[this.boundingIdx[1]][1]);
-        BB[4] = Math.min(pointsArr[this.boundingIdx[0]][2], pointsArr[this.boundingIdx[1]][2]);
-        BB[5] = Math.max(pointsArr[this.boundingIdx[0]][2], pointsArr[this.boundingIdx[1]][2]);
+        BB[0] = Math.min(pointsArr[this.boundingIdx[0]][0],
+                         pointsArr[this.boundingIdx[1]][0]);
+        BB[1] = Math.max(pointsArr[this.boundingIdx[0]][0],
+                         pointsArr[this.boundingIdx[1]][0]);
+        BB[2] = Math.min(pointsArr[this.boundingIdx[0]][1], 
+                         pointsArr[this.boundingIdx[1]][1]);
+        BB[3] = Math.max(pointsArr[this.boundingIdx[0]][1],
+                         pointsArr[this.boundingIdx[1]][1]);
+        BB[4] = Math.min(pointsArr[this.boundingIdx[0]][2], 
+                         pointsArr[this.boundingIdx[1]][2]);
+        BB[5] = Math.max(pointsArr[this.boundingIdx[0]][2],
+                         pointsArr[this.boundingIdx[1]][2]);
 
         for (var i = 2; i < 5; i++) {
             BB[0] = Math.min(BB[0], pointsArr[this.boundingIdx[i]][0]);
@@ -166,10 +170,10 @@ extendedObject.prototype = {
 
     draw: function(scene) {
         if ((scene.options.alwaysShowVisualPos || 
-	     (this.options.showVisualPos && !scene.options.neverShowVisualPos)) &&
-	    (!this.created ||
-	     (!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3]) &&
-	     (!this.COM.initialPt || this.COM.XView[3] > this.COM.initialPt[3]))) {
+             (this.options.showVisualPos && !scene.options.neverShowVisualPos)) &&
+            (!this.created ||
+             (!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3]) &&
+             (!this.COM.initialPt || this.COM.XView[3] > this.COM.initialPt[3]))) {
             this.drawPast(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawPast3D(scene);
@@ -178,7 +182,7 @@ extendedObject.prototype = {
         if ((scene.options.alwaysShowFramePos ||
              (!scene.options.neverShowFramePos && this.options.showFramePos)) &&
             (!this.created || (!this.COM.endPt || 0 < this.COM.endPt[3]) &&
-			(!this.COM.initialPt || 0 > this.COM.initialPt[3])))  {
+             (!this.COM.initialPt || 0 > this.COM.initialPt[3])))  {
             this.drawNow(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawNow3D(scene);
@@ -190,9 +194,9 @@ extendedObject.prototype = {
                 scene.g.beginPath();
                 scene.g.fillStyle = "#f00";
                 scene.g.arc(this.futPoints[this.boundingIdx[i]][0] / scene.zoom + 
-			    scene.origin[0],
+                scene.origin[0],
                            -this.futPoints[this.boundingIdx[i]][1] / scene.zoom + 
-			    scene.origin[1], 3, 0, twopi, true);
+                scene.origin[1], 3, 0, twopi, true);
                 scene.g.fill();
             }
         }
@@ -231,23 +235,23 @@ extendedObject.prototype = {
                 viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
                 quat4.scale(v, viewTime / c, this.uDisplacement);
                 quat4.subtract(this.pointPos[i], this.uDisplacement, 
-			       this.pastPoints[i]);
+                               this.pastPoints[i]);
 
                 this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) /
-		    Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
-						    this.pastPoints[i], 
-						    this.pastPoints[i]))),
-			     1e-16);
+                    Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
+                                                    this.pastPoints[i],
+                                                    this.pastPoints[i]))),
+                             1e-16);
                 /** 
-                 * May as well do the future cone intersection in here seeing as we've already done most of the
-                 * calculations. Don't think we want the whole thing at the future for any reason.
+                 * May as well do the future cone intersection in here seeing as
+                 * we've already done most of the calculations. Don't think we
+                 * want the whole thing at the future for any reason.
                  * Just calculate the bounding box for now.
-                 * 
                  */
                     futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
                     quat4.scale(v, futTime / c, this.uDisplacement);
                     quat4.subtract(this.pointPos[i], this.uDisplacement,
-				   this.futPoints[i]);
+                                   this.futPoints[i]);
             }
         }
         // If it's not interesting, just find the appropriate bounding box.
@@ -261,16 +265,16 @@ extendedObject.prototype = {
                 viewTime = -(vDotx - Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
                 quat4.scale(v, viewTime / c, this.uDisplacement);
                 quat4.subtract(this.pointPos[i], this.uDisplacement,
-			       this.pastPoints[i]);
+                               this.pastPoints[i]);
 
                 this.pastRadialV[i] = quat4.spaceDot(this.pastPoints[i], v) /
-		    Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
-						    this.pastPoints[i],
-						    this.pastPoints[i]))),
-			     1e-16);
+                    Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
+                                                    this.pastPoints[i],
+                                                    this.pastPoints[i]))),
+                 1e-16);
                 /** 
-                 * May as well do the future cone intersection in here seeing as we've already done most of the
-                 * calculations.
+                 * May as well do the future cone intersection in here seeing as
+                 * we've already done most of the calculations.
                  */
                 futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
                 quat4.scale(v, futTime / c, this.uDisplacement);
@@ -288,8 +292,7 @@ extendedObject.prototype = {
 
         scene.g.fillStyle = "#0f0";
         // If it's interesting, draw the whole thing.
-        if (this.iI2d)
-        {
+        if (this.iI2d) {
             // Stroke a path over the present points 0 and 1 coordinates.
             scene.g.strokeStyle = "#0f0";
             scene.g.beginPath();
@@ -305,7 +308,7 @@ extendedObject.prototype = {
             if(scene.curOptions.showText) {
                 var i = 0;
                 var textX =  (this.boundingBox[0] + this.boundingBox[1]) /
-		    (2 * scene.zoom) + scene.origin[0] - 10;
+            (2 * scene.zoom) + scene.origin[0] - 10;
                 var textY = -this.boundingBox[3] / scene.zoom + scene.origin[1];
                 if (this.options.showVelocity) {
                     scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1))) / 1000) + "c",
@@ -365,9 +368,9 @@ extendedObject.prototype = {
                 if (doDoppler) {
                     prevColor = currentColor;
                     currentColor = tempToColor(dopplerShiftColor(this.temp,
-								 this.pastRadialV[i],
-								 this.COM.V[3] / c));
-                    if((currentColor != prevColor)) {
+                                 this.pastRadialV[i],
+                                 this.COM.V[3] / c));
+                    if ((currentColor != prevColor)) {
                         scene.g.strokeStyle = currentColor;
                     }
                 } 
@@ -377,7 +380,8 @@ extendedObject.prototype = {
                 scene.g.lineTo(this.pastPoints[i][0] / scene.zoom + scene.origin[0],
                                -this.pastPoints[i][1] / scene.zoom + scene.origin[1]);
 
-                // If we've changed color stroke, and begin a new path too -- unless we're at the end.
+                // If we've changed color stroke, and begin a new path too -- 
+                // unless we're at the end.
                 if (currentColor != prevColor) {
                     scene.g.stroke();
                     if (i < (this.pastPoints.length - 1)) scene.g.beginPath();
@@ -386,18 +390,19 @@ extendedObject.prototype = {
             // Might have one more stroke to do.
             if (currentColor == prevColor) scene.g.stroke();
 
-            // If we've got a debug console open we probably want a bit more information.
+            // If we've got a debug console open we probably want a bit more information
             if (window.console && window.console.firebug) {
                 scene.g.beginPath();
                 scene.g.arc(this.COM.XView[0] / scene.zoom + scene.origin[0],
-                            -this.COM.XView[1]  / scene.zoom + scene.origin[1] ,
-                            3,0,twopi,true);
+                            -this.COM.XView[1]  / scene.zoom + scene.origin[1],
+                            3, 0, twopi, true);
                 scene.g.fill();
             }
             
             if(scene.curOptions.showText) {
                 scene.g.fillStyle = "#0F0";
-                var textX =  (this.boundingBoxP[0] + this.boundingBoxP[1]) / (2 * scene.zoom) + scene.origin[0] - 10;
+                var textX =  (this.boundingBoxP[0] + this.boundingBoxP[1]) / 
+                    (2 * scene.zoom) + scene.origin[0] - 10;
                 var textY = -this.boundingBoxP[3] / scene.zoom + scene.origin[1];
                 var i = 1;
                 if (this.options.showVelocity) {
@@ -406,7 +411,8 @@ extendedObject.prototype = {
                     i++;
                 }
                 if (this.options.showGamma) {
-                    scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, textX, textY - 10 * i);
+                    scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, 
+                                     textX, textY - 10 * i);
                     i++;
                 }
                 if (this.label !== "") {
@@ -414,11 +420,13 @@ extendedObject.prototype = {
                     i++;
                 }
                 if (this.options.showTime || scene.options.showTime) {
-                    scene.g.fillText("t = " + (-Math.round((this.COM.viewTime / c)*10) / 10), textX, textY - 10 * i);
+                    scene.g.fillText("t = " + (-Math.round((this.COM.viewTime / c)*10) / 10), 
+                                     textX, textY - 10 * i);
                     i++;
                 }
                 if (this.options.showTime || scene.options.showTime) {
-                    scene.g.fillText("tau = " + (Math.round((this.COM.tauPast / c)*10) / 10), textX, textY - 10 * i);
+                    scene.g.fillText("tau = " + (Math.round((this.COM.tauPast / c)*10) / 10), 
+                                     textX, textY - 10 * i);
                     i++;
                 }
                  if (this.options.showPos || scene.options.showPos) {
@@ -433,12 +441,13 @@ extendedObject.prototype = {
             yview = -this.COM.XView[1] / scene.zoom + scene.origin[1];
             if (xview > 0 && xview < scene.width &&
                 yview > 0 && yview < scene.height) {
-                if (doDoppler)
+                if (doDoppler) {
                     scene.g.fillStyle = tempToColor(dopplerShiftColor(this.temp,
                                                                       this.COM.radialVPast,
                                                                       this.COM.V[3] / c));
-                else
+                } else {
                     scene.g.fillStyle = this.stillColor;
+                }
 
                 scene.g.beginPath();
                 scene.g.arc(xview, yview, 2.5, 0, twopi, true);
@@ -448,7 +457,8 @@ extendedObject.prototype = {
     },
 
 
-    // Almost the same concept as the other draw commands, but with a simple pinhole camera for 3d.
+    // Almost the same concept as the other draw commands, but with a simple 
+    // pinhole camera for 3d.
     drawPast3D: function(scene) {
         if (this.wI3d)
         {
@@ -467,19 +477,20 @@ extendedObject.prototype = {
             } else {
                 scene.TDC.strokeStyle = this.stillColor;
             }
-            for (var i = 1; i < (this.pastPoints.length); i++)
-            {
+            for (var i = 1; i < this.pastPoints.length; i++) {
                 /** 
-                 * Calculate z values, camBack moves the camera back or forward slightly from the
-                 * actual reference frame.
+                 * Calculate z values, camBack moves the camera back or forward 
+                 * slightly from the actual reference frame.
                  */
-                zCoeff1 = 40 / (scene.zoom * (this.pastPoints[i - 1][1] + scene.camBack));
-                zCoeff2 = 40 / (scene.zoom * (this.pastPoints[i][1]     + scene.camBack));
+                zCoeff1 = 40 / (scene.zoom * 
+                                (this.pastPoints[i - 1][1] + scene.camBack));
+                zCoeff2 = 40 / (scene.zoom * 
+                                (this.pastPoints[i][1] + scene.camBack));
                 // If both points are in front of the camera, draw a line between them.
                 if (this.pastPoints[i-1][1] > -scene.camBack && 
                     this.pastPoints[i][1] > -scene.camBack){
                     // Change color if we need to.
-                    if(doDoppler) {
+                    if (doDoppler) {
                         prevColor = currentColor;
                         currentColor = tempToColor(dopplerShiftColor(this.temp,
                                                                      this.pastRadialV[i],
@@ -507,13 +518,14 @@ extendedObject.prototype = {
             var xview = this.COM.XView[0] * coeff + scene.origin[0];
             var yview = -this.COM.XView[2] * coeff + scene.origin[1];
             var viewSize = Math.max(this.boundingBoxP[3] - this.boundingBoxP[2],
-                                this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff / 2;
+                                    this.boundingBoxP[5] - this.boundingBoxP[4]) * 
+                coeff / 2;
             if (xview > 0 && xview < scene.tWidth &&
                 yview > 0 && yview < scene.tHeight &&
                 this.COM.XView[1] > -scene.camBack + 1) {
                 scene.TDC.fillStyle = tempToColor(dopplerShiftColor(this.temp,
-                                                                      this.pastRadialV[0],
-                                                                      this.COM.V[3] / c));
+                                                                    this.pastRadialV[0],
+                                                                    this.COM.V[3] / c));
 
                 scene.TDC.beginPath();
                 scene.TDC.arc(xview, yview, viewSize, 0, twopi, true);
@@ -524,18 +536,18 @@ extendedObject.prototype = {
     },
 
     drawNow3D: function(scene) {
-        var coeff = 40/(scene.zoom * (this.pointPos[0][1] + scene.camBack));
+        var coeff = 40 / (scene.zoom * (this.pointPos[0][1] + scene.camBack));
         var startedDrawing = false;
         var xview;
-        var yview
+        var yview;
         
         /** 
-         * Slightly more complicated logic here than calcPastPoints to try and avoid calls to moveTo.
-         * Haven't really seen the expected performance benefits, the extra checks/arithmetic may not be
-         * Worth it.
+         * Slightly more complicated logic here than calcPastPoints to try to 
+         * avoid calls to moveTo.
+         * Haven't really seen the expected performance benefits, the extr
+         * a checks/arithmetic may not be worth it.
          */
-        if (this.iI3d)
-        {
+        if (this.iI3d) {
             scene.TDC.strokeStyle = "#0f0";
 
             scene.TDC.beginPath();
@@ -549,8 +561,8 @@ extendedObject.prototype = {
                 scene.TDC.moveTo(xview, yview);
                 startedDrawing = true;
             }
-            for (var i = 1; i < (this.pointPos.length); i++)
-            {
+            
+            for (var i = 1; i < (this.pointPos.length); i++) {
                 coeff = 1/(scene.zoom * (this.pointPos[i][1] + scene.camBack) / 40);
                 xview = this.pointPos[i][0] * coeff + scene.origin[0];
                 yview = -this.pointPos[i][2] * coeff + scene.origin[1];
@@ -559,15 +571,14 @@ extendedObject.prototype = {
                     xview < scene.tWidth &&
                     xview > 0 &&
                     yview < scene.tHeight &&
-                    yview > 0 ) {
-                    if (startedDrawing){
+                    yview > 0) {
+                    if (startedDrawing) {
                         scene.TDC.lineTo(xview, yview);
                     } else {
                         scene.TDC.moveTo(xview, yview);
                         startedDrawing = true;
-                        }
+                    }
                 } else startedDrawing = false;
-
             }
             scene.TDC.stroke();
         } 
@@ -577,7 +588,8 @@ extendedObject.prototype = {
             var xview = this.COM.X0[0] * coeff + scene.origin[0];
             var yview = -this.COM.X0[2] * coeff + scene.origin[1];
             var viewSize = Math.max(this.boundingBox[1] - this.boundingBox[0],
-                                this.boundingBox[3] - this.boundingBox[2]) * coeff / 2;
+                                    this.boundingBox[3] - this.boundingBox[2]) * 
+                coeff / 2;
             /**
              * Check on viewSize is a bit of a kludge. If the z value is very small the dot will be enormous
              * and filling an arc of that size is very slow.
@@ -593,7 +605,6 @@ extendedObject.prototype = {
                 scene.TDC.fill();
             }
         }
-
     },
 
     /**
@@ -620,7 +631,6 @@ extendedObject.prototype = {
     },    
 
     photonCollision : function(photon) {
-
         var yAtFut = photon.V[1] * this.COM.XFut[3] / c;
         if (this.boundingBoxF[0] <= 0 &&
             this.boundingBoxF[1] >= 0 &&
@@ -628,7 +638,9 @@ extendedObject.prototype = {
             this.boundingBoxF[3] >= yAtFut &&
             this.boundingBoxF[4] <= 0 &&
             this.boundingBoxF[5] >= 0) {
-            return quat4.create([0,this.COM.XFut[1] - (yAtFut - this.boundingBoxF[2]), 0,this.COM.XFut[3] - (yAtFut - this.boundingBoxF[2])]) ;
+            return quat4.create([0, this.COM.XFut[1] - (yAtFut - this.boundingBoxF[2]),
+                                 0, this.COM.XFut[3] - (yAtFut - this.boundingBoxF[2])]
+                               );
         } else {
             return Infinity;
         } 
@@ -657,29 +669,33 @@ extendedObject.prototype = {
 
         // A world Line.
         scene.h.beginPath();
-		if(this.COM.initialPt) {
-			scene.h.moveTo(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
-							-this.COM.initialPt[3] / scene.timeZoom / c + scene.origin[2]);
-		} else {
-			scene.h.moveTo(bOfLinex + scene.origin[0],
-							-bOfLinet + scene.origin[2]);
-		}
-		if( this.COM.endPt ) {
-			scene.h.lineTo(this.COM.endPt[0] / scene.zoom + scene.origin[0],
-			 			-this.COM.endPt[3] / scene.timeZoom / c+ scene.origin[2]);
-		} else{
-			scene.h.lineTo(tOfLinex + scene.origin[0],
-						-tOfLinet + scene.origin[2]);
-		}
+        if(this.COM.initialPt) {
+            scene.h.moveTo((this.COM.initialPt[0] / scene.zoom + 
+                            scene.origin[0]),
+                           (-this.COM.initialPt[3] / scene.timeZoom /
+                            c + scene.origin[2]));
+        } else {
+            scene.h.moveTo(bOfLinex + scene.origin[0],
+                           -bOfLinet + scene.origin[2]);
+        }
+        if(this.COM.endPt) {
+            scene.h.lineTo(this.COM.endPt[0] / scene.zoom + scene.origin[0],
+                           (-this.COM.endPt[3] / scene.timeZoom / c +
+                            scene.origin[2]));
+        } else{
+            scene.h.lineTo(tOfLinex + scene.origin[0],
+                           -tOfLinet + scene.origin[2]);
+        }
         scene.h.stroke();
 
         // A dot at t=0.
-		if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
-			(!this.COM.endPt || this.COM.endPt[3] > 0)){
-			scene.h.beginPath();
-			scene.h.arc(xvis + scene.origin[0], scene.origin[2], 5, 0, twopi, true);
-			scene.h.fill();
-		}
+        if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
+            (!this.COM.endPt || this.COM.endPt[3] > 0)) {
+            scene.h.beginPath();
+            scene.h.arc(xvis + scene.origin[0], scene.origin[2],
+                        5, 0, twopi, true);
+            scene.h.fill();
+        }
 
         // A dot at the light cone.
         if (scene.options.alwaysShowVisualPos ||
@@ -689,7 +705,7 @@ extendedObject.prototype = {
                                                               this.COM.V[3] / c));
             scene.h.beginPath();
             scene.h.arc(xvisP + scene.origin[0],
-                        - tvisP / c + scene.origin[2],
+                        -tvisP / c + scene.origin[2],
                         5, 0, twopi, true);
             scene.h.fill();
         }
@@ -701,23 +717,20 @@ extendedObject.prototype = {
             scene.h.fillStyle = "#f00";
             scene.h.beginPath();
             scene.h.arc(xvisF + scene.origin[0],
-                        - tvisF / c + scene.origin[2],
+                        -tvisF / c + scene.origin[2],
                         5, 0, twopi, true);
             scene.h.fill();
         }
 
-
-
-
         if (this.label !== "" && scene.curOptions.showText) {
-		if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
-			(!this.COM.endPt || this.COM.endPt[3] > 0)){
-				scene.h.beginPath();
-				scene.h.fillStyle = "#444";
-				scene.h.fillText(this.label + " present position",
-								  xvis + scene.origin[0] + 5,
-								  -5 + scene.origin[2]);
-			}
+        if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
+            (!this.COM.endPt || this.COM.endPt[3] > 0)){
+                scene.h.beginPath();
+                scene.h.fillStyle = "#444";
+                scene.h.fillText(this.label + " present position",
+                                  xvis + scene.origin[0] + 5,
+                                  -5 + scene.origin[2]);
+            }
             if (scene.options.alwaysShowVisualPos ||
                 (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
                 scene.h.fillText(this.label + " visual position",
@@ -729,14 +742,16 @@ extendedObject.prototype = {
         // Find a vector that points from intialPt to somewhere near now.
         scene.h.fillStyle = "#aaa";
         if (this.options.showTime || scene.options.showTime) {
-
-            var dotScale  = 25 * Math.pow(2, Math.round(Math.log(scene.timeZoom) / Math.log(2)));
+            var dotScale  = 25 * Math.pow(2, Math.round(Math.log(scene.timeZoom) / 
+                                                        Math.log(2)));
             var dotScaleR = 15 * Math.sqrt(scene.timeZoom / dotScale);
-            var hNumDots  = Math.ceil(scene.mHeight / dotScale / 2 * scene.timeZoom / this.COM.V[3] * c);
+            var hNumDots  = Math.ceil(scene.mHeight / dotScale / 2 *
+                                      scene.timeZoom / this.COM.V[3] * c);
             var dotR, roundedTauParam, tDotPos, xDotPos;
 
             for (var i = -hNumDots; i < hNumDots; i++) {
-                roundedTauParam = Math.round((this.COM.tau - this.COM.initialTau) / dotScale / c) * dotScale;
+                roundedTauParam = Math.round((this.COM.tau - this.COM.initialTau) /
+                                             dotScale / c) * dotScale;
 
                 quat4.scale(this.COM.V, roundedTauParam, tempQuat4);
                 quat4.add(tempQuat4, this.COM.initialPt, tempQuat42);
@@ -747,36 +762,43 @@ extendedObject.prototype = {
                 xDotPos = tempQuat42[0] / scene.zoom + scene.origin[0];
                 tDotPos = -tempQuat42[3] / c / scene.timeZoom + scene.origin[2];
 
-                if ((i + roundedTauParam / dotScale) % 10 === 0) dotR = 2 * dotScaleR;
-                else if ((i + roundedTauParam / dotScale) % 5 === 0) dotR = 1.41 * dotScaleR;
-                else dotR = dotScaleR;
-				//Rounding error somewhere causing flickering, hence the +1
-				if ((!this.COM.endPt || tempQuat42[3] <= this.COM.endPt[3]+1) &&
-					(!this.COM.initialPt || tempQuat42[3] >= this.COM.initialPt[3]-1)){
-					scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
-								   tempQuat42[3] / c / scene.timeZoom + scene.origin[2]);
-					scene.h.arc(xDotPos,
-							    tDotPos, dotR,
-								0, twopi, true);
-					
-					if (scene.curOptions.showText && 
-						((i + roundedTauParam / dotScale) % 5 === 0)) {
-						scene.h.fill();
-						scene.h.beginPath();
-						scene.h.fillStyle = "#0f0";
-						scene.h.fillText("Tau: " + (this.COM.initialTau +  Math.round((roundedTauParam + i * dotScale))) + "s", xDotPos + 3, tDotPos + 3);
+                if ((i + roundedTauParam / dotScale) % 10 === 0) {
+                    dotR = 2 * dotScaleR;
+                } else if ((i + roundedTauParam / dotScale) % 5 === 0) {
+                    dotR = 1.41 * dotScaleR;
+                } else {
+                    dotR = dotScaleR;
+                }
+                //Rounding error somewhere causing flickering, hence the +1
+                if ((!this.COM.endPt || tempQuat42[3] <= this.COM.endPt[3] + 1) &&
+                    (!this.COM.initialPt || tempQuat42[3] >= this.COM.initialPt[3] - 1)){
+                    scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
+                                   tempQuat42[3] / c / scene.timeZoom + scene.origin[2]);
+                    scene.h.arc(xDotPos,
+                                tDotPos, dotR,
+                                0, twopi, true);
+                    
+                    if (scene.curOptions.showText && 
+                        ((i + roundedTauParam / dotScale) % 5 === 0)) {
+                        scene.h.fill();
+                        scene.h.beginPath();
+                        scene.h.fillStyle = "#0f0";
+                        scene.h.fillText("Tau: " + 
+                                         (this.COM.initialTau + Math.round((roundedTauParam + i * dotScale))) + "s",
+                                         xDotPos + 3, tDotPos + 3);
 
-						if (scene.options.showPos || this.options.showPos){
-							scene.h.fillText("[x, t]: [" + Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " +
-														   -Math.round((tDotPos - scene.origin[2]) * scene.timeZoom) + "]",
-											xDotPos + 3, tDotPos + 13);
-						}
+                        if (scene.options.showPos || this.options.showPos){
+                            scene.h.fillText("[x, t]: [" + 
+                                             Math.round((xDotPos - scene.origin[0]) * scene.zoom) + ", " +
+                                             -Math.round((tDotPos - scene.origin[2]) * scene.timeZoom) + "]",
+                                             xDotPos + 3, tDotPos + 13);
+                        }
 
-						scene.h.fill();
-						scene.h.fillStyle = "#aaa";
-						scene.h.beginPath();
-					}
-				}
+                        scene.h.fill();
+                        scene.h.fillStyle = "#aaa";
+                        scene.h.beginPath();
+                    }
+                }
             }
             scene.h.fill();
         }
@@ -784,7 +806,8 @@ extendedObject.prototype = {
         if (window.console && window.console.firebug) {
             scene.h.beginPath();
             scene.h.arc(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
-                        -this.COM.initialPt[3] / c / scene.timeZoom + scene.origin[2],6,0,twopi,true);
+                        -this.COM.initialPt[3] / c / scene.timeZoom + scene.origin[2], 
+                        6, 0, twopi, true);
             scene.h.fill();
         }
     },
@@ -833,47 +856,50 @@ extendedObject.prototype = {
     // Various functions to determine if we care where the points other than the COM are.
     isInteresting3D : function(scene) {
         var coeff = 40 / (scene.zoom * (this.COM.X0[1] + scene.camBack));
-        if ( ( ( this.boundingBox[3]) > -scene.camBack) &&
-             ( ( this.boundingBox[0] * coeff + scene.origin[0] < scene.tWidth) ||
-               ( this.boundingBox[1] * coeff + scene.origin[0] > 0) ) &&
-             ( (-this.boundingBox[4] * coeff + scene.origin[1] < scene.tHeight)||
-               (-this.boundingBox[5] * coeff + scene.origin[1] > 0) ) &&
-             ( (this.boundingBox[1] - this.boundingBox[0]) * coeff > 5 ||
-               (this.boundingBox[3] - this.boundingBox[2]) * coeff > 5 ||
-               (this.boundingBox[5] - this.boundingBox[4]) * coeff > 5 )
+        if ((( this.boundingBox[3]) > -scene.camBack) &&
+            (( this.boundingBox[0] * coeff + scene.origin[0] < scene.tWidth) ||
+             ( this.boundingBox[1] * coeff + scene.origin[0] > 0) ) &&
+            ((-this.boundingBox[4] * coeff + scene.origin[1] < scene.tHeight) ||
+             (-this.boundingBox[5] * coeff + scene.origin[1] > 0) ) &&
+            (( this.boundingBox[1] - this.boundingBox[0]) * coeff > 5 ||
+              (this.boundingBox[3] - this.boundingBox[2]) * coeff > 5 ||
+              (this.boundingBox[5] - this.boundingBox[4]) * coeff > 5 )
            ) return true;
         else return false;
     },
+    
     wasInteresting3D : function(scene) {
         var coeff = 40 / (scene.zoom * (this.COM.XView[1] + scene.camBack));
-        if ( ( ( this.boundingBoxP[3]) > -scene.camBack) &&
-             ( ( this.boundingBoxP[0] * coeff + scene.origin[0] < scene.tWidth) ||
-               ( this.boundingBoxP[1] * coeff + scene.origin[0] > 0) ) &&
-             ( (-this.boundingBoxP[4] * coeff + scene.origin[1] < scene.tHeight)||
-               (-this.boundingBoxP[5] * coeff + scene.origin[1] > 0) ) &&
-             ( (this.boundingBoxP[1] - this.boundingBoxP[0]) * coeff > 5 ||
-               (this.boundingBoxP[3] - this.boundingBoxP[2]) * coeff > 5 ||
-               (this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff > 5 )
+        if ((( this.boundingBoxP[3]) > -scene.camBack) &&
+            (( this.boundingBoxP[0] * coeff + scene.origin[0] < scene.tWidth) ||
+             ( this.boundingBoxP[1] * coeff + scene.origin[0] > 0)) &&
+            ((-this.boundingBoxP[4] * coeff + scene.origin[1] < scene.tHeight)||
+             (-this.boundingBoxP[5] * coeff + scene.origin[1] > 0)) &&
+             ((this.boundingBoxP[1] - this.boundingBoxP[0]) * coeff > 5 ||
+              (this.boundingBoxP[3] - this.boundingBoxP[2]) * coeff > 5 ||
+              (this.boundingBoxP[5] - this.boundingBoxP[4]) * coeff > 5)
            ) return true;
         else return false;
     },
+    
     isInteresting2D : function(scene) {
-        if ( ( (this.boundingBox[0]) / scene.zoom + scene.origin[0] < scene.width  ||
-               (this.boundingBox[1]) / scene.zoom + scene.origin[0] > 0    ) &&
-             ( (this.boundingBox[2]) / scene.zoom + scene.origin[1] < scene.height ||
-               (this.boundingBox[3]) / scene.zoom + scene.origin[1] > 0    ) &&
-             ( (this.boundingBox[1] - this.boundingBox[0]) / scene.zoom > 5 ||
-               (this.boundingBox[3] - this.boundingBox[2]) / scene.zoom > 5)
+        if (((this.boundingBox[0]) / scene.zoom + scene.origin[0] < scene.width  ||
+             (this.boundingBox[1]) / scene.zoom + scene.origin[0] > 0) &&
+            ((this.boundingBox[2]) / scene.zoom + scene.origin[1] < scene.height ||
+             (this.boundingBox[3]) / scene.zoom + scene.origin[1] > 0) &&
+            ((this.boundingBox[1] - this.boundingBox[0]) / scene.zoom > 5 ||
+             (this.boundingBox[3] - this.boundingBox[2]) / scene.zoom > 5)
             ) return true;
         else return false;
     },
+    
     wasInteresting2D : function(scene) {
-        if ( ( (this.boundingBoxP[0]) / scene.zoom + scene.origin[0] < scene.width  ||
-               (this.boundingBoxP[1]) / scene.zoom + scene.origin[0] > 0    ) &&
-             ( (this.boundingBoxP[2]) / scene.zoom + scene.origin[1] < scene.height ||
-               (this.boundingBoxP[3]) / scene.zoom + scene.origin[1] > 0    ) &&
-             ( (this.boundingBoxP[1] - this.boundingBoxP[0]) / scene.zoom > 5 ||
-               (this.boundingBoxP[3] - this.boundingBoxP[2]) / scene.zoom > 5)
+        if (((this.boundingBoxP[0]) / scene.zoom + scene.origin[0] < scene.width  ||
+             (this.boundingBoxP[1]) / scene.zoom + scene.origin[0] > 0) &&
+            ((this.boundingBoxP[2]) / scene.zoom + scene.origin[1] < scene.height ||
+             (this.boundingBoxP[3]) / scene.zoom + scene.origin[1] > 0) &&
+            ((this.boundingBoxP[1] - this.boundingBoxP[0]) / scene.zoom > 5 ||
+             (this.boundingBoxP[3] - this.boundingBoxP[2]) / scene.zoom > 5)
             ) return true;
         else return false;
     }
