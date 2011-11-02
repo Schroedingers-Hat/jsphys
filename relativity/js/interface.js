@@ -3,10 +3,7 @@
  */
 
 "use strict";
-//TODO: Pull all the keycodes out of here and put them in an array or something.
-//Will allow changing the controls to boot.
 window.onresize = function(event) {
-
     if (typeof FlashCanvas === "undefined") {
         var viewportWidth = $('body').width() - 16;
         $("#canvas").attr('width', viewportWidth);
@@ -183,7 +180,8 @@ function framePosClick(scene) {
             scene.options.neverShowFramePos = false;
             scene.options.alwaysShowFramePos = true;
             $("#framePos").html("Force off");
-        } else if (!scene.options.neverShowFramePos && scene.options.alwaysShowFramePos) {
+        } else if (!scene.options.neverShowFramePos &&
+                   scene.options.alwaysShowFramePos) {
             // we're currently in force on mode. switch to force off.
             scene.options.neverShowFramePos = true;
             scene.options.alwaysShowFramePos = false;
@@ -206,7 +204,8 @@ function vPosClick(scene) {
             scene.options.neverShowVisualPos = false;
             scene.options.alwaysShowVisualPos = true;
             $("#vPos").html("Force off");
-        } else if (!scene.options.neverShowVisualPos && scene.options.alwaysShowVisualPos) {
+        } else if (!scene.options.neverShowVisualPos && 
+                   scene.options.alwaysShowVisualPos) {
             // we're currently in force on mode. switch to force off.
             scene.options.neverShowVisualPos = true;
             scene.options.alwaysShowVisualPos = false;
@@ -260,9 +259,11 @@ function loadDemo(idx, scene) {
     return function() {
         scene.load(demos[idx], 0);
         if (typeof FlashCanvas === "undefined") {
-            $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider(scene),
+            $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02,
+                                      slide: zoomToSlider(scene),
                                       value: -(Math.log(scene.zoom) / Math.LN2)});
-            $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed(scene),
+            $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, 
+                                       slide: setAnimSpeed(scene),
                                        value: (Math.log(scene.timeScale + 1) / Math.LN2)});
         }
         $("#demo-chooser").hide();

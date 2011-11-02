@@ -218,8 +218,8 @@ extendedObject.prototype = {
         var viewTime;
         var futTime;
 
-        //Dangerous, might accidentally use tempQuat4 and I /think/ this is a reference.
-        var v = quat4.scale(this.COM.V, 1/ gamma, tempQuat4);
+        var v;
+        v = quat4.scale(this.COM.V, 1 / gamma, v);
         
         /** 
          * If it's interesting, solve for the intersection of this world-line and the light cone.
