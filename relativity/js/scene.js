@@ -9,8 +9,8 @@ function Scene() {
     }
 
     this.initialTime = new Date().getTime();
+    
     if (typeof FlashCanvas != "undefined") {
-
         FlashCanvas.initElement($('#canvas')[0]);
         FlashCanvas.initElement($('#minkowski')[0]);
         FlashCanvas.initElement($('#3DCanvas')[0]);
@@ -151,7 +151,7 @@ function Scene() {
     };
 
     this.pushCaption = function(caption) {
-            $('#caption').html(caption);
+        $('#caption').html(caption);
     };
     
     /**
@@ -419,7 +419,7 @@ function Scene() {
     /**
      * Find the closest object to the given (x,y), within a distance maxDist
      * in screen pixels (i.e. (x,y) is a screen location, not a scaled scene
-     * coordinate)
+     * coordinate). Returns false if no objects are within maxDist.
      */
     this.findClosestObject = function(x, y, maxDist) {
         var minDist = this.width;
@@ -453,14 +453,8 @@ function Scene() {
      * the provided translation and boost.
      */
     this.changeArrayFrame = function(translation1, boost, translation2) {
-        if (translation2) {
-            for (var i=0; i < this.carray.length; i++) {
-                this.carray[i].changeFrame(translation1, boost, translation2);
-            }
-        } else {
-             for (var i=0; i < this.carray.length; i++) {
-                this.carray[i].changeFrame(translation1, boost);
-            }
+        for (var i = 0; i < this.carray.length; i++) {
+            this.carray[i].changeFrame(translation1, boost, translation2);
         }
     };
 }
