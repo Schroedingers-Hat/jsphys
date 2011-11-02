@@ -16,10 +16,9 @@
  * - radialVPast is the radial XView velocity past the origin, used for Doppler
  *   shifting.
  */
-function inertialObject(X, P, m, endPt)
-{
+function inertialObject(X, P, m, endPt) {
     this.X0 = X;
-	this.initialPt = quat4.create(X);
+    this.initialPt = quat4.create(X);
     this.rPast = 1;
 	this.initialTau = 0;
     this.rFut = 1;
@@ -41,8 +40,7 @@ function inertialObject(X, P, m, endPt)
     this.radialVFut = 0;
 }
 
-inertialObject.prototype.updateX0 = function(timeStep)
-{
+inertialObject.prototype.updateX0 = function(timeStep) {
     quat4.scale(this.V, timeStep / this.V[3], this.displace);
     //Increase proper time.
     this.tau += timeStep / this.V[3] * c;
@@ -63,26 +61,25 @@ inertialObject.prototype.changeFrame = function(translation1, rotation, translat
         quat4.subtract(this.endPt, translation1);
         mat4.multiplyVec4(rotation, this.endPt);
     } 
-    //Boost both velocity and position vectors using the boost matrix.
+    // Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
     mat4.multiplyVec4(rotation, this.V);
     if (this.initialPt) mat4.multiplyVec4(rotation, this.initialPt);
 
-    //Point is now at wrong time
-    
-    //Find displacement to current time.
+    // Point is now at wrong time.
+    // Find displacement to current time.
     quat4.scale(this.V, -this.X0[3] / this.V[3], this.uDisplacement);
     
-    //Bring to current time.
+    // Bring to current time.
     quat4.add(this.X0, this.uDisplacement);
     this.tau += this.uDisplacement[3] / this.V[3] * c;
     if (translation2) {
         quat4.subtract(this.X0, translation2);
-        //Wrong time again.
-        //Find displacement to current time.
+        // Wrong time again.
+        // Find displacement to current time.
         quat4.scale(this.V, -this.X0[3] / this.V[3], this.uDisplacement);
     
-        //Bring to current time.
+        // Bring to current time.
         quat4.add(this.X0, this.uDisplacement);
         this.tau += this.uDisplacement[3] / this.V[3] * c;
 
@@ -101,7 +98,7 @@ inertialObject.prototype.calcPast = function() {
     var timeSqrt;
     if (xDotx === 0) {
         this.radialVPast = 0;
-        this.viewTime = 0
+        this.viewTime = 0;
         quat4.set(nullQuat4,this.XView);
         this.tauPast = this.tau;
         this.futTime = 0;
@@ -126,7 +123,5 @@ inertialObject.prototype.calcPast = function() {
     quat4.scale(this.V, this.futTime / this.V[3], this.uDisplacement);
     quat4.subtract(this.X0, this.uDisplacement, this.XFut);
     
-    this.tauFut = this.tau - this.uDisplacement[3]/this.V[3] * c;
+    this.tauFut = this.tau - this.uDisplacement[3] / this.V[3] * c;
 };
-
-
