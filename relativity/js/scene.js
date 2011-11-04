@@ -246,9 +246,10 @@ Scene.prototype = {
         } else {
             this.h.drawImage(this.lightConeCanvas, 0, 0);
         }
-        // Put some text on the light cone.
+        // Put axes labels on the light cone.
         // Doesn't seem to work in opera 9, not sure why.
         if (this.curOptions.showText) {
+            this.h.fillStyle = "#fff";
             this.h.fillText("x(m)", this.mWidth - 30, this.origin[2] - 10);
             this.h.fillText("t(s)", 5 + this.origin[0], 10);
             this.h.fill();

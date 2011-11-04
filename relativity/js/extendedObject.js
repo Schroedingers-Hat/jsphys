@@ -289,7 +289,7 @@ extendedObject.prototype = {
             
             // If we're drawing text, find the appropriate position and draw some text.
             if(scene.curOptions.showText) {
-                var i = 0;
+                var i = 1;
                 var textX =  (this.boundingBox[0] + this.boundingBox[1]) /
             (2 * scene.zoom) + scene.origin[0] - 10;
                 var textY = -this.boundingBox[3] / scene.zoom + scene.origin[1];
@@ -299,7 +299,8 @@ extendedObject.prototype = {
                     i++;
                 }
                 if (this.options.showGamma || scene.options.showGamma) {
-                    scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, textX, textY - 10 * i);
+                    scene.g.fillText("γ = " + (Math.round(1000 * this.COM.V[3] / c)) / 1000, 
+                                     textX, textY - 10 * i);
                     i++;
                 }
                 if (this.label !== "") {
@@ -686,14 +687,14 @@ extendedObject.prototype = {
         if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
             (!this.COM.endPt || this.COM.endPt[3] > 0)){
                 scene.h.beginPath();
-                scene.h.fillStyle = "#444";
-                scene.h.fillText(this.label + " present position",
+                scene.h.fillStyle = "#777";
+                scene.h.fillText(this.label + " (present)",
                                   xvis + scene.origin[0] + 5,
                                   -5 + scene.origin[2]);
             }
             if (scene.options.alwaysShowVisualPos ||
                 (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
-                scene.h.fillText(this.label + " visual position",
+                scene.h.fillText(this.label + " (visual)",
                                   xvisP + scene.origin[0] + 5,
                                   -tvisP / c + scene.origin[2]);
                 scene.h.fill();
