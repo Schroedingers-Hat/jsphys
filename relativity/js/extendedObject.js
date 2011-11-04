@@ -3,18 +3,14 @@
 
 "use strict";
 
-function extendedObject(X, P, label, options, shape)
-{
+function extendedObject(X, P, label, options, shape) {
     this.options = options;
     this.shapePoints = [];
     this.pastPoints = [];
     this.futPoints = [];
     this.pastRadialV = [];
-    if (typeof this.options.created != "undefined") this.created = this.options.created;
-    this.iI3d = true;
-    this.wI3d = true;
-    this.iI2d = true;
-    this.wI2d = true;
+    if (typeof this.options.created != "undefined") 
+        this.created = this.options.created;
 
     this.temp = (options.temperature) ? options.temperature : 5600;
     this.stillColor = tempToColor(this.temp);
@@ -46,10 +42,8 @@ function extendedObject(X, P, label, options, shape)
                                   -this.COM.V[2],
                                    this.COM.V[3]], c);
 
-    /**
-     * Iterate through the shape, map it onto the starting frame.
-     * Find the largest and smallest x,y,z values, store their indices.
-     */
+    // Iterate through the shape, map it onto the starting frame.
+    // Find the largest and smallest x,y,z values, store their indices.
     for (var i = 0; i < shape.length; i++) {
         this.shapePoints[i] = quat4.create(mat4.multiplyVec4(initialBoost, shape[i],
                                                              tempQuat4));
@@ -83,10 +77,8 @@ extendedObject.prototype = {
         this.wI2d = this.wasInteresting2D(scene);
         this.iI2d = this.isInteresting2D(scene);
 
-        /** 
-         * If so, find out where all the points are.
-         * Putting checks for drawing 3d/2d would save some computation at times.
-         */
+        // If so, find out where all the points are.
+        // Putting checks for drawing 3d/2d would save some computation at times.
         if (this.iI3d || this.iI2d || this.wI2d || this.wI3d) {
             for (var i = 0; i < (this.shapePoints.length); i++) {
                 quat4.add(this.COM.X0, this.shapePoints[i], this.pointPos[i]);
@@ -95,12 +87,11 @@ extendedObject.prototype = {
                 quat4.add(this.pointPos[i], tempQuat4, this.pointPos[i]);
             }
         } 
-        /**
-         * If not, just update the bounding box, we'll need it next frame.
-         * Doing things this way means it takes one frame after the object is
-         * in view before we start drawing it, but saves redundant computation
-         * or further if statements if it is visible.
-         */
+
+        // If not, just update the bounding box, we'll need it next frame.
+        // Doing things this way means it takes one frame after the object is
+        // in view before we start drawing it, but saves redundant computation
+        // or further if statements if it is visible.
         else {
             for (var j = 0; j < (this.boundingIdx.length); j++) {
                 var i = this.boundingIdx[j];
@@ -111,10 +102,8 @@ extendedObject.prototype = {
             }
         }
         
-        /**
-         * See if we need the light delayed points. Note that calPastPoints also
-         * takes care of is/was interesting.
-         */
+        // See if we need the light delayed points. Note that calPastPoints also
+        // takes care of is/was interesting.
         if (scene.options.alwaysShowVisualPos || scene.options.interactions ||
             (!scene.options.neverShowVisualPos && this.options.showVisualPos)) {
             this.calcPastPoints();
@@ -220,10 +209,8 @@ extendedObject.prototype = {
 
         var v = quat4.scale(this.COM.V, 1 / gamma, tempQuat4);
         
-        /** 
-         * If it's interesting, solve for the intersection of this world-line and the 
-         * light cone for every point.
-         */
+        // If it's interesting, solve for the intersection of this world-line and the 
+        // light cone for every point.
         if (this.wI3d || this.wI2d) {
             var j = 0;
             for (var i = 0; i < (this.shapePoints.length); i++) {
@@ -241,16 +228,15 @@ extendedObject.prototype = {
                                                     this.pastPoints[i],
                                                     this.pastPoints[i]))),
                              1e-16);
-                /** 
-                 * May as well do the future cone intersection in here seeing as
-                 * we've already done most of the calculations. Don't think we
-                 * want the whole thing at the future for any reason.
-                 * Just calculate the bounding box for now.
-                 */
-                    futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
-                    quat4.scale(v, futTime / c, this.uDisplacement);
-                    quat4.subtract(this.pointPos[i], this.uDisplacement,
-                                   this.futPoints[i]);
+                
+                // May as well do the future cone intersection in here seeing as
+                // we've already done most of the calculations. Don't think we
+                // want the whole thing at the future for any reason.
+                // Just calculate the bounding box for now.
+                futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
+                quat4.scale(v, futTime / c, this.uDisplacement);
+                quat4.subtract(this.pointPos[i], this.uDisplacement,
+                               this.futPoints[i]);
             }
         }
         // If it's not interesting, just find the appropriate bounding box.
@@ -270,11 +256,9 @@ extendedObject.prototype = {
                     Math.max(Math.sqrt(Math.abs(quat4.spaceDot(
                                                     this.pastPoints[i],
                                                     this.pastPoints[i]))),
-                 1e-16);
-                /** 
-                 * May as well do the future cone intersection in here seeing as
-                 * we've already done most of the calculations.
-                 */
+                 1e-16); 
+                // May as well do the future cone intersection in here seeing as
+                // we've already done most of the calculations.
                 futTime = -(vDotx + Math.sqrt(Math.pow(vDotx, 2) + a * xDotx)) / a * c;
                 quat4.scale(v, futTime / c, this.uDisplacement);
                 quat4.subtract(this.pointPos[i], this.uDisplacement, this.futPoints[i]);
@@ -329,10 +313,8 @@ extendedObject.prototype = {
             }
         }
 
-        /**
-         * If we're not drawing the whole thing we might be drawing a point.
-         * Some redundant calculation with isInteresting.
-         */
+        // If we're not drawing the whole thing we might be drawing a point.
+        // Some redundant calculation with isInteresting.
         else {
             xview = this.COM.X0[0] / scene.zoom + scene.origin[0];
             yview = -this.COM.X0[1] / scene.zoom + scene.origin[1];
@@ -477,10 +459,8 @@ extendedObject.prototype = {
                 scene.TDC.strokeStyle = this.stillColor;
             }
             for (var i = 1; i < this.pastPoints.length; i++) {
-                /** 
-                 * Calculate z values, camBack moves the camera back or forward 
-                 * slightly from the actual reference frame.
-                 */
+                // Calculate z values; camBack moves the camera back or forward 
+                // slightly from the actual reference frame.
                 zCoeff1 = 40 / (scene.zoom * 
                                 (this.pastPoints[i - 1][1] + scene.camBack));
                 zCoeff2 = 40 / (scene.zoom * 
@@ -583,16 +563,14 @@ extendedObject.prototype = {
         } 
         // We might still want a dot.
         else {
-            var coeff = 40 / (scene.zoom * (this.COM.X0[1] + scene.camBack));
-            var xview = this.COM.X0[0] * coeff + scene.origin[0];
-            var yview = -this.COM.X0[2] * coeff + scene.origin[1];
+            coeff = 40 / (scene.zoom * (this.COM.X0[1] + scene.camBack));
+            xview = this.COM.X0[0] * coeff + scene.origin[0];
+            yview = -this.COM.X0[2] * coeff + scene.origin[1];
             var viewSize = Math.max(this.boundingBox[1] - this.boundingBox[0],
                                     this.boundingBox[3] - this.boundingBox[2]) * 
-                coeff / 2;
-            /**
-             * Check on viewSize is a bit of a kludge. If the z value is very small the dot will be enormous
-             * and filling an arc of that size is very slow.
-             */ 
+                    coeff / 2;
+            // Check on viewSize is a bit of a kludge. If the z value is very small,
+            // the dot will be enormous and filling an arc of that size is very slow.
             if (xview > 0 && xview < scene.tWidth &&
                 yview > 0 && yview < scene.tHeight &&
                 coeff > -scene.camBack &&
