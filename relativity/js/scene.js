@@ -143,10 +143,7 @@ Scene.prototype = {
                       "up": boostFrom3Vel(0, 0.05 * c, 0),
                       "down": boostFrom3Vel(0, -0.05 * c, 0)};
 
-        // demo.steps[step].objects.forEach(this.createObject, this);
-        for (var i = 0; i < demo.steps[step].objects.length; i++) {
-            this.createObject(demo.steps[step].objects[i]);
-        }
+        demo.steps[step].objects.forEach(this.createObject, this);
 
         this.pushCaption(demo.steps[step].caption);
 
@@ -258,10 +255,10 @@ Scene.prototype = {
         }
         
         // Advance every object forward in time, then draw it to the canvas.
-        for (var i = 0; i < this.carray.length; i++) {
-            this.carray[i].update(timeStep, this);
-            this.carray[i].draw(this);
-        }
+        this.carray.forEach(function (obj) {
+            obj.update(timeStep, this);
+            obj.draw(this);
+        }, this);
         
         // Some UI drawing.
         this.drawCrosshairs();
@@ -496,9 +493,9 @@ Scene.prototype = {
      * the provided translation and boost.
      */
     changeArrayFrame: function(translation1, boost, translation2) {
-        for (var i = 0; i < this.carray.length; i++) {
-            this.carray[i].changeFrame(translation1, boost, translation2);
-        }
+        this.carray.forEach(function (obj) {
+            obj.changeFrame(translation1, boost, translation2);
+        });
     }
 };
 
