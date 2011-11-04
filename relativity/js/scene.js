@@ -273,34 +273,46 @@ Scene.prototype = {
             requestAnimFrame(drawScene(this));
         }
     },
+    
+    // Fire a photon aimed upwards from the current reference frame origin
+    fireLaser: function() {
+        var firstCollisionIdx = 0;
+        var collisionTime;
+        var firstCollisionTime = Infinity;
+        var newPhoton = new photon(quat4.create([0, 0, 0, 0]),
+                                   quat4.create([0, 1, 0, 0]), "photon", 
+                                   {"showCircle": false, "fired": true, 
+                                    "showFramePos": true});
+        // Search through all objects and determine whether this photon will
+        // collide with one in the future.
+        for (var i = 0; i < this.carray.length; i++) {
+            if (this.carray[i].photonCollision) {
+                collisionTime = this.carray[i].photonCollision(newPhoton);
+                if (collisionTime[3] < firstCollisionTime &&
+                    (!this.carray[i].COM.endPt ||
+                     (this.carray[i].COM.endPt[3] > collisionTime[3]))) {
+                    firstCollisionTime = collisionTime[3];
+                    firstCollisionIdx = i;
+                }
+            }
+        }
+        // If the photon will collide with an object, set that object's endPt
+        // to the moment of collision, so that it will be destroyed along
+        // with the photon.
+        // TODO: Arrange for photon to be destroyed eventually, even if it does
+        // not collide.
+        if (firstCollisionTime < Infinity) {
+            newPhoton.endPt = this.carray[firstCollisionIdx].photonCollision(newPhoton);
+            this.carray[firstCollisionIdx].COM.endPt = quat4.create(newPhoton.endPt);
+        }
+        this.carray.push(newPhoton);
+    },
 
     processInput: function() {
         // Create a new photon.
         // Careful with this, photons are tracked even after they disappear.
         if (this.actions.fire && this.curOptions.canShoot) {
-            var firstCollisionIdx = 0;
-            var collisionTime;
-            var firstCollisionTime = Infinity;
-            var newPhoton = new photon(quat4.create([0, 0, 0, 0]),
-                                       quat4.create([0, 1, 0, 0]), "photon", 
-                                       {"showCircle": false, "fired": true, 
-                                        "showFramePos": true});
-            for (var i = 0; i < this.carray.length; i++) {
-                if (this.carray[i].photonCollisionTime){
-                    collisionTime = this.carray[i].photonCollisionTime(newPhoton);
-                    if (collisionTime < firstCollisionTime &&
-                        (!this.carray[i].COM.endPt ||
-                         (this.carray[i].COM.endPt[3] > collisionTime))) {
-                        firstCollisionTime = collisionTime;
-                        firstCollisionIdx = i;
-                    }
-                }
-            }
-            if (firstCollisionTime < Infinity) {
-                newPhoton.endPt = this.carray[firstCollisionIdx].photonCollision(newPhoton);
-                this.carray[firstCollisionIdx].COM.endPt = quat4.create(newPhoton.endPt);
-            }
-            this.carray.push(newPhoton);
+            this.fireLaser();
             this.actions.fire = false;
         }
 
@@ -314,8 +326,8 @@ Scene.prototype = {
         if (this.actions.rotateLeft)  boost = rotRight;
         if (this.actions.rotateRight) boost = rotLeft;
         
-        if (this.actions.rotateUp === true)    this.changeArrayFrame(nullQuat4, rotUp   );
-        if (this.actions.rotateDown === true)  this.changeArrayFrame(nullQuat4, rotDown );
+        if (this.actions.rotateUp === true)    this.changeArrayFrame(nullQuat4, rotUp);
+        if (this.actions.rotateDown === true)  this.changeArrayFrame(nullQuat4, rotDown);
         if (boost !== false) {
             this.changeArrayFrame(nullQuat4, boost);
         }

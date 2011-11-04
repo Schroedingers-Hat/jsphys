@@ -607,28 +607,12 @@ extendedObject.prototype = {
     },
 
     /**
-      * PhotonCollisionTime and photonCollision. Set up for the case the photon is moving in the
-      * positive y direction.
-      * photonCollision is slightly more sophisticated and makes the collision event the edge of the
-      * asteroid. 
-      * Needs checking for c, or reworking with more elegant methods.
-      * TODO: ^
+      * Determine the intersection, if any, between this object's wordline
+      * and the worldline of a given photon, taking into account this object's
+      * physical size (bounding box). Returns a 4-event of the collision location,
+      * or Infinity if there will never be a collision.
+      * TODO: Needs checking for c, or reworking with more elegant methods.
       */
-    photonCollisionTime : function(photon) {
-
-        var yAtFut = photon.V[1] * this.COM.XFut[3] / c;
-        if (this.boundingBoxF[0] <= 0 &&
-            this.boundingBoxF[1] >= 0 &&
-            this.boundingBoxF[2] <= yAtFut &&
-            this.boundingBoxF[3] >= yAtFut &&
-            this.boundingBoxF[4] <= 0 &&
-            this.boundingBoxF[5] >= 0) {
-            return this.COM.XFut[3];
-        } else {
-            return Infinity;
-        } 
-    },    
-
     photonCollision : function(photon) {
         var yAtFut = photon.V[1] * this.COM.XFut[3] / c;
         if (this.boundingBoxF[0] <= 0 &&
@@ -642,10 +626,9 @@ extendedObject.prototype = {
                                );
         } else {
             return Infinity;
-        } 
-    },   
+        }
+    },
 
- 
     drawXT: function(scene) {
     
         // Some relevant points scaled for zoom.
