@@ -23,15 +23,7 @@ function Scene() {
     this.h.font = defFont;
     this.loaded = false;
     this.TDC.font = defFont;
-    this.width = $("#canvas").width();
-    this.height = $("#canvas").height();
-    this.mWidth = $("#minkowski").width();
-    this.mHeight = $("#minkowski").height();
-    this.tWidth = $("#3DCanvas").width();
-    this.tHeight = $("#3DCanvas").height();
     this.lightConeCanvas = document.createElement('canvas');
-    this.lightConeCanvas.width =  this.mWidth;
-    this.lightConeCanvas.height =  this.mHeight;
     if (typeof FlashCanvas != "undefined") {
         FlashCanvas.initElement(this.lightConeCanvas);
     }
@@ -43,11 +35,10 @@ function Scene() {
         this.g.fillText     = function(){};
         this.h.fillText     = function(){};
     }
+    
+    setSize(this);
 
     this.camBack = 0;
-    this.hwidth = this.width / 2;
-    this.hheight = this.height / 2;
-    this.origin = [this.hwidth, this.hheight, this.hheight];
     this.carray = [];
     this.zoom = 0.25;
     this.timeZoom = 0.25;
@@ -528,5 +519,5 @@ function setSize(scene) {
     scene.hwidth = scene.width / 2;
     scene.hheight = scene.height / 2;
     scene.origin = [scene.hwidth, scene.hheight, scene.hheight];
-    drawLightCone(scene,scene.lCCtx);
+    drawLightCone(scene, scene.lCCtx);
 }
