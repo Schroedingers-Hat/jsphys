@@ -283,6 +283,13 @@ function loadDemoList(scene) {
     }
 }
 
+function showHelp(event) {
+    $('#help-screen').toggle();
+    if(event.preventDefault) event.preventDefault(); 
+    else event.returnValue = false; 
+    return false;    
+}
+
 /**
  * Do not quite comprehend what this does, copypasta from Paul Irish's tutorial
  * requestAnim shim layer by Paul Irish
@@ -326,4 +333,6 @@ $(document).ready(function() {
     $("#nextStep").click(nextStep(scene));
     $("#prevStep").click(prevStep(scene));
     $("#replayStep").click(replay(scene));
+    
+    $("#help").click(showHelp);
 });
