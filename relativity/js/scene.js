@@ -1,9 +1,13 @@
 "use strict";
 
+/**
+ * Scene encompasses all functions and data contained in a single "scene":
+ * that is, one instance of the relativity simulation, containing a single
+ * demo and set of interacting objects.
+ */
 function Scene() {
-    /**
-     * Various state variables and options.
-     */
+    // glMatrix defaults to 32-bit arrays, but we'd like 64-bit arrays
+    // as we sometimes get nasty rounding errors otherwise.
     if (typeof Float64Array !== "undefined") {
         glMatrixArrayType = Float64Array;
     }
@@ -30,6 +34,9 @@ function Scene() {
 
     this.lCCtx = this.lightConeCanvas.getContext('2d');
     this.lCCtx.font = defFont;
+    
+    // fillText was only introduced with Firefox 3.5, and some older browsers do
+    // not support it. Provide empty functions if there's no browser implementation.
     if(!this.TDC.fillText) {
         this.TDC.fillText   = function(){};
         this.g.fillText     = function(){};
@@ -44,6 +51,9 @@ function Scene() {
     this.timeZoom = 0.25;
     this.t = 0;
     this.keyDown = false;
+    
+    // The default set of object-specific settings. These can be overridden by
+    // a specific demo, and by individual objects in that demo.
     this.defaults = {"showDoppler": true,
                      "showVisualPos": true,
                      "showFramePos": false,
@@ -58,6 +68,8 @@ function Scene() {
                      "showMinkowski": true,
                      "canShoot": false};
 
+    // Global scene options. These are applied regardless of object-specific
+    // settings, and can be changed by the user as overrides.
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
                     "alwaysShowFramePos": false,
@@ -69,6 +81,9 @@ function Scene() {
 
     this.drawing = false;
     
+    // Records whether the keys for various actions are currently pressed
+    // interface.js binds various key events to these actions and toggles their
+    // values
     this.actions = {"rotateLeft": false,
                     "rotateRight": false,
                     "rotateUp": false,
@@ -87,8 +102,6 @@ function Scene() {
 }
 
 Scene.prototype = {
-    /** Demo loading functions **/
-
     /**
      * Load the specified demo at the given step. (The step indexes into
      * the demo's steps array.)
@@ -97,6 +110,7 @@ Scene.prototype = {
         this.carray = [];
         this.curStep = step;
         this.demo = demo;
+        
         // If the demo specifies global options, set 'em
         if (typeof demo.steps[step].origin === "object") {
             this.origin = demo.steps[step].origin;
@@ -110,15 +124,17 @@ Scene.prototype = {
             this.zoom = demo.steps[step].zoom;
         }
 
-        // Clone defaults into curOptions, rather than getting a reference to it
+        // Clone our default object-specific options into curOptions, rather than
+        // getting a reference
         this.curOptions = jQuery.extend({}, this.defaults);
 
+        // If the demo specifies option overrides, apply them
         if (typeof demo.steps[step].options === "object") {
             $.extend(this.curOptions, demo.steps[step].options);
         }
 
         // Update c with the demo's chosen value
-        c = (this.curOptions.c) ? this.curOptions.c : 1;
+        c = this.curOptions.c;
 
         drawLightCone(this, this.lCCtx);
 
@@ -132,7 +148,7 @@ Scene.prototype = {
             this.createObject(demo.steps[step].objects[i]);
         }
 
-        $('#caption').html(demo.steps[step].caption);
+        this.pushCaption(demo.steps[step].caption);
 
         // If the demo specifies an object whose frame is preferred, shift to that frame
         if (typeof demo.steps[step].frame === "number") {
@@ -143,6 +159,9 @@ Scene.prototype = {
         this.loaded = true;
     },
 
+    /**
+     * Change the current demo caption to the chosen text.
+     */
     pushCaption: function(caption) {
         $('#caption').html(caption);
     },
@@ -160,7 +179,8 @@ Scene.prototype = {
             obj.label = "";
         }
 
-        // Copy object-specific options in on top of the global defaults
+        // Take the current default options, set by the global defaults and
+        // this demo's defaults, and apply any object-specific overrides
         obj.options = $.extend({}, this.curOptions, obj.options);
 
         // Upgrade 2D to 3D
@@ -183,7 +203,7 @@ Scene.prototype = {
                                     quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), 
                                                   obj.label, obj.options);
             else thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
-                                    quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), 
+                                         quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), 
                                          obj.label, obj.options);
         } else if (obj.p) {
             thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
@@ -193,7 +213,9 @@ Scene.prototype = {
             thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]), 
                                     obj.options);
         }
+        // Have the object compute its bounding box and visibility
         thingy.update(0, this);
+        
         this.carray.push(thingy);
     },
 
@@ -206,18 +228,23 @@ Scene.prototype = {
     draw: function() {
         this.processInput();
         
+        // We scale timeSteps to stay close to our intended framerate.
+        // Take the time elapsed since the previous frame was started and
+        // scale it by a factor timeScale, which is essentially the relation
+        // between real time and "game time". Advance all objects in time
+        // by this interval.
         this.oldFrameStartTime = this.frameStartTime;
         this.frameStartTime = new Date().getTime();
         var timeStep = 0;
-        if (this.drawing){
+        if (this.drawing) {
             timeStep = (this.frameStartTime - this.oldFrameStartTime) * 
                 this.timeScale * c;
         }
+        
         this.clear();
         
-        // Draw the light cone, if we're using flashCanvas, don't use offscreen canvas.
+        // Draw the light cone; if we're using flashCanvas, don't use offscreen canvas.
         if (typeof FlashCanvas != "undefined") {
-            //Ie draw light cone here.
             drawLightCone(this,this.h);
         } else {
             this.h.drawImage(this.lightConeCanvas, 0, 0);
@@ -230,7 +257,7 @@ Scene.prototype = {
             this.h.fill();
         }
         
-        // Where the meat of the work is done.
+        // Advance every object forward in time, then draw it to the canvas.
         for (var i = 0; i < this.carray.length; i++) {
             this.carray[i].update(timeStep, this);
             this.carray[i].draw(this);
@@ -240,8 +267,11 @@ Scene.prototype = {
         this.drawCrosshairs();
         if(this.curOptions.showText) this.drawInfo();
         
-        // Get ready for the next frame.
         this.t = this.t + (timeStep);
+        
+        // If we're currently drawing (and haven't just entered Pause, for
+        // example), or the user is holding down a key, schedule another
+        // animation frame.
         if (this.drawing || this.keyDown) {
             requestAnimFrame(drawScene(this));
         }
@@ -271,7 +301,6 @@ Scene.prototype = {
             }
             if (firstCollisionTime < Infinity) {
                 newPhoton.endPt = this.carray[firstCollisionIdx].photonCollision(newPhoton);
-//                newPhoton.endPt = quat4.create(this.carray[firstCollisionIdx].getXFut());
                 this.carray[firstCollisionIdx].COM.endPt = quat4.create(newPhoton.endPt);
             }
             this.carray.push(newPhoton);
@@ -388,7 +417,9 @@ Scene.prototype = {
         this.initialTime = new Date().getTime();
         this.t = 0;
 
-        // If not currently animating, draw the first frame.
+        // If not currently animating, draw the first frame. If call draw()
+        // when there's already an animation scheduled, we'll be creating
+        // redundant drawing events.
         if (!this.drawing) {
             this.draw();
         }
