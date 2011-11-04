@@ -3,15 +3,6 @@
  */
 
 "use strict";
-window.onresize = function(event) {
-    if (typeof FlashCanvas === "undefined") {
-        var viewportWidth = $('body').width() - 16;
-        $("#canvas").attr('width', viewportWidth);
-        $("#minkowski").attr('width', viewportWidth);
-        $("#3DCanvas").attr('width', viewportWidth);
-        setSize(scene); 
-    }
-};
 
 var keys = {'q': 'rotateLeft', 'e': 'rotateRight',
             'w': 'boostUp', 's': 'boostDown',
@@ -335,4 +326,16 @@ $(document).ready(function() {
     $("#replayStep").click(replay(scene));
     
     $("#help").click(showHelp);
+    
+    $(window).resize(function() { 
+        return function(event) {
+            if (typeof FlashCanvas === "undefined") {
+                var viewportWidth = $('body').width() - 16;
+                $("#canvas").attr('width', viewportWidth);
+                $("#minkowski").attr('width', viewportWidth);
+                $("#3DCanvas").attr('width', viewportWidth);
+                setSize(scene);
+            }
+        };
+    }());
 });
