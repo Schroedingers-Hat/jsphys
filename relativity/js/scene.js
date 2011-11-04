@@ -30,13 +30,11 @@ function Scene() {
 
     this.lCCtx = this.lightConeCanvas.getContext('2d');
     this.lCCtx.font = defFont;
-    if(!this.TDC.fillText){
+    if(!this.TDC.fillText) {
         this.TDC.fillText   = function(){};
         this.g.fillText     = function(){};
         this.h.fillText     = function(){};
     }
-    
-    setSize(this);
 
     this.camBack = 0;
     this.carray = [];
@@ -358,6 +356,25 @@ function Scene() {
         this.h.clearRect(0, 0, this.mWidth, this.mHeight);
         this.TDC.clearRect(0, 0, this.tWidth, this.tHeight);
     };
+    
+    /**
+     * Compute this scene's canvas sizes, including the 3D canvas and the light
+     * cone canvas. Set the location of the origin of our reference frame.
+     */
+    this.setSize = function () {
+        this.width = $("#canvas").width();
+        this.height = $("#canvas").height();
+        this.mWidth = $("#minkowski").width();
+        this.mHeight = $("#minkowski").height();
+        this.tWidth = $("#3DCanvas").width();
+        this.tHeight = $("#3DCanvas").height();
+        this.lightConeCanvas.width = this.mWidth;
+        this.lightConeCanvas.height = this.mHeight;
+        this.hwidth = this.width / 2;
+        this.hheight = this.height / 2;
+        this.origin = [this.hwidth, this.hheight, this.hheight];
+        drawLightCone(this, this.lCCtx);
+    };
 
     /** Animation and step control functions **/
 
@@ -448,6 +465,8 @@ function Scene() {
             this.carray[i].changeFrame(translation1, boost, translation2);
         }
     };
+    
+    this.setSize();
 }
 
 /**
@@ -505,19 +524,4 @@ function drawLightCone(scene, ctx){
     ctx.stroke();
     ctx.lineWidth = 1;
     ctx.fillStyle = "#fff";
-}
-
-function setSize(scene) {
-    scene.width = $("#canvas").width();
-    scene.height = $("#canvas").height();
-    scene.mWidth = $("#minkowski").width();
-    scene.mHeight = $("#minkowski").height();
-    scene.tWidth = $("#3DCanvas").width();
-    scene.tHeight = $("#3DCanvas").height();
-    scene.lightConeCanvas.width =  scene.mWidth;
-    scene.lightConeCanvas.height =  scene.mHeight;
-    scene.hwidth = scene.width / 2;
-    scene.hheight = scene.height / 2;
-    scene.origin = [scene.hwidth, scene.hheight, scene.hheight];
-    drawLightCone(scene, scene.lCCtx);
 }

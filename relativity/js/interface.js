@@ -334,7 +334,7 @@ $(document).ready(function() {
                 $("#canvas").attr('width', viewportWidth);
                 $("#minkowski").attr('width', viewportWidth);
                 $("#3DCanvas").attr('width', viewportWidth);
-                setSize(scene);
+                scene.setSize();
             }
         };
     }());
