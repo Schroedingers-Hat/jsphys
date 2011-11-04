@@ -35,6 +35,8 @@ function Scene() {
         this.g.fillText     = function(){};
         this.h.fillText     = function(){};
     }
+    
+    this.setSize();
 
     this.camBack = 0;
     this.carray = [];
@@ -82,14 +84,16 @@ function Scene() {
                     "zoomOut": false,
                     "timeZoomIn": false,
                     "timeZoomOut": false};
-    
+}
+
+Scene.prototype = {
     /** Demo loading functions **/
 
     /**
      * Load the specified demo at the given step. (The step indexes into
      * the demo's steps array.)
      */
-    this.load = function(demo, step) {
+    load: function(demo, step) {
         this.carray = [];
         this.curStep = step;
         this.demo = demo;
@@ -137,18 +141,18 @@ function Scene() {
         }
         this.frameStartTime = new Date().getTime();
         this.loaded = true;
-    };
+    },
 
-    this.pushCaption = function(caption) {
+    pushCaption: function(caption) {
         $('#caption').html(caption);
-    };
+    },
     
     /**
      * Called by scene.load() to create each individual object in a scene.
      * Hence obj is an object from the demo system specifying options,
      * a label, coordinates, and momentum.
      */
-    this.createObject = function (obj) {
+    createObject: function (obj) {
         if (typeof obj.options === "undefined") {
             obj.options = {};
         }
@@ -191,7 +195,7 @@ function Scene() {
         }
         thingy.update(0, this);
         this.carray.push(thingy);
-    };
+    },
 
     /** Scene drawing functions **/
 
@@ -199,7 +203,7 @@ function Scene() {
      * Draw the scene onto the canvas. Uses requestAnimFrame to schedule the
      * next frame.
      */
-    this.draw = function() {
+    draw: function() {
         this.processInput();
         
         this.oldFrameStartTime = this.frameStartTime;
@@ -241,9 +245,9 @@ function Scene() {
         if (this.drawing || this.keyDown) {
             requestAnimFrame(drawScene(this));
         }
-    };
+    },
 
-    this.processInput = function() {
+    processInput: function() {
         // Create a new photon.
         // Careful with this, photons are tracked even after they disappear.
         if (this.actions.fire && this.curOptions.canShoot) {
@@ -311,12 +315,12 @@ function Scene() {
             this.timeScale = this.timeScale * 1.1;
             updateSliders(this);
         }
-    };
+    },
     
     /**
      * Draw some basic diagnostic information in the infobox.
      */
-    this.drawInfo = function() {
+    drawInfo: function() {
         this.g.fillStyle = "rgba(100,100,100,0.3)";
         this.g.beginPath();
         this.g.moveTo(10,10);
@@ -333,12 +337,12 @@ function Scene() {
             this.g.fillText("Fps: " + Math.round((1000 / (-this.oldFrameStartTime + this.frameStartTime))), 30, 80);
             this.g.fillText("c: " + c, 30, 90);
         }
-    };
+    },
     
     /**
      * Draw crosshairs showing the origin of our reference frame.
      */
-    this.drawCrosshairs = function () {
+    drawCrosshairs: function () {
         this.g.strokeStyle = "#fff";
         this.g.beginPath();
         this.g.moveTo(this.origin[0] - 10, this.origin[1]);
@@ -349,19 +353,19 @@ function Scene() {
         this.g.moveTo(this.origin[0], this.origin[1] - 10);
         this.g.lineTo(this.origin[0], this.origin[1] + 10);
         this.g.stroke();
-    };
+    },
 
-    this.clear = function() {
+    clear: function() {
         this.g.clearRect(0, 0, this.width, this.height);
         this.h.clearRect(0, 0, this.mWidth, this.mHeight);
         this.TDC.clearRect(0, 0, this.tWidth, this.tHeight);
-    };
+    },
     
     /**
      * Compute this scene's canvas sizes, including the 3D canvas and the light
      * cone canvas. Set the location of the origin of our reference frame.
      */
-    this.setSize = function () {
+    setSize: function () {
         this.width = $("#canvas").width();
         this.height = $("#canvas").height();
         this.mWidth = $("#minkowski").width();
@@ -374,11 +378,11 @@ function Scene() {
         this.hheight = this.height / 2;
         this.origin = [this.hwidth, this.hheight, this.hheight];
         drawLightCone(this, this.lCCtx);
-    };
+    },
 
     /** Animation and step control functions **/
 
-    this.startAnimation = function() {
+    startAnimation: function() {
         // Frame timing is used to maintain constant speed. Reset.
         this.frameEndTime = new Date().getTime();
         this.initialTime = new Date().getTime();
@@ -388,31 +392,31 @@ function Scene() {
         if (!this.drawing) {
             this.draw();
         }
-    };
+    },
 
-    this.nextStep = function() {
+    nextStep: function() {
         if (this.curStep + 1 < this.demo.steps.length) {
             this.curStep += 1;
             this.replay();
         }
-    };
+    },
 
-    this.prevStep = function() {
+    prevStep: function() {
         if (this.curStep > 0) {
             this.curStep -= 1;
             this.replay();
         }
-    };
+    },
 
     /**
      * Reload the current demo from scratch and restart the animation.
      */
-    this.replay = function() {
+    replay: function() {
         this.load(this.demo, this.curStep);
         this.startAnimation();
-    };
+    },
 
-    this.pause = function() {
+    pause: function() {
         if (!this.drawing) {
             this.frameStartTime = new Date().getTime();
             this.drawing = true;
@@ -420,7 +424,7 @@ function Scene() {
         } else {
             this.drawing = false;
         }
-    };
+    },
 
     /** Object utilities **/
 
@@ -429,7 +433,7 @@ function Scene() {
      * in screen pixels (i.e. (x,y) is a screen location, not a scaled scene
      * coordinate). Returns false if no objects are within maxDist.
      */
-    this.findClosestObject = function(x, y, maxDist) {
+    findClosestObject: function(x, y, maxDist) {
         var minDist = this.width;
         var minElement = -1;
 
@@ -448,26 +452,24 @@ function Scene() {
             return this.carray[minElement];
         }
         return false;
-    };
+    },
 
     // Take a given inertialObject and switch to its reference frame
-    this.shiftToFrameOfObject = function(obj, shift) {
+    shiftToFrameOfObject: function(obj, shift) {
         this.changeArrayFrame(quat4.create(obj.getX0()), cBoostMat(obj.getV(), c), 
                               shift);
-    };
+    },
 
     /**
      * Switch every object in the scene to a new reference frame given by
      * the provided translation and boost.
      */
-    this.changeArrayFrame = function(translation1, boost, translation2) {
+    changeArrayFrame: function(translation1, boost, translation2) {
         for (var i = 0; i < this.carray.length; i++) {
             this.carray[i].changeFrame(translation1, boost, translation2);
         }
-    };
-    
-    this.setSize();
-}
+    }
+};
 
 /**
  * Helper function to draw the scene. Necessary because of the setInterval()
