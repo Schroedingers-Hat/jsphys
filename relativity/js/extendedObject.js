@@ -24,8 +24,18 @@ function extendedObject(X, P, label, options, shape) {
     // so we store the radial velocity of each vertex past the origin.
     this.pastRadialV = [];
     
-    if (typeof this.options.created != "undefined") 
+    // If `created` is true, we treat the object as not having existed before
+    // its initialPt; otherwise, we treat it as having existed forever. If we 
+    // create an object distant from the origin and try to determine its visual
+    // position, we determine that the light must have been emitted some time in 
+    // the past -- before the object was created in the demo. Hence the need for
+    // certain objects to be "eternal", unless we intentionally wish them to
+    // appear magically in the middle of the simulation.
+    if (typeof this.options.created != "undefined") {
         this.created = this.options.created;
+    } else {
+        this.created = false;
+    }
 
     this.temp = (options.temperature) ? options.temperature : 5600;
     this.stillColor = tempToColor(this.temp);
@@ -182,7 +192,7 @@ extendedObject.prototype = {
              (this.options.showVisualPos && !scene.options.neverShowVisualPos)) &&
             (!this.created ||
              ((!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3]) &&
-              (!this.COM.initialPt || this.COM.XView[3] > this.COM.initialPt[3])))) {
+              (this.COM.XView[3] > this.COM.initialPt[3])))) {
             this.drawPast(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawPast3D(scene);
@@ -191,7 +201,7 @@ extendedObject.prototype = {
         if ((scene.options.alwaysShowFramePos ||
              (!scene.options.neverShowFramePos && this.options.showFramePos)) &&
             (!this.created || (!this.COM.endPt || 0 < this.COM.endPt[3]) &&
-             (!this.COM.initialPt || 0 > this.COM.initialPt[3])))  {
+             (0 > this.COM.initialPt[3])))  {
             this.drawNow(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawNow3D(scene);
@@ -629,7 +639,6 @@ extendedObject.prototype = {
     },
 
     drawXT: function(scene) {
-    
         // Some relevant points scaled for zoom.
         var xvis  = this.COM.X0[0] / scene.zoom;
         var xvisP = this.COM.XView[0] / scene.zoom;
@@ -650,7 +659,11 @@ extendedObject.prototype = {
 
         // A world Line.
         scene.h.beginPath();
-        if(this.COM.initialPt) {
+        
+        // If this object begins existing at a specific point in time, draw
+        // the worldline starting there. Otherwise, make the worldline begin at
+        // the bottom of the diagram.
+        if (this.created) {
             scene.h.moveTo((this.COM.initialPt[0] / scene.zoom + 
                             scene.origin[0]),
                            (-this.COM.initialPt[3] / scene.timeZoom /
@@ -659,18 +672,18 @@ extendedObject.prototype = {
             scene.h.moveTo(bOfLinex + scene.origin[0],
                            -bOfLinet + scene.origin[2]);
         }
-        if(this.COM.endPt) {
+        if (this.COM.endPt) {
             scene.h.lineTo(this.COM.endPt[0] / scene.zoom + scene.origin[0],
                            (-this.COM.endPt[3] / scene.timeZoom / c +
                             scene.origin[2]));
-        } else{
+        } else {
             scene.h.lineTo(tOfLinex + scene.origin[0],
                            -tOfLinet + scene.origin[2]);
         }
         scene.h.stroke();
 
         // A dot at t=0.
-        if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
+        if ((this.COM.initialPt[3] < 0) &&
             (!this.COM.endPt || this.COM.endPt[3] > 0)) {
             scene.h.beginPath();
             scene.h.arc(xvis + scene.origin[0], scene.origin[2],
@@ -704,7 +717,7 @@ extendedObject.prototype = {
         }
 
         if (this.label !== "" && scene.curOptions.showText) {
-        if ((!this.COM.initialPt || this.COM.initialPt[3] < 0) &&
+        if ((this.COM.initialPt[3] < 0) &&
             (!this.COM.endPt || this.COM.endPt[3] > 0)){
                 scene.h.beginPath();
                 scene.h.fillStyle = "#777";
@@ -752,7 +765,7 @@ extendedObject.prototype = {
                 }
                 //Rounding error somewhere causing flickering, hence the +1
                 if ((!this.COM.endPt || tempQuat42[3] <= this.COM.endPt[3] + 1) &&
-                    (!this.COM.initialPt || tempQuat42[3] >= this.COM.initialPt[3] - 1)){
+                    (tempQuat42[3] >= this.COM.initialPt[3] - 1)) {
                     scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
                                    tempQuat42[3] / c / scene.timeZoom + scene.origin[2]);
                     scene.h.arc(xDotPos,

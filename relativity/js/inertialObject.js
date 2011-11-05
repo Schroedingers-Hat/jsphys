@@ -18,6 +18,7 @@ function inertialObject(X, P, m, endPt) {
     this.initialPt = quat4.create(X);
 
     // 4-position of the object's ending point, used when drawing its worldline.
+    // initialPt is stored for all objects, but endPt is optional.
     // TODO: Allow given velocity to be ignored if an endPt is supplied.
     if (endPt) this.endPt = endPt;
     
@@ -61,7 +62,7 @@ inertialObject.prototype.updateX0 = function(timeStep) {
     
     // Shift our time coordinate ahead by timeStep.
     this.X0[3] -= timeStep;
-    if (this.initialPt) this.initialPt[3] -= timeStep;
+    this.initialPt[3] -= timeStep;
     if (this.endPt) this.endPt[3] -= timeStep;
 };
 
@@ -70,16 +71,19 @@ inertialObject.prototype.updateX0 = function(timeStep) {
 inertialObject.prototype.changeFrame = function(translation1, rotation, translation2) {
     // Translate.
     quat4.subtract(this.X0, translation1);
+    
+    // Boost both velocity and position vectors using the boost matrix.
+    mat4.multiplyVec4(rotation, this.X0);
+    mat4.multiplyVec4(rotation, this.V);
+    
+    // Handle the same translation and boost with initial and ending locations.
     quat4.subtract(this.initialPt, translation1);
+    mat4.multiplyVec4(rotation, this.initialPt);
 
     if (this.endPt) {
         quat4.subtract(this.endPt, translation1);
         mat4.multiplyVec4(rotation, this.endPt);
     } 
-    // Boost both velocity and position vectors using the boost matrix.
-    mat4.multiplyVec4(rotation, this.X0);
-    mat4.multiplyVec4(rotation, this.V);
-    if (this.initialPt) mat4.multiplyVec4(rotation, this.initialPt);
 
     // Point is now at wrong time.
     // Find displacement to current time.
@@ -98,7 +102,8 @@ inertialObject.prototype.changeFrame = function(translation1, rotation, translat
         quat4.add(this.X0, this.displace);
         this.tau += this.displace[3] / this.V[3] * c;
 
-        if (this.initialPt) quat4.subtract(this.initialPt, translation2);
+        // Translate initial and ending locations by the same amount.
+        quat4.subtract(this.initialPt, translation2);
         if (this.endPt) quat4.subtract(this.endPt, translation2);
     }
 };
