@@ -4,11 +4,26 @@
 "use strict";
 
 function extendedObject(X, P, label, options, shape) {
+    this.COM = new inertialObject(X, P, 1);
     this.options = options;
+    
+    // shapePoints stores the locations of the vertices of this object, relative
+    // to the position of the COM.
     this.shapePoints = [];
+    
+    // pointPos stores the absolute locations of the vertices of this object.
+    this.pointPos = [];
+    
+    // pastPoints and futPoints similarly store absolute locations of vertices,
+    // but at the times they intersect the past and future light cones of this
+    // frame.
     this.pastPoints = [];
     this.futPoints = [];
+    
+    // When showing visual positions of objects, we need to Doppler-shift them,
+    // so we store the radial velocity of each vertex past the origin.
     this.pastRadialV = [];
+    
     if (typeof this.options.created != "undefined") 
         this.created = this.options.created;
 
@@ -21,7 +36,6 @@ function extendedObject(X, P, label, options, shape) {
         this.interestingPts = options.interestingPts;
     }
 
-    this.COM = new inertialObject(X, P, 1);
     if (options.endPt) this.COM.endPt = quat4.create(options.endPt);
     if (options.initialPt) this.COM.initialPt = options.initialPt;
     if (options.initialTau) {
@@ -29,7 +43,6 @@ function extendedObject(X, P, label, options, shape) {
         this.COM.initialTau = options.initialTau;
     }
     this.uDisplacement = quat4.create([0,0,0,0]);
-    this.pointPos = [];
 
     // Make a rectangular prism which, when placed at the position or view pos
     // of COM, must always contain part of the object.
@@ -37,13 +50,16 @@ function extendedObject(X, P, label, options, shape) {
     this.boundingBoxP = [0, 0, 0, 0, 0, 0];
     this.boundingBoxF = [0, 0, 0, 0, 0, 0];
     this.boundingIdx = [0, 0, 0, 0, 0, 0];
+    
+    // This object is not necessarily at rest, so its shape will be Lorentz
+    // contracted. Create a boost matrix to transform all of its points by.
     var initialBoost = cBoostMat([-this.COM.V[0],
                                   -this.COM.V[1],
                                   -this.COM.V[2],
                                    this.COM.V[3]], c);
 
-    // Iterate through the shape, map it onto the starting frame.
-    // Find the largest and smallest x,y,z values, store their indices.
+    // Map the shape points into the starting reference frame and compute the
+    // bounding box as we go.
     for (var i = 0; i < shape.length; i++) {
         this.shapePoints[i] = quat4.create(mat4.multiplyVec4(initialBoost, shape[i],
                                                              tempQuat4));
@@ -65,7 +81,7 @@ function extendedObject(X, P, label, options, shape) {
 
 extendedObject.prototype = {
     /**
-     * Update the COM and the surrounding points.
+     * Bring the COM and surrounding points ahead in time by increment timeStep.
      */
     update: function(timeStep, scene) {
         this.COM.updateX0(timeStep);
@@ -88,7 +104,7 @@ extendedObject.prototype = {
             }
         } 
 
-        // If not, just update the bounding box, we'll need it next frame.
+        // If not, just compute the new locations of the bounding box vertices.
         // Doing things this way means it takes one frame after the object is
         // in view before we start drawing it, but saves redundant computation
         // or further if statements if it is visible.
@@ -145,9 +161,9 @@ extendedObject.prototype = {
 
     /**
      * Map all the vectors involved in this object onto a new frame.
-     * translation1 is a translation in the present frame
-     * rotation is lorentz transform defined by a matrix including boost or rotation
-     * translation2 is a translation in the new frame
+     * translation1 is a translation in the present frame.
+     * rotation is lorentz transform defined by a matrix including boost or rotation.
+     * translation2 is a translation in the new frame.
      */
     changeFrame: function(translation1, rotation, translation2) {
         this.COM.changeFrame(translation1, rotation, translation2);
@@ -156,13 +172,17 @@ extendedObject.prototype = {
             this.shapePoints[i] = mat4.multiplyVec4(rotation, this.shapePoints[i]);
         }
     },
-
+    
+    // Draw this object onto the given scene.
     draw: function(scene) {
+        // We must account for object-specific options (this.options.showVisualPos)
+        // along with the scene's overrides. We must also check that this object
+        // has been "created", 
         if ((scene.options.alwaysShowVisualPos || 
              (this.options.showVisualPos && !scene.options.neverShowVisualPos)) &&
             (!this.created ||
-             (!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3]) &&
-             (!this.COM.initialPt || this.COM.XView[3] > this.COM.initialPt[3]))) {
+             ((!this.COM.endPt || this.COM.XView[3] < this.COM.endPt[3]) &&
+              (!this.COM.initialPt || this.COM.XView[3] > this.COM.initialPt[3])))) {
             this.drawPast(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawPast3D(scene);
