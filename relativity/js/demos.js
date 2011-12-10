@@ -8,7 +8,7 @@ var demos = [
 			    {"object": extendedObject, "x": [-200, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[-40, 2, 0, 0], [-40, -2, 0, 0], [40, -2, 0, 0], [40, 2, 0, 0], [-40, 2, 0, 0]], "options": {"showVelocity": false}},
 			    {"object": extendedObject, "label": "Back", "x": [-240, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[0, 2, 0, 0], [0, -2, 0, 0]]},
 			    {"object": extendedObject, "label": "Front", "x": [-160, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[0, 2, 0, 0], [0, -2, 0, 0]]},
-			    {"object": extendedObject, "label": "Alice", "x": [-200, 20, 0], "p": [0, 0, 0], "m": 1, "shape": aMan(3, 7)},
+			    {"object": extendedObject, "label": "Alice", "x": [-200, 20, 0], "p": [0, 0, 0], "m": 1, "shape": aMan(3, 7), "options": {"showVelocity": false}},
 			    {"object": extendedObject, "x": [0, -5, 0], "p": [-4, 0, 0], "m": 1, "shape": aMan(3, 7), "options": {"showVelocity": false}},
 			    {"object": photon, "x": [-160, 10, 0, 170], "v": [-1, 0, 0], "options": {"showCircle": true}},
 			    {"object": photon, "x": [-240, 10, 0, 170], "v": [1, 0, 0], "options": {"showCircle": true}}
@@ -18,7 +18,7 @@ var demos = [
 	    },
 	    {
 		"caption": "Now we view from Bob's perspective on the platform. According to Bob, the beacons do not flash simultaneously. In fact, the rear beacon must fire long before the train ever reaches the station.",
-		"objects": [{"object": extendedObject, "x": [0, 0, 0], "p": [-4, 0, 0], "m": 1, "shape": [[-30, 5, 0, 0], [-30, -15, 0, 0], [30, -15, 0, 0], [30, 5, 0, 0], [-30, 5, 0, 0]]},
+		"objects": [{"object": extendedObject, "x": [0, 0, 0], "p": [-4, 0, 0], "m": 1, "shape": [[-30, 5, 0, 0], [-30, -15, 0, 0], [30, -15, 0, 0], [30, 5, 0, 0], [-30, 5, 0, 0]], "options": {"showVelocity": false}},
 			    {"object": extendedObject, "x": [-200, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[-40, 2, 0, 0], [-40, -2, 0, 0], [40, -2, 0, 0], [40, 2, 0, 0], [-40, 2, 0, 0]], "options": {"showVelocity": false}},
 			    {"object": extendedObject, "label": "Back", "x": [-240, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[0, 2, 0, 0], [0, -2, 0, 0]]},
 			    {"object": extendedObject, "label": "Front", "x": [-160, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[0, 2, 0, 0], [0, -2, 0, 0]]},
