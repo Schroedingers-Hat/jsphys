@@ -28,20 +28,16 @@ function photon(X, V, label, options) {
     }
     /**
      * Normalize V such that V[3] = c and V[3]^2-V[2]^2-V[1]^2-V[0]^2 = 0
-     * (i.e. |V| (including the metric) is 0)
+     * (i.e. |V| (including the metric) is 0).
      * Note that this means V represents dX/dt not dX/dtau in this case, as each
-     * Component of dX/dtau would be infinite.
+     * component of dX/dtau would be infinite.
      */
     this.V[3] = c;
     vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
     this.displace = quat4.create();
 
-    this.tau = 0;
-
     this.uDisplacement = quat4.create();
     this.displace = quat4.create();
-    this.viewTime = 0;
-    this.radialVPast = 0;
     quat4.scale(this.V, -this.X0[3] / c, this.displace);
 
     // Bring it to now.
@@ -148,7 +144,7 @@ photon.prototype.draw = function(scene) {
 photon.prototype.drawXT = function(scene) {
     var xvis  = this.initialPt[0] / scene.zoom;
     var tvis  = this.initialPt[3] / scene.timeZoom / c;
-    if (this.endPt){
+    if (this.endPt) {
         var xvisE  = this.endPt[0] / scene.zoom;
         var tvisE  = this.endPt[3] / scene.timeZoom / c;
     }
@@ -161,15 +157,17 @@ photon.prototype.drawXT = function(scene) {
     var bOfLinex = bOfLinet * dxdtVis + this.X0[0] / scene.zoom;
 
     scene.h.strokeStyle = "#fff";
-    if(window.console && window.console.firebug) {
-    scene.h.beginPath();
-    scene.h.fillStyle = "#ff0";
-    scene.h.arc(this.XInt[0] / scene.zoom + scene.origin[0],
-               -this.XInt[3] / c / scene.timeZoom + scene.origin[2],2,0,twopi,true);
-    scene.h.arc(this.X0[0] / scene.zoom + scene.origin[0],
-               -this.X0[3] / c / scene.timeZoom + scene.origin[2],2,0,twopi,true);
-
-    scene.h.fill();
+    if (window.console && window.console.firebug) {
+        scene.h.beginPath();
+        scene.h.fillStyle = "#ff0";
+        scene.h.arc(this.XInt[0] / scene.zoom + scene.origin[0],
+                    -this.XInt[3] / c / scene.timeZoom + scene.origin[2],
+                    2, 0, twopi, true);
+        scene.h.arc(this.X0[0] / scene.zoom + scene.origin[0],
+                    -this.X0[3] / c / scene.timeZoom + scene.origin[2],
+                    2, 0, twopi, true);
+        
+        scene.h.fill();
     }
     scene.h.fillStyle = "#fff";
     
@@ -190,7 +188,7 @@ photon.prototype.drawXT = function(scene) {
             scene.h.moveTo(bOfLinex + scene.origin[0],
                           -bOfLinet + scene.origin[2]);
         }
-        if ((-tvisE + scene.origin[2]) >0) {
+        if ((-tvisE + scene.origin[2]) > 0) {
             // A dot at its destruction.
             scene.h.lineTo(xvisE + scene.origin[0],
                           -tvisE + scene.origin[2]);
