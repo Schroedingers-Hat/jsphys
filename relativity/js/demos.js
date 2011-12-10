@@ -1,4 +1,37 @@
 var demos = [
+    {
+	"name": "Exam 1 Question 4",
+	"steps": [
+	    {
+		"caption": "A train of length 100 m (as measured in its own rest frame) rushes past a platform at a speed of v = 0.8c. The train is equipped with two beacons, one on the front and one on the rear of the train, which each emit a flash of light as the front of the train reaches the end of the platform. Alice, who is seated right in the middle of the train, sees both flashes simultaneously. In the Minkowski diagram below, bright white lines represent the light flashes as they travel to Alice.",
+		"objects": [{"object": extendedObject, "label": "Platform", "x": [0, 0, 0], "p": [-4, 0, 0], "m": 1, "shape": [[-30, 5, 0, 0], [-30, -15, 0, 0], [30, -15, 0, 0], [30, 5, 0, 0], [-30, 5, 0, 0]]},
+			    {"object": extendedObject, "x": [-200, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[-40, 2, 0, 0], [-40, -2, 0, 0], [40, -2, 0, 0], [40, 2, 0, 0], [-40, 2, 0, 0]], "options": {"showVelocity": false}},
+			    {"object": extendedObject, "label": "Back", "x": [-240, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[0, 2, 0, 0], [0, -2, 0, 0]]},
+			    {"object": extendedObject, "label": "Front", "x": [-160, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[0, 2, 0, 0], [0, -2, 0, 0]]},
+			    {"object": extendedObject, "label": "Alice", "x": [-200, 20, 0], "p": [0, 0, 0], "m": 1, "shape": aMan(3, 7)},
+			    {"object": extendedObject, "x": [0, -5, 0], "p": [-4, 0, 0], "m": 1, "shape": aMan(3, 7), "options": {"showVelocity": false}},
+			    {"object": photon, "x": [-160, 10, 0, 170], "v": [-1, 0, 0], "options": {"showCircle": true}},
+			    {"object": photon, "x": [-240, 10, 0, 170], "v": [1, 0, 0], "options": {"showCircle": true}}
+			    ],
+		"options": {"showFramePos": true, "showVisualPos": false, "showGamma": false},
+		"frame": 4
+	    },
+	    {
+		"caption": "Now we view from Bob's perspective on the platform. According to Bob, the beacons do not flash simultaneously. In fact, the rear beacon must fire long before the train ever reaches the station.",
+		"objects": [{"object": extendedObject, "x": [0, 0, 0], "p": [-4, 0, 0], "m": 1, "shape": [[-30, 5, 0, 0], [-30, -15, 0, 0], [30, -15, 0, 0], [30, 5, 0, 0], [-30, 5, 0, 0]]},
+			    {"object": extendedObject, "x": [-200, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[-40, 2, 0, 0], [-40, -2, 0, 0], [40, -2, 0, 0], [40, 2, 0, 0], [-40, 2, 0, 0]], "options": {"showVelocity": false}},
+			    {"object": extendedObject, "label": "Back", "x": [-240, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[0, 2, 0, 0], [0, -2, 0, 0]]},
+			    {"object": extendedObject, "label": "Front", "x": [-160, 10, 0], "p": [0, 0, 0], "m": 1, "shape": [[0, 2, 0, 0], [0, -2, 0, 0]]},
+			    {"object": extendedObject, "label": "Alice", "x": [-200, 20, 0], "p": [0, 0, 0], "m": 1, "shape": aMan(3, 7)},
+			    {"object": extendedObject, "label": "Bob", "x": [0, -5, 0], "p": [-4, 0, 0], "m": 1, "shape": aMan(3, 7), "options": {"showVelocity": false}},
+			    {"object": photon, "x": [-160, 10, 0, 170], "v": [-1, 0, 0], "options": {"showCircle": true}},
+			    {"object": photon, "x": [-240, 10, 0, 170], "v": [1, 0, 0], "options": {"showCircle": true}}
+			    ],
+		"options": {"showFramePos": true, "showVisualPos": false, "showGamma": false},
+		"frame": 5
+	    }
+	    ]
+    },
             {"name": "C is constant: Relativistic flashlight",
              "steps": [{"caption": "A flashlight emits a photon. It moves away at the speed of light. An observer moves past at a high speed. What will the observer see?",
                         "objects": [{"object": extendedObject, "x": [0, 0, 0], "p": [0, 0, 0], "m": 1, "shape": [[0, 2, 0, 0], [3, 4, 0, 0], [3, -4, 0, 0], [0, -2, 0, 0], [-5, -2, 0, 0], [-5, 2, 0, 0], [0, 2, 0, 0]]},
@@ -13,7 +46,7 @@ var demos = [
                                     ],
                         "options": {"showFramePos": true, "showVisualPos": false, "showGamma": false},
                         "frame": 2,
-                        "shift": [0, 0, 0, -70]},
+                        "shift": [0, 0, 0, -70]}
                       ]
             },
             { "name" : "Simultaneity: Han and Greedo",
@@ -88,7 +121,7 @@ var demos = [
                                     ],
                          "frame"  : 2,
                          "shift"    : [0,0,0,-100],
-                         "options": {"showFramePos": true, "showVisualPos": false,"showVelocity": true, "showGamma": false}},
+                         "options": {"showFramePos": true, "showVisualPos": false,"showVelocity": true, "showGamma": false}}
                        ]
             },
             {"name": "Simultaneity, c is constant: Ruler",
