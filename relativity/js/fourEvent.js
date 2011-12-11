@@ -6,7 +6,7 @@
  */
 function fourEvent(X, options) {
     if (options.caption) this.caption = options.caption;
-    this.X0 = X;
+    this.X0 = quat4.create(X);
     this.later = X[3] + 1;
 }
 

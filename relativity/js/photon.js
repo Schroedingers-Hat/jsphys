@@ -13,12 +13,12 @@ function photon(X, V, label, options) {
         this.wavelength = 680;
     }
 
-    this.X0 = X;
+    this.X0 = quat4.create(X);
     this.rPast = 1;
     if (this.options.fired) this.fired = this.options.fired;
     else this.fired = false;
     this.XInt = quat4.create();
-    this.V = V;
+    this.V = quat4.create(V);
     this.nonTimeLike = true;
     this.initialPt = quat4.create(X);
     if (this.options.endPt) {

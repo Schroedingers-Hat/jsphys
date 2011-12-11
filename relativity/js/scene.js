@@ -200,8 +200,7 @@ Scene.prototype = {
 	    if (Object.prototype.toString.apply(obj.shape) !== '[object Array]') {
 		obj.shape = window[obj.shape.type](obj.shape.params);
 	    }
-	    thingy = new extendedObject(quat4.create(obj.x),
-					quat4.create(obj.p),
+	    thingy = new extendedObject(obj.x, obj.p,
 					obj.label, obj.options, obj.shape);
 	    break;
 	    

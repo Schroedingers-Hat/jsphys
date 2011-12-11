@@ -5,14 +5,14 @@
  */
 function inertialObject(X, P, m, endPt) {
     // The 4-vector position of the object in the current reference frame
-    this.X0 = X;
+    this.X0 = quat4.create(X);
     
     // The current visible position of the object -- that is, if I'm at the 
     // origin of the current reference frame, where do objects appear to be?
     this.XView = quat4.create();
     
     // Velocity (dX/dt?)
-    this.V = quat4.scale(P, 1 / m); 
+    this.V = quat4.scale(quat4.create(P), 1 / m); 
     
     // The initial (t=0) 4-position of the object in the current reference frame
     this.initialPt = quat4.create(X);
