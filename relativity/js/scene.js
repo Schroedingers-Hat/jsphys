@@ -213,10 +213,11 @@ Scene.prototype = {
 	    break;
 	}
 	
-        // Have the object compute its bounding box and visibility
-        thingy.update(0, this);
-        
-        this.carray.push(thingy);
+        if (thingy) {
+	    // Have the object compute its bounding box and visibility
+	    thingy.update(0, this);
+	    this.carray.push(thingy);
+	}
     },
 
     /** Scene drawing functions **/
