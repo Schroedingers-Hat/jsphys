@@ -267,11 +267,14 @@ function loadDemo(idx, scene) {
  */
 function loadDemoList(scene) {
     var e;
-    var demo;
-    for (var idx = 0; idx < demos.length; idx++) {
-        e = $("<li>" + demos[idx].name + "</li>").click(loadDemo(idx, scene));
-        $("#demo-list").append(e);
-    }
+    $.getJSON('demos/manifest.json',
+	      function(demos) {
+		  demos.forEach(function(demo) {
+		      e = $("<li>" + demo.name + "</li>").click(loadDemo(idx, scene));
+		      $("#demo-list").append(e);
+		  });
+	      }
+	     );
 }
 
 function showHelp(event) {
