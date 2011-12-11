@@ -1,5 +1,12 @@
 {"demos": 
     [
-	{"name": "Exam 1 question 4", "demo": "exam_1"}
+	{"name": "Exam 1 question 4", "source": "exam_1"},
+	{"name": "Relativistic flashlight", "source": "flashlight"},
+	{"name": "Han and Greedo", "source": "han-greedo"},
+	{"name": "Relativistic snake", "source": "snake"},
+	{"name": "Relativistic ruler", "source": "ruler"},
+	{"name": "Light clock", "source": "light-clock"},
+	{"name": "Velocity addition", "source": "velocity-addition"},
+	{"name": "Relativistic Doppler shift", "source": "doppler-shift"}
     ]
 }

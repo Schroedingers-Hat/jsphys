@@ -244,21 +244,25 @@ function replay(scene) {
 }
 
 /**
- * Take an index into the demos array and play the matching demo.
+ * Load a demo from the given JSON source file.
  */
-function loadDemo(idx, scene) {
+function loadDemo(source, scene) {
     return function() {
-        scene.load(demos[idx], 0);
-        if (typeof FlashCanvas === "undefined") {
-            $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02,
-                                      slide: zoomToSlider(scene),
-                                      value: -(Math.log(scene.zoom) / Math.LN2)});
-            $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, 
-                                       slide: setAnimSpeed(scene),
-                                       value: (Math.log(scene.timeScale + 1) / Math.LN2)});
-        }
-        $("#demo-chooser").hide();
-        scene.startAnimation();
+	$.getJSON('demos/' + source + '.json',
+		 function(demo) {
+		     scene.load(demo, 0);
+		     if (typeof FlashCanvas === "undefined") {
+			 $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02,
+						   slide: zoomToSlider(scene),
+						   value: -(Math.log(scene.zoom) / Math.LN2)});
+			 $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, 
+						    slide: setAnimSpeed(scene),
+						    value: (Math.log(scene.timeScale + 1) / Math.LN2)});
+		     }
+		     
+		     $("#demo-chooser").hide();
+		     scene.startAnimation();
+		 });
     };
 }
 
@@ -269,8 +273,8 @@ function loadDemoList(scene) {
     var e;
     $.getJSON('demos/manifest.json',
 	      function(demos) {
-		  demos.forEach(function(demo) {
-		      e = $("<li>" + demo.name + "</li>").click(loadDemo(idx, scene));
+		  demos.demos.forEach(function(demo) {
+		      e = $("<li>" + demo.name + "</li>").click(loadDemo(demo.source, scene));
 		      $("#demo-list").append(e);
 		  });
 	      }

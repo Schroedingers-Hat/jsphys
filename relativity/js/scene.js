@@ -180,36 +180,38 @@ Scene.prototype = {
         // this demo's defaults, and apply any object-specific overrides
         obj.options = $.extend({}, this.curOptions, obj.options);
 
-        // Upgrade 2D to 3D
-        if (obj.x.length == 2) {
-            obj.x[2] = 0;
-        } else if (obj.x.length == 3) {
-            obj.x[3] = 0;
-        }
-        if (obj.p && obj.p.length == 2) {
-            obj.p[2] = 0;
-        }
-		
+        // Pad object coordinates and momenta/velocities to 4-vectors
+	obj.x.push(0, 0);
+	obj.x.length = 4;
+	if (obj.p) {
+	    obj.p.push(0, 0);
+	    obj.p.length = 4;
+	}
+	if (obj.v) {
+	    obj.v.push(0, 0);
+	    obj.v.length = 4;
+	}
+	
         var thingy;
-        if (obj.shape) {
-            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
-                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), 
-                                    obj.label, obj.options, obj.shape);
-        } else if (obj.v) {
-            if (obj.x[3]) thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
-                                    quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), 
-                                                  obj.label, obj.options);
-            else thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
-                                         quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), 
-                                         obj.label, obj.options);
-        } else if (obj.p) {
-            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
-                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), 
-                                    obj.label, obj.options);
-        } else {
-            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]), 
-                                    obj.options);
-        }
+	switch (obj.object) {
+	    case "extendedObject":
+	    // Some extendedObjects have custom shapes, such as asteroids
+	    // and stick figures, which are generated here.
+	    if (Object.prototype.toString.apply(obj.shape) !== '[object Array]') {
+		obj.shape = window[obj.shape.type](obj.shape.params);
+	    }
+	    thingy = new extendedObject(quat4.create(obj.x),
+					quat4.create(obj.p),
+					obj.label, obj.options, obj.shape);
+	    break;
+	    
+	    case "photon":
+	    thingy = new photon(quat4.create(obj.x),
+				quat4.create(obj.v),
+				obj.label, obj.options);
+	    break;    
+	}
+	
         // Have the object compute its bounding box and visibility
         thingy.update(0, this);
         
