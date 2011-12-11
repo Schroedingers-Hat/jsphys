@@ -248,21 +248,20 @@ function replay(scene) {
  */
 function loadDemo(source, scene) {
     return function() {
-    $.getJSON('demos/' + source + '.json',
-         function(demo) {
-             scene.load(demo, 0);
-             if (typeof FlashCanvas === "undefined") {
-             $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02,
-                           slide: zoomToSlider(scene),
-                           value: -(Math.log(scene.zoom) / Math.LN2)});
-             $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, 
-                            slide: setAnimSpeed(scene),
-                            value: (Math.log(scene.timeScale + 1) / Math.LN2)});
-             }
-             
-             $("#demo-chooser").hide();
-             scene.startAnimation();
-         });
+        $.getJSON('demos/' + source + '.json', function(demo) {
+            scene.load(demo, 0);
+            if (typeof FlashCanvas === "undefined") {
+                $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02,
+                                          slide: zoomToSlider(scene),
+                                          value: -(Math.log(scene.zoom) / Math.LN2)});
+                $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, 
+                                           slide: setAnimSpeed(scene),
+                                           value: (Math.log(scene.timeScale + 1) / Math.LN2)});
+            }
+        
+            $("#demo-chooser").hide();
+            scene.startAnimation();
+        });
     };
 }
 
@@ -270,18 +269,17 @@ function loadDemo(source, scene) {
  * Builds the demo chooser menu by iterating through our provided demos array.
  */
 function loadDemoList(scene) {
-    $.getJSON('demos/manifest.json',
-              function(demos) {
-                  var e;
-                  $.each(demos, function(category, list) {
-                      $('#demo-chooser').append('<h4>' + category + '</h4>');
-                      var ul = $('<ul></ul>').appendTo($('#demo-chooser'));
-                      list.forEach(function(demo) {
-                          e = $("<li>" + demo.name + "</li>").click(loadDemo(demo.source, scene));
-                          ul.append(e);
-                      });
-                  });
-              });
+    $.getJSON('demos/manifest.json', function(demos) {
+        var e;
+        $.each(demos, function(category, list) {
+            $('#demo-chooser').append('<h4>' + category + '</h4>');
+            var ul = $('<ul></ul>').appendTo($('#demo-chooser'));
+            list.forEach(function(demo) {
+                e = $("<li>" + demo.name + "</li>").click(loadDemo(demo.source, scene));
+                ul.append(e);
+            });
+        });
+    });
 }
 
 function showHelp(event) {
