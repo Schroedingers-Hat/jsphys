@@ -181,43 +181,43 @@ Scene.prototype = {
         obj.options = $.extend({}, this.curOptions, obj.options);
 
         // Pad object coordinates and momenta/velocities to 4-vectors
-	obj.x.push(0, 0);
-	obj.x.length = 4;
-	if (obj.p) {
-	    obj.p.push(0, 0);
-	    obj.p.length = 4;
-	}
-	if (obj.v) {
-	    obj.v.push(0, 0);
-	    obj.v.length = 4;
-	}
-	
+        obj.x.push(0, 0);
+        obj.x.length = 4;
+        if (obj.p) {
+            obj.p.push(0, 0);
+            obj.p.length = 4;
+        }
+        if (obj.v) {
+            obj.v.push(0, 0);
+            obj.v.length = 4;
+        }
+        
         var thingy;
-	switch (obj.object) {
-	    case "extendedObject":
-	    // Some extendedObjects have custom shapes, such as asteroids
-	    // and stick figures, which are generated here.
-	    if (Object.prototype.toString.apply(obj.shape) !== '[object Array]') {
-		obj.shape = window[obj.shape.type](obj.shape.params);
-	    }
-	    thingy = new extendedObject(obj.x, obj.p,
-					obj.label, obj.options, obj.shape);
-	    break;
-	    
-	    case "photon":
-	    thingy = new photon(obj.x, obj.v, obj.label, obj.options);
-	    break;
-	    
-	    case "fourEvent":
-	    thingy = new fourEvent(obj.x, obj.options);
-	    break;
-	}
-	
+        switch (obj.object) {
+        case "extendedObject":
+            // Some extendedObjects have custom shapes, such as asteroids
+            // and stick figures, which are generated here.
+            if (Object.prototype.toString.apply(obj.shape) !== '[object Array]') {
+                obj.shape = window[obj.shape.type](obj.shape.params);
+            }
+            thingy = new extendedObject(obj.x, obj.p,
+                                        obj.label, obj.options, obj.shape);
+            break;
+            
+        case "photon":
+            thingy = new photon(obj.x, obj.v, obj.label, obj.options);
+            break;
+            
+        case "fourEvent":
+            thingy = new fourEvent(obj.x, obj.options);
+            break;
+        }
+    
         if (thingy) {
-	    // Have the object compute its bounding box and visibility
-	    thingy.update(0, this);
-	    this.carray.push(thingy);
-	}
+            // Have the object compute its bounding box and visibility
+            thingy.update(0, this);
+            this.carray.push(thingy);
+        }
     },
 
     /** Scene drawing functions **/
