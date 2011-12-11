@@ -270,15 +270,18 @@ function loadDemo(source, scene) {
  * Builds the demo chooser menu by iterating through our provided demos array.
  */
 function loadDemoList(scene) {
-    var e;
     $.getJSON('demos/manifest.json',
               function(demos) {
-                  demos.demos.forEach(function(demo) {
-                      e = $("<li>" + demo.name + "</li>").click(loadDemo(demo.source, scene));
-                      $("#demo-list").append(e);
+                  var e;
+                  $.each(demos, function(category, list) {
+                      $('#demo-chooser').append('<h4>' + category + '</h4>');
+                      var ul = $('<ul></ul>').appendTo($('#demo-chooser'));
+                      list.forEach(function(demo) {
+                          e = $("<li>" + demo.name + "</li>").click(loadDemo(demo.source, scene));
+                          ul.append(e);
+                      });
                   });
-              }
-             );
+              });
 }
 
 function showHelp(event) {
