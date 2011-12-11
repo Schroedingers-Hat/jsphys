@@ -206,10 +206,12 @@ Scene.prototype = {
 	    break;
 	    
 	    case "photon":
-	    thingy = new photon(quat4.create(obj.x),
-				quat4.create(obj.v),
-				obj.label, obj.options);
-	    break;    
+	    thingy = new photon(obj.x, obj.v, obj.label, obj.options);
+	    break;
+	    
+	    case "fourEvent":
+	    thingy = new fourEvent(obj.x, obj.options);
+	    break;
 	}
 	
         // Have the object compute its bounding box and visibility

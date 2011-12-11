@@ -7,6 +7,7 @@
 	{"name": "Relativistic ruler", "source": "ruler"},
 	{"name": "Light clock", "source": "light-clock"},
 	{"name": "Velocity addition", "source": "velocity-addition"},
-	{"name": "Relativistic Doppler shift", "source": "doppler-shift"}
+	{"name": "Relativistic Doppler shift", "source": "doppler-shift"},
+	{"name": "Twin paradox", "source": "twin-paradox"}
     ]
 }
