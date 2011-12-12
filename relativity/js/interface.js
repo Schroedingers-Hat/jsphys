@@ -79,6 +79,9 @@ function zoomTo(scene, zoom) {
     scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
 
     drawLightCone(scene, scene.lCCtx);
+    if (!scene.drawing) {
+        scene.draw();
+    }
     updateSliders(scene);
 }
 
