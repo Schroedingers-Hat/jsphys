@@ -1,16 +1,20 @@
 "use strict";
-function Scene() {
 
-    /**
-     * Various state variables and options.
-     */
+/**
+ * Scene encompasses all functions and data contained in a single "scene":
+ * that is, one instance of the relativity simulation, containing a single
+ * demo and set of interacting objects.
+ */
+function Scene() {
+    // glMatrix defaults to 32-bit arrays, but we'd like 64-bit arrays
+    // as we sometimes get nasty rounding errors otherwise.
     if (typeof Float64Array !== "undefined") {
         glMatrixArrayType = Float64Array;
     }
 
     this.initialTime = new Date().getTime();
+    
     if (typeof FlashCanvas != "undefined") {
-
         FlashCanvas.initElement($('#canvas')[0]);
         FlashCanvas.initElement($('#minkowski')[0]);
         FlashCanvas.initElement($('#3DCanvas')[0]);
@@ -23,37 +27,33 @@ function Scene() {
     this.h.font = defFont;
     this.loaded = false;
     this.TDC.font = defFont;
-    this.width = $("#canvas").width();
-    this.height = $("#canvas").height();
-    this.mWidth = $("#minkowski").width();
-    this.mHeight = $("#minkowski").height();
-    this.tWidth = $("#3DCanvas").width();
-    this.tHeight = $("#3DCanvas").height();
     this.lightConeCanvas = document.createElement('canvas');
-    this.lightConeCanvas.width =  this.mWidth;
-    this.lightConeCanvas.height =  this.mHeight;
     if (typeof FlashCanvas != "undefined") {
         FlashCanvas.initElement(this.lightConeCanvas);
     }
 
-
     this.lCCtx = this.lightConeCanvas.getContext('2d');
     this.lCCtx.font = defFont;
-    if(!this.TDC.fillText){
+    
+    // fillText was only introduced with Firefox 3.5, and some older browsers do
+    // not support it. Provide empty functions if there's no browser implementation.
+    if(!this.TDC.fillText) {
         this.TDC.fillText   = function(){};
         this.g.fillText     = function(){};
         this.h.fillText     = function(){};
     }
+    
+    this.setSize();
 
     this.camBack = 0;
-    this.hwidth = this.width / 2;
-    this.hheight = this.height / 2;
-    this.origin = [this.hwidth, this.hheight, this.hheight];
     this.carray = [];
     this.zoom = 0.25;
     this.timeZoom = 0.25;
     this.t = 0;
     this.keyDown = false;
+    
+    // The default set of object-specific settings. These can be overridden by
+    // a specific demo, and by individual objects in that demo.
     this.defaults = {"showDoppler": true,
                      "showVisualPos": true,
                      "showFramePos": false,
@@ -68,6 +68,8 @@ function Scene() {
                      "showMinkowski": true,
                      "canShoot": false};
 
+    // Global scene options. These are applied regardless of object-specific
+    // settings, and can be changed by the user as overrides.
     this.options = {"alwaysDoppler": false,
                     "neverDoppler": false,
                     "alwaysShowFramePos": false,
@@ -79,6 +81,9 @@ function Scene() {
 
     this.drawing = false;
     
+    // Records whether the keys for various actions are currently pressed
+    // interface.js binds various key events to these actions and toggles their
+    // values
     this.actions = {"rotateLeft": false,
                     "rotateRight": false,
                     "rotateUp": false,
@@ -93,19 +98,19 @@ function Scene() {
                     "zoomIn": false,
                     "zoomOut": false,
                     "timeZoomIn": false,
-                    "timeZoomOut": false}
-    
-    
-    /** Demo loading functions **/
+                    "timeZoomOut": false};
+}
 
+Scene.prototype = {
     /**
      * Load the specified demo at the given step. (The step indexes into
      * the demo's steps array.)
      */
-    this.load = function(demo, step) {
+    load: function(demo, step) {
         this.carray = [];
         this.curStep = step;
         this.demo = demo;
+        
         // If the demo specifies global options, set 'em
         if (typeof demo.steps[step].origin === "object") {
             this.origin = demo.steps[step].origin;
@@ -119,15 +124,17 @@ function Scene() {
             this.zoom = demo.steps[step].zoom;
         }
 
-        // Clone defaults into curOptions, rather than getting a reference to it
+        // Clone our default object-specific options into curOptions, rather than
+        // getting a reference
         this.curOptions = jQuery.extend({}, this.defaults);
 
+        // If the demo specifies option overrides, apply them
         if (typeof demo.steps[step].options === "object") {
             $.extend(this.curOptions, demo.steps[step].options);
         }
 
         // Update c with the demo's chosen value
-        c = (this.curOptions.c) ? this.curOptions.c : 1;
+        c = this.curOptions.c;
 
         drawLightCone(this, this.lCCtx);
 
@@ -136,31 +143,32 @@ function Scene() {
                       "up": boostFrom3Vel(0, 0.05 * c, 0),
                       "down": boostFrom3Vel(0, -0.05 * c, 0)};
 
-        // demo.steps[step].objects.forEach(this.createObject, this);
-        for ( var i = 0; i < demo.steps[step].objects.length; i++) {
-            this.createObject(demo.steps[step].objects[i]);
-        }
+        demo.steps[step].objects.forEach(this.createObject, this);
 
-        $('#caption').html(demo.steps[step].caption);
+        this.pushCaption(demo.steps[step].caption);
 
-        // If the demo specifies an object whose frame is preferred, shift to that frame.
+        // If the demo specifies an object whose frame is preferred, shift to that frame
         if (typeof demo.steps[step].frame === "number") {
-            this.shiftToFrameOfObject(this.carray[demo.steps[step].frame], demo.steps[step].shift);
+            this.shiftToFrameOfObject(this.carray[demo.steps[step].frame],
+                                      demo.steps[step].shift);
         }
         this.frameStartTime = new Date().getTime();
         this.loaded = true;
-    };
+    },
 
-    this.pushCaption = function(caption) {
-            $('#caption').html(caption);
-    };
+    /**
+     * Change the current demo caption to the chosen text.
+     */
+    pushCaption: function(caption) {
+        $('#caption').html(caption);
+    },
     
     /**
      * Called by scene.load() to create each individual object in a scene.
      * Hence obj is an object from the demo system specifying options,
      * a label, coordinates, and momentum.
      */
-    this.createObject = function (obj) {
+    createObject: function (obj) {
         if (typeof obj.options === "undefined") {
             obj.options = {};
         }
@@ -168,117 +176,148 @@ function Scene() {
             obj.label = "";
         }
 
-        // Copy object-specific options in on top of the global defaults
+        // Take the current default options, set by the global defaults and
+        // this demo's defaults, and apply any object-specific overrides
         obj.options = $.extend({}, this.curOptions, obj.options);
 
-        // Upgrade 2D to 3D
-        if (obj.x.length == 2) {
-            obj.x[2] = 0;
-        } else if (obj.x.length == 3) {
-			obj.x[3] = 0;
-		}
-        if (obj.p && obj.p.length == 2) {
-            obj.p[2] = 0;
+        // Pad object coordinates and momenta/velocities to 4-vectors
+        obj.x.push(0, 0);
+        obj.x.length = 4;
+        if (obj.p) {
+            obj.p.push(0, 0);
+            obj.p.length = 4;
         }
-		
+        if (obj.v) {
+            obj.v.push(0, 0);
+            obj.v.length = 4;
+        }
+        
         var thingy;
-        if (obj.shape) {
-            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
-                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options, obj.shape);
-        } else if (obj.v) {
-            if (obj.x[3]) thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
-                                    quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), obj.label, obj.options);
-            else thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], 0]),
-                                    quat4.create([obj.v[0], obj.v[1], obj.v[2], 0]), obj.label, obj.options);
-        } else if (obj.p) {
-            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]),
-                                    quat4.create([obj.p[0], obj.p[1], obj.p[2], 0]), obj.label, obj.options);
-        } else {
-            thingy = new obj.object(quat4.create([obj.x[0], obj.x[1], obj.x[2], obj.x[3]]), obj.options);
+        switch (obj.object) {
+        case "extendedObject":
+            // Some extendedObjects have custom shapes, such as asteroids
+            // and stick figures, which are generated here.
+            if (Object.prototype.toString.apply(obj.shape) !== '[object Array]') {
+                obj.shape = window[obj.shape.type](obj.shape.params);
+            }
+            thingy = new extendedObject(obj.x, obj.p,
+                                        obj.label, obj.options, obj.shape);
+            break;
+            
+        case "photon":
+            thingy = new photon(obj.x, obj.v, obj.label, obj.options);
+            break;
+            
+        case "fourEvent":
+            thingy = new fourEvent(obj.x, obj.options);
+            break;
         }
-        thingy.update(0, this);
-        this.carray.push(thingy);
-    };
+    
+        if (thingy) {
+            // Have the object compute its bounding box and visibility
+            thingy.update(0, this);
+            this.carray.push(thingy);
+        }
+    },
 
-    
-    
-    
-    
     /** Scene drawing functions **/
+
     /**
      * Draw the scene onto the canvas. Uses requestAnimFrame to schedule the
      * next frame.
      */
-    this.draw = function() {
+    draw: function() {
         this.processInput();
         
+        // We scale timeSteps to stay close to our intended framerate.
+        // Take the time elapsed since the previous frame was started and
+        // scale it by a factor timeScale, which is essentially the relation
+        // between real time and "game time". Advance all objects in time
+        // by this interval.
         this.oldFrameStartTime = this.frameStartTime;
         this.frameStartTime = new Date().getTime();
         var timeStep = 0;
-        if (this.drawing){
-            timeStep = (this.frameStartTime - this.oldFrameStartTime) * this.timeScale * c;
+        if (this.drawing) {
+            timeStep = (this.frameStartTime - this.oldFrameStartTime) * 
+                this.timeScale * c;
         }
+        
         this.clear();
         
-        // Draw the light cone, if we're using flashCanvas, don't use offscreen canvas.
+        // Draw the light cone; if we're using flashCanvas, don't use offscreen canvas.
         if (typeof FlashCanvas != "undefined") {
-            //Ie draw light cone here.
             drawLightCone(this,this.h);
-
-        }else {
+        } else {
             this.h.drawImage(this.lightConeCanvas, 0, 0);
         }
-        // Put some text on the light cone. Doesn't seem to work in opera 9, not sure why.
-        if(this.curOptions.showText) {
-            this.h.beginPath();
-
+        // Put axes labels on the light cone.
+        // Doesn't seem to work in opera 9, not sure why.
+        if (this.curOptions.showText) {
+            this.h.fillStyle = "#fff";
             this.h.fillText("x(m)", this.mWidth - 30, this.origin[2] - 10);
             this.h.fillText("t(s)", 5 + this.origin[0], 10);
             this.h.fill();
         }
         
-        // Where the meat of the work is done.
-        for ( var i = 0; i < this.carray.length; i++) {
-            this.carray[i].update(timeStep, this);
-            this.carray[i].draw(this);
-        }
+        // Advance every object forward in time, then draw it to the canvas.
+        this.carray.forEach(function (obj) {
+            obj.update(timeStep, this);
+            obj.draw(this);
+        }, this);
         
         // Some UI drawing.
         this.drawCrosshairs();
         if(this.curOptions.showText) this.drawInfo();
         
-        // Get ready for the next frame.
         this.t = this.t + (timeStep);
+        
+        // If we're currently drawing (and haven't just entered Pause, for
+        // example), or the user is holding down a key, schedule another
+        // animation frame.
         if (this.drawing || this.keyDown) {
             requestAnimFrame(drawScene(this));
         }
-
-    };
-
-    this.processInput = function() {
-        // Create a new photon. Careful with this, photons are tracked even after they disappear.
-        if (this.actions.fire && this.curOptions.canShoot) {
-            var firstCollisionIdx = 0;
-            var collisionTime;
-            var firstCollisionTime = Infinity;
-            var newPhoton = new photon(quat4.create([0, 0, 0, 0]),
-                                       quat4.create([0, 1, 0, 0]), "photon", {"showCircle": false, "fired": true, "showFramePos": true});
-            for ( var i = 0; i < this.carray.length; i++) {
-                if (this.carray[i].photonCollisionTime){
-                    collisionTime = this.carray[i].photonCollisionTime(newPhoton);
-                    if ( collisionTime < firstCollisionTime &&
-                        (!this.carray[i].COM.endPt || (this.carray[i].COM.endPt[3] > collisionTime))) {
-                        firstCollisionTime = collisionTime;
-                        firstCollisionIdx = i;
-                    }
+    },
+    
+    // Fire a photon aimed upwards from the current reference frame origin
+    fireLaser: function() {
+        var firstCollisionIdx = 0;
+        var collisionTime;
+        var firstCollisionTime = Infinity;
+        var newPhoton = new photon(quat4.create([0, 0, 0, 0]),
+                                   quat4.create([0, 1, 0, 0]), "photon", 
+                                   {"showCircle": false, "fired": true, 
+                                    "showFramePos": true});
+        // Search through all objects and determine whether this photon will
+        // collide with one in the future.
+        for (var i = 0; i < this.carray.length; i++) {
+            if (this.carray[i].photonCollision) {
+                collisionTime = this.carray[i].photonCollision(newPhoton);
+                if (collisionTime[3] < firstCollisionTime &&
+                    (!this.carray[i].COM.endPt ||
+                     (this.carray[i].COM.endPt[3] > collisionTime[3]))) {
+                    firstCollisionTime = collisionTime[3];
+                    firstCollisionIdx = i;
                 }
             }
-            if (firstCollisionTime < Infinity) {
-                newPhoton.endPt = this.carray[firstCollisionIdx].photonCollision(newPhoton);
-//                newPhoton.endPt = quat4.create(this.carray[firstCollisionIdx].getXFut());
-                this.carray[firstCollisionIdx].COM.endPt = quat4.create(newPhoton.endPt);
-            }
-            this.carray.push(newPhoton);
+        }
+        // If the photon will collide with an object, set that object's endPt
+        // to the moment of collision, so that it will be destroyed along
+        // with the photon.
+        // TODO: Arrange for photon to be destroyed eventually, even if it does
+        // not collide.
+        if (firstCollisionTime < Infinity) {
+            newPhoton.endPt = this.carray[firstCollisionIdx].photonCollision(newPhoton);
+            this.carray[firstCollisionIdx].COM.endPt = quat4.create(newPhoton.endPt);
+        }
+        this.carray.push(newPhoton);
+    },
+
+    processInput: function() {
+        // Create a new photon.
+        // Careful with this, photons are tracked even after they disappear.
+        if (this.actions.fire && this.curOptions.canShoot) {
+            this.fireLaser();
             this.actions.fire = false;
         }
 
@@ -292,22 +331,22 @@ function Scene() {
         if (this.actions.rotateLeft)  boost = rotRight;
         if (this.actions.rotateRight) boost = rotLeft;
         
-        if (this.actions.rotateUp === true)    this.changeArrayFrame(nullQuat4, rotUp   );
-        if (this.actions.rotateDown === true)  this.changeArrayFrame(nullQuat4, rotDown );
+        if (this.actions.rotateUp === true)    this.changeArrayFrame(nullQuat4, rotUp);
+        if (this.actions.rotateDown === true)  this.changeArrayFrame(nullQuat4, rotDown);
         if (boost !== false) {
             this.changeArrayFrame(nullQuat4, boost);
         }
-        if (this.actions.zoomOut == true) {
+        if (this.actions.zoomOut === true) {
             zoomTo(this.zoom * 1.05);
         }
-        if (this.actions.zoomIn == true) {
+        if (this.actions.zoomIn === true) {
             zoomTo(this.zoom / 1.05);
         }
-        if (this.actions.timeZoomIn == true) {
+        if (this.actions.timeZoomIn === true) {
             this.timeZoom = this.timeZoom / 1.05;
             drawLightCone(this, this.lCCtx);
         }
-        if (this.actions.timeZoomOut == true) {
+        if (this.actions.timeZoomOut === true) {
             this.timeZoom = this.timeZoom * 1.05;
             drawLightCone(this, this.lCCtx);
         }
@@ -319,10 +358,12 @@ function Scene() {
             this.timeScale = this.timeScale * 1.1;
             updateSliders(this);
         }
-    }
+    },
     
-    
-    this.drawInfo = function() {
+    /**
+     * Draw some basic diagnostic information in the infobox.
+     */
+    drawInfo: function() {
         this.g.fillStyle = "rgba(100,100,100,0.3)";
         this.g.beginPath();
         this.g.moveTo(10,10);
@@ -339,9 +380,12 @@ function Scene() {
             this.g.fillText("Fps: " + Math.round((1000 / (-this.oldFrameStartTime + this.frameStartTime))), 30, 80);
             this.g.fillText("c: " + c, 30, 90);
         }
-    };
-
-    this.drawCrosshairs = function () {
+    },
+    
+    /**
+     * Draw crosshairs showing the origin of our reference frame.
+     */
+    drawCrosshairs: function () {
         this.g.strokeStyle = "#fff";
         this.g.beginPath();
         this.g.moveTo(this.origin[0] - 10, this.origin[1]);
@@ -352,51 +396,72 @@ function Scene() {
         this.g.moveTo(this.origin[0], this.origin[1] - 10);
         this.g.lineTo(this.origin[0], this.origin[1] + 10);
         this.g.stroke();
-    };
+    },
 
-    this.clear = function() {
+    clear: function() {
         this.g.clearRect(0, 0, this.width, this.height);
         this.h.clearRect(0, 0, this.mWidth, this.mHeight);
         this.TDC.clearRect(0, 0, this.tWidth, this.tHeight);
-    };
+    },
+    
+    /**
+     * Compute this scene's canvas sizes, including the 3D canvas and the light
+     * cone canvas. Set the location of the origin of our reference frame.
+     */
+    setSize: function () {
+        this.width = $("#canvas").width();
+        this.height = $("#canvas").height();
+        this.mWidth = $("#minkowski").width();
+        this.mHeight = $("#minkowski").height();
+        this.tWidth = $("#3DCanvas").width();
+        this.tHeight = $("#3DCanvas").height();
+        this.lightConeCanvas.width = this.mWidth;
+        this.lightConeCanvas.height = this.mHeight;
+        this.hwidth = this.width / 2;
+        this.hheight = this.height / 2;
+        this.origin = [this.hwidth, this.hheight, this.hheight];
+        drawLightCone(this, this.lCCtx);
+    },
 
     /** Animation and step control functions **/
 
-    this.startAnimation = function() {
+    startAnimation: function() {
         // Frame timing is used to maintain constant speed. Reset.
         this.frameEndTime = new Date().getTime();
         this.initialTime = new Date().getTime();
         this.t = 0;
 
-        // If not currently animating, draw the first frame.
+        // If not currently animating, draw the first frame. If call draw()
+        // when there's already an animation scheduled, we'll be creating
+        // redundant drawing events.
         if (!this.drawing) {
             this.draw();
         }
-    };
+    },
 
-    this.nextStep = function() {
+    nextStep: function() {
         if (this.curStep + 1 < this.demo.steps.length) {
             this.curStep += 1;
             this.replay();
         }
-    };
+    },
 
-    this.prevStep = function() {
+    prevStep: function() {
         if (this.curStep > 0) {
             this.curStep -= 1;
             this.replay();
         }
-    };
+    },
 
     /**
      * Reload the current demo from scratch and restart the animation.
      */
-    this.replay = function() {
+    replay: function() {
         this.load(this.demo, this.curStep);
         this.startAnimation();
-    };
+    },
 
-    this.pause = function() {
+    pause: function() {
         if (!this.drawing) {
             this.frameStartTime = new Date().getTime();
             this.drawing = true;
@@ -404,16 +469,16 @@ function Scene() {
         } else {
             this.drawing = false;
         }
-    };
+    },
 
     /** Object utilities **/
 
     /**
      * Find the closest object to the given (x,y), within a distance maxDist
      * in screen pixels (i.e. (x,y) is a screen location, not a scaled scene
-     * coordinate)
+     * coordinate). Returns false if no objects are within maxDist.
      */
-    this.findClosestObject = function(x, y, maxDist) {
+    findClosestObject: function(x, y, maxDist) {
         var minDist = this.width;
         var minElement = -1;
 
@@ -432,34 +497,24 @@ function Scene() {
             return this.carray[minElement];
         }
         return false;
-    };
+    },
 
     // Take a given inertialObject and switch to its reference frame
-    this.shiftToFrameOfObject = function(obj, shift) {
-        if (shift) { this.changeArrayFrame(quat4.create(obj.getX0()), cBoostMat(obj.getV(), c), shift);}
-        else { this.changeArrayFrame(quat4.create(obj.getX0()), cBoostMat(obj.getV(), c));}
-    };
-
+    shiftToFrameOfObject: function(obj, shift) {
+        this.changeArrayFrame(quat4.create(obj.getX0()), cBoostMat(obj.getV(), c), 
+                              shift);
+    },
 
     /**
      * Switch every object in the scene to a new reference frame given by
      * the provided translation and boost.
      */
-    this.changeArrayFrame = function(translation1, boost, translation2) {
-        if (translation2){
-            for (var i=0;i < this.carray.length; i++) {
-                this.carray[i].changeFrame(translation1, boost, translation2);
-            }
-        } else {
-             for (var i=0;i < this.carray.length; i++) {
-                this.carray[i].changeFrame(translation1, boost);
-            }
-        }
-
-
-    };
-
-}
+    changeArrayFrame: function(translation1, boost, translation2) {
+        this.carray.forEach(function (obj) {
+            obj.changeFrame(translation1, boost, translation2);
+        });
+    }
+};
 
 /**
  * Helper function to draw the scene. Necessary because of the setInterval()
@@ -468,7 +523,7 @@ function Scene() {
 function drawScene(scene) {
     return function (event) {
         scene.draw();
-    }
+    };
 }
 
 /**
@@ -476,11 +531,11 @@ function drawScene(scene) {
  * or onscreen (used if FlashCanvas is active). They are assumed to be the same size.
  */
 function drawLightCone(scene, ctx){
- var size = Math.max(scene.origin[0], scene.origin[2]);
- var ycoeff;
- var xcoeff = Math.min(size, size * c / scene.zoom * scene.timeZoom);
- if (xcoeff == size) ycoeff = size / c * scene.zoom / scene.timeZoom;
- else ycoeff = size;
+    var size = Math.max(scene.origin[0], scene.origin[2]);
+    var ycoeff;
+    var xcoeff = Math.min(size, size * c / scene.zoom * scene.timeZoom);
+    if (xcoeff == size) ycoeff = size / c * scene.zoom / scene.timeZoom;
+    else ycoeff = size;
     ctx.fillStyle = "#300";
     ctx.beginPath();
     ctx.moveTo(0,0);
@@ -516,20 +571,4 @@ function drawLightCone(scene, ctx){
     ctx.stroke();
     ctx.lineWidth = 1;
     ctx.fillStyle = "#fff";
-    return;
-}
-
-function setSize(scene) {
-    scene.width = $("#canvas").width();
-    scene.height = $("#canvas").height();
-    scene.mWidth = $("#minkowski").width();
-    scene.mHeight = $("#minkowski").height();
-    scene.tWidth = $("#3DCanvas").width();
-    scene.tHeight = $("#3DCanvas").height();
-    scene.lightConeCanvas.width =  scene.mWidth;
-    scene.lightConeCanvas.height =  scene.mHeight;
-    scene.hwidth = scene.width / 2;
-    scene.hheight = scene.height / 2;
-    scene.origin = [scene.hwidth, scene.hheight, scene.hheight];
-    drawLightCone(scene,scene.lCCtx);
 }

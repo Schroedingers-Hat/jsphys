@@ -1,9 +1,8 @@
-//Time now component 3
-
-/*The following are extensions to and copies of functions from the
- *glMatrix library for various purposes. As the copy of that library in this source is compressed
- * the original licence is below.
-*/    
+/**
+ * The following are extensions to and copies of functions from the
+ * glMatrix library for various purposes. As the copy of that library in this 
+ * source is compressed, the original licence is below.
+ */    
     /* 
      * glMatrix.js - High performance matrix and vector operations for WebGL
      * version 0.9.6
@@ -33,7 +32,7 @@
      */
 
 mat3.multiplyVec3 = function(mat, vec, dest) {
-	if(!dest) { dest = vec }
+	if (!dest) { dest = vec; }
 	
 	var x = vec[0], y = vec[1], z = vec[2];
 	
@@ -103,14 +102,12 @@ quat4.subtract = function(vec, vec2, dest) {
 
 
 
-//Projection of spacial elements of vec onto vec2.
-vec3.spaceDot = function(vec, vec2)
-{
+// Projection of spacial elements of vec onto vec2.
+vec3.spaceDot = function(vec, vec2) {
     return vec[0] * vec2[0] + vec[1] * vec2[1];
 }
 
 
-quat4.spaceDot = function(vec, vec2)
-{
+quat4.spaceDot = function(vec, vec2) {
     return vec[0] * vec2[0] + vec[1] * vec2[1] + vec[2] * vec2[2];
 }

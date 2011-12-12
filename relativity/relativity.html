@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title>Relativity Simulator</title>
         <!--[if lt IE 9]>
         <script type="text/javascript" src="../lib/ie7/ie9.js"></script>
         <script type="text/javascript" src="../lib/FlashCanvas/bin/flashcanvas.js"></script>
         <![endif]-->
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
         <script type="text/javascript" src="../lib/kibo.js"></script>
+        <script type="text/javascript" src="js/ieLibs.js"></script>
         <script type="text/javascript" src="js/ruler.js"></script>
         <script type="text/javascript" src="js/extendedObject.js"></script>
-        <script type="text/javascript" src="js/glMatrix-0.9.5.min.js"></script>
+        <script type="text/javascript" src="../lib/glMatrix-0.9.5.min.js"></script>
         <script type="text/javascript" src="js/glMatrix-extensions.js"></script>
         <script type="text/javascript" src="js/inertialObject.js"></script>
         <script type="text/javascript" src="js/photon.js"></script>
         <script type="text/javascript" src="js/relLibs.js"></script>
         <script type="text/javascript" src="js/fourEvent.js"></script>
         <script type="text/javascript" src="js/colors.js"></script>
-        <script type="text/javascript" src="js/demos.js"></script>
         <script type="text/javascript" src="js/interface.js"></script>
         <script type="text/javascript" src="js/scene.js"></script>
         <script type="text/javascript" src="../lib/jquery/jquery-ui-1.8.16.custom.min.js"></script>
@@ -30,7 +30,6 @@
                 background-color: #000000;
             }
 
-
             #controls p {
                 padding: 0;
                 margin: 0;
@@ -41,7 +40,7 @@
                 position: absolute;
                 right: 0.5em;
                 top: 0.5em;
-                color: #f0f;
+                color: #fff;
                 font-size: 9pt;
                 background-color: #333;
                 opacity: 0.8;
@@ -63,8 +62,16 @@
                 width: 300px;
                 left: 50%;
                 margin-left: -150px;
-                top: 200px;
+                top: 100px;
                 padding: 1em;
+            }
+
+            #demo-chooser h4 {
+                margin-bottom: 0;
+            }
+
+            #demo-chooser ul {
+                margin: 0;
             }
 
             #demo-chooser li {
@@ -75,6 +82,7 @@
             #demo-chooser h3 {
                 margin: 0;
             }
+
             #help-screen {
                 position: absolute;
                 opacity: 0.8;
@@ -94,17 +102,15 @@
     <body>
         <div style="position:relative">
             <canvas id="canvas" height="500">You need a browser that supports canvas to view this simulation.
-            <p>Firefox 3.6+, A recent version of Google Chrome, Safari 4+ or Opera 10+ are recommended.
-            <p>Firefox 2+, Any version of Google Chrome, Safari 3.2+, Opera 9+ and IE8 should work with some missing features.</canvas>
+            <p>Firefox 3.6+, a recent version of Google Chrome, Safari 4+ or Opera 10+ are recommended.
+            <p>Firefox 2+, any version of Google Chrome, Safari 3.2+, Opera 9+ and IE8 should work with some missing features.</canvas>
             <!--[if IE 8]>
             <div style="width:1000px;height:500px;position:absolute;float:left;z-index:6000;" onclick="clickHandler(event)">&nbsp;</div>
             <![endif]-->
             </div>
             <div id="demo-chooser">
                 <h3>Choose a demo</h3>
-                <ul id="demo-list">
-
-                </ul>
+              
             </div>
             <div id="help-screen">
                 <h3>Keyboard Controls</h3>
@@ -132,10 +138,7 @@
                     <p>Zoom: </p><div id="zoom-slider"></div>
                     <p>Speed: </p><div id="speed-slider"></div>
                     <p><button id="pause">Play</button>
-                    <button id="Help" onclick="$('#help-screen').toggle(); 
-                                               if(event.preventDefault) event.preventDefault(); 
-                                               else event.returnValue = false; 
-                                               return false;">Help</button></p>
+                    <button id="help" onclick="return false;">Help</button></p>
                 </form>
             </div>
             <div id="caption"></div>

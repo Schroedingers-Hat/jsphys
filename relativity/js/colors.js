@@ -2,8 +2,7 @@
  * Doppler shift a color temperature by simply multiplying it
  * by the Doppler factor.
  */
-function dopplerShiftColor(colorTemp, velocity, gamma)
-{
+function dopplerShiftColor(colorTemp, velocity, gamma) {
     // Assuming this is accurate for transverse doppler, too.
     var dopplerFactor = 1 / ( 1 + (velocity / c) ) / gamma;
     return colorTemp * dopplerFactor;
@@ -16,15 +15,14 @@ function dopplerShiftColor(colorTemp, velocity, gamma)
  * Uses a temperature cache to avoid recalculating colors for similar color
  * temperatures needlessly, saving significant computation time.
  */
-function tempToColor(colorTemp)
-{
+function tempToColor(colorTemp) {
     if (!tempToColor.cache)
         tempToColor.cache = {};
     
-    var roundedTemp = Math.exp(Math.round(Math.log(colorTemp) * dopplerRoundVal) / dopplerRoundVal);
+    var roundedTemp = Math.exp(Math.round(Math.log(colorTemp) * dopplerRoundVal) / 
+                               dopplerRoundVal);
     
-    if (!(roundedTemp.toString() in tempToColor.cache))
-    {
+    if (!(roundedTemp.toString() in tempToColor.cache)) {
         var xyz = spectrum_to_xyz(bb_spectrum(roundedTemp));
         var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
         
@@ -49,8 +47,7 @@ function wavelengthToColor(wavelength) {
 
     var roundedWl = Math.round(wavelength / 20) * 20;
     
-    if (!(roundedWl.toString() in wavelengthToColor.cache))
-    {
+    if (!(roundedWl.toString() in wavelengthToColor.cache)) {
         var xyz = spectrum_to_xyz(gauss_spectrum(roundedWl, 100, 20));
         var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
         
@@ -68,8 +65,7 @@ function wavelengthToColor(wavelength) {
  * digit to represent, pad it with a leading zero, or we'll end up with
  * RGGB or something.
  */
-function padRGB(color)
-{
+function padRGB(color) {
     if (color.length < 2)
         color = "0" + color;
     
@@ -99,8 +95,7 @@ function padRGB(color)
     components so the largest nonzero component has value 1.
     
 */
-function xyz_to_rgb(xyz)
-{
+function xyz_to_rgb(xyz) {
     var xc = xyz[0];
     var yc = xyz[1];
     var zc = xyz[2];
@@ -151,30 +146,15 @@ function xyz_to_rgb(xyz)
 
     If the requested RGB shade contains a negative weight for
     one of the primaries, it lies outside the colour gamut 
-    accessible from the given triple of primaries.  Desaturate
-    it by adding white, equal quantities of R, G, and B, enough
-    to make RGB all positive.
+    accessible from the given triple of primaries.  Clamp it to 0.
     
 */
-function constrain_rgb(rgb)
-{
+function constrain_rgb(rgb) {
     var w;
     var r = Math.max(rgb[0], 0);
     var g = Math.max(rgb[1], 0);
     var b = Math.max(rgb[2], 0);
     
-//    /* Amount of white needed is w = - min(0, *r, *g, *b) */
-//    
-//    w = (0 < r) ? 0 : r;
-//    w = (w < g) ? w : g;
-//    w = (w < b) ? w : b;
-//    w = -w;
-//
-//    /* Add just enough white to make r, g, b all positive. */
-//    
-//    if (w > 0) {
-//        r += w;  g += w; b += w;
-//    }
     return [r, g, b];
 }
 
@@ -183,18 +163,11 @@ function constrain_rgb(rgb)
     Normalise RGB components so that none have a value greater than 1.
     
 */
-function norm_rgb(rgb)
-{
+function norm_rgb(rgb) {
     var r = rgb[0];
     var g = rgb[1];
     var b = rgb[2];
     
-    /*if (r > 1.0 || g > 1.0 || b > 1.0) {
-        var greatest = Math.max(r, Math.max(g, b));
-        r /= greatest;
-        g /= greatest;
-        b /= greatest;
-    }*/
     if (r > 1.0)
         r = 1.0;
     if (g > 1.0)
@@ -218,10 +191,8 @@ function norm_rgb(rgb)
 
             x + y + z = 1.
 */
-function spectrum_to_xyz(spectrum)
-{
-    var i;
-    var lambda, X = 0, Y = 0, Z = 0, XYZ;
+function spectrum_to_xyz(spectrum) {
+    var X = 0, Y = 0, Z = 0, XYZ;
 
     /* CIE colour matching functions xBar, yBar, and zBar for
        wavelengths from 380 through 780 nanometers, every 5
@@ -269,9 +240,7 @@ function spectrum_to_xyz(spectrum)
     ];
 
     for (var i = 0, lambda = 380; lambda < 780.1; i++, lambda += 5) {
-        var Me;
-
-        Me = spectrum(lambda);
+        var Me = spectrum(lambda);
         X += Me * cie_colour_match[i][0];
         Y += Me * cie_colour_match[i][1];
         Z += Me * cie_colour_match[i][2];
@@ -284,8 +253,7 @@ function spectrum_to_xyz(spectrum)
 
     Calculate, by Planck's radiation law, the emittance of a black body
     of temperature bbTemp at the given wavelength (in metres).  */
-function bb_spectrum(temperature)
-{
+function bb_spectrum(temperature) {
     return function(wavelength) {
         var wlm = wavelength * 1e-9;   /* Wavelength in meters */
 
@@ -305,5 +273,5 @@ function gauss_spectrum(center, a, stddev) {
     return function(wavelength) {
         return a * Math.pow(Math.E, -(Math.pow(wavelength - center, 2)) / 
                (2 * Math.pow(stddev, 2)));
-    }
+    };
 }

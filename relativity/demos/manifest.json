@@ -1,0 +1,14 @@
+{"Simultaneity": 
+ [{"name": "Exam 1 question 4", "source": "exam_1"},
+  {"name": "Han and Greedo", "source": "han-greedo"},
+  {"name": "Relativistic snake", "source": "snake"},
+  {"name": "Relativistic ruler", "source": "ruler"}
+ ],
+ "Time dilation/length contraction":
+ [{"name": "Velocity addition", "source": "velocity-addition"},
+  {"name": "Relativistic flashlight", "source": "flashlight"},
+  {"name": "Relativistic Doppler shift", "source": "doppler-shift"},
+  {"name": "Twin paradox", "source": "twin-paradox"},
+  {"name": "Light clock", "source": "light-clock"}
+ ]
+}

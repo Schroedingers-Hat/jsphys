@@ -3,18 +3,6 @@
  */
 
 "use strict";
-//TODO: Pull all the keycodes out of here and put them in an array or something.
-//Will allow changing the controls to boot.
-window.onresize = function(event) {
-
-    if (typeof FlashCanvas === "undefined") {
-        var viewportWidth = $('body').width() - 16;
-        $("#canvas").attr('width', viewportWidth);
-        $("#minkowski").attr('width', viewportWidth);
-        $("#3DCanvas").attr('width', viewportWidth);
-        setSize(scene); 
-    }
-};
 
 var keys = {'q': 'rotateLeft', 'e': 'rotateRight',
             'w': 'boostUp', 's': 'boostDown',
@@ -183,7 +171,8 @@ function framePosClick(scene) {
             scene.options.neverShowFramePos = false;
             scene.options.alwaysShowFramePos = true;
             $("#framePos").html("Force off");
-        } else if (!scene.options.neverShowFramePos && scene.options.alwaysShowFramePos) {
+        } else if (!scene.options.neverShowFramePos &&
+                   scene.options.alwaysShowFramePos) {
             // we're currently in force on mode. switch to force off.
             scene.options.neverShowFramePos = true;
             scene.options.alwaysShowFramePos = false;
@@ -206,7 +195,8 @@ function vPosClick(scene) {
             scene.options.neverShowVisualPos = false;
             scene.options.alwaysShowVisualPos = true;
             $("#vPos").html("Force off");
-        } else if (!scene.options.neverShowVisualPos && scene.options.alwaysShowVisualPos) {
+        } else if (!scene.options.neverShowVisualPos && 
+                   scene.options.alwaysShowVisualPos) {
             // we're currently in force on mode. switch to force off.
             scene.options.neverShowVisualPos = true;
             scene.options.alwaysShowVisualPos = false;
@@ -254,19 +244,24 @@ function replay(scene) {
 }
 
 /**
- * Take an index into the demos array and play the matching demo.
+ * Load a demo from the given JSON source file.
  */
-function loadDemo(idx, scene) {
+function loadDemo(source, scene) {
     return function() {
-        scene.load(demos[idx], 0);
-        if (typeof FlashCanvas === "undefined") {
-            $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02, slide: zoomToSlider(scene),
-                                      value: -(Math.log(scene.zoom) / Math.LN2)});
-            $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, slide: setAnimSpeed(scene),
-                                       value: (Math.log(scene.timeScale + 1) / Math.LN2)});
-        }
-        $("#demo-chooser").hide();
-        scene.startAnimation();
+        $.getJSON('demos/' + source + '.json', function(demo) {
+            scene.load(demo, 0);
+            if (typeof FlashCanvas === "undefined") {
+                $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02,
+                                          slide: zoomToSlider(scene),
+                                          value: -(Math.log(scene.zoom) / Math.LN2)});
+                $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, 
+                                           slide: setAnimSpeed(scene),
+                                           value: (Math.log(scene.timeScale + 1) / Math.LN2)});
+            }
+        
+            $("#demo-chooser").hide();
+            scene.startAnimation();
+        });
     };
 }
 
@@ -274,12 +269,24 @@ function loadDemo(idx, scene) {
  * Builds the demo chooser menu by iterating through our provided demos array.
  */
 function loadDemoList(scene) {
-    var e;
-    var demo;
-    for (var idx = 0; idx < demos.length; idx++) {
-        e = $("<li>" + demos[idx].name + "</li>").click(loadDemo(idx, scene));
-        $("#demo-list").append(e);
-    }
+    $.getJSON('demos/manifest.json', function(demos) {
+        var e;
+        $.each(demos, function(category, list) {
+            $('#demo-chooser').append('<h4>' + category + '</h4>');
+            var ul = $('<ul></ul>').appendTo($('#demo-chooser'));
+            list.forEach(function(demo) {
+                e = $("<li>" + demo.name + "</li>").click(loadDemo(demo.source, scene));
+                ul.append(e);
+            });
+        });
+    });
+}
+
+function showHelp(event) {
+    $('#help-screen').toggle();
+    if(event.preventDefault) event.preventDefault(); 
+    else event.returnValue = false; 
+    return false;    
 }
 
 /**
@@ -325,4 +332,18 @@ $(document).ready(function() {
     $("#nextStep").click(nextStep(scene));
     $("#prevStep").click(prevStep(scene));
     $("#replayStep").click(replay(scene));
+    
+    $("#help").click(showHelp);
+    
+    $(window).resize(function() { 
+        return function(event) {
+            if (typeof FlashCanvas === "undefined") {
+                var viewportWidth = $('body').width() - 16;
+                $("#canvas").attr('width', viewportWidth);
+                $("#minkowski").attr('width', viewportWidth);
+                $("#3DCanvas").attr('width', viewportWidth);
+                scene.setSize();
+            }
+        };
+    }());
 });

@@ -118,8 +118,7 @@ function boostFrom3Vel(vx, vy, vz) {
  *
  * Resolution is the distance between points on the connecting lines.
  */
-function linesPadder(shape, resolution)
-{
+function linesPadder(shape, resolution) {
     var tDisplace = quat4.create();
     var newShape = [];
     var distance;
@@ -146,17 +145,20 @@ function linesPadder(shape, resolution)
 /**
  * Draw a sphere of radius r consisting of numPts points interconnected by lines
  */
-function aSphere(r, numPts){
-   var Sphere = [];
-   var numAngles = Math.ceil(Math.sqrt(numPts));
-   for (var i = 0; i < (numAngles); i++){
-       for (var j = 0; j < numAngles; j++) {
-           Sphere.push( quat4.create([
-               Math.cos(6.283 * j / numAngles) * Math.sin(3.1416 * (i+j / numAngles) / numAngles) * r,
-               Math.sin(6.283 * j / numAngles) * Math.sin(3.1416 * (i+j / numAngles) / numAngles) * r,
-               Math.cos(3.1416 * (i+j / numAngles) /  numAngles) * r,
-               0]));
-       }
+function aSphere(params) {
+    var r = params[0];
+    var numPts = params[1];
+    
+    var Sphere = [];
+    var numAngles = Math.ceil(Math.sqrt(numPts));
+    for (var i = 0; i < (numAngles); i++){
+	for (var j = 0; j < numAngles; j++) {
+            Sphere.push( quat4.create([
+		Math.cos(6.283 * j / numAngles) * Math.sin(3.1416 * (i+j / numAngles) / numAngles) * r,
+		Math.sin(6.283 * j / numAngles) * Math.sin(3.1416 * (i+j / numAngles) / numAngles) * r,
+		Math.cos(3.1416 * (i+j / numAngles) /  numAngles) * r,
+		0]));
+	}
     }
     return Sphere;
 }
@@ -164,13 +166,16 @@ function aSphere(r, numPts){
 /**
  * Draw a circle of radius r consisting of numPts points interconnected by lines
  */
-function aCircle(r, numPts) {
+function aCircle(params) {
+    var r = params[0];
+    var numPts = params[1];
+    
     var Circle = [];
-    for (var i = 0; i <= numPts; i++){
-        Circle.push( quat4.create([Math.cos(6.283 * i / numPts + twopi*3/4) * r, 
-                                   Math.sin(6.283 * i / numPts + twopi*3/4) * r, 
-                                   0, 
-                                   0]) );
+    for (var i = 0; i <= numPts; i++) {
+        Circle.push(quat4.create([Math.cos(6.283 * i / numPts + twopi*3/4) * r, 
+                                  Math.sin(6.283 * i / numPts + twopi*3/4) * r, 
+                                  0, 
+                                  0]));
     }
     return Circle;
 }
@@ -179,8 +184,11 @@ function aCircle(r, numPts) {
  * Draw a stick figure with head radius size/2 and width 2*size,
  * with resolution proportional to detail.
  */
-function aMan(size, detail){
-    var headPts = aCircle(size/2,detail);
+function aMan(params) {
+    var size = params[0];
+    var detail = params[1];
+    
+    var headPts = aCircle([size/2, detail]);
     var bodyPts = linesPadder([[0,-1.2*size,0,0],[-size,-0.2*size,0,0],[0,-1.2*size,0,0],
                    [size,-0.2*size,0,0],[0,-1.2*size,0,0],[0,-2*size,0,0],
                    [-size,-3*size,0,0],[0,-2*size,0,0],[size,-3*size,0,0]], 9*size / detail);
@@ -191,7 +199,10 @@ function aMan(size, detail){
  * Draw a potted plant with height roughly 2*size and resolution proportional
  * to detail.
  */
-function potPlant(size, detail) {
+function potPlant(params) {
+    var size = params[0];
+    var detail = params[1];
+    
     var flower = aCircle(size / 5, detail / 5);
     for (var i = 0; i <= detail; i++){
         flower.push( quat4.create([Math.cos(6.283 * i / detail + twopi*3/4) * (size / 5 + size / 3 * Math.abs(Math.sin(2.5*6.283 * i / detail))),
@@ -206,7 +217,10 @@ function potPlant(size, detail) {
     return flower.concat(stemPot);
 }
 
-function rAsteroid(size,detail) {
+function rAsteroid(params) {
+    var size = params[0];
+    var detail = params[1];
+    
     var rAsteroid = [];
     var randRadius = size / 2 * (Math.abs(Math.random()) + 0.2);
     var prevPt, nextPt;
