@@ -79,6 +79,9 @@ function zoomTo(scene, zoom) {
     scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
 
     drawLightCone(scene, scene.lCCtx);
+    if (!scene.drawing) {
+        scene.draw();
+    }
     updateSliders(scene);
 }
 
@@ -130,6 +133,10 @@ function setAnimSpeed(scene) {
     };
 }
 
+/**
+ * If the scene's zoom or speed has change, adjust the sliders in the UI to math
+ * the new values.
+ */
 function updateSliders(scene) {
     $("#zoom-slider").slider("option", "value", -(Math.log(scene.zoom) / Math.LN2));
 
