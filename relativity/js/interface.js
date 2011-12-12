@@ -133,6 +133,10 @@ function setAnimSpeed(scene) {
     };
 }
 
+/**
+ * If the scene's zoom or speed has change, adjust the sliders in the UI to math
+ * the new values.
+ */
 function updateSliders(scene) {
     $("#zoom-slider").slider("option", "value", -(Math.log(scene.zoom) / Math.LN2));
 
