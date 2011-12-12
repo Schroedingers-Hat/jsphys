@@ -42,6 +42,10 @@ function bindKeys(scene) {
     k.down('z', function(evt) {
         dopplerButtonClick(scene)(evt);
     });
+
+    k.down('h', function() {
+        showHelp();
+    });
 }
 
 /**
