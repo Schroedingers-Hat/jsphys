@@ -42,6 +42,10 @@ function bindKeys(scene) {
     k.down('z', function(evt) {
         dopplerButtonClick(scene)(evt);
     });
+
+    k.down('h', function() {
+        showHelp();
+    });
 }
 
 /**
@@ -122,6 +126,7 @@ function setAnimSpeed(scene) {
         if (ui.value < 0) {
             scene.timeScale = -Math.pow(2, -ui.value) + 1;
         }
+        updateSliders(scene);
     };
 }
 
@@ -130,12 +135,13 @@ function updateSliders(scene) {
 
     $("#speed-slider").slider("option", "value",
                               (Math.log(scene.timeScale + 1) / Math.LN2));
+    $("span#speed").text(Math.round(scene.timeScale * 10000) / 10 + "x");
 }
 
 /**
  * The Doppler button has three states:
- * - Force off: Force Doppler shifting to be disabled for all objects in the scene.
- * - Force on: Force Doppler shifting to be enabled for all objects in the scene.
+ * - Turn off: Force Doppler shifting to be disabled for all objects in the scene.
+ * - Turn on: Force Doppler shifting to be enabled for all objects in the scene.
  * - Default: Do whatever the demo wants.
  */
 function dopplerButtonClick(scene) {

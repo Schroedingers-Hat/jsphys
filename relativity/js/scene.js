@@ -267,7 +267,10 @@ Scene.prototype = {
         
         // Some UI drawing.
         this.drawCrosshairs();
-        if(this.curOptions.showText) this.drawInfo();
+        if (window.console && window.console.firebug && 
+            this.curOptions.showText) {
+            this.drawInfo();
+        }
         
         this.t = this.t + (timeStep);
         
@@ -374,12 +377,10 @@ Scene.prototype = {
         this.g.fill();
         this.g.fillStyle = "rgba(150,0,150,1)";
         this.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
-        this.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 50);
-        this.g.fillText("Time speedup: " + Math.round(this.timeScale * 10000) / 10 + "x", 30, 70);
-        if (window.console && window.console.firebug) {
-            this.g.fillText("Fps: " + Math.round((1000 / (-this.oldFrameStartTime + this.frameStartTime))), 30, 80);
-            this.g.fillText("c: " + c, 30, 90);
-        }
+        this.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 45);
+        this.g.fillText("Time speedup: " + Math.round(this.timeScale * 10000) / 10 + "x", 30, 60);
+        this.g.fillText("Fps: " + Math.round((1000 / (-this.oldFrameStartTime + this.frameStartTime))), 30, 75);
+        this.g.fillText("c: " + c, 30, 90);
     },
     
     /**
