@@ -126,6 +126,7 @@ function setAnimSpeed(scene) {
         if (ui.value < 0) {
             scene.timeScale = -Math.pow(2, -ui.value) + 1;
         }
+        updateSliders(scene);
     };
 }
 
@@ -134,6 +135,7 @@ function updateSliders(scene) {
 
     $("#speed-slider").slider("option", "value",
                               (Math.log(scene.timeScale + 1) / Math.LN2));
+    $("span#speed").text(Math.round(scene.timeScale * 10000) / 10 + "x");
 }
 
 /**
