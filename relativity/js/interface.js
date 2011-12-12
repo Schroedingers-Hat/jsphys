@@ -134,8 +134,8 @@ function updateSliders(scene) {
 
 /**
  * The Doppler button has three states:
- * - Force off: Force Doppler shifting to be disabled for all objects in the scene.
- * - Force on: Force Doppler shifting to be enabled for all objects in the scene.
+ * - Turn off: Force Doppler shifting to be disabled for all objects in the scene.
+ * - Turn on: Force Doppler shifting to be enabled for all objects in the scene.
  * - Default: Do whatever the demo wants.
  */
 function dopplerButtonClick(scene) {
@@ -144,17 +144,17 @@ function dopplerButtonClick(scene) {
             // we're currently in default mode. switch to force off.
             scene.options.neverDoppler = true;
             scene.options.alwaysDoppler = false;
-            $("#doppler").html("Force on");
+            $("#doppler").html("Turn on");
         } else if (scene.options.neverDoppler && !scene.options.alwaysDoppler) {
             // we're in force off mode. switch to force on.
             scene.options.neverDoppler = false;
             scene.options.alwaysDoppler = true;
-            $("#doppler").html("Default");
+            $("#doppler").html("Set default");
         } else {
             // switch to default.
             scene.options.neverDoppler = false;
             scene.options.alwaysDoppler = false;
-            $("#doppler").html("Force off");
+            $("#doppler").html("Turn off");
         }
         if (evt.preventDefault) evt.preventDefault();
         else evt.returnValue = false;
@@ -170,18 +170,18 @@ function framePosClick(scene) {
             // we're in default mode. switch to force on.
             scene.options.neverShowFramePos = false;
             scene.options.alwaysShowFramePos = true;
-            $("#framePos").html("Force off");
+            $("#framePos").html("Turn off");
         } else if (!scene.options.neverShowFramePos &&
                    scene.options.alwaysShowFramePos) {
             // we're currently in force on mode. switch to force off.
             scene.options.neverShowFramePos = true;
             scene.options.alwaysShowFramePos = false;
-            $("#framePos").html("Default");
+            $("#framePos").html("Set default");
         } else {
             // switch to default.
             scene.options.neverShowFramePos = false;
             scene.options.alwaysShowFramePos = false;
-            $("#framePos").html("Force on");
+            $("#framePos").html("Turn on");
         }
         if(event.preventDefault) event.preventDefault();
         else event.returnValue = false;
@@ -194,18 +194,18 @@ function vPosClick(scene) {
             // we're in default mode. switch to force on.
             scene.options.neverShowVisualPos = false;
             scene.options.alwaysShowVisualPos = true;
-            $("#vPos").html("Force off");
+            $("#vPos").html("Turn off");
         } else if (!scene.options.neverShowVisualPos && 
                    scene.options.alwaysShowVisualPos) {
             // we're currently in force on mode. switch to force off.
             scene.options.neverShowVisualPos = true;
             scene.options.alwaysShowVisualPos = false;
-            $("#vPos").html("Default");
+            $("#vPos").html("Set default");
         } else {
             // switch to default.
             scene.options.neverShowVisualPos = false;
             scene.options.alwaysShowVisualPos = false;
-            $("#vPos").html("Force on");
+            $("#vPos").html("Turn on");
         }
 
         if(event.preventDefault) event.preventDefault();
