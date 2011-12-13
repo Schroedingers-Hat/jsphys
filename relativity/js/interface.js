@@ -278,11 +278,16 @@ function loadDemo(demo, scene) {
 
         // Add this demo to the browser history so users can share links, use
         // back/forward, and so on
-        if (window.history && window.location.hash !== ("#" + demo.source)) {
-            window.history.pushState({
-                demo: demo
-            }, demo.name, "#" + demo.source);
-        }
+        if (window.history)
+            if (window.location.hash !== ("#" + demo.source)) {
+                window.history.pushState({
+                    demo: demo
+                }, demo.name, "#" + demo.source);
+            } else {
+                // Necessary in case the user has followed a direct link to this
+                // demo, in which case the history state would not be set yet
+                window.history.replaceState({demo: demo}, demo.name);
+            }
     };
 }
 
@@ -369,7 +374,6 @@ $(document).ready(function() {
     if (window.location.hash !== "") {
         var demo = window.location.hash.substr(1);
         loadDemo({source: demo, name: demo}, scene)();
-        window.history.replaceState({demo: {source: demo, name: demo}}, demo);
     }
 
     $(window).resize(function() { 
