@@ -259,10 +259,10 @@ function replay(scene) {
 /**
  * Load a demo from the given JSON source file.
  */
-function loadDemo(source, scene) {
+function loadDemo(demo, scene) {
     return function() {
-        $.getJSON('demos/' + source + '.json', function(demo) {
-            scene.load(demo, 0);
+        $.getJSON('demos/' + demo.source + '.json', function(data) {
+            scene.load(data, 0);
             if (typeof FlashCanvas === "undefined") {
                 $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02,
                                           slide: zoomToSlider(scene),
@@ -275,6 +275,14 @@ function loadDemo(source, scene) {
             $("#demo-chooser").hide();
             scene.startAnimation();
         });
+
+        // Add this demo to the browser history so users can share links, use
+        // back/forward, and so on
+        if (window.history && window.location.hash !== ("#" + demo.source)) {
+            window.history.pushState({
+                demo: demo
+            }, demo.name, "#" + demo.source);
+        }
     };
 }
 
@@ -288,7 +296,7 @@ function loadDemoList(scene) {
             $('#demo-chooser').append('<h4>' + category + '</h4>');
             var ul = $('<ul></ul>').appendTo($('#demo-chooser'));
             list.forEach(function(demo) {
-                e = $("<li>" + demo.name + "</li>").click(loadDemo(demo.source, scene));
+                e = $("<li>" + demo.name + "</li>").click(loadDemo(demo, scene));
                 ul.append(e);
             });
         });
@@ -348,6 +356,22 @@ $(document).ready(function() {
     
     $("#help").click(showHelp);
     
+    // Capture back/forward events and take them to the corresponding demo,
+    // if they've viewed more than one.
+    window.onpopstate = function(e) {
+        if (e.state) {
+            loadDemo(e.state.demo, scene)();
+        }
+    };
+
+    // If the URL hash contains a demo, load the specified demo and place it
+    // in the history so we can go back to it later.
+    if (window.location.hash !== "") {
+        var demo = window.location.hash.substr(1);
+        loadDemo({source: demo, name: demo}, scene)();
+        window.history.replaceState({demo: {source: demo, name: demo}}, demo);
+    }
+
     $(window).resize(function() { 
         return function(event) {
             if (typeof FlashCanvas === "undefined") {
