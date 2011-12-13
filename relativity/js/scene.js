@@ -198,7 +198,7 @@ Scene.prototype = {
             // Some extendedObjects have custom shapes, such as asteroids
             // and stick figures, which are generated here.
             if (Object.prototype.toString.apply(obj.shape) !== '[object Array]') {
-                obj.shape = window[obj.shape.type](obj.shape.params);
+                obj.shape = window["shape_" + obj.shape.type](obj.shape.params);
             }
             thingy = new extendedObject(obj.x, obj.p,
                                         obj.label, obj.options, obj.shape);
