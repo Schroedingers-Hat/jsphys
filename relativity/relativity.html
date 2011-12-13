@@ -101,68 +101,66 @@
 
     <body>
         <div style="position:relative">
-            <canvas id="canvas" height="500">You need a browser that supports canvas to view this simulation.
-            <p>Firefox 3.6+, a recent version of Google Chrome, Safari 4+ or Opera 10+ are recommended.
-            <p>Firefox 2+, any version of Google Chrome, Safari 3.2+, Opera 9+ and IE8 should work with some missing features.</canvas>
+            <canvas id="canvas" height="500"><p>You need a browser that supports canvas to view this simulation.</p>
+            <p>Firefox 3.6+, a recent version of Google Chrome, Safari 4+ or Opera 10+ are recommended.</p>
+            <p>Firefox 2+, any version of Google Chrome, Safari 3.2+, Opera 9+ and IE8 should work with some missing features.</p></canvas>
             <!--[if IE 8]>
             <div style="width:1000px;height:500px;position:absolute;float:left;z-index:6000;" onclick="clickHandler(event)">&nbsp;</div>
             <![endif]-->
-            </div>
-            <div id="demo-chooser">
-                <h3>Choose a demo</h3>
-              
-            </div>
-            <div id="help-screen">
-                <h3>Keyboard Controls</h3>
-                <br> w, a, s and d: Accelerate 
-                <br> q and e: Rotate left and right (yaw) 
-                <br> 1 and 2: Rotate up and down (pitch)
-                <br> 3: Show 3D 
-                <br> z: Toggle Doppler effect, 3 state -- on, default, off.
-                <br> x: Toggle absolute positions. Also 3 state.
-                <br> c: Toggle visible positions. Also 3 state.
-                <br> t: Toggle display time.
-                <br> p: Toggle display positions.
-                <br> - and =: Zoom in and out
-                <br> [ and ]: Speedup, slowdown time
-                <br> \: Reverse time
-                <br> , and .: Zoom in and out in time axis on Minkowski diagram
-                <br> space: Fire photon (rasteroids only).
-                <br> h: Toggle this screen.
-            </div>
-            <div id="controls">
-                <form name="controls">
-                    <p>Doppler effect: <button id="doppler">Turn off</button></p>
-                    <p>Absolute positions: <button id="framePos">Turn on</button></p>
-                    <p>Apparent positions: <button id="vPos">Turn on</button></p>
-                    <p>Zoom: </p><div id="zoom-slider"></div>
-                    <p>Speed: <span id="speed"></span></p><div id="speed-slider"></div>
-                    <p><button id="pause">Play</button>
-                    <button id="help" onclick="return false;">Help</button></p>
-                </form>
-            </div>
-            <div id="caption"></div>
-            <div id="steps">
-                <button id="prevStep">&lt; Previous step</button>
-                <button id="replayStep">Replay</button>
-                <button id="nextStep">Next step &gt;</button><br/>
-                <button onclick="$('#demo-chooser').show();">Choose new demo</button>
-            </div>
+        </div>
+        <div id="demo-chooser">
+          <h3>Choose a demo</h3>
+            
+        </div>
+        <div id="help-screen">
+          <h3>Keyboard Controls</h3>
+          <br> w, a, s and d: Accelerate 
+          <br> q and e: Rotate left and right (yaw) 
+          <br> 1 and 2: Rotate up and down (pitch)
+          <br> 3: Show 3D 
+          <br> z: Toggle Doppler effect, 3 state -- on, default, off.
+          <br> x: Toggle absolute positions. Also 3 state.
+          <br> c: Toggle visible positions. Also 3 state.
+          <br> t: Toggle display time.
+          <br> p: Toggle display positions.
+          <br> - and =: Zoom in and out
+          <br> [ and ]: Speedup, slowdown time
+          <br> \: Reverse time
+          <br> , and .: Zoom in and out in time axis on Minkowski diagram
+          <br> space: Fire photon (rasteroids only).
+          <br> h: Toggle this screen.
+        </div>
+        <div id="controls">
+          <form name="controls">
+            <p>Doppler effect: <button id="doppler">Turn off</button></p>
+            <p>Absolute positions: <button id="framePos">Turn on</button></p>
+            <p>Apparent positions: <button id="vPos">Turn on</button></p>
+            <p>Zoom: </p><div id="zoom-slider"></div>
+            <p>Speed: <span id="speed"></span></p><div id="speed-slider"></div>
+            <p><button id="pause">Play</button>
+            <button id="help" onclick="return false;">Help</button></p>
+          </form>
+        </div>
+        <div id="caption"></div>
+        <div id="steps">
+          <button id="prevStep">&lt; Previous step</button>
+          <button id="replayStep">Replay</button>
+          <button id="nextStep">Next step &gt;</button><br/>
+          <button onclick="$('#demo-chooser').show();">Choose new demo</button>
         </div>
         <div style="position:relative">
-            <canvas id="minkowski" height = "500"></canvas>
+          <canvas id="minkowski" height="500"></canvas>
         </div>
         <div style="position:relative">
-            <canvas id="3DCanvas" height = "500"></canvas>
-		
+          <canvas id="3DCanvas" height="500"></canvas>
         </div>
-		<script type="text/javascript">
-		/* load canvas.text.js only when needed */
-		if($('#canvas')[0].getContext && !$('#canvas')[0].getContext("2d").fillText) {
-			document.write('<script src="../lib/canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
-			document.write('<script src="../lib/canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
-		    document.write('<script src="../lib/canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
-		}
+        <script type="text/javascript">
+          /* load canvas.text.js only when needed */
+          if($('#canvas')[0].getContext && !$('#canvas')[0].getContext("2d").fillText) {
+          document.write('<script src="../lib/canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
+          document.write('<script src="../lib/canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
+          document.write('<script src="../lib/canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
+          }
 		</script>
     </body>
 </html>
