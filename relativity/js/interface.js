@@ -278,7 +278,7 @@ function loadDemo(demo, scene) {
 
         // Add this demo to the browser history so users can share links, use
         // back/forward, and so on
-        if (window.history)
+        if (window.history) {
             if (window.location.hash !== ("#" + demo.source)) {
                 window.history.pushState({
                     demo: demo
@@ -288,6 +288,7 @@ function loadDemo(demo, scene) {
                 // demo, in which case the history state would not be set yet
                 window.history.replaceState({demo: demo}, demo.name);
             }
+        }
     };
 }
 
