@@ -15,8 +15,11 @@ function photon(X, V, label, options) {
 
     this.X0 = quat4.create(X);
     this.rPast = 1;
-    if (this.options.fired) this.fired = this.options.fired;
-    else this.fired = false;
+    if (this.options.fired) {
+        this.fired = this.options.fired;
+    } else {
+        this.fired = false;
+    }
     this.XInt = quat4.create();
     this.V = quat4.create(V);
     this.nonTimeLike = true;
@@ -27,18 +30,16 @@ function photon(X, V, label, options) {
         quat4.subtract(this.endPt, this.initialPt, this.V);
     }
     /**
-     * Normalize V such that V[3] = c and V[3]^2-V[2]^2-V[1]^2-V[0]^2 = 0
-     * (i.e. |V| (including the metric) is 0).
-     * Note that this means V represents dX/dt not dX/dtau in this case, as each
-     * component of dX/dtau would be infinite.
+     * Normalize V so it represents something akin to momentum
+     * Is proportional to momentum with units of per metre for now.
      */
-    this.V[3] = c;
+    this.V[3] = 1/this.wavelength;
     vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
     this.displace = quat4.create();
 
     this.uDisplacement = quat4.create();
     this.displace = quat4.create();
-    quat4.scale(this.V, -this.X0[3] / c, this.displace);
+    quat4.scale(this.V, -this.X0[3] / this.V[3], this.displace);
 
     // Bring it to now.
     quat4.add(this.X0, this.displace);
@@ -46,13 +47,16 @@ function photon(X, V, label, options) {
 
 photon.prototype.update = function(timeStep) {
     // Bring it to now.
-    quat4.scale(this.V, timeStep/c, this.displace);
+    quat4.scale(this.V, timeStep/this.V[3], this.displace);
+    // No c needed here, the speed of light dependance comes from timeStep being in metres.
     quat4.add(this.X0, this.displace);
-    // Move it back in time one timeStep (so we go forward in time)
-    this.X0[3] = this.X0[3] - timeStep * this.V[3] / c;
-    this.initialPt[3] = this.initialPt[3] - timeStep * this.V[3] / c;
+    // Move it back in time one timeStep (so we go forward in time and wind up at now)
+    this.X0[3] = this.X0[3] - timeStep;
+    this.initialPt[3] = this.initialPt[3] - timeStep;
     // If there's an end point, move that back in time, too.
-    if(this.endPt) this.endPt[3] = this.endPt[3] - timeStep * this.V[3] / c;
+    if(this.endPt) {
+        this.endPt[3] = this.endPt[3] - timeStep;
+    }
     this.calcLightCone();
 };
 
@@ -79,25 +83,29 @@ photon.prototype.calcLightCone = function() {
     
     // Assuming V is dX/dt
     quat4.add(this.X0, quat4.scale(this.V, intTime / c, tempQuat4), this.XInt);
-}
+};
 
 photon.prototype.changeFrame = function(translation1, rotation, translation2) {
     // Translate.
     quat4.subtract(this.X0, translation1);
     quat4.subtract(this.initialPt, translation1);
-    if(this.endPt)  quat4.subtract(this.endPt, translation1);
+    if(this.endPt) {
+        quat4.subtract(this.endPt, translation1);
+    }
 
     // Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
     mat4.multiplyVec4(rotation, this.initialPt);
-    if (this.endPt) mat4.multiplyVec4(rotation, this.endPt);
+    if (this.endPt) {
+        mat4.multiplyVec4(rotation, this.endPt);
+    }
     mat4.multiplyVec4(rotation, this.V);
 
     // Renormalize this.V.
     // The photon traces a null path, so the four-magnitude of its velocity 
     // should be zero.
-    this.V[3] = c;
-    vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
+//    this.V[3] = c;
+//    vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
 
     // Point is now at wrong time. Find displacement to current time.
     quat4.scale(this.V, -this.X0[3] / this.V[3], this.uDisplacement);
@@ -113,7 +121,9 @@ photon.prototype.changeFrame = function(translation1, rotation, translation2) {
         quat4.add(this.X0, this.uDisplacement);
         // Wrong time again;
         quat4.subtract(this.initialPt, translation2);
-        if(this.endPt) quat4.subtract(this.endPt, translation2);
+        if(this.endPt) {
+            quat4.subtract(this.endPt, translation2);
+        }
     }
 };
 
@@ -124,12 +134,16 @@ photon.prototype.draw = function(scene) {
         if (this.endPt) {
             if ((this.initialPt[3] < 0) && (this.endPt[3] > 0)) {
                 this.drawNow(scene);
-                if (this.options.showCircle) this.drawCircle(scene);
+                if (this.options.showCircle) {
+                    this.drawCircle(scene);
+                }
             }
         } else {
             if (this.initialPt[3] < 0) {
                 this.drawNow(scene);
-                if (this.options.showCircle) this.drawCircle(scene);
+                if (this.options.showCircle) {
+                    this.drawCircle(scene);
+                }
             }
         }
     }
@@ -142,11 +156,13 @@ photon.prototype.draw = function(scene) {
 };
 
 photon.prototype.drawXT = function(scene) {
+    var tvisE;
+    var xvisE;
     var xvis  = this.initialPt[0] / scene.zoom;
     var tvis  = this.initialPt[3] / scene.timeZoom / c;
     if (this.endPt) {
-        var xvisE  = this.endPt[0] / scene.zoom;
-        var tvisE  = this.endPt[3] / scene.timeZoom / c;
+        xvisE  = this.endPt[0] / scene.zoom;
+        tvisE  = this.endPt[3] / scene.timeZoom / c;
     }
 
     var xyScale = scene.mWidth / scene.mHeight;
@@ -209,7 +225,10 @@ photon.prototype.drawXT = function(scene) {
 
 photon.prototype.drawNow = function(scene) {
     if (this.initialPt[3] < 0) {
-        scene.g.fillStyle = wavelengthToColor(this.wavelength);
+        // As you can't see or reflect light off of a photon, doppler shift in this context represents something a bit different.
+        // In the unphysical view the photon is shown with the wavelength corresponding to its momentum in the current frame.
+        // V is proportional to momentum in units of per meter for now.
+        scene.g.fillStyle = wavelengthToColor(1/this.V[3]);
         scene.g.beginPath();
         scene.g.arc(this.X0[0] / scene.zoom + scene.origin[0],
                     -this.X0[1] / scene.zoom + scene.origin[1],
@@ -227,7 +246,7 @@ photon.prototype.drawPast = function(scene) {
                     2, 0, twopi, true);
         scene.g.fill();
     }
-}
+};
 
 photon.prototype.drawCircle = function(scene) {
     scene.g.strokeStyle = "#fff";

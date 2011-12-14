@@ -339,6 +339,7 @@ $(document).ready(function() {
     $("#3DCanvas").attr('width', viewportWidth);
     $('#help-screen').hide();
     var scene = new Scene();
+//    window.scene = scene; // For debugging purposes. Cannot find anything in the DOM without a global reference.
 
     loadDemoList(scene);
     bindKeys(scene);
@@ -388,4 +389,5 @@ $(document).ready(function() {
             }
         };
     }());
+
 });
