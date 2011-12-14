@@ -202,6 +202,10 @@ Scene.prototype = {
             // and stick figures, which are generated here.
             if (Object.prototype.toString.apply(obj.shape) !== '[object Array]') {
                 obj.shape = window["shape_" + obj.shape.type](obj.shape.params);
+            } else {
+                // Pad the shape with extra intermediate points, so it can 
+                // aberrate and contract more accurately
+                obj.shape = linesPadder(obj.shape, this.width * this.zoom / 50);
             }
             thingy = new extendedObject(obj.x, obj.p,
                                         obj.label, obj.options, obj.shape);
