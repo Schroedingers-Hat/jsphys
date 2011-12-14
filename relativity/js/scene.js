@@ -138,10 +138,10 @@ Scene.prototype = {
 
         drawLightCone(this, this.lCCtx);
 
-        this.boost = {"left": boostFrom3Vel(-0.05 * c, 0, 0),
-                      "right": boostFrom3Vel(0.05 * c, 0, 0),
-                      "up": boostFrom3Vel(0, 0.05 * c, 0),
-                      "down": boostFrom3Vel(0, -0.05 * c, 0)};
+        this.boost = {"left": boostFrom3Vel(-0.02 * c, 0, 0),
+                      "right": boostFrom3Vel(0.02 * c, 0, 0),
+                      "up": boostFrom3Vel(0, 0.02 * c, 0),
+                      "down": boostFrom3Vel(0, -0.02 * c, 0)};
 
         demo.steps[step].objects.forEach(this.createObject, this);
 

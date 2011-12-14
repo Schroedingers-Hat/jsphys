@@ -6,7 +6,7 @@
  */
 function photon(X, V, label, options) {
     this.options = options;
-    
+    this.label = label;
     if (this.options.wavelength) {
         this.wavelength = this.options.wavelength;
     } else {
@@ -78,7 +78,9 @@ photon.prototype.calcLightCone = function() {
         this.XInt[2] = Infinity;
         this.XInt[3] = Infinity;
     }
-    
+   
+
+
     var intTime = -xDotx / (2 * vDotx); 
     
     // Assuming V is dX/dt
@@ -234,6 +236,10 @@ photon.prototype.drawNow = function(scene) {
                     -this.X0[1] / scene.zoom + scene.origin[1],
                     2, 0, twopi, true);
         scene.g.fill();
+        if (this.label !== "") {
+            scene.g.fillText(this.label, this.X0[0] / scene.zoom + scene.origin[0], 
+                                        -this.X0[1] / scene.zoom + scene.origin[1] + 10);
+        }
     }
 };
 
