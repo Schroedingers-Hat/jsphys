@@ -45,10 +45,10 @@ function wavelengthToColor(wavelength) {
     if (!wavelengthToColor.cache)
         wavelengthToColor.cache = {};
 
-    var roundedWl = Math.round(wavelength / 20) * 20;
+    var roundedWl = Math.round(wavelength);
     
     if (!(roundedWl.toString() in wavelengthToColor.cache)) {
-        var xyz = spectrum_to_xyz(gauss_spectrum(roundedWl, 100, 20));
+        var xyz = spectrum_to_xyz(gauss_spectrum(roundedWl, 1e9, 1));
         var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
         
         var color = "#" + padRGB(Math.floor(rgb[0] * 255).toString(16)) + 
@@ -246,7 +246,11 @@ function spectrum_to_xyz(spectrum) {
         Z += Me * cie_colour_match[i][2];
     }
     XYZ = (X + Y + Z);
-    return [X / XYZ, Y / XYZ, Z / XYZ, Y];
+    if ( XYZ > 0 ) {
+        return [X / XYZ, Y / XYZ, Z / XYZ, Y];
+    } else {
+        return [0, 0, 0, 0];
+    }
 }
 
 /*                            BB_SPECTRUM

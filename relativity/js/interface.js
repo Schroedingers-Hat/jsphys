@@ -73,10 +73,10 @@ function clickHandler(scene) {
 function zoomTo(scene, zoom) {
     scene.zoom = zoom;
 
-    scene.boost.right = boostFrom3Vel( 0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0, 0);
-    scene.boost.left  = boostFrom3Vel(-0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0, 0);
-    scene.boost.up    = boostFrom3Vel(0,  0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
-    scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
+    scene.boost.right = boostFrom3Vel( 0.02 * Math.min(1, Math.max(2, scene.zoom)) , 0, 0);
+    scene.boost.left  = boostFrom3Vel(-0.02 * Math.min(1, Math.max(2, scene.zoom)) , 0, 0);
+    scene.boost.up    = boostFrom3Vel(0,  0.02 * Math.min(1, Math.max(2, scene.zoom)) , 0);
+    scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(1, Math.max(2, scene.zoom)) , 0);
 
     drawLightCone(scene, scene.lCCtx);
     if (!scene.drawing) {
@@ -339,6 +339,7 @@ $(document).ready(function() {
     $("#3DCanvas").attr('width', viewportWidth);
     $('#help-screen').hide();
     var scene = new Scene();
+//    window.scene = scene; // For debugging purposes. Cannot find anything in the DOM without a global reference.
 
     loadDemoList(scene);
     bindKeys(scene);
@@ -388,4 +389,5 @@ $(document).ready(function() {
             }
         };
     }());
+
 });
