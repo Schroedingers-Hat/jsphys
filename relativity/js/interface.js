@@ -7,7 +7,9 @@
 var keys = {'q': 'rotateLeft', 'e': 'rotateRight',
             'w': 'boostUp', 's': 'boostDown',
             'a': 'boostLeft', 'd': 'boostRight',
-            'space': 'fire'};
+            'left':'boostLeft', 'right': 'boostRight', 
+            'up': 'boostUp', 'down':'boostDown',
+            'space': 'fire', 'page_up' : 'zoomIn', 'page_down' : 'zoomOut'};
 var k = new Kibo();
 
 /**
@@ -22,6 +24,7 @@ function bindKeys(scene) {
                 requestAnimFrame(drawScene(scene));
                 scene.keyDown = true;
             }
+            return false;
         }
     });
 
@@ -39,9 +42,22 @@ function bindKeys(scene) {
         scene.options.showPos = !scene.options.showPos;
     });
 
+    k.down('x', function(evt) {
+        framePosClick(scene)(evt);
+    });
+
+    k.down('c', function(evt) {
+        vPosClick(scene)(evt);
+    });
+
     k.down('z', function(evt) {
         dopplerButtonClick(scene)(evt);
     });
+
+    k.down('3', function(evt) {
+        scene.toggle3D();
+    });
+
 
     k.down('h', function() {
         showHelp();
@@ -73,14 +89,13 @@ function clickHandler(scene) {
 function zoomTo(scene, zoom) {
     scene.zoom = zoom;
 
-    scene.boost.right = boostFrom3Vel( 0.02 * Math.min(1, Math.max(2, scene.zoom)) , 0, 0);
-    scene.boost.left  = boostFrom3Vel(-0.02 * Math.min(1, Math.max(2, scene.zoom)) , 0, 0);
-    scene.boost.up    = boostFrom3Vel(0,  0.02 * Math.min(1, Math.max(2, scene.zoom)) , 0);
-    scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(1, Math.max(2, scene.zoom)) , 0);
+    scene.boost.right = boostFrom3Vel( 0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0, 0);
+    scene.boost.left  = boostFrom3Vel(-0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0, 0);
+    scene.boost.up    = boostFrom3Vel(0,  0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0);
+    scene.boost.down  = boostFrom3Vel(0, -0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0);
 
-    drawLightCone(scene, scene.lCCtx);
     if (!scene.drawing) {
-        scene.draw();
+        drawScene(scene);
     }
     updateSliders(scene);
 }
@@ -339,19 +354,13 @@ $(document).ready(function() {
     $("#3DCanvas").attr('width', viewportWidth);
     $('#help-screen').hide();
     var scene = new Scene();
-//    window.scene = scene; // For debugging purposes. Cannot find anything in the DOM without a global reference.
+        window.scene = scene; // For debugging purposes. Cannot find anything in the DOM without a global reference.
 
     loadDemoList(scene);
     bindKeys(scene);
     $('#pause').click(doPause(scene));
     $("#canvas").click(clickHandler(scene));
 
-    // To make spacebar work as fire key, disable its usual behavior
-    $(window).keypress(function (event) {
-        if (event.which === 32) {
-            event.preventDefault();
-        }
-    });
 
     $("#doppler").click(dopplerButtonClick(scene));
     $('#framePos').click(framePosClick(scene));

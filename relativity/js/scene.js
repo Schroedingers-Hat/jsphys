@@ -106,6 +106,9 @@ Scene.prototype = {
      * Load the specified demo at the given step. (The step indexes into
      * the demo's steps array.)
      */
+    toggle3D: function() {
+        this.curOptions.show3D = !this.curOptions.show3D;
+    },
     load: function(demo, step) {
         this.carray = [];
         this.curStep = step;
@@ -340,10 +343,10 @@ Scene.prototype = {
             this.changeArrayFrame(nullQuat4, boost);
         }
         if (this.actions.zoomOut === true) {
-            zoomTo(this.zoom * 1.05);
+            zoomTo(this,this.zoom * 1.05);
         }
         if (this.actions.zoomIn === true) {
-            zoomTo(this.zoom / 1.05);
+            zoomTo(this,this.zoom / 1.05);
         }
         if (this.actions.timeZoomIn === true) {
             this.timeZoom = this.timeZoom / 1.05;
