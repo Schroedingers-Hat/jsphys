@@ -375,13 +375,9 @@ Scene.prototype = {
      */
     drawInfo: function() {
         this.g.fillStyle = "rgba(100,100,100,0.3)";
-        this.g.beginPath();
-        this.g.moveTo(10,10);
-        this.g.lineTo(150,10);
-        this.g.lineTo(150,110);
-        this.g.lineTo(10,110);
-        this.g.closePath();
+        this.g.rect(10, 10, 140, 100);
         this.g.fill();
+        
         this.g.fillStyle = "rgba(150,0,150,1)";
         this.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
         this.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 45);
