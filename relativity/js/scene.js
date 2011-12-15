@@ -163,7 +163,7 @@ Scene.prototype = {
      * Change the current demo caption to the chosen text.
      */
     pushCaption: function(caption) {
-        $('#caption').html(caption);
+        $('#caption-text').html(caption);
     },
     
     /**

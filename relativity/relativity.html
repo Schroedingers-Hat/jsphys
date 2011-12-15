@@ -56,6 +56,10 @@
             }
 
             #controls button {
+                width: 5em;
+            }
+
+            #steps button, #controls button {
                 background-color: #000;
                 opacity: 0.6;
                 font-size: 10pt;
@@ -63,9 +67,9 @@
                 border-width: 0 1px 0 0;
                 border-style: solid;
                 border-color: #333;
-                width: 5em;
                 padding: 0.5em 1em;
                 float: left;
+                cursor: pointer;
             }
 
             #speed {
@@ -120,12 +124,21 @@
             }
 
             #steps {
-                text-align: center;
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+
+            #steps button {
+                width: 13em;
+                text-align: left;
             }
 
             #caption {
                 background-color: #333;
                 padding: 1em;
+                float: left;
+                margin-right: 13em;
             }
         </style>
     </head>
@@ -173,20 +186,21 @@
             <p>Doppler effect: <button id="doppler">Turn off</button></p>
             <p>Absolute positions: <button id="framePos">Turn on</button></p>
             <p>Apparent positions: <button id="vPos">Turn on</button></p>
-            <p>
-            <p>
             <button id="help" onclick="return false;">Help</button></p>
           </form>
         </div> -->
-        <div id="caption"></div>
-        
-        <!--<div id="steps">
-          <button id="prevStep">&lt; Previous step</button>
-          
-          <button id="nextStep">Next step &gt;</button><br/>
-          <button onclick="$('#demo-chooser').show();">Choose new demo</button>
-        </div>-->
         <div style="position:relative">
+          <div id="steps">
+            <button id="nextStep">Next &raquo;</button><br/>
+            <button id="prevStep">&laquo; Previous</button><br/>
+            <button onclick="$('#demo-chooser').show();">Choose new demo</button>
+          </div>
+          <div id="caption">
+            <p id="caption-text">Welcome to the jsphys relativity simulator. Choose a demonstration to start with and hit Play.</p>
+          </div>
+        </div>
+        
+        <div style="position:relative;clear:both">
           <canvas id="minkowski" height="500"></canvas>
         </div>
         <div style="position:relative">
