@@ -24,16 +24,16 @@
             var tempArr = new Array(15);
             var offsetx, offsety;
             rend = new Renderer(scene,ctx);
-            for (var j = 0; j < 100000; j++){
+            for (var j = 0; j < 10000; j++){
             offsetx = Math.floor(Math.random() * 800) + 100;
             offsety = Math.floor(Math.random() * 500) + 50;
 
-            tempArr[0] = Math.floor(Math.random() * 20) + offsetx;
-            tempy[0] = Math.floor(Math.random() * 10) + offsety;
-            tempArr[2] = Math.floor(Math.random() * 20) + offsetx;
-            tempy[1] = Math.floor(Math.random() * 10) + offsety;
-            tempArr[4] = Math.floor(Math.random() * 20) + offsetx;
-            tempy[2] = Math.floor(Math.random() * 10) + offsety;
+            tempArr[0] = Math.floor(Math.random() * 50) + offsetx;
+            tempy[0] = Math.floor(Math.random() * 30) + offsety;
+            tempArr[2] = Math.floor(Math.random() * 50) + offsetx;
+            tempy[1] = Math.floor(Math.random() * 30) + offsety;
+            tempArr[4] = Math.floor(Math.random() * 50) + offsetx;
+            tempy[2] = Math.floor(Math.random() * 30) + offsety;
             tempy.sort(function(a,b){return a-b;});
             tempArr[1] = tempy[0];
             tempArr[3] = tempy[1];
@@ -45,7 +45,7 @@
             triArr.push(tempArr.concat());
         }
         console.profile('moo');
-        rend.drawTri(triArr,canvasData);
+        drawTri(triArr,canvasData);
         console.profileEnd('moo');
         ctx.putImageData(canvasData, 0, 0);
         }

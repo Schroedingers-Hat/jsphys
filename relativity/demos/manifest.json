@@ -12,6 +12,7 @@
   {"name": "Light clock", "source": "light-clock"}
  ],
  "Debugging and other nonsense":
- [{"name": "Rainbow", "source": "rainbow"}]
+ [{"name": "Rainbow", "source": "rainbow"},
+ {"name": "Shader test", "source": "flashnew"}]
 
 }

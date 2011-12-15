@@ -20,6 +20,7 @@ function Scene() {
         FlashCanvas.initElement($('#3DCanvas')[0]);
     }
     var defFont = "0.8em Helvetiker, helvetica, arial, sans-serif";
+    this.triArray = [];
     this.g = $('#canvas')[0].getContext("2d");
     this.h = $('#minkowski')[0].getContext("2d");
     this.TDC = $('#3DCanvas')[0].getContext("2d");
@@ -205,7 +206,8 @@ Scene.prototype = {
             } else {
                 // Pad the shape with extra intermediate points, so it can 
                 // aberrate and contract more accurately
-                obj.shape = linesPadder(obj.shape, this.width * this.zoom / 100);
+//                obj.shape = linesPadder(obj.shape, this.width * this.zoom / 100);
+                obj.shape = obj.shape;
             }
             thingy = new extendedObject(obj.x, obj.p,
                                         obj.label, obj.options, obj.shape);
@@ -271,7 +273,10 @@ Scene.prototype = {
             obj.update(timeStep, this);
             obj.draw(this);
         }, this);
-        
+        var imageData = this.g.createImageData(this.width, this.height);
+        drawTri(this.triArray,imageData);
+        this.g.putImageData(imageData, 0, 0);
+
         // Some UI drawing.
         this.drawCrosshairs();
         if (window.console && window.console.firebug && 

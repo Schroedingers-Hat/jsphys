@@ -6,7 +6,9 @@
 function extendedObject(X, P, label, options, shape) {
     this.COM = new inertialObject(X, P, 1);
     this.options = options;
-    
+    if ( options.triangles ) {
+        this.triangles = options.triangles;
+    }
     // shapePoints stores the locations of the vertices of this object, relative
     // to the position of the COM.
     this.shapePoints = [];
@@ -302,11 +304,22 @@ extendedObject.prototype = {
     drawNow: function(scene) {
         var xview;
         var yview;
-
+        if ( this.triangles ) {
+            for (var i = 0 ; i < this.triangles.length; i++){
+                scene.triArray[i] = [Math.floor(this.pointPos[this.triangles[i][0]][0] / scene.zoom + scene.origin[0]),
+                                     Math.floor(this.pointPos[this.triangles[i][0]][1] / scene.zoom + scene.origin[1]),
+                                     Math.floor(this.pointPos[this.triangles[i][1]][0] / scene.zoom + scene.origin[0]),
+                                     Math.floor(this.pointPos[this.triangles[i][1]][1] / scene.zoom + scene.origin[1]),
+                                     Math.floor(this.pointPos[this.triangles[i][2]][0] / scene.zoom + scene.origin[0]),
+                                     Math.floor(this.pointPos[this.triangles[i][2]][1] / scene.zoom + scene.origin[1]),
+                                     255,0,0,0,255,0,0,0,255];
+            }
+        }
         scene.g.fillStyle = "#0f0";
         // If it's interesting, draw the whole thing.
         if (this.iI2d) {
             // Stroke a path over the present points 0 and 1 coordinates.
+
             scene.g.strokeStyle = "#0f0";
             scene.g.beginPath();
             scene.g.moveTo(this.pointPos[0][0] / scene.zoom + scene.origin[0],

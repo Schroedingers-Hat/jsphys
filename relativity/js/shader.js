@@ -9,11 +9,14 @@ function Renderer(scene, context){
     
 }
 
-// Draw a shaded triangle. Assumed to be flat white for now, color comes from lighting.
-// Pass by value because we don't want overhead.
-// Requires that vertices and colors be sorted by y value.
+// Draw shaded triangle.
+// Takes an array of triangles, each an array of 15 numbers in format:
+// x0, y0, x1, y1, x2, y2, r0, g0, b0, r1, g1, b1, r2, g2, b2
+// 0,1,2 represent vertex number. The triangle MUST be sorted st y2>=y1>=y0.
+// sends output to an imageData which must be provided.
 
-Renderer.prototype.drawTri = function(triArray, imageData) {
+
+var drawTri = function(triArray, imageData) {
 
     var i, j, idx, lineW, midFrac;
     var xlR;         // Rounded left point for scanline
@@ -261,7 +264,9 @@ Renderer.prototype.drawTri = function(triArray, imageData) {
             line = Math.round(y1);
             lineW = xr - xl;
             while ( line < y2 ) {
-    
+                if ( lineW > 200 ) { 
+                    console.log(triArray[j]);
+                }
                 xlR = Math.floor(xl);
                 // Reversed loop not needed for modern implementations, but
                 // conceptually easier in this case.
