@@ -65,6 +65,10 @@
                 width: 5em;
             }
 
+            .play-button {
+                box-shadow: 0 0 2px 2px #fff;
+            }
+
             #steps button, #controls button {
                 background-color: #000;
                 opacity: 0.6;
@@ -158,7 +162,7 @@
             <div style="width:1000px;height:500px;position:absolute;float:left;z-index:6000;" onclick="clickHandler(event)">&nbsp;</div>
             <![endif]-->
             <div id="controls">
-              <button id="pause">Play</button><button id="replayStep">Replay</button>
+              <button id="pause" class="play-button">Play</button><button id="replayStep">Replay</button>
               <div id="speed">Speed: <span id="curSpeed"></span><div id="speed-slider"></div></div>
             </div>
         </div>

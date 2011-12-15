@@ -141,8 +141,10 @@ function doPause(scene) {
     return function(event) {
         if (!scene.drawing) {
             $("#pause").html("Pause");
+            $("#pause").removeClass("play-button");
         } else {
             $("#pause").html("Play");
+            $("#pause").addClass("play-button");
         }
         scene.pause();
         updateSliders(scene);
