@@ -102,13 +102,14 @@ function Scene() {
 }
 
 Scene.prototype = {
+    toggle3D: function() {
+        this.curOptions.show3D = !this.curOptions.show3D;
+    },
+    
     /**
      * Load the specified demo at the given step. (The step indexes into
      * the demo's steps array.)
      */
-    toggle3D: function() {
-        this.curOptions.show3D = !this.curOptions.show3D;
-    },
     load: function(demo, step) {
         this.carray = [];
         this.curStep = step;
