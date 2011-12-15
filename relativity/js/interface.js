@@ -42,7 +42,7 @@ function bindKeys(scene) {
         scene.options.showPos = !scene.options.showPos;
     });
 
-    k.down('x', function(evt) {
+    /*k.down('x', function(evt) {
         framePosClick(scene)(evt);
     });
 
@@ -52,7 +52,7 @@ function bindKeys(scene) {
 
     k.down('z', function(evt) {
         dopplerButtonClick(scene)(evt);
-    });
+    });*/
 
     k.down('3', function(evt) {
         scene.toggle3D();
@@ -204,79 +204,79 @@ function updateSliders(scene) {
 }
 
 /**
- * The Doppler button has three states:
+ * The Doppler setting has three states:
  * - Turn off: Force Doppler shifting to be disabled for all objects in the scene.
  * - Turn on: Force Doppler shifting to be enabled for all objects in the scene.
  * - Default: Do whatever the demo wants.
  */
-function dopplerButtonClick(scene) {
+function dopplerChange(scene) {
     return function(evt) {
-        if (!scene.options.neverDoppler && !scene.options.alwaysDoppler) {
-            // we're currently in default mode. switch to force off.
-            scene.options.neverDoppler = true;
-            scene.options.alwaysDoppler = false;
-            $("#doppler").html("Turn on");
-        } else if (scene.options.neverDoppler && !scene.options.alwaysDoppler) {
-            // we're in force off mode. switch to force on.
+        switch(evt.currentTarget.value) {
+            case "always":
             scene.options.neverDoppler = false;
             scene.options.alwaysDoppler = true;
-            $("#doppler").html("Set default");
-        } else {
-            // switch to default.
+            break;
+            
+            case "never":
+            scene.options.neverDoppler = true;
+            scene.options.alwaysDoppler = false;
+            break;
+            
+            case "default":
             scene.options.neverDoppler = false;
             scene.options.alwaysDoppler = false;
-            $("#doppler").html("Turn off");
+            break;
         }
+
         if (evt.preventDefault) evt.preventDefault();
         else evt.returnValue = false;
     };
 }
 
 /**
- * Functions like the Doppler button, but in a different order.
+ * Functions like the Doppler setting, but in a different order.
  */
-function framePosClick(scene) {
-    return function(event) {
-        if (!scene.options.neverShowFramePos && !scene.options.alwaysShowFramePos) {
-            // we're in default mode. switch to force on.
+function framePosChange(scene) {
+    return function(evt) {
+        switch(evt.currentTarget.value) {
+            case "always":
             scene.options.neverShowFramePos = false;
             scene.options.alwaysShowFramePos = true;
-            $("#framePos").html("Turn off");
-        } else if (!scene.options.neverShowFramePos &&
-                   scene.options.alwaysShowFramePos) {
-            // we're currently in force on mode. switch to force off.
+            break;
+            
+            case "never":
             scene.options.neverShowFramePos = true;
             scene.options.alwaysShowFramePos = false;
-            $("#framePos").html("Set default");
-        } else {
-            // switch to default.
+            break;
+            
+            case "default":
             scene.options.neverShowFramePos = false;
             scene.options.alwaysShowFramePos = false;
-            $("#framePos").html("Turn on");
+            break;
         }
+        
         if(event.preventDefault) event.preventDefault();
         else event.returnValue = false;
     };
 }
 
-function vPosClick(scene) {
-    return function(event) {
-        if (!scene.options.neverShowVisualPos && !scene.options.alwaysShowVisualPos) {
-            // we're in default mode. switch to force on.
+function vPosChange(scene) {
+    return function(evt) {
+        switch(evt.currentTarget.value) {
+            case "always":
             scene.options.neverShowVisualPos = false;
             scene.options.alwaysShowVisualPos = true;
-            $("#vPos").html("Turn off");
-        } else if (!scene.options.neverShowVisualPos && 
-                   scene.options.alwaysShowVisualPos) {
-            // we're currently in force on mode. switch to force off.
+            break;
+            
+            case "never":
             scene.options.neverShowVisualPos = true;
             scene.options.alwaysShowVisualPos = false;
-            $("#vPos").html("Set default");
-        } else {
-            // switch to default.
+            break;
+            
+            case "default":
             scene.options.neverShowVisualPos = false;
             scene.options.alwaysShowVisualPos = false;
-            $("#vPos").html("Turn on");
+            break;
         }
 
         if(event.preventDefault) event.preventDefault();
@@ -406,9 +406,9 @@ $(document).ready(function() {
     $("#canvas").click(clickHandler(scene));
 
 
-    $("#doppler").click(dopplerButtonClick(scene));
-    $('#framePos').click(framePosClick(scene));
-    $('#vPos').click(vPosClick(scene));
+    $("#doppler").change(dopplerChange(scene));
+    $('#framePos').change(framePosChange(scene));
+    $('#vPos').change(vPosChange(scene));
 
     $("#nextStep").click(nextStep(scene));
     $("#prevStep").click(prevStep(scene));

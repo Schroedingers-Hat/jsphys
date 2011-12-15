@@ -102,6 +102,23 @@
                 display: inline-block;
             }
 
+            #more {
+                padding: 0.5em;
+                float: left;
+            }
+
+            #more a {
+                text-decoration: none;
+                color: #aaa;
+            }
+
+            #advancedOpts {
+                display: none;
+                float: left;
+                padding: 0.5em;
+                color: #aaa;
+            }
+
             #demo-chooser {
                 position: absolute;
                 opacity: 0.8;
@@ -172,6 +189,27 @@
             <div id="controls">
               <button id="pause" class="play-button">Play</button><button id="replayStep">Replay</button>
               <div id="speed">Speed: <span id="curSpeed"></span><div><a href="#" id="slowDown">-</a><div id="speed-slider"></div><a href="#" id="speedUp">+</a></div></div>
+              <div id="more"><a href="#" onclick="$('#advancedOpts').toggle(200); return false;">More &raquo;</a></div>
+              <div id="advancedOpts">
+                <label for="doppler">Doppler:</label>
+                <select id="doppler">
+                  <option value="default" selected="selected">Use default</option>
+                  <option value="always">Always on</option>
+                  <option value="never">Always off</option>
+                </select>
+                <label for="framePos">Absolute positions:</label>
+                <select id="framePos">
+                  <option value="default" selected="selected">Use default</option>
+                  <option value="always">Always on</option>
+                  <option value="never">Always off</option>
+                </select>
+                <label for="vPos">Apparent positions:</label>
+                <select id="vPos">
+                  <option value="default" selected="selected">Use default</option>
+                  <option value="always">Always on</option>
+                  <option value="never">Always off</option>
+                </select>
+              </div>
             </div>
         </div>
         <div id="demo-chooser">
