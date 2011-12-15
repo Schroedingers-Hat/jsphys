@@ -82,25 +82,20 @@
           <br> , and .: Zoom in and out in time axis on Minkowski diagram
           <br> space: Fire photon (rasteroids only).
           <br> h: Toggle this screen.
+          <br> <a href="#" onclick="$('#help-screen').toggle(); return false">Close</a>
         </div>
         <div id="zoom">
           <a href="#" id="zoomIn">+</a>
           <div id="zoom-slider"></div>
           <a href="#" id="zoomOut">-</a>
         </div>
-        <!--<div id="controls">
-          <form name="controls">
-            <p>Doppler effect: <button id="doppler">Turn off</button></p>
-            <p>Absolute positions: <button id="framePos">Turn on</button></p>
-            <p>Apparent positions: <button id="vPos">Turn on</button></p>
-            <button id="help" onclick="return false;">Help</button></p>
-          </form>
-        </div> -->
+
         <div style="position:relative">
           <div id="steps">
             <button id="nextStep">Next &raquo;</button><br/>
             <button id="prevStep">&laquo; Previous</button><br/>
-            <button onclick="$('#demo-chooser').show();">Choose new demo</button>
+            <button onclick="$('#demo-chooser').show();">Choose new demo</button><br/>
+            <button id="help">Help</button>
           </div>
           <div id="caption">
             <p id="caption-text">Welcome to the jsphys relativity simulator. Choose a demonstration to start with and hit Play.</p>

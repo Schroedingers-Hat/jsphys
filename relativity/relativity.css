@@ -132,6 +132,10 @@ body {
     padding: 1em;
 }
 
+#help-screen a {
+    color: #fff;
+}
+
 #steps {
     position: absolute;
     top: 0;
