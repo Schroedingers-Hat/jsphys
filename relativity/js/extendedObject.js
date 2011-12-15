@@ -306,13 +306,15 @@ extendedObject.prototype = {
         var yview;
         if ( this.triangles ) {
             for (var i = 0 ; i < this.triangles.length; i++){
-                scene.triArray[i] = [Math.floor(this.pointPos[this.triangles[i][0]][0] / scene.zoom + scene.origin[0]),
+                scene.triArray[i] = [[Math.floor(this.pointPos[this.triangles[i][0]][0] / scene.zoom + scene.origin[0]),
                                      Math.floor(this.pointPos[this.triangles[i][0]][1] / scene.zoom + scene.origin[1]),
-                                     Math.floor(this.pointPos[this.triangles[i][1]][0] / scene.zoom + scene.origin[0]),
+                                     255,0,0],
+                                     [Math.floor(this.pointPos[this.triangles[i][1]][0] / scene.zoom + scene.origin[0]),
                                      Math.floor(this.pointPos[this.triangles[i][1]][1] / scene.zoom + scene.origin[1]),
-                                     Math.floor(this.pointPos[this.triangles[i][2]][0] / scene.zoom + scene.origin[0]),
+                                     0,255,0],
+                                     [Math.floor(this.pointPos[this.triangles[i][2]][0] / scene.zoom + scene.origin[0]),
                                      Math.floor(this.pointPos[this.triangles[i][2]][1] / scene.zoom + scene.origin[1]),
-                                     255,0,0,0,255,0,0,0,255];
+                                     0,0,255]];
             }
         }
         scene.g.fillStyle = "#0f0";

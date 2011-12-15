@@ -10,9 +10,7 @@ function Renderer(scene, context){
 }
 
 // Draw shaded triangle.
-// Takes an array of triangles, each an array of 15 numbers in format:
-// x0, y0, x1, y1, x2, y2, r0, g0, b0, r1, g1, b1, r2, g2, b2
-// 0,1,2 represent vertex number. The triangle MUST be sorted st y2>=y1>=y0.
+// Takes an array of triangles, each an array of 3 arrays of numbers in format x y r g b
 // sends output to an imageData which must be provided.
 
 
@@ -36,36 +34,38 @@ var drawTri = function(triArray, imageData) {
 
     // Cache for one triangle.
     var x0, y0,x1, y1, x2, y2, r0, g0, b0, r1, g1, b1, r2, g2, b2;
-
+    var sortfunc = function(a,b){
+        return a[1] - b[1];
+    };
         console.time("foo");
     for ( j = 0; j < triArray.length; j++ ) {
-   
-        x0 = triArray[j][0];
-        y0 = triArray[j][1];
-        x1 = triArray[j][2];
-        y1 = triArray[j][3];
-        x2 = triArray[j][4];
-        y2 = triArray[j][5];
+        triArray[j].sort(sortfunc);
+        x0 = triArray[j][0][0];
+        y0 = triArray[j][0][1];
+        x1 = triArray[j][1][0];
+        y1 = triArray[j][1][1];
+        x2 = triArray[j][2][0];
+        y2 = triArray[j][2][1];
 
-        r0 = triArray[j][6];
-        g0 = triArray[j][7];
-        b0 = triArray[j][8];
+        r0 = triArray[j][0][2];
+        g0 = triArray[j][0][3];
+        b0 = triArray[j][0][4];
 
 
-        r1 = triArray[j][9];
-        g1 = triArray[j][10];
-        b1 = triArray[j][11];
+        r1 = triArray[j][1][2];
+        g1 = triArray[j][1][3];
+        b1 = triArray[j][1][4];
 
-        r2 = triArray[j][12];
-        g2 = triArray[j][13];
-        b2 = triArray[j][14];
+        r2 = triArray[j][2][2];
+        g2 = triArray[j][2][3];
+        b2 = triArray[j][2][4];
         // Might add another layer of loop here, and loop over a collection of triangles.
         // Save reallocating all this memory.
     
     
         // Draw the top half of the triangle if we have one.
-        if ( y0 !== y1  && y2 !== y0) {
-            if ( y1 === y2 ) {
+        if ( y0 !== y1  && y2 !== y0 || true) {
+            if ( false && y1 === y2 ) {
                 // We don't want a mid-point if the bottom of the triangle is flat.
                 xm = x2;
                 ym = y2;
@@ -183,8 +183,8 @@ var drawTri = function(triArray, imageData) {
     
     
         // Draw the bottom part of the triangle if we have one.
-        if ( y1 !== y2  && y2 != y0) {
-            if ( y0 === y1 ) {
+        if ( y1 !== y2  && y2 != y0 || true) {
+            if ( false &&y0 === y1 ) {
                 // We don't want a mid-point if the top of the triangle is flat.
                 xm = x1;
                 ym = y1;
