@@ -93,7 +93,7 @@ function zoomTo(scene, zoom) {
     scene.boost.up    = boostFrom3Vel(0,  0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0);
     scene.boost.down  = boostFrom3Vel(0, -0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0);
 
-    if (!scene.drawing) {
+    if (!scene.drawing && !scene.keyDown) {
         drawScene(scene)();
     }
     updateSliders(scene);
