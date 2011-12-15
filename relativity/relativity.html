@@ -89,9 +89,17 @@
                 color: #ddd;
             }
 
+            #speed > div > a {
+                color: #ccc;
+                font-size: 12pt;
+                text-decoration: none;
+                padding: 2pt;
+            }
+
             #speed-slider {
                 font-size: 50%;
                 width: 150px;
+                display: inline-block;
             }
 
             #demo-chooser {
@@ -163,7 +171,7 @@
             <![endif]-->
             <div id="controls">
               <button id="pause" class="play-button">Play</button><button id="replayStep">Replay</button>
-              <div id="speed">Speed: <span id="curSpeed"></span><div id="speed-slider"></div></div>
+              <div id="speed">Speed: <span id="curSpeed"></span><div><a href="#" id="slowDown">-</a><div id="speed-slider"></div><a href="#" id="speedUp">+</a></div></div>
             </div>
         </div>
         <div id="demo-chooser">

@@ -162,10 +162,32 @@ function setAnimSpeed(scene) {
         if (ui.value > 0) {
             scene.timeScale = Math.pow(2, ui.value) - 1;
         }
-        if (ui.value < 0) {
+        if (ui.value <= 0) {
             scene.timeScale = -Math.pow(2, -ui.value) + 1;
         }
         updateSliders(scene);
+    };
+}
+
+/**
+ * Callback to speed up animation
+ */
+function speedUp(scene) {
+    return function() {
+        var curSpeed = $("#speed-slider").slider('value');
+        setAnimSpeed(scene)(undefined, {value: curSpeed + 0.002});
+        return false;
+    };
+}
+
+/**
+ * Callback to slow down animation
+ */
+function slowDown(scene) {
+    return function() {
+        var curSpeed = $("#speed-slider").slider('value');
+        setAnimSpeed(scene)(undefined, {value: curSpeed - 0.002});
+        return false;
     };
 }
 
@@ -396,6 +418,9 @@ $(document).ready(function() {
     
     $("#zoomIn").click(zoomIn(scene));
     $("#zoomOut").click(zoomOut(scene));
+    
+    $("#slowDown").click(slowDown(scene));
+    $("#speedUp").click(speedUp(scene));
     
     // Capture back/forward events and take them to the corresponding demo,
     // if they've viewed more than one.
