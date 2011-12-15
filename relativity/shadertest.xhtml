@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <style>
+      body {
+        background: black;
+      }
+      canvas {
+        background: white;
+      }
+  </style>
+
+    <script type="text/javascript" src="js/shader.js"></script>
+    <script>
+        <![CDATA[
+        function go() {
+            var canvas = document.getElementById('myCanvasElt');
+            var ctx = canvas.getContext('2d');
+            var canvasData = ctx.createImageData(canvas.width, canvas.height);
+            var scene = 3;
+            var triArr = new Array();
+            var tempArr = new Array(15);
+            var offsetx, offsety;
+            rend = new Renderer(scene,ctx);
+            for (var j = 0; j < 25000; j++){
+            offsetx = Math.floor(Math.random() * 500) + 200;
+            offsety = Math.floor(Math.random() * 200) + 200;
+            tempArr[0] = Math.floor(Math.random() * 10) + offsetx;
+            tempArr[1] = Math.floor(Math.random() * 5) + offsety;
+            tempArr[2] = Math.floor(Math.random() * 10) + offsetx;
+            tempArr[3] = Math.floor(Math.random() * 5) + offsety + 5;
+            tempArr[4] = Math.floor(Math.random() * 10) + offsetx;
+            tempArr[5] = Math.floor(Math.random() * 5) + offsety + 10;
+            for ( var i = 6; i <= 15; i++){
+                tempArr[i] = Math.floor(Math.random() * 250);
+            }
+            triArr.push(tempArr.concat());
+        }
+        console.profile('moo');
+        rend.drawTri(triArr,canvasData);
+        console.profileEnd('moo');
+        ctx.putImageData(canvasData, 0, 0);
+        }
+        ]]>
+    </script>
+
+</head>
+
+<body onload="go()">
+    <canvas id="myCanvasElt" width="1000" height="600"></canvas>
+</body>
+</html>
