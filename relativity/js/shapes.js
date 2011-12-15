@@ -14,11 +14,11 @@ function linesPadder(shape, resolution) {
     for(var i = 0; i < shape.length - 1; i++) {
         quat4.subtract(shape[i + 1], shape[i], tDisplace);
         distance = Math.sqrt(Math.abs(quat4.spaceDot(tDisplace, tDisplace)));
-        numSteps = (Math.round(distance / resolution));
+        numSteps = (Math.ceil(distance / resolution));
         if (numSteps == 0) {
             tDisplace = [0,0,0,0];
         } else {
-            quat4.scale(tDisplace, (1 / numSteps) );
+            quat4.scale(tDisplace, (1 / (numSteps)) );
         }
         for(var j = 0; j <= numSteps; j++ ) {
             newShape.push(quat4.create(quat4.add(quat4.scale(tDisplace, j,

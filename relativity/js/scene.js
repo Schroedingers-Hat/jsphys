@@ -205,7 +205,7 @@ Scene.prototype = {
             } else {
                 // Pad the shape with extra intermediate points, so it can 
                 // aberrate and contract more accurately
-                obj.shape = linesPadder(obj.shape, this.width * this.zoom / 50);
+                obj.shape = linesPadder(obj.shape, this.width * this.zoom / 100);
             }
             thingy = new extendedObject(obj.x, obj.p,
                                         obj.label, obj.options, obj.shape);
