@@ -35,14 +35,20 @@
                 position: absolute;
                 top: 3em;
                 right: 0.5em;
-                font-size: 9pt;
                 width: 20px;
+                font-size: 9pt;
             }
 
             #zoom-slider {
                 height: 300px;
                 opacity: 0.7;
                 font-size: 75%;
+            }
+
+            #zoom > a {
+                text-decoration: none;
+                font-size: 12pt;
+                color: #ccc;
             }
 
             #controls {
@@ -151,10 +157,10 @@
             <!--[if IE 8]>
             <div style="width:1000px;height:500px;position:absolute;float:left;z-index:6000;" onclick="clickHandler(event)">&nbsp;</div>
             <![endif]-->
-        <div id="controls">
-          <button id="pause">Play</button><button id="replayStep">Replay</button>
-          <div id="speed">Speed: <span id="curSpeed"></span><div id="speed-slider"></div></div>
-        </div>
+            <div id="controls">
+              <button id="pause">Play</button><button id="replayStep">Replay</button>
+              <div id="speed">Speed: <span id="curSpeed"></span><div id="speed-slider"></div></div>
+            </div>
         </div>
         <div id="demo-chooser">
           <h3>Choose a demo</h3>
@@ -179,7 +185,9 @@
           <br> h: Toggle this screen.
         </div>
         <div id="zoom">
+          <a href="#" id="zoomIn">+</a>
           <div id="zoom-slider"></div>
+          <a href="#" id="zoomOut">-</a>
         </div>
         <!--<div id="controls">
           <form name="controls">

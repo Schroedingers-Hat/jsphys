@@ -58,7 +58,6 @@ function bindKeys(scene) {
         scene.toggle3D();
     });
 
-
     k.down('h', function() {
         showHelp();
     });
@@ -95,16 +94,36 @@ function zoomTo(scene, zoom) {
     scene.boost.down  = boostFrom3Vel(0, -0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0);
 
     if (!scene.drawing) {
-        drawScene(scene);
+        drawScene(scene)();
     }
     updateSliders(scene);
+}
+
+/**
+ * Callback to zoom in one zoom step.
+ */
+function zoomIn(scene) {
+    return function() {
+        zoomTo(scene, Math.pow(2, -$("#zoom-slider").slider("value") - 0.12));
+        return false;
+    };
+}
+
+/**
+ * Callback to zoom out one step.
+ */
+function zoomOut(scene) {
+    return function() {
+        zoomTo(scene, Math.pow(2, -$("#zoom-slider").slider("value") + 0.12));
+        return false;
+    };
 }
 
 /**
  * Create a callback to work on the specified scene, converting a zoom slider
  * event into a zoom level.
  *
- * The zoom scale goes 0.06 to 40, but representing that in a slider would be awkward.
+ * The zoom scale goes 0.06 - 40, but representing that in a slider would be awkward.
  * Current zoom steps work in powers of 2, not in a continuous scale. So, the slider
  * goes -4 to 5.5, and is turned into a power of 2. (2^-4 = 0.06, for example.)
  */
@@ -355,7 +374,7 @@ $(document).ready(function() {
     $("#3DCanvas").attr('width', viewportWidth);
     $('#help-screen').hide();
     var scene = new Scene();
-        window.scene = scene; // For debugging purposes. Cannot find anything in the DOM without a global reference.
+    window.scene = scene; // For debugging purposes. Cannot find anything in the DOM without a global reference.
 
     loadDemoList(scene);
     bindKeys(scene);
@@ -372,6 +391,9 @@ $(document).ready(function() {
     $("#replayStep").click(replay(scene));
     
     $("#help").click(showHelp);
+    
+    $("#zoomIn").click(zoomIn(scene));
+    $("#zoomOut").click(zoomOut(scene));
     
     // Capture back/forward events and take them to the corresponding demo,
     // if they've viewed more than one.
@@ -399,5 +421,4 @@ $(document).ready(function() {
             }
         };
     }());
-
 });
