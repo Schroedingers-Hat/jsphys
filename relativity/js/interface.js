@@ -20,9 +20,8 @@ function bindKeys(scene) {
         if (k.lastKey() in keys) {
             scene.actions[keys[k.lastKey()]] = true;
             if (!scene.drawing && !scene.keyDown) {
-                scene.beginFrameTime = new Date().time;
-                requestAnimFrame(drawScene(scene));
                 scene.keyDown = true;
+                scene.draw();
             }
             return false;
         }
@@ -31,6 +30,7 @@ function bindKeys(scene) {
     k.up('any', function() {
         if (k.lastKey() in keys) {
             scene.actions[keys[k.lastKey()]] = false;
+            scene.keyDown = false;
         }
     });
 
