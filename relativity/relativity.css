@@ -32,6 +32,7 @@ body {
     font-size: 9pt;
     background-color: #333;
     padding: 1px;
+    border-bottom: 1px solid #2A2A2A;
 }
 
 #controls button {
@@ -57,20 +58,20 @@ body {
 
 #speed {
     float: left;
-    padding: 0.5em;
+    padding: 2pt 0 0 2pt;
     opacity: 0.6;
     color: #ddd;
 }
 
 #speed > div > a {
     color: #ccc;
-    font-size: 12pt;
+    font-size: 10pt;
     text-decoration: none;
     padding: 2pt;
 }
 
 #speed-slider {
-    font-size: 50%;
+    font-size: 25%;
     width: 150px;
     display: inline-block;
 }
