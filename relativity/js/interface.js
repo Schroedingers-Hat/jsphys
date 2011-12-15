@@ -289,8 +289,13 @@ function vPosChange(scene) {
  */
 function nextStep(scene) {
     return function() {
-        scene.nextStep(); 
+        scene.nextStep();
         updateSliders(scene);
+        // Disable the Next button when there are no further steps
+        if (scene.curStep === scene.demo.steps.length - 1) {
+            $("#nextStep").prop('disabled', true);
+        }
+        $("#prevStep").prop('disabled', false);
     };
 }
 
@@ -301,6 +306,11 @@ function prevStep(scene) {
     return function() {
         scene.prevStep();
         updateSliders(scene);
+        
+        if (scene.curStep === 0) {
+            $("#prevStep").prop('disabled', true);
+        }
+        $("#nextStep").prop('disabled', false);
     };
 }
 
@@ -330,7 +340,9 @@ function loadDemo(demo, scene) {
                                            slide: setAnimSpeed(scene),
                                            value: (Math.log(scene.timeScale + 1) / Math.LN2)});
             }
-        
+            
+            $("#prevStep").prop('disabled', true);
+            $("#nextStep").prop('disabled', false);
             $("#demo-chooser").hide();
             scene.startAnimation();
         });
