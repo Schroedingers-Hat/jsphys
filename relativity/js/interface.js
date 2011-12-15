@@ -157,7 +157,7 @@ function updateSliders(scene) {
 
     $("#speed-slider").slider("option", "value",
                               (Math.log(scene.timeScale + 1) / Math.LN2));
-    $("span#speed").text(Math.round(scene.timeScale * 10000) / 10 + "x");
+    $("span#curSpeed").text(Math.round(scene.timeScale * 10000) / 10 + "x");
 }
 
 /**
@@ -281,7 +281,8 @@ function loadDemo(demo, scene) {
             if (typeof FlashCanvas === "undefined") {
                 $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02,
                                           slide: zoomToSlider(scene),
-                                          value: -(Math.log(scene.zoom) / Math.LN2)});
+                                          value: -(Math.log(scene.zoom) / Math.LN2),
+                                          orientation: "vertical"});
                 $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, 
                                            slide: setAnimSpeed(scene),
                                            value: (Math.log(scene.timeScale + 1) / Math.LN2)});
