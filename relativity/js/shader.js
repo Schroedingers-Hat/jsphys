@@ -134,7 +134,7 @@ var drawTri = function(triArray, imageData) {
             }
             line = Math.round(y0);
             lineW = 0;
-            while ( line < ym ) {
+            while ( line <= ym ) {
     
                 xlR = Math.floor(xl);
                 // Reversed loop not needed for modern implementations, but
@@ -263,7 +263,7 @@ var drawTri = function(triArray, imageData) {
             gbh = (br - bl) / (xr - xl);
             line = Math.round(y1);
             lineW = xr - xl;
-            while ( line < y2 ) {
+            while ( line <= y2 ) {
                 if ( lineW > 200 ) { 
                     console.log(triArray[j]);
                 }
