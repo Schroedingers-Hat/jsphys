@@ -7,7 +7,9 @@
 var keys = {'q': 'rotateLeft', 'e': 'rotateRight',
             'w': 'boostUp', 's': 'boostDown',
             'a': 'boostLeft', 'd': 'boostRight',
-            'space': 'fire'};
+            'left':'boostLeft', 'right': 'boostRight', 
+            'up': 'boostUp', 'down':'boostDown',
+            'space': 'fire', 'page_up' : 'zoomIn', 'page_down' : 'zoomOut'};
 var k = new Kibo();
 
 /**
@@ -18,16 +20,17 @@ function bindKeys(scene) {
         if (k.lastKey() in keys) {
             scene.actions[keys[k.lastKey()]] = true;
             if (!scene.drawing && !scene.keyDown) {
-                scene.beginFrameTime = new Date().time;
-                requestAnimFrame(drawScene(scene));
                 scene.keyDown = true;
+                scene.draw();
             }
+            return false;
         }
     });
 
     k.up('any', function() {
         if (k.lastKey() in keys) {
             scene.actions[keys[k.lastKey()]] = false;
+            scene.keyDown = false;
         }
     });
 
@@ -39,8 +42,20 @@ function bindKeys(scene) {
         scene.options.showPos = !scene.options.showPos;
     });
 
+    /*k.down('x', function(evt) {
+        framePosClick(scene)(evt);
+    });
+
+    k.down('c', function(evt) {
+        vPosClick(scene)(evt);
+    });
+
     k.down('z', function(evt) {
         dopplerButtonClick(scene)(evt);
+    });*/
+
+    k.down('3', function(evt) {
+        scene.toggle3D();
     });
 
     k.down('h', function() {
@@ -73,23 +88,42 @@ function clickHandler(scene) {
 function zoomTo(scene, zoom) {
     scene.zoom = zoom;
 
-    scene.boost.right = boostFrom3Vel( 0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0, 0);
-    scene.boost.left  = boostFrom3Vel(-0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0, 0);
-    scene.boost.up    = boostFrom3Vel(0,  0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
-    scene.boost.down  = boostFrom3Vel(0, -0.02 * Math.min(20, Math.max(2, scene.zoom)) * c, 0);
+    scene.boost.right = boostFrom3Vel( 0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0, 0);
+    scene.boost.left  = boostFrom3Vel(-0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0, 0);
+    scene.boost.up    = boostFrom3Vel(0,  0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0);
+    scene.boost.down  = boostFrom3Vel(0, -0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0);
 
-    drawLightCone(scene, scene.lCCtx);
-    if (!scene.drawing) {
-        scene.draw();
+    if (!scene.drawing && !scene.keyDown) {
+        drawScene(scene)();
     }
     updateSliders(scene);
+}
+
+/**
+ * Callback to zoom in one zoom step.
+ */
+function zoomIn(scene) {
+    return function() {
+        zoomTo(scene, Math.pow(2, -$("#zoom-slider").slider("value") - 0.12));
+        return false;
+    };
+}
+
+/**
+ * Callback to zoom out one step.
+ */
+function zoomOut(scene) {
+    return function() {
+        zoomTo(scene, Math.pow(2, -$("#zoom-slider").slider("value") + 0.12));
+        return false;
+    };
 }
 
 /**
  * Create a callback to work on the specified scene, converting a zoom slider
  * event into a zoom level.
  *
- * The zoom scale goes 0.06 to 40, but representing that in a slider would be awkward.
+ * The zoom scale goes 0.06 - 40, but representing that in a slider would be awkward.
  * Current zoom steps work in powers of 2, not in a continuous scale. So, the slider
  * goes -4 to 5.5, and is turned into a power of 2. (2^-4 = 0.06, for example.)
  */
@@ -107,8 +141,10 @@ function doPause(scene) {
     return function(event) {
         if (!scene.drawing) {
             $("#pause").html("Pause");
+            $("#pause").removeClass("play-button");
         } else {
             $("#pause").html("Play");
+            $("#pause").addClass("play-button");
         }
         scene.pause();
         updateSliders(scene);
@@ -126,10 +162,32 @@ function setAnimSpeed(scene) {
         if (ui.value > 0) {
             scene.timeScale = Math.pow(2, ui.value) - 1;
         }
-        if (ui.value < 0) {
+        if (ui.value <= 0) {
             scene.timeScale = -Math.pow(2, -ui.value) + 1;
         }
         updateSliders(scene);
+    };
+}
+
+/**
+ * Callback to speed up animation
+ */
+function speedUp(scene) {
+    return function() {
+        var curSpeed = $("#speed-slider").slider('value');
+        setAnimSpeed(scene)(undefined, {value: curSpeed + 0.002});
+        return false;
+    };
+}
+
+/**
+ * Callback to slow down animation
+ */
+function slowDown(scene) {
+    return function() {
+        var curSpeed = $("#speed-slider").slider('value');
+        setAnimSpeed(scene)(undefined, {value: curSpeed - 0.002});
+        return false;
     };
 }
 
@@ -142,83 +200,83 @@ function updateSliders(scene) {
 
     $("#speed-slider").slider("option", "value",
                               (Math.log(scene.timeScale + 1) / Math.LN2));
-    $("span#speed").text(Math.round(scene.timeScale * 10000) / 10 + "x");
+    $("span#curSpeed").text(Math.round(scene.timeScale * 10000) / 10 + "x");
 }
 
 /**
- * The Doppler button has three states:
+ * The Doppler setting has three states:
  * - Turn off: Force Doppler shifting to be disabled for all objects in the scene.
  * - Turn on: Force Doppler shifting to be enabled for all objects in the scene.
  * - Default: Do whatever the demo wants.
  */
-function dopplerButtonClick(scene) {
+function dopplerChange(scene) {
     return function(evt) {
-        if (!scene.options.neverDoppler && !scene.options.alwaysDoppler) {
-            // we're currently in default mode. switch to force off.
-            scene.options.neverDoppler = true;
-            scene.options.alwaysDoppler = false;
-            $("#doppler").html("Turn on");
-        } else if (scene.options.neverDoppler && !scene.options.alwaysDoppler) {
-            // we're in force off mode. switch to force on.
+        switch(evt.currentTarget.value) {
+            case "always":
             scene.options.neverDoppler = false;
             scene.options.alwaysDoppler = true;
-            $("#doppler").html("Set default");
-        } else {
-            // switch to default.
+            break;
+            
+            case "never":
+            scene.options.neverDoppler = true;
+            scene.options.alwaysDoppler = false;
+            break;
+            
+            case "default":
             scene.options.neverDoppler = false;
             scene.options.alwaysDoppler = false;
-            $("#doppler").html("Turn off");
+            break;
         }
+
         if (evt.preventDefault) evt.preventDefault();
         else evt.returnValue = false;
     };
 }
 
 /**
- * Functions like the Doppler button, but in a different order.
+ * Functions like the Doppler setting, but in a different order.
  */
-function framePosClick(scene) {
-    return function(event) {
-        if (!scene.options.neverShowFramePos && !scene.options.alwaysShowFramePos) {
-            // we're in default mode. switch to force on.
+function framePosChange(scene) {
+    return function(evt) {
+        switch(evt.currentTarget.value) {
+            case "always":
             scene.options.neverShowFramePos = false;
             scene.options.alwaysShowFramePos = true;
-            $("#framePos").html("Turn off");
-        } else if (!scene.options.neverShowFramePos &&
-                   scene.options.alwaysShowFramePos) {
-            // we're currently in force on mode. switch to force off.
+            break;
+            
+            case "never":
             scene.options.neverShowFramePos = true;
             scene.options.alwaysShowFramePos = false;
-            $("#framePos").html("Set default");
-        } else {
-            // switch to default.
+            break;
+            
+            case "default":
             scene.options.neverShowFramePos = false;
             scene.options.alwaysShowFramePos = false;
-            $("#framePos").html("Turn on");
+            break;
         }
+        
         if(event.preventDefault) event.preventDefault();
         else event.returnValue = false;
     };
 }
 
-function vPosClick(scene) {
-    return function(event) {
-        if (!scene.options.neverShowVisualPos && !scene.options.alwaysShowVisualPos) {
-            // we're in default mode. switch to force on.
+function vPosChange(scene) {
+    return function(evt) {
+        switch(evt.currentTarget.value) {
+            case "always":
             scene.options.neverShowVisualPos = false;
             scene.options.alwaysShowVisualPos = true;
-            $("#vPos").html("Turn off");
-        } else if (!scene.options.neverShowVisualPos && 
-                   scene.options.alwaysShowVisualPos) {
-            // we're currently in force on mode. switch to force off.
+            break;
+            
+            case "never":
             scene.options.neverShowVisualPos = true;
             scene.options.alwaysShowVisualPos = false;
-            $("#vPos").html("Set default");
-        } else {
-            // switch to default.
+            break;
+            
+            case "default":
             scene.options.neverShowVisualPos = false;
             scene.options.alwaysShowVisualPos = false;
-            $("#vPos").html("Turn on");
+            break;
         }
 
         if(event.preventDefault) event.preventDefault();
@@ -231,8 +289,13 @@ function vPosClick(scene) {
  */
 function nextStep(scene) {
     return function() {
-        scene.nextStep(); 
+        scene.nextStep();
         updateSliders(scene);
+        // Disable the Next button when there are no further steps
+        if (scene.curStep === scene.demo.steps.length - 1) {
+            $("#nextStep").prop('disabled', true);
+        }
+        $("#prevStep").prop('disabled', false);
     };
 }
 
@@ -243,6 +306,11 @@ function prevStep(scene) {
     return function() {
         scene.prevStep();
         updateSliders(scene);
+        
+        if (scene.curStep === 0) {
+            $("#prevStep").prop('disabled', true);
+        }
+        $("#nextStep").prop('disabled', false);
     };
 }
 
@@ -266,22 +334,31 @@ function loadDemo(demo, scene) {
             if (typeof FlashCanvas === "undefined") {
                 $("#zoom-slider").slider({min: -5.5, max: 4, step: 0.02,
                                           slide: zoomToSlider(scene),
-                                          value: -(Math.log(scene.zoom) / Math.LN2)});
+                                          value: -(Math.log(scene.zoom) / Math.LN2),
+                                          orientation: "vertical"});
                 $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, 
                                            slide: setAnimSpeed(scene),
                                            value: (Math.log(scene.timeScale + 1) / Math.LN2)});
             }
-        
+            
+            $("#prevStep").prop('disabled', true);
+            $("#nextStep").prop('disabled', false);
             $("#demo-chooser").hide();
             scene.startAnimation();
         });
 
         // Add this demo to the browser history so users can share links, use
         // back/forward, and so on
-        if (window.history && window.location.hash !== ("#" + demo.source)) {
-            window.history.pushState({
-                demo: demo
-            }, demo.name, "#" + demo.source);
+        if (window.history) {
+            if (window.location.hash !== ("#" + demo.source)) {
+                window.history.pushState({
+                    demo: demo
+                }, demo.name, "#" + demo.source);
+            } else {
+                // Necessary in case the user has followed a direct link to this
+                // demo, in which case the history state would not be set yet
+                window.history.replaceState({demo: demo}, demo.name);
+            }
         }
     };
 }
@@ -333,28 +410,29 @@ $(document).ready(function() {
     $("#3DCanvas").attr('width', viewportWidth);
     $('#help-screen').hide();
     var scene = new Scene();
+    window.scene = scene; // For debugging purposes. Cannot find anything in the DOM without a global reference.
 
     loadDemoList(scene);
     bindKeys(scene);
     $('#pause').click(doPause(scene));
     $("#canvas").click(clickHandler(scene));
 
-    // To make spacebar work as fire key, disable its usual behavior
-    $(window).keypress(function (event) {
-        if (event.which === 32) {
-            event.preventDefault();
-        }
-    });
 
-    $("#doppler").click(dopplerButtonClick(scene));
-    $('#framePos').click(framePosClick(scene));
-    $('#vPos').click(vPosClick(scene));
+    $("#doppler").change(dopplerChange(scene));
+    $('#framePos').change(framePosChange(scene));
+    $('#vPos').change(vPosChange(scene));
 
     $("#nextStep").click(nextStep(scene));
     $("#prevStep").click(prevStep(scene));
     $("#replayStep").click(replay(scene));
     
     $("#help").click(showHelp);
+    
+    $("#zoomIn").click(zoomIn(scene));
+    $("#zoomOut").click(zoomOut(scene));
+    
+    $("#slowDown").click(slowDown(scene));
+    $("#speedUp").click(speedUp(scene));
     
     // Capture back/forward events and take them to the corresponding demo,
     // if they've viewed more than one.
@@ -369,7 +447,6 @@ $(document).ready(function() {
     if (window.location.hash !== "") {
         var demo = window.location.hash.substr(1);
         loadDemo({source: demo, name: demo}, scene)();
-        window.history.replaceState({demo: {source: demo, name: demo}}, demo);
     }
 
     $(window).resize(function() { 

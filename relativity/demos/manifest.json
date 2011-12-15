@@ -10,5 +10,8 @@
   {"name": "Relativistic Doppler shift", "source": "doppler-shift"},
   {"name": "Twin paradox", "source": "twin-paradox"},
   {"name": "Light clock", "source": "light-clock"}
- ]
+ ],
+ "Debugging and other nonsense":
+ [{"name": "Rainbow", "source": "rainbow"}]
+
 }

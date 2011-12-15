@@ -63,10 +63,10 @@ function extendedObject(X, P, label, options, shape) {
     
     // This object is not necessarily at rest, so its shape will be Lorentz
     // contracted. Create a boost matrix to transform all of its points by.
-    var initialBoost = cBoostMat([-this.COM.V[0],
-                                  -this.COM.V[1],
-                                  -this.COM.V[2],
-                                   this.COM.V[3]], c);
+    var initialBoost = cBoostMat(quat4.create([-this.COM.V[0],
+                                               -this.COM.V[1],
+                                               -this.COM.V[2],
+                                               this.COM.V[3]]), c);
 
     // Map the shape points into the starting reference frame and compute the
     // bounding box as we go.

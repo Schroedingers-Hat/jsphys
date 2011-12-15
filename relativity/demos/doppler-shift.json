@@ -4,21 +4,21 @@
             "objects": [{"object": "extendedObject", "x": [0, -10, 0], 
                          "p": [0, 0], "m": 1, "label": "Observer", 
                          "options": {"showVelocity": false}, 
-                         "shape": {"type": "aSphere", "params": [5,64]}},
+                         "shape": {"type": "sphere", "params": [5,64]}},
                         {"object": "extendedObject", "x": [-30, -30, 0],
                          "p": [1.5, 0], "m": 1, "label": "Star",
-                         "shape": {"type": "aSphere", "params": [5,64]}}
+                         "shape": {"type": "sphere", "params": [5,64]}}
                        ],
             "frame": 0},
            {"caption": "Now watch the same motion with the relativistic Doppler effect visible.",
             "options": {"showDoppler": true, "showGamma": false, "c": 1},
             "objects": [{"object": "extendedObject", "x": [0, -10, 0],
                          "p": [0, 0], "m": 1, "label": "Observer",
-                         "shape": {"type": "aSphere", "params": [5,64]},
+                         "shape": {"type": "sphere", "params": [5,64]},
                          "options": {"showVelocity": false}},
                         {"object": "extendedObject", "x": [-30, -30, 0],
                          "p": [1.5, 0], "m": 1, "label": "Star",
-                         "shape":{"type": "aSphere", "params": [5,64]}}
+                         "shape":{"type": "sphere", "params": [5,64]}}
                        ],
             "frame": 0}
           ]

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta charset="UTF-8" />
         <title>Relativity Simulator</title>
         <!--[if lt IE 9]>
         <script type="text/javascript" src="../lib/ie7/ie9.js"></script>
@@ -21,82 +21,10 @@
         <script type="text/javascript" src="js/colors.js"></script>
         <script type="text/javascript" src="js/interface.js"></script>
         <script type="text/javascript" src="js/scene.js"></script>
+        <script type="text/javascript" src="js/shapes.js"></script>
         <script type="text/javascript" src="../lib/jquery/jquery-ui-1.8.16.custom.min.js"></script>
         <link rel="stylesheet" type="text/css" href="../css/ui-lightness/jquery-ui-1.8.16.custom.css" />
-        <style type="text/css">
-            body {
-                color: #ccc;
-                font-family: sans-serif;
-                background-color: #000000;
-            }
-
-            #controls p {
-                padding: 0;
-                margin: 0;
-            }
-
-            #controls {
-                width: 200px;
-                position: absolute;
-                right: 0.5em;
-                top: 0.5em;
-                color: #fff;
-                font-size: 9pt;
-                background-color: #333;
-                opacity: 0.8;
-                padding: 0.5em;
-            }
-
-            #controls div {
-                margin: 0 0 3pt;
-            }
-
-            #zoom-slider, #speed-slider {
-                font-size: 50%;
-            }
-
-            #demo-chooser {
-                position: absolute;
-                opacity: 0.8;
-                background-color: #333;
-                width: 300px;
-                left: 50%;
-                margin-left: -150px;
-                top: 100px;
-                padding: 1em;
-            }
-
-            #demo-chooser h4 {
-                margin-bottom: 0;
-            }
-
-            #demo-chooser ul {
-                margin: 0;
-            }
-
-            #demo-chooser li {
-                text-decoration: underline;
-                cursor: pointer;
-            }
-
-            #demo-chooser h3 {
-                margin: 0;
-            }
-
-            #help-screen {
-                position: absolute;
-                opacity: 0.8;
-                background-color: #333;
-                width: 400px;
-                left: 50%;
-                margin-left: -200px;
-                top: 100px;
-                padding: 1em;
-            }
-            #steps {
-                text-align: center;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="relativity.css" />
     </head>
 
     <body>
@@ -107,6 +35,31 @@
             <!--[if IE 8]>
             <div style="width:1000px;height:500px;position:absolute;float:left;z-index:6000;" onclick="clickHandler(event)">&nbsp;</div>
             <![endif]-->
+            <div id="controls">
+              <button id="pause" class="play-button">Play</button><button id="replayStep">Replay</button>
+              <div id="speed">Speed: <span id="curSpeed"></span><div><a href="#" id="slowDown">-</a><div id="speed-slider"></div><a href="#" id="speedUp">+</a></div></div>
+              <div id="more"><a href="#" onclick="$('#advancedOpts').toggle(200); return false;">More &raquo;</a></div>
+              <div id="advancedOpts">
+                <label for="doppler">Doppler:</label>
+                <select id="doppler">
+                  <option value="default" selected="selected">Use default</option>
+                  <option value="always">Always on</option>
+                  <option value="never">Always off</option>
+                </select>
+                <label for="framePos">Absolute positions:</label>
+                <select id="framePos">
+                  <option value="default" selected="selected">Use default</option>
+                  <option value="always">Always on</option>
+                  <option value="never">Always off</option>
+                </select>
+                <label for="vPos">Apparent positions:</label>
+                <select id="vPos">
+                  <option value="default" selected="selected">Use default</option>
+                  <option value="always">Always on</option>
+                  <option value="never">Always off</option>
+                </select>
+              </div>
+            </div>
         </div>
         <div id="demo-chooser">
           <h3>Choose a demo</h3>
@@ -114,41 +67,35 @@
         </div>
         <div id="help-screen">
           <h3>Keyboard Controls</h3>
-          <br> w, a, s and d: Accelerate 
+          <br> w, a, s and d, or arrow keys: Accelerate 
           <br> q and e: Rotate left and right (yaw) 
-          <br> 1 and 2: Rotate up and down (pitch)
           <br> 3: Show 3D 
-          <br> z: Toggle Doppler effect, 3 state -- on, default, off.
-          <br> x: Toggle absolute positions. Also 3 state.
-          <br> c: Toggle visible positions. Also 3 state.
           <br> t: Toggle display time.
           <br> p: Toggle display positions.
-          <br> - and =: Zoom in and out
-          <br> [ and ]: Speedup, slowdown time
-          <br> \: Reverse time
-          <br> , and .: Zoom in and out in time axis on Minkowski diagram
+          <br> Page up/down: Zoom in and out
           <br> space: Fire photon (rasteroids only).
-          <br> h: Toggle this screen.
+          <br> h: Toggle help screen.
+          <br> <a href="#" onclick="$('#help-screen').toggle(); return false">Close</a>
         </div>
-        <div id="controls">
-          <form name="controls">
-            <p>Doppler effect: <button id="doppler">Turn off</button></p>
-            <p>Absolute positions: <button id="framePos">Turn on</button></p>
-            <p>Apparent positions: <button id="vPos">Turn on</button></p>
-            <p>Zoom: </p><div id="zoom-slider"></div>
-            <p>Speed: <span id="speed"></span></p><div id="speed-slider"></div>
-            <p><button id="pause">Play</button>
-            <button id="help" onclick="return false;">Help</button></p>
-          </form>
+        <div id="zoom">
+          <a href="#" id="zoomIn">+</a>
+          <div id="zoom-slider"></div>
+          <a href="#" id="zoomOut">-</a>
         </div>
-        <div id="caption"></div>
-        <div id="steps">
-          <button id="prevStep">&lt; Previous step</button>
-          <button id="replayStep">Replay</button>
-          <button id="nextStep">Next step &gt;</button><br/>
-          <button onclick="$('#demo-chooser').show();">Choose new demo</button>
-        </div>
+
         <div style="position:relative">
+          <div id="steps">
+            <button id="nextStep">Next &raquo;</button><br/>
+            <button id="prevStep">&laquo; Previous</button><br/>
+            <button onclick="$('#demo-chooser').show();">Choose new demo</button><br/>
+            <button id="help">Help</button>
+          </div>
+          <div id="caption">
+            <p id="caption-text">Welcome to the jsphys relativity simulator. Choose a demonstration to start with and hit Play.</p>
+          </div>
+        </div>
+        
+        <div style="position:relative;clear:both">
           <canvas id="minkowski" height="500"></canvas>
         </div>
         <div style="position:relative">

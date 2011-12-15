@@ -1,0 +1,162 @@
+body {
+    color: #ccc;
+    font-family: sans-serif;
+    background-color: #000000;
+}
+
+#zoom {
+    position: absolute;
+    top: 3em;
+    right: 0.5em;
+    width: 20px;
+    font-size: 9pt;
+}
+
+#zoom-slider {
+    height: 300px;
+    opacity: 0.7;
+    font-size: 75%;
+}
+
+#zoom > a {
+    text-decoration: none;
+    font-size: 12pt;
+    color: #ccc;
+}
+
+#controls {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    color: #fff;
+    font-size: 9pt;
+    background-color: #333;
+    padding: 1px;
+    border-bottom: 1px solid #2A2A2A;
+}
+
+#controls button {
+    width: 5em;
+    opacity: 0.6;
+}
+
+.play-button {
+    box-shadow: 0 0 2px 2px #fff;
+}
+
+#steps button, #controls button {
+    background-color: #000;
+    font-size: 10pt;
+    color: #ddd;
+    border-width: 0 1px 0 0;
+    border-style: solid;
+    border-color: #333;
+    padding: 0.5em 1em;
+    float: left;
+    cursor: pointer;
+}
+
+#speed {
+    float: left;
+    padding: 2pt 0 0 2pt;
+    opacity: 0.6;
+    color: #ddd;
+}
+
+#speed > div > a {
+    color: #ccc;
+    font-size: 10pt;
+    text-decoration: none;
+    padding: 2pt;
+}
+
+#speed-slider {
+    font-size: 25%;
+    width: 150px;
+    display: inline-block;
+}
+
+#more {
+    padding: 0.5em;
+    float: left;
+}
+
+#more a {
+    text-decoration: none;
+    color: #aaa;
+}
+
+#advancedOpts {
+    display: none;
+    float: left;
+    padding: 0.5em;
+    color: #aaa;
+}
+
+#demo-chooser {
+    position: absolute;
+    opacity: 0.8;
+    background-color: #333;
+    width: 300px;
+    left: 50%;
+    margin-left: -150px;
+    top: 50px;
+    padding: 1em;
+}
+
+#demo-chooser h4 {
+    margin-bottom: 0;
+}
+
+#demo-chooser ul {
+    margin: 0;
+}
+
+#demo-chooser li {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#demo-chooser h3 {
+    margin: 0;
+}
+
+#help-screen {
+    position: absolute;
+    opacity: 0.8;
+    background-color: #333;
+    width: 400px;
+    left: 50%;
+    margin-left: -200px;
+    top: 50px;
+    padding: 1em;
+}
+
+#help-screen a {
+    color: #fff;
+}
+
+#steps {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#steps button {
+    width: 13em;
+    text-align: left;
+    color: #fff;
+}
+
+#steps button:disabled {
+    color: #888;
+    cursor: default;
+}
+
+#caption {
+    background-color: #333;
+    padding: 1em;
+    float: left;
+    margin-right: 13em;
+    min-height: 5em;
+}

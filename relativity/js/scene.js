@@ -102,6 +102,10 @@ function Scene() {
 }
 
 Scene.prototype = {
+    toggle3D: function() {
+        this.curOptions.show3D = !this.curOptions.show3D;
+    },
+    
     /**
      * Load the specified demo at the given step. (The step indexes into
      * the demo's steps array.)
@@ -138,10 +142,10 @@ Scene.prototype = {
 
         drawLightCone(this, this.lCCtx);
 
-        this.boost = {"left": boostFrom3Vel(-0.05 * c, 0, 0),
-                      "right": boostFrom3Vel(0.05 * c, 0, 0),
-                      "up": boostFrom3Vel(0, 0.05 * c, 0),
-                      "down": boostFrom3Vel(0, -0.05 * c, 0)};
+        this.boost = {"left": boostFrom3Vel(-0.02 * c, 0, 0),
+                      "right": boostFrom3Vel(0.02 * c, 0, 0),
+                      "up": boostFrom3Vel(0, 0.02 * c, 0),
+                      "down": boostFrom3Vel(0, -0.02 * c, 0)};
 
         demo.steps[step].objects.forEach(this.createObject, this);
 
@@ -160,7 +164,7 @@ Scene.prototype = {
      * Change the current demo caption to the chosen text.
      */
     pushCaption: function(caption) {
-        $('#caption').html(caption);
+        $('#caption-text').html(caption);
     },
     
     /**
@@ -198,7 +202,11 @@ Scene.prototype = {
             // Some extendedObjects have custom shapes, such as asteroids
             // and stick figures, which are generated here.
             if (Object.prototype.toString.apply(obj.shape) !== '[object Array]') {
-                obj.shape = window[obj.shape.type](obj.shape.params);
+                obj.shape = window["shape_" + obj.shape.type](obj.shape.params);
+            } else {
+                // Pad the shape with extra intermediate points, so it can 
+                // aberrate and contract more accurately
+                obj.shape = linesPadder(obj.shape, this.width * this.zoom / 100);
             }
             thingy = new extendedObject(obj.x, obj.p,
                                         obj.label, obj.options, obj.shape);
@@ -340,10 +348,10 @@ Scene.prototype = {
             this.changeArrayFrame(nullQuat4, boost);
         }
         if (this.actions.zoomOut === true) {
-            zoomTo(this.zoom * 1.05);
+            zoomTo(this,this.zoom * 1.05);
         }
         if (this.actions.zoomIn === true) {
-            zoomTo(this.zoom / 1.05);
+            zoomTo(this,this.zoom / 1.05);
         }
         if (this.actions.timeZoomIn === true) {
             this.timeZoom = this.timeZoom / 1.05;
@@ -368,13 +376,9 @@ Scene.prototype = {
      */
     drawInfo: function() {
         this.g.fillStyle = "rgba(100,100,100,0.3)";
-        this.g.beginPath();
-        this.g.moveTo(10,10);
-        this.g.lineTo(150,10);
-        this.g.lineTo(150,110);
-        this.g.lineTo(10,110);
-        this.g.closePath();
+        this.g.rect(10, 10, 140, 100);
         this.g.fill();
+        
         this.g.fillStyle = "rgba(150,0,150,1)";
         this.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
         this.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 45);
