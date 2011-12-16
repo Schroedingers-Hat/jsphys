@@ -80,6 +80,7 @@ function Scene() {
                    };
 
     this.drawing = false;
+    this.debug = false;
     
     // Records whether the keys for various actions are currently pressed
     // interface.js binds various key events to these actions and toggles their
@@ -275,8 +276,7 @@ Scene.prototype = {
         
         // Some UI drawing.
         this.drawCrosshairs();
-        if (window.console && window.console.firebug && 
-            this.curOptions.showText) {
+        if (this.debug && this.curOptions.showText) {
             this.drawInfo();
         }
         

@@ -410,17 +410,25 @@ $(document).ready(function() {
     $("#3DCanvas").attr('width', viewportWidth);
     $('#help-screen').hide();
     var scene = new Scene();
-    window.scene = scene; // For debugging purposes. Cannot find anything in the DOM without a global reference.
 
     loadDemoList(scene);
     bindKeys(scene);
     $('#pause').click(doPause(scene));
     $("#canvas").click(clickHandler(scene));
 
-
     $("#doppler").change(dopplerChange(scene));
     $('#framePos').change(framePosChange(scene));
     $('#vPos').change(vPosChange(scene));
+    $("#debug").change(function() {
+        // Enable/disable debug mode based on checkbox state
+        scene.debug = $("#debug").prop("checked");
+        if (scene.debug) {
+            // Create global reference to scene for easy debugging
+            window.scene = scene;
+        } else {
+            window.scene = null;
+        }
+    });
 
     $("#nextStep").click(nextStep(scene));
     $("#prevStep").click(prevStep(scene));

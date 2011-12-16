@@ -208,7 +208,7 @@ extendedObject.prototype = {
             }
         }
         if (this.options.showMinkowski) this.drawXT(scene);
-        if (window.console && window.console.firebug) {
+        if (scene.debug) {
             for (var i = 0; i < this.boundingBox.length; i++) {
                 scene.g.beginPath();
                 scene.g.fillStyle = "#f00";
@@ -403,7 +403,7 @@ extendedObject.prototype = {
             if (currentColor == prevColor) scene.g.stroke();
 
             // If we've got a debug console open we probably want a bit more information
-            if (window.console && window.console.firebug) {
+            if (scene.debug) {
                 scene.g.beginPath();
                 scene.g.arc(this.COM.XView[0] / scene.zoom + scene.origin[0],
                             -this.COM.XView[1]  / scene.zoom + scene.origin[1],
@@ -797,7 +797,7 @@ extendedObject.prototype = {
             scene.h.fill();
         }
 
-        if (window.console && window.console.firebug) {
+        if (scene.debug) {
             scene.h.beginPath();
             scene.h.arc(this.COM.initialPt[0] / scene.zoom + scene.origin[0],
                         -this.COM.initialPt[3] / c / scene.timeZoom + scene.origin[2], 

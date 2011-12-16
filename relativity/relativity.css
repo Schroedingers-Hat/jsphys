@@ -89,6 +89,7 @@ body {
 #advancedOpts {
     display: none;
     float: left;
+    clear: left;
     padding: 0.5em;
     color: #aaa;
 }

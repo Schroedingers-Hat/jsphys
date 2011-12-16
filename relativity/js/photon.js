@@ -175,7 +175,7 @@ photon.prototype.drawXT = function(scene) {
     var bOfLinex = bOfLinet * dxdtVis + this.X0[0] / scene.zoom;
 
     scene.h.strokeStyle = "#fff";
-    if (window.console && window.console.firebug) {
+    if (scene.debug) {
         scene.h.beginPath();
         scene.h.fillStyle = "#ff0";
         scene.h.arc(this.XInt[0] / scene.zoom + scene.origin[0],
