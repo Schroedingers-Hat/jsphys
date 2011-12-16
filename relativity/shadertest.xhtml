@@ -21,57 +21,34 @@
             var scene = 3;
             var triArr = new Array();
             var tempy = new Array(3);
-            var tempArr = [];
-
-
-
-
+            var tempArr = new Array(15);
             var offsetx, offsety;
+            var s = 300;
+            var numT = 1e3;
             rend = new Renderer(scene,ctx);
-            for (var j = 0; j < 100000; j++){
-            tempArr[0] = [];
-            tempArr[1] = [];
-            tempArr[2] = [];
+            for (var j = 0; j < numT; j++){
             offsetx = Math.floor(Math.random() * 800) + 100;
             offsety = Math.floor(Math.random() * 500) + 50;
 
-            tempArr[0][0] = Math.floor(Math.random() * 10) + offsetx;
-            tempArr[0][1] = Math.floor(Math.random() * 10) + offsety;
-            tempArr[1][0] = Math.floor(Math.random() * 10) + offsetx;
-            tempArr[1][1] = Math.floor(Math.random() * 10) + offsety;
-            tempArr[2][0] = Math.floor(Math.random() * 10) + offsetx;
-            tempArr[2][1] = Math.floor(Math.random() * 10) + offsety;
-
-            tempArr[0][2] = 255;
-            tempArr[0][3] = 0;
-            tempArr[0][4] = 0;
-
-            tempArr[1][2] = 0;
-            tempArr[1][3] = 0;
-            tempArr[1][4] = 255;
-
-            tempArr[2][2] = 0;
-            tempArr[2][3] = 255;
-            tempArr[2][4] = 0;
-//            tempy[0] = Math.floor(Math.random() * 30) + offsety;
-//            tempArr[2] = Math.floor(Math.random() * 50) + offsetx;
-//            tempy[1] = Math.floor(Math.random() * 30) + offsety;
-//            tempArr[4] = Math.floor(Math.random() * 50) + offsetx;
-//            tempy[2] = Math.floor(Math.random() * 30) + offsety;
-//            tempy.sort(function(a,b){return a-b;});
-//            tempArr[1] = tempy[0];
-//            tempArr[3] = tempy[1];
-//            tempArr[5] = tempy[2];
-//            for ( var i = 6; i <= 15; i++){
-//                tempArr[i] = Math.floor(Math.random() * 250);
-//            }
+            tempArr[0] = Math.floor(Math.random() * s) + offsetx;
+            tempy[0] =   Math.floor(Math.random() * s) + offsety;
+            tempArr[2] = Math.floor(Math.random() * s) + offsetx;
+            tempy[1] =   Math.floor(Math.random() * s) + offsety;
+            tempArr[4] = Math.floor(Math.random() * s) + offsetx;
+            tempy[2] =   Math.floor(Math.random() * s) + offsety;
+            tempy.sort(function(a,b){return a-b;});
+            tempArr[1] = tempy[0];
+            tempArr[3] = tempy[1];
+            tempArr[5] = tempy[2];
+            for ( var i = 6; i <= 15; i++){
+                tempArr[i] = Math.floor(Math.random() * 250);
+            }
 
             triArr.push(tempArr.concat());
         }
-        console.profile('moo');
         drawTri(triArr,canvasData);
-        console.profileEnd('moo');
         ctx.putImageData(canvasData, 0, 0);
+        console.log(s*s / 2 *numT);
         }
         ]]>
     </script>

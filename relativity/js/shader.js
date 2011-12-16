@@ -10,13 +10,18 @@ function Renderer(scene, context){
 }
 
 // Draw shaded triangle.
-// Takes an array of triangles, each an array of 3 arrays of numbers in format x y r g b
+// Takes an array of triangles, each an array of 15 numbers in format:
+// x0, y0, x1, y1, x2, y2, r0, g0, b0, r1, g1, b1, r2, g2, b2
+// 0,1,2 represent vertex number. The triangle MUST be sorted st y2>=y1>=y0.
 // sends output to an imageData which must be provided.
 
 
 var drawTri = function(triArray, imageData) {
 
     var i, j, idx, lineW, midFrac;
+    var sI = 0;
+    var mI = 1;
+    var bI = 2;
     var xlR;         // Rounded left point for scanline
     var xl,xr;       // Left and right points for a scanline.
     var xm,ym;       // Mid-point for vertically longest line on triangle.
@@ -34,46 +39,46 @@ var drawTri = function(triArray, imageData) {
 
     // Cache for one triangle.
     var x0, y0,x1, y1, x2, y2, r0, g0, b0, r1, g1, b1, r2, g2, b2;
-    var sortfunc = function(a,b){
-        return a[1] - b[1];
-    };
-        console.time("foo");
+
     for ( j = 0; j < triArray.length; j++ ) {
-        triArray[j].sort(sortfunc);
-        x0 = triArray[j][0][0];
-        y0 = triArray[j][0][1];
-        x1 = triArray[j][1][0];
-        y1 = triArray[j][1][1];
-        x2 = triArray[j][2][0];
-        y2 = triArray[j][2][1];
+  
+        if ( triArray[j][1 + 2 * sI] > triArray[j][1 + 2 * mI] ) {
+            mI = (sI += mI -= sI) - mI;
+        }
+        if ( triArray[j][1 + 2 * mI] > triArray[j][1 + 2 * bI] ) {
+            bI = (mI += bI -= mI) - bI;
+        }       
+        if ( triArray[j][1 + 2 * sI] > triArray[j][1 + 2 * mI] ) {
+            mI = (sI += mI -= sI) - mI;
+        }       
+        
+        
+        x0 = triArray[j][ 0 + sI * 2];
+        y0 = triArray[j][ 1 + sI * 2];
+        x1 = triArray[j][ 0 + mI * 2];
+        y1 = triArray[j][ 1 + mI * 2];
+        x2 = triArray[j][ 0 + bI * 2];
+        y2 = triArray[j][ 1 + bI * 2];
 
-        r0 = triArray[j][0][2];
-        g0 = triArray[j][0][3];
-        b0 = triArray[j][0][4];
+        r0 = triArray[j][ 6 + sI * 3];
+        g0 = triArray[j][ 7 + sI * 3];
+        b0 = triArray[j][ 8 + sI * 3];
 
 
-        r1 = triArray[j][1][2];
-        g1 = triArray[j][1][3];
-        b1 = triArray[j][1][4];
+        r1 = triArray[j][ 6 + mI * 3];
+        g1 = triArray[j][ 7 + mI * 3];
+        b1 = triArray[j][ 8 + mI * 3];
 
-        r2 = triArray[j][2][2];
-        g2 = triArray[j][2][3];
-        b2 = triArray[j][2][4];
+        r2 = triArray[j][ 6 + bI * 3];
+        g2 = triArray[j][ 7 + bI * 3];
+        b2 = triArray[j][ 8 + bI * 3]; 
+
         // Might add another layer of loop here, and loop over a collection of triangles.
         // Save reallocating all this memory.
     
     
         // Draw the top half of the triangle if we have one.
-        if ( y0 !== y1  && y2 !== y0 || true) {
-            if ( false && y1 === y2 ) {
-                // We don't want a mid-point if the bottom of the triangle is flat.
-                xm = x2;
-                ym = y2;
-     
-                rm = r2;
-                gm = g2;
-                bm = b2;
-            } else {
+        if ( y0 !== y1 ) {
                 // Find mid-point.
                 midFrac = (y1 - y0) / (y2 - y0);
                 xm = midFrac * (x2 - x0) + x0;
@@ -84,7 +89,6 @@ var drawTri = function(triArray, imageData) {
                 rm = midFrac * (r2 - r0) + r0;
                 gm = midFrac * (g2 - g0) + g0;
                 bm = midFrac * (b2 - b0) + b0;
-            }
             xl = Math.round(x0);
             xr = Math.round(x0); // Left point is right point at tip.
     
@@ -134,7 +138,7 @@ var drawTri = function(triArray, imageData) {
             }
             line = Math.round(y0);
             lineW = 0;
-            while ( line <= ym ) {
+            while ( line < ym ) {
     
                 xlR = Math.floor(xl);
                 // Reversed loop not needed for modern implementations, but
@@ -183,17 +187,8 @@ var drawTri = function(triArray, imageData) {
     
     
         // Draw the bottom part of the triangle if we have one.
-        if ( y1 !== y2  && y2 != y0 || true) {
-            if ( false &&y0 === y1 ) {
-                // We don't want a mid-point if the top of the triangle is flat.
-                xm = x1;
-                ym = y1;
-     
-                rm = r1;
-                gm = g1;
-                bm = b1;
-            } else {
-                // TODO: If the triangle has both parts, his is all redundant. Eliminate it.
+        if ( y1 !== y2 ) {
+                           // TODO: If the triangle has both parts, his is all redundant. Eliminate it.
                 // Find mid-point.
                 midFrac = (y1 - y0) / (y2 - y0);
                 xm = midFrac * (x2 - x0) + x0;
@@ -204,7 +199,6 @@ var drawTri = function(triArray, imageData) {
                 rm = midFrac * (r2 - r0) + r0;
                 gm = midFrac * (g2 - g0) + g0;
                 bm = midFrac * (b2 - b0) + b0;
-            }
     
             if ( xm < x1 ) { 
                 xl = Math.round(xm);
@@ -263,15 +257,12 @@ var drawTri = function(triArray, imageData) {
             gbh = (br - bl) / (xr - xl);
             line = Math.round(y1);
             lineW = xr - xl;
-            while ( line <= y2 ) {
-                if ( lineW > 200 ) { 
-                    console.log(triArray[j]);
-                }
-                xlR = Math.floor(xl);
+            while ( line < y2 ) {
+                xlR = Math.round(xl);
                 // Reversed loop not needed for modern implementations, but
                 // conceptually easier in this case.
                 // Decided to overdraw slightly, to avoid black lines.
-                for ( i = Math.ceil(lineW) ; i >= 0 ; i-- ) {
+                for ( i = Math.round(lineW) ; i >= 0 ; i-- ) {
                     idx = 4*width*line + 4*xlR;
                     if (idx < imageData.data.length  && xlR < width && xlR > 0){
                     imageData.data[idx + 0] = rc;
@@ -312,5 +303,4 @@ var drawTri = function(triArray, imageData) {
          
     }
 
-        console.timeEnd("foo");
 };
