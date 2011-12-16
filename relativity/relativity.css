@@ -147,6 +147,7 @@ body {
     width: 13em;
     text-align: left;
     color: #fff;
+    clear: left;
 }
 
 #steps button:disabled {
