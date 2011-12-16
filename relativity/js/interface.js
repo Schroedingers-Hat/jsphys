@@ -386,6 +386,19 @@ function loadDemoList(scene) {
     });
 }
 
+
+// This really shouldn't go here, or be exactly like this...SHhhhhhh
+function playTrack(track){
+    var audioElement = document.createElement('audio');
+    audioElement.setAttribute('src', 'demos/res/' + track + '.ogg');
+    audioElement.load();
+    audioElement.addEventListener("load", function() {
+    audioElement.play();
+    }, true);
+    audioElement.play();
+}
+
+
 function showHelp(event) {
     $('#help-screen').toggle();
     if(event.preventDefault) event.preventDefault(); 

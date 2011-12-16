@@ -1,10 +1,10 @@
 "use strict";
-
 /**
  * Create a new fourEvent. Takes an initial position X and a 3-velocity V,
  * which will be rescaled to have a magnitude of c.
  */
 function fourEvent(X, options) {
+    this.moo = false;
     if (options.caption) this.caption = options.caption;
     this.X0 = quat4.create(X);
     this.later = X[3] + 1;
@@ -44,6 +44,10 @@ fourEvent.prototype.draw = function(scene) {
        (this.X0[3] > 0 && this.later <=0) && this.caption) {
         scene.pushCaption(this.caption);
         highlightNext();
+        if( this.moo !== true){
+            this.moo = true;
+        playTrack('bro');
+        }
     }
 };
 
