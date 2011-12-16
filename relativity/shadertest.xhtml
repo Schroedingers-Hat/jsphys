@@ -11,7 +11,7 @@
       }
   </style>
 
-    <script type="text/javascript" src="js/shader.js"></script>
+    <script type="text/javascript" src="js/shader-min.js"></script>
     <script>
         <![CDATA[
         function go() {
@@ -23,12 +23,12 @@
             var tempy = new Array(3);
             var tempArr = new Array(15);
             var offsetx, offsety;
-            var s = 300;
-            var numT = 1e3;
-            rend = new Renderer(scene,ctx);
+            var s = 15;
+            var numT = 2e3;
+            console.time("foo");
             for (var j = 0; j < numT; j++){
-            offsetx = Math.floor(Math.random() * 800) + 100;
-            offsety = Math.floor(Math.random() * 500) + 50;
+            offsetx = Math.floor(Math.random() * 960) + 20;
+            offsety = Math.floor(Math.random() * 580) + 10;
 
             tempArr[0] = Math.floor(Math.random() * s) + offsetx;
             tempy[0] =   Math.floor(Math.random() * s) + offsety;
@@ -46,7 +46,10 @@
 
             triArr.push(tempArr.concat());
         }
+        console.timeEnd("foo");
+        console.time("bar");
         drawTri(triArr,canvasData);
+        console.timeEnd("bar");
         ctx.putImageData(canvasData, 0, 0);
         console.log(s*s / 2 *numT);
         }

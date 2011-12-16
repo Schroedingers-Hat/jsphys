@@ -4,10 +4,7 @@
 // Can't say more about how it works because I don't know yet.
 // Many thanks to the authors of jsc3d and pre3d, and k3d for inspiration.
 
-function Renderer(scene, context){
-    this.tris = [];
-    
-}
+
 
 // Draw shaded triangle.
 // Takes an array of triangles, each an array of 15 numbers in format:
@@ -34,44 +31,44 @@ var drawTri = function(triArray, imageData) {
     var grl,ggl,gbl; // Left and right border color gradients
     var grr,ggr,gbr;
     var grh,ggh,gbh; // Scanline color gradient.
-
+    var tempArr = new Array(16);
     var width = imageData.width; // Set image width here.
 
     // Cache for one triangle.
     var x0, y0,x1, y1, x2, y2, r0, g0, b0, r1, g1, b1, r2, g2, b2;
 
     for ( j = 0; j < triArray.length; j++ ) {
-  
-        if ( triArray[j][1 + 2 * sI] > triArray[j][1 + 2 * mI] ) {
+        tempArr = triArray[j]; 
+        if ( tempArr[1 + 2 * sI] > tempArr[1 + 2 * mI] ) {
             mI = (sI += mI -= sI) - mI;
         }
-        if ( triArray[j][1 + 2 * mI] > triArray[j][1 + 2 * bI] ) {
+        if ( tempArr[1 + 2 * mI] > tempArr[1 + 2 * bI] ) {
             bI = (mI += bI -= mI) - bI;
         }       
-        if ( triArray[j][1 + 2 * sI] > triArray[j][1 + 2 * mI] ) {
+        if ( tempArr[1 + 2 * sI] > tempArr[1 + 2 * mI] ) {
             mI = (sI += mI -= sI) - mI;
         }       
         
         
-        x0 = triArray[j][ 0 + sI * 2];
-        y0 = triArray[j][ 1 + sI * 2];
-        x1 = triArray[j][ 0 + mI * 2];
-        y1 = triArray[j][ 1 + mI * 2];
-        x2 = triArray[j][ 0 + bI * 2];
-        y2 = triArray[j][ 1 + bI * 2];
+        x0 = tempArr[ 0 + sI * 2];
+        y0 = tempArr[ 1 + sI * 2];
+        x1 = tempArr[ 0 + mI * 2];
+        y1 = tempArr[ 1 + mI * 2];
+        x2 = tempArr[ 0 + bI * 2];
+        y2 = tempArr[ 1 + bI * 2];
 
-        r0 = triArray[j][ 6 + sI * 3];
-        g0 = triArray[j][ 7 + sI * 3];
-        b0 = triArray[j][ 8 + sI * 3];
+        r0 = tempArr[ 6 + sI * 3];
+        g0 = tempArr[ 7 + sI * 3];
+        b0 = tempArr[ 8 + sI * 3];
 
 
-        r1 = triArray[j][ 6 + mI * 3];
-        g1 = triArray[j][ 7 + mI * 3];
-        b1 = triArray[j][ 8 + mI * 3];
+        r1 = tempArr[ 6 + mI * 3];
+        g1 = tempArr[ 7 + mI * 3];
+        b1 = tempArr[ 8 + mI * 3];
 
-        r2 = triArray[j][ 6 + bI * 3];
-        g2 = triArray[j][ 7 + bI * 3];
-        b2 = triArray[j][ 8 + bI * 3]; 
+        r2 = tempArr[ 6 + bI * 3];
+        g2 = tempArr[ 7 + bI * 3];
+        b2 = tempArr[ 8 + bI * 3]; 
 
         // Might add another layer of loop here, and loop over a collection of triangles.
         // Save reallocating all this memory.
@@ -304,3 +301,5 @@ var drawTri = function(triArray, imageData) {
     }
 
 };
+
+window['drawTri'] = drawTri;
