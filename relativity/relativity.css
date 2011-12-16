@@ -151,7 +151,7 @@ body {
 }
 
 #steps button:disabled {
-    color: #888;
+    visibility: hidden;
     cursor: default;
 }
 
