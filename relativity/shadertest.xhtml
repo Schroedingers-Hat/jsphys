@@ -16,43 +16,60 @@
         <![CDATA[
         function go() {
             var canvas = document.getElementById('myCanvasElt');
+
+//            console.log(s*s/2*numT);
+            this.draw = function ()
+            {
             var ctx = canvas.getContext('2d');
-            var canvasData = ctx.createImageData(canvas.width, canvas.height);
             var scene = 3;
+            var canvasData = ctx.createImageData(canvas.width, canvas.height);
             var triArr = new Array();
             var tempy = new Array(3);
             var tempArr = new Array(15);
             var offsetx, offsety;
-            var s = 15;
-            var numT = 2e3;
-            console.time("foo");
-            for (var j = 0; j < numT; j++){
-            offsetx = Math.floor(Math.random() * 960) + 20;
-            offsety = Math.floor(Math.random() * 580) + 10;
+            var s = 10;
+            var numT = 2e4;
+                console.time('bar');
+                canvasData =ctx.createImageData(canvas.width,canvas.height);
+                for (var j = 0; j < numT; j++){
+                    if(!triArr[j]){
+                        triArr[j] = [];
+                    }
+                tempArr = triArr[j];
+                offsetx = Math.floor(Math.random() * 800) + 100;
+                offsety = Math.floor(Math.random() * 400) + 100;
 
-            tempArr[0] = Math.floor(Math.random() * s) + offsetx;
-            tempy[0] =   Math.floor(Math.random() * s) + offsety;
-            tempArr[2] = Math.floor(Math.random() * s) + offsetx;
-            tempy[1] =   Math.floor(Math.random() * s) + offsety;
-            tempArr[4] = Math.floor(Math.random() * s) + offsetx;
-            tempy[2] =   Math.floor(Math.random() * s) + offsety;
-            tempy.sort(function(a,b){return a-b;});
-            tempArr[1] = tempy[0];
-            tempArr[3] = tempy[1];
-            tempArr[5] = tempy[2];
-            for ( var i = 6; i <= 15; i++){
-                tempArr[i] = Math.floor(Math.random() * 250);
+                tempArr[0] = Math.floor(Math.random() * s) + offsetx;
+                tempy[0] =   Math.floor(Math.random() * s) + offsety;
+                tempArr[2] = Math.floor(Math.random() * s) + offsetx;
+                tempy[1] =   Math.floor(Math.random() * s) + offsety;
+                tempArr[4] = Math.floor(Math.random() * s) + offsetx;
+                tempy[2] =   Math.floor(Math.random() * s) + offsety;
+                tempy.sort(function(a,b){return a-b;});
+                tempArr[1] = tempy[0];
+                tempArr[3] = tempy[1];
+                tempArr[5] = tempy[2];
+                for ( var i = 6; i <= 15; i++){
+                    tempArr[i] = Math.floor(Math.random() * 250);
+                }
+
+//                triArr[j] = tempArr.concat();
+                endNum = j;
             }
+            console.timeEnd('bar');
+            console.time('foo');
+            drawTri(triArr,canvasData, endNum);
 
-            triArr.push(tempArr.concat());
-        }
-        console.timeEnd("foo");
-        console.time("bar");
-        drawTri(triArr,canvasData);
-        console.timeEnd("bar");
-        ctx.putImageData(canvasData, 0, 0);
-        console.log(s*s / 2 *numT);
-        }
+            console.timeEnd('foo');
+            ctx.putImageData(canvasData, 0, 0);
+            console.time('moo');
+            console.timeEnd('moo');
+
+            }
+            setInterval(draw,90);
+
+            } 
+
         ]]>
     </script>
 

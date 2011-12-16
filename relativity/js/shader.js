@@ -9,14 +9,18 @@
 // Draw shaded triangle.
 // Takes an array of triangles, each an array of 15 numbers in format:
 // x0, y0, x1, y1, x2, y2, r0, g0, b0, r1, g1, b1, r2, g2, b2
-// 0,1,2 represent vertex number. The triangle MUST be sorted st y2>=y1>=y0.
+// 0,1,2 represent vertex number.
 // sends output to an imageData which must be provided.
+//
+// Specifying an end allows triArray to be reused between frames rather than being reallocated.
+// I found this was marginally faster than using push() and pop()
 
+var drawTri = function(triArray, imageData, endNum) {
 
-var drawTri = function(triArray, imageData) {
-
-    var i, j, idx, lineW, midFrac;
-    var sI = 0;
+    var i, j, idx, idxa;  // Indeces for counting things 
+    var lineW;      // Running line width.
+    var midFrac;    // Which fraction of the long side is the split-point.
+    var sI = 0;     // Vertex indeces.
     var mI = 1;
     var bI = 2;
     var xlR;         // Rounded left point for scanline
@@ -34,10 +38,11 @@ var drawTri = function(triArray, imageData) {
     var tempArr = new Array(16);
     var width = imageData.width; // Set image width here.
 
+    var dLen = imageData.data.length;
     // Cache for one triangle.
     var x0, y0,x1, y1, x2, y2, r0, g0, b0, r1, g1, b1, r2, g2, b2;
 
-    for ( j = 0; j < triArray.length; j++ ) {
+    for ( j = 0; j < endNum; j++ ) {
         tempArr = triArray[j]; 
         if ( tempArr[1 + 2 * sI] > tempArr[1 + 2 * mI] ) {
             mI = (sI += mI -= sI) - mI;
@@ -137,13 +142,14 @@ var drawTri = function(triArray, imageData) {
             lineW = 0;
             while ( line < ym ) {
     
+                idxa = 4*width*line;
                 xlR = Math.floor(xl);
                 // Reversed loop not needed for modern implementations, but
                 // conceptually easier in this case.
                 // Decided to overdraw slightly, to avoid black lines.
-                for ( i = Math.ceil(lineW) ; i >= 0 ; i-- ) {
-                    idx = 4*width*line + 4*xlR;
-                    if (idx < imageData.data.length  && xlR < width && xlR > 0){
+                for ( i = Math.ceil(lineW) ;  i--; ) {
+                    idx = idxa + 4*xlR;
+                    if (idx < dLen  && xlR < width && xlR > 0){
                     imageData.data[idx + 0] = rc;
                     imageData.data[idx + 1] = gc;
                     imageData.data[idx + 2] = bc;
@@ -255,17 +261,20 @@ var drawTri = function(triArray, imageData) {
             line = Math.round(y1);
             lineW = xr - xl;
             while ( line < y2 ) {
+
+                idxa = 4*width*line;
                 xlR = Math.round(xl);
                 // Reversed loop not needed for modern implementations, but
                 // conceptually easier in this case.
                 // Decided to overdraw slightly, to avoid black lines.
-                for ( i = Math.round(lineW) ; i >= 0 ; i-- ) {
-                    idx = 4*width*line + 4*xlR;
-                    if (idx < imageData.data.length  && xlR < width && xlR > 0){
-                    imageData.data[idx + 0] = rc;
-                    imageData.data[idx + 1] = gc;
-                    imageData.data[idx + 2] = bc;
-                    imageData.data[idx + 3] = 255;
+                // Chrome somehow gets a 5x speedup from writing loops like this. 0_o
+                for ( i = Math.ceil(lineW) ;  i--; ) {
+                    idx = idxa + 4*xlR;
+                    if (idx < dLen  && xlR < width && xlR > 0){
+                        imageData.data[idx + 0] = rc;
+                        imageData.data[idx + 1] = gc;
+                        imageData.data[idx + 2] = bc;
+                        imageData.data[idx + 3] = 255;
                     }
                     xlR++;
                     rc += grh;
