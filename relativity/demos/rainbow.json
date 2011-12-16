@@ -70,7 +70,8 @@
                         {"object": "photon", "x": [66, 10, 0], "v": [1, 0, 0], "options": {"wavelength": 860}},
                         {"object": "photon", "x": [67, 10, 0], "v": [1, 0, 0], "options": {"wavelength": 870}},
                         {"object": "photon", "x": [68, 10, 0], "v": [1, 0, 0], "options": {"wavelength": 880}},
-                        {"object": "photon", "x": [69, 10, 0], "v": [1, 0, 0], "options": {"wavelength": 890}}
+                        {"object": "photon", "x": [69, 10, 0], "v": [1, 0, 0], "options": {"wavelength": 890}},
+                        {"object": "fourEvent", "x":[10,10,10,100], "options": {"caption": "test blah blah"}}
                        ],
             "options": {"showFramePos": true, "showVisualPos": false,
                         "showGamma": false}}

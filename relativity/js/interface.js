@@ -80,7 +80,6 @@ function clickHandler(scene) {
         }
     };
 }
-
 /**
  * Zoom a scene to a specified zoom level, move the zoom slider to match, and
  * recalculate the standard boosts to be used when translating with wasd.
@@ -119,6 +118,20 @@ function zoomOut(scene) {
     };
 }
 
+function handleScroll(evt){
+    var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+    if (delta>0) {
+
+        $("#zoomIn").click();
+    }
+    if (delta < 0){
+        $("#zoomOut").click();
+    }
+    return evt.preventDefault() && false;
+}
+
+
+
 /**
  * Create a callback to work on the specified scene, converting a zoom slider
  * event into a zoom level.
@@ -146,6 +159,7 @@ function doPause(scene) {
             $("#pause").html("Play");
             $("#pause").addClass("play-button");
         }
+        $('#first-play').hide();
         scene.pause();
         updateSliders(scene);
         if (event.preventDefault) event.preventDefault();
@@ -160,10 +174,10 @@ function doPause(scene) {
 function setAnimSpeed(scene) {
     return function(event, ui) {
         if (ui.value > 0) {
-            scene.timeScale = Math.pow(2, ui.value) - 1;
+            scene.timeScale = Math.pow(1.01, ui.value) - 1;
         }
         if (ui.value <= 0) {
-            scene.timeScale = -Math.pow(2, -ui.value) + 1;
+            scene.timeScale = -Math.pow(1.01, -ui.value) + 1;
         }
         updateSliders(scene);
     };
@@ -175,7 +189,7 @@ function setAnimSpeed(scene) {
 function speedUp(scene) {
     return function() {
         var curSpeed = $("#speed-slider").slider('value');
-        setAnimSpeed(scene)(undefined, {value: curSpeed + 0.002});
+        setAnimSpeed(scene)(undefined, {value: curSpeed + 0.2});
         return false;
     };
 }
@@ -186,7 +200,7 @@ function speedUp(scene) {
 function slowDown(scene) {
     return function() {
         var curSpeed = $("#speed-slider").slider('value');
-        setAnimSpeed(scene)(undefined, {value: curSpeed - 0.002});
+        setAnimSpeed(scene)(undefined, {value: curSpeed - 0.2});
         return false;
     };
 }
@@ -199,7 +213,7 @@ function updateSliders(scene) {
     $("#zoom-slider").slider("option", "value", -(Math.log(scene.zoom) / Math.LN2));
 
     $("#speed-slider").slider("option", "value",
-                              (Math.log(scene.timeScale + 1) / Math.LN2));
+                              (Math.log(scene.timeScale + 1) / Math.log(1.01)));
     $("span#curSpeed").text(Math.round(scene.timeScale * 10000) / 10 + "x");
 }
 
@@ -304,6 +318,9 @@ function prevStep(scene) {
     };
 }
 
+function highlightNext(){
+    $("#nextStep").css('box-shadow', '0 0 2px 2px #fff');
+}
 /**
  * Create callback to replay the given scene's current step.
  */
@@ -332,6 +349,7 @@ function loadDemo(demo, scene) {
             }
         
             $("#demo-chooser").hide();
+            $("#first-play").show();
             scene.startAnimation();
         });
 
@@ -403,8 +421,10 @@ $(document).ready(function() {
     loadDemoList(scene);
     bindKeys(scene);
     $('#pause').click(doPause(scene));
+    $('#first-play').click(doPause(scene));
     $("#canvas").click(clickHandler(scene));
-
+    window.addEventListener('DOMMouseScroll',handleScroll,false);
+    window.addEventListener('mousewheel',handleScroll,false);
 
     $("#doppler").change(dopplerChange(scene));
     $('#framePos').change(framePosChange(scene));

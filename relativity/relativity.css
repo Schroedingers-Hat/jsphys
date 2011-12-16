@@ -104,6 +104,7 @@ body {
     padding: 1em;
 }
 
+
 #demo-chooser h4 {
     margin-bottom: 0;
 }
@@ -120,6 +121,24 @@ body {
 #demo-chooser h3 {
     margin: 0;
 }
+
+#first-play { 
+    position: absolute;
+    opacity: 0.5;
+    background-color: #333;
+    width: 20px;
+    height: 40px;
+    left: 50%;
+    margin-left: -40px;
+    margin-top: -10px;
+    top: 50%;
+    padding: 1em;
+}
+
+#first-play h1 {
+    margin: 0;
+}
+
 
 #help-screen {
     position: absolute;

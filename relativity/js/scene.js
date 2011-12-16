@@ -21,7 +21,11 @@ function Scene() {
     }
     var defFont = "0.8em Helvetiker, helvetica, arial, sans-serif";
     this.g = $('#canvas')[0].getContext("2d");
-    this.h = $('#minkowski')[0].getContext("2d");
+//    this.h = $('#minkowski')[0].getContext("2d");
+    this.hCan = document.createElement('canvas');
+
+
+    this.h = this.hCan.getContext("2d");
     this.TDC = $('#3DCanvas')[0].getContext("2d");
     this.g.font = defFont;
     this.h.font = defFont;
@@ -271,7 +275,7 @@ Scene.prototype = {
             obj.update(timeStep, this);
             obj.draw(this);
         }, this);
-        
+        this.g.drawImage(this.hCan,this.width - 200,0,200,200);
         // Some UI drawing.
         this.drawCrosshairs();
         if (window.console && window.console.firebug && 
@@ -419,6 +423,8 @@ Scene.prototype = {
         this.mHeight = $("#minkowski").height();
         this.tWidth = $("#3DCanvas").width();
         this.tHeight = $("#3DCanvas").height();
+        this.hCan.width = this.mWidth;
+        this.hCan.height = this.mHeight;
         this.lightConeCanvas.width = this.mWidth;
         this.lightConeCanvas.height = this.mHeight;
         this.hwidth = this.width / 2;

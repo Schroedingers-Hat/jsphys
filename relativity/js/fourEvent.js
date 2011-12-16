@@ -43,6 +43,7 @@ fourEvent.prototype.draw = function(scene) {
     if((this.X0[3] < 0 && this.later >= 0) ||
        (this.X0[3] > 0 && this.later <=0) && this.caption) {
         scene.pushCaption(this.caption);
+        highlightNext();
     }
 };
 
@@ -81,4 +82,4 @@ fourEvent.prototype.drawPast = function(scene) {
                    5-Math.abs(this.X0[3] + vec3.length(this.X0)), 0, twopi, true);
         scene.g.fill();
     }
-}
+};
