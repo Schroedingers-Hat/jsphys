@@ -52,8 +52,8 @@
                 var tempArr;
                 var ox,oy;
                 var i;
-                var s = 30;
-                var numT = 1e5;
+                var s = 100;
+                var numT = 1e4;
                 console.time('setup');
                 for (var j = 0; j <= numT; j++){
                     ox = floor(rnd()*800) + 100;
@@ -101,9 +101,7 @@
 
                 ctx.putImageData(canvasData, 0, 0);
 
-//                drawTexturedTriangle(ctx,image, triArr, endNum, 0, 0, 0, 100, 100, 100);
 
-//                ctx.drawImage(buffer, 0, 0);
                 console.timeEnd('texture');
 
 
