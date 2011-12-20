@@ -13,6 +13,7 @@
      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 
     <script type="text/javascript" src="js/graphics/shader.js"></script>
+    <script type="text/javascript" src="js/colors.js"></script>
     <script>
         <![CDATA[
         function go() {
@@ -39,9 +40,9 @@
                 ctx.fillStyle = '#000f';
                 ctx.fillRect(0,0,canvas.width,canvas.height); 
                 ctx.drawImage(image,0,0);
-                ctx.drawImage(image,300,0);
-                ctx.drawImage(image,0,300);
-                ctx.drawImage(image,300,300);
+                ctx.drawImage(image,468,0);
+                ctx.drawImage(image,0,320);
+                ctx.drawImage(image,468,320);
                 textures = ctx.getImageData(0,0,canvas.width,canvas.height);
             });
             var floor = Math.floor,
@@ -50,6 +51,7 @@
                 var tempArr;
                 var ox,oy;
                 var i;
+                var px,pz;
                 var s = 100;
                 var numT = 1;
                 console.time('setup');
@@ -64,16 +66,16 @@
 //                    tempArr[3]  = floor(rnd()*s)+oy,  
 //                    tempArr[4]  = floor(rnd()*s)+ox,   
 //                    tempArr[5]  = floor(rnd()*s)+oy, 
-                    tempArr[0]  = 0,        // v1
-                    tempArr[1]  = 0,
+                    tempArr[0]  = -500,        // v1
+                    tempArr[1]  = -250,
                     tempArr[2]  = 2000,
 
-                    tempArr[3]  = 1000*j, //v2
-                    tempArr[4]  = 500*(1-j),
+                    tempArr[3]  = 500*Math.pow(-1,j), //v2
+                    tempArr[4]  = 250*Math.pow(-1,(1-j)),
                     tempArr[5]  = 2000,
 
-                    tempArr[6]  = 1000,  //v3
-                    tempArr[7]  = 500,
+                    tempArr[6]  = 500,  //v3
+                    tempArr[7]  = 250,
                     tempArr[8]  = 2000,
 
                     tempArr[9]  = 155,    //c1
@@ -103,6 +105,9 @@
                 z12 = z22 = z32 = 0;
             this.draw = function ()
             {
+
+                var l1=0,l2=0,l3=0,l4=0;
+                var px=pz=0;
                 t++;
                 for (var k = 0; k<=1;k++){
                 var a,b,c,d,e,f,g,h,i;
@@ -112,19 +117,13 @@
                  *   |d e f| y
                  *   |g h i| z
                  */
-                 a = Math.cos(0.15);
-                 c = -Math.sin(0.15);
-                 g = Math.sin(0.15);
+                 a = Math.cos(0.05);
+                 c = -Math.sin(0.05);
+                 g = Math.sin(0.05);
                  e = 1;
-                 i = Math.cos(0.15);
-                 triArr[k][0] -=500;
-                 triArr[k][1] -=250;
+                 i = Math.cos(0.05);
                  triArr[k][2] -=2000;
-                 triArr[k][3] -=500;
-                 triArr[k][4] -=250;
                  triArr[k][5] -=2000;
-                 triArr[k][6] -=500;
-                 triArr[k][7] -=250;
                  triArr[k][8] -=2000;
 
                  triArr[k][0] = triArr[k][0] * a + triArr[k][2] * c,
@@ -135,17 +134,37 @@
 
                  triArr[k][6] = triArr[k][6] * a + triArr[k][8] * c,
                  triArr[k][8] = triArr[k][6] * g + triArr[k][8] * e;
-                 triArr[k][0] +=500;
-                 triArr[k][1] +=250;
                  triArr[k][2] +=2000;
-                 triArr[k][3] +=500;
-                 triArr[k][4] +=250;
                  triArr[k][5] +=2000;
-                 triArr[k][6] +=500;
-                 triArr[k][7] +=250;
                  triArr[k][8] +=2000;
                }
+               px = 300*Math.cos(t/5);
+               pz = 300*Math.sin(t/5)-200;
+               for ( var i = 0; i < 20; i++){
+                   for( var j = 0; j < 20; j++){
+                       l1 = Math.min(15000/Math.sqrt(Math.pow(20,2) + Math.pow(px - 50*(j-10),2) + Math.pow(pz - 100*(i-10),2)), 200);
+                       l2 = Math.min(15000/Math.sqrt(Math.pow(20,2) + Math.pow(px - 50*(j- 9),2) + Math.pow(pz - 100*(i-10),2)), 200);
+                       l3 = Math.min(15000/Math.sqrt(Math.pow(20,2) + Math.pow(px - 50*(j-10),2) + Math.pow(pz - 100*(i- 9),2)), 200);
+                       l4 = Math.min(15000/Math.sqrt(Math.pow(20,2) + Math.pow(px - 50*(j- 9),2) + Math.pow(pz - 100*(i- 9),2)), 200);
 
+                       triArr[2*(20*i+j)]   = ([50*(j-10), 80, 100*(i-10)+2000,    
+                                                50*(j- 9), 80, 100*(i-10)+2000,    
+                                                50*(j-10), 80, 100*(i- 9)+2000,
+
+                                                l1,l1,l1, l2,l2,l2, l3,l3,l3,
+                                                23*j,16*(i),   23*(j+1),16*i,   23*j,16*(i+1)]);                                   
+
+                       triArr[2*(20*i+j)+1] = ([50*(j- 9),  80, 100*(i- 9)+2000, 
+                                                50*(j- 9),  80, 100*(i-10)+2000, 
+                                                50*(j-10),  80, 100*(i- 9)+2000,
+
+                                                l4,l4,l4, l2,l2,l2, l3,l3,l3,
+                                                23*j,16*(i+1),   23*(j+1),16*i,   23*j,16*(i+1)]);                                   
+                    }
+                    }
+
+console.log(l1);
+                endNum = 399;
 
                 console.timeEnd('setup');
                 //                drawTriTex(triArr,canvasData, endNum, texture);
@@ -154,7 +173,7 @@
                 canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
 
                 console.time('raster');                
-                drawTriTex(triArr,canvasData, endNum,textures,200);
+                drawTriTex(triArr,canvasData, endNum,textures,3000);
                 console.timeEnd('raster');
 
                 console.time('texture');
@@ -166,7 +185,7 @@
 
 
         }
-            setInterval(draw,30);
+            setInterval(draw,16);
 
             } 
 
@@ -176,6 +195,6 @@
 </head>
 
 <body onload="go()">
-    <canvas id="myCanvasElt" width="1000" height="600"></canvas>
+    <canvas id="myCanvasElt" width="800" height="400"></canvas>
 </body>
 </html>

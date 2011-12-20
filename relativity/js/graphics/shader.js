@@ -580,16 +580,16 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
         }
 
         z0 = tempArr[ 2 + j * 3];
-        x0 = tempArr[ 0 + j * 3]*fz/z0;
-        y0 = tempArr[ 1 + j * 3]*fz/z0;
+        x0 = tempArr[ 0 + j * 3]*fz/z0 + width / 2;
+        y0 = tempArr[ 1 + j * 3]*fz/z0 + height / 2;
 
         z1 = tempArr[ 2 + k * 3];
-        x1 = tempArr[ 0 + k * 3]*fz/z1;
-        y1 = tempArr[ 1 + k * 3]*fz/z1;
+        x1 = tempArr[ 0 + k * 3]*fz/z1 + width / 2;
+        y1 = tempArr[ 1 + k * 3]*fz/z1 + height / 2;
 
         z2 = tempArr[ 2 + l * 3];
-        x2 = tempArr[ 0 + l * 3]*fz/z2;
-        y2 = tempArr[ 1 + l * 3]*fz/z2;
+        x2 = tempArr[ 0 + l * 3]*fz/z2 + width / 2;
+        y2 = tempArr[ 1 + l * 3]*fz/z2 + height / 2;
 
         r0 = tempArr[ 9  + j * 3];
         g0 = tempArr[ 10 + j * 3];
@@ -634,7 +634,8 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
         zm = fm * (z2 - z0) + z0;
 
         // Does the top-triangle exist and is some part of it on the screen?
-
+        y0--;
+        y1++;
         if( ( ( y0 <= height ) ||
               ( y1 >= 0 )   )&&
             ( ( x0 >= 0 || x0 <= width )  ||
@@ -735,7 +736,9 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
     
     
             drawHalfTri(j,k,l,m,xr,xl,xs,xe,ys,ye,xgl,xgr,zc,zl,zr,gzl,gzr,width,rc,rl,rr,bc,bl,br,gc,gl,gr,grh,gbh,ggh,grl,grr,ggl,ggr,gbl,gbr,uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,data,lineW,round,floor,tdata,twidth);
-    
+            y2++;
+            y1--;
+            y1--;   
     
 
         }
@@ -846,7 +849,7 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
             if (y2 < 0 || y1 > height) {
                 ye = ys = 0;
             } else {
-                if (y1 >=0){
+                if (y1 > 0){
                     ys = y1;
                 } else{
                     ys = 0;
@@ -964,6 +967,8 @@ var drawHalfTri = function(j,k,l,m,
        uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,
        data,lineW,round,floor,tdata,twidth){
     var guh,gvh,gzh,ti;
+    xl--;
+    xr++;
     l = 4*width*round(ys);
     j = round(ye - ys);
     while (j--){
@@ -1009,7 +1014,7 @@ var drawHalfTri = function(j,k,l,m,
         while(k--){
             // DRAW A PIXEL
             // Compound statements are faster. I'm assuming it only does the scope resolution once.
-            ti =  4*((uc/zc|0)+width*(vc/zc|0));
+            ti =  4*((uc/zc|0)+width*(vc/zc|0)),
             (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = tdata[ti],rc += grh,gc += ggh,bc += gbh, uc += guh, vc += gvh, zc += gzh);
         }
 
