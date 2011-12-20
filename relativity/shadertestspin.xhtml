@@ -40,9 +40,6 @@
                 ctx.fillStyle = '#000f';
                 ctx.fillRect(0,0,canvas.width,canvas.height); 
                 ctx.drawImage(image,0,0);
-                ctx.drawImage(image,468,0);
-                ctx.drawImage(image,0,320);
-                ctx.drawImage(image,468,320);
                 textures = ctx.getImageData(0,0,canvas.width,canvas.height);
             });
             var floor = Math.floor,
@@ -138,21 +135,26 @@
                  triArr[k][5] +=2000;
                  triArr[k][8] +=2000;
                }
-               px = 300*Math.cos(t/5);
-               vx = -Math.sin(t/5);
-               pz = 300*Math.sin(t/5)-500;
-               vz = Math.cos(t/5);
-               py = 20;
-               vy = 0
-               ;
                var pow = Math.pow;
-               var oz = 2000;
-               for ( var i = 0; i < 20; i++){
-                    for( var j = 0; j < 20; j++){
-                       x1 = 50*(j-10);
-                       x2 = 50*(j-9);
-                       z1 = 100*(i-10);
-                       z2 = 100*(i-9);
+               var imax = 90;
+               var jmax = 80;
+               var oz = 1000/imax*40;
+               var v = (8000/imax)|0;
+               var u = (16180/jmax)|0;
+               px = 200*Math.cos(t/10);
+               vx = -Math.sin(t/10);
+               pz = 200*Math.sin(t/10);
+               vz = Math.cos(t/10);
+               py = 5;
+               vy = 0;
+
+               console.time('lighting');
+               for ( var i = 0; i < imax; i++){
+                    for( var j = 0; j < jmax; j++){
+                       x1 = 1000/jmax*(j-(jmax|0)/2);
+                       x2 = 1000/jmax*(j-(jmax|0)/2 -1);
+                       z1 = 1000/imax*(i-(imax|0)/5);
+                       z2 = 1000/imax*(i-(imax|0)/5-1);
                        rx1 = px - x1;
                        rx2 = px - x2;
                        rz1 = pz - z1;
@@ -180,28 +182,27 @@
                        wavelength = 500 * (Math.sqrt( (1 + rd22)/(1-rd22)));
                        c22 = wavelengthToColor(wavelength);
 
-                       l1 = Math.min(15000/Math.sqrt( pow(20,2) + pow (rx1,2) + pow(rz1,2)),200);
-                       l2 = Math.min(15000/Math.sqrt( pow(20,2) + pow (rx2,2) + pow(rz1,2)),200);
-                       l3 = Math.min(15000/Math.sqrt( pow(20,2) + pow (rx1,2) + pow(rz2,2)),200);
-                       l4 = Math.min(15000/Math.sqrt( pow(20,2) + pow (rx2,2) + pow(rz2,2)),200);
+                       l11 = 2000000/( pow(py,2) + pow (rx1,2) + pow(rz1,2));
+                       l21 = 2000000/( pow(py,2) + pow (rx2,2) + pow(rz1,2));
+                       l12 = 2000000/( pow(py,2) + pow (rx1,2) + pow(rz2,2));
+                       l22 = 2000000/( pow(py,2) + pow (rx2,2) + pow(rz2,2));
 
+                       triArr[2*(jmax*i+j)]   = ([x1,80,z1+oz, x2,80,z1+oz, x1,80,z2+oz,
+                                                c11[0] * l11, c11[1] * l11, c11[2]*l11, 
+                                                c21[0] * l21, c21[1] * l21, c21[2]*l21, 
+                                                c12[0] * l12, c12[1] * l12, c12[2]*l12, 
+                                                u*j%1000,v*(i)%500,   u*(j+1)%1000,v*i%500,   u*j%1000,v*(i+1)%500]);                                   
 
-                       triArr[2*(20*i+j)]   = ([x1,80,z1+oz, x2,80,z1+oz, x1,80,z2+oz,
-                                                c11[0]*l1,c11[1]*l1,c11[2]*l1, 
-                                                c21[0]*l2,c21[1]*l2,c21[2]*l2, 
-                                                c12[0]*l3,c12[1]*l3,c12[2]*l3, 
-                                                23*j,16*(i),   23*(j+1),16*i,   23*j,16*(i+1)]);                                   
-
-                       triArr[2*(20*i+j)+1] = ([x2,80,z2+oz, x2,80,z1+oz, x1, 80, z2+oz,
-                                                c22[0]*l1,c22[1]*l1,c22[2]*l1, 
-                                                c21[0]*l2,c21[1]*l2,c21[2]*l2, 
-                                                c12[0]*l3,c12[1]*l3,c12[2]*l3, 
-                                                23*j,16*(i+1),   23*(j+1),16*i,   23*j,16*(i+1)]);                                   
+                       triArr[2*(jmax*i+j)+1] = ([x2,80,z2+oz, x2,80,z1+oz, x1,80,z2+oz,
+                                                c22[0] * l22, c22[1] * l22, c22[2]*l22, 
+                                                c21[0] * l21, c21[1] * l21, c21[2]*l21, 
+                                                c12[0] * l12, c12[1] * l12, c12[2]*l12, 
+                                                u*j%1000,v*(i+1)%500,   u*(j+1)%1000,v*i%500,   u*j%1000,v*(i+1)%500]);  
                     }
-                    }
-                    console.log(rd11);
+                }
+                console.timeEnd('lighting');
 console.log(l1);
-                endNum = 399;
+                endNum = imax*jmax-1;
 
                 console.timeEnd('setup');
                 //                drawTriTex(triArr,canvasData, endNum, texture);
@@ -210,7 +211,7 @@ console.log(l1);
                 canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
 
                 console.time('raster');                
-                drawTriTex(triArr,canvasData, endNum,textures,3000);
+                drawTriTex(triArr,canvasData, endNum,textures,500);
                 console.timeEnd('raster');
 
                 console.time('texture');
@@ -222,7 +223,7 @@ console.log(l1);
 
 
         }
-            setInterval(draw,160);
+            setInterval(draw,50);
 
             } 
 
