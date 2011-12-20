@@ -58,7 +58,7 @@ var drawTri = function(triArray,imageData,endNum) {
         r1,g1,b1,
         r2,g2,b2;
     // Doesn't matter which end we start from.
-    for ( i = endNum; i--; ) {
+    for ( i = endNum+1; i--; ) {
         tempArr = triArray[i];
         j = 0; 
         k = 1;
@@ -495,7 +495,7 @@ function drawTexturedTriangle(ctx,img, triArr, end,
 
 }
 
-var drawTriTex = function(triArray,imageData,endNum,texture) {
+var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
 
         // Define variables from most used to least used.
     var rc, gc, bc,                 // Working colors for one scanline
@@ -547,9 +547,9 @@ var drawTriTex = function(triArray,imageData,endNum,texture) {
         tempArr,    
 
         // Even more cache for one triangle because tempArr[] is still slow.
-        x0,y0,
-        x1,y1,
-        x2,y2,
+        x0,y0,z0,
+        x1,y1,z1,
+        x2,y2,z2,
         r0,g0,b0,
         r1,g1,b1,
         r2,g2,b2,
@@ -557,7 +557,7 @@ var drawTriTex = function(triArray,imageData,endNum,texture) {
         u1,v1,
         u2,v2;
     // Doesn't matter which end we start from.
-    for ( i = endNum; i--; ) {
+    for ( i = endNum+1; i--; ) {
         tempArr = triArray[i];
         j = 0; 
         k = 1;
@@ -567,42 +567,47 @@ var drawTriTex = function(triArray,imageData,endNum,texture) {
         // Could do it with a temp variable, but there is a
         // threshold for number of local variables
         //  where the scope resolution becomes incredibly slow.
-        if ( tempArr[1 + 2 * j] > tempArr[1 + 2 * k] ) {
+        if ( tempArr[1 + 3 * j]/tempArr[2 + 3*j] > tempArr[1 + 3 * k]/tempArr[2 + 3*k] ) {
             k = (j += k -= j) - k;
         }
-        if ( tempArr[1 + 2 * k] > tempArr[1 + 2 * l] ) {
+        if ( tempArr[1 + 3 * k]/tempArr[2 + 3*k] > tempArr[1 + 3 * l]/tempArr[2 + 3*l] ) {
             l = (k += l -= k) - l;
         }       
-        if ( tempArr[1 + 2 * j] > tempArr[1 + 2 * k] ) {
+        if ( tempArr[1 + 3 * j]/tempArr[2 + 3*j] > tempArr[1 + 3 * k]/tempArr[2 + 3*k] ) {
             k = (j += k -= j) - k;
-        }       
+        }
 
-        x0 = tempArr[ 0 + j * 2];
-        y0 = tempArr[ 1 + j * 2];
-        x1 = tempArr[ 0 + k * 2];
-        y1 = tempArr[ 1 + k * 2];
-        x2 = tempArr[ 0 + l * 2];
-        y2 = tempArr[ 1 + l * 2];
+        z0 = tempArr[ 2 + j * 3];
+        x0 = tempArr[ 0 + j * 3]*fz/z0;
+        y0 = tempArr[ 1 + j * 3]*fz/z0;
 
-        r0 = tempArr[ 6 + j * 3];
-        g0 = tempArr[ 7 + j * 3];
-        b0 = tempArr[ 8 + j * 3];
+        z1 = tempArr[ 2 + k * 3];
+        x1 = tempArr[ 0 + k * 3]*fz/z1;
+        y1 = tempArr[ 1 + k * 3]*fz/z1;
+
+        z2 = tempArr[ 2 + l * 3];
+        x2 = tempArr[ 0 + l * 3]*fz/z2;
+        y2 = tempArr[ 1 + l * 3]*fz/z2;
+
+        r0 = tempArr[ 9  + j * 3];
+        g0 = tempArr[ 10 + j * 3];
+        b0 = tempArr[ 11 + j * 3];
 
 
-        r1 = tempArr[ 6 + k * 3];
-        g1 = tempArr[ 7 + k * 3];
-        b1 = tempArr[ 8 + k * 3];
+        r1 = tempArr[ 9  + k * 3];
+        g1 = tempArr[ 10 + k * 3];
+        b1 = tempArr[ 11 + k * 3];
 
-        r2 = tempArr[ 6 + l * 3];
-        g2 = tempArr[ 7 + l * 3];
-        b2 = tempArr[ 8 + l * 3]; 
+        r2 = tempArr[ 9  + l * 3];
+        g2 = tempArr[ 10 + l * 3];
+        b2 = tempArr[ 11 + l * 3]; 
 
-        u0 = tempArr[ 15 + j * 2];
-        v0 = tempArr[ 16 + j * 2];
-        u1 = tempArr[ 15 + k * 2];
-        v1 = tempArr[ 16 + k * 2];
-        u2 = tempArr[ 15 + l * 2];
-        v2 = tempArr[ 16 + l * 2];
+        u0 = tempArr[ 18 + j * 2];
+        v0 = tempArr[ 19 + j * 2];
+        u1 = tempArr[ 18 + k * 2];
+        v1 = tempArr[ 19 + k * 2];
+        u2 = tempArr[ 18 + l * 2];
+        v2 = tempArr[ 19 + l * 2];
         // Start drawing top part of triangle.
 
         // We're safe from divide by zero here because
@@ -934,11 +939,12 @@ var drawHalfTri = function(j,k,l,m,
        grl,grr,ggl,
        ggr,gbl,gbr,
        uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,
-       data,lineW,round,floor,tdata,twidth){
-
-    var guh,gvh,ti;
-    l = 4*width*floor(ys);
-    j = floor(ye - ys);
+       data,lineW,round,floor,tdata,twidth,
+       zc,zl,zr,gzl,gzr){
+    var ceil = Math.ceil;
+    var guh,gvh,gzh,ti;
+    l = 4*width*round(ys);
+    j = round(ye - ys);
     while (j--){
         // How wide is the current line?
         lineW = xr - xl;
@@ -972,16 +978,17 @@ var drawHalfTri = function(j,k,l,m,
         uc = ul + guh * (xs - xl);
         vc = vl + gvh * (xs - xl);
 
-        m = (l + 4*round(xs)); // Index relating position and data[].
+        m = (l + 4*floor(xs)); // Index relating position and data[].
         // Duff's device
 
-        k = floor(xe - xs);
+        k = round(xe - xs);
         while(k--){
             // DRAW A PIXEL
             // Compound statements are faster. I'm assuming it only does the scope resolution once.
             ti =  4*((uc|0)+width*(vc|0));
             (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = tdata[ti],rc += grh,gc += ggh,bc += gbh, uc += guh, vc += gvh);
         }
+
 
 
         l += 4 * width; // Move to next line.
