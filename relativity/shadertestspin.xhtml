@@ -91,11 +91,11 @@
                     tempArr[18] = 0,
                     tempArr[19] = 0,
 
-                    tempArr[20] = 800*j,
-                    tempArr[21] = 600*(1-j),
+                    tempArr[20] = 400*j,
+                    tempArr[21] = 400*(1-j),
 
-                    tempArr[22] = 800,
-                    tempArr[23] = 600;
+                    tempArr[22] = 400,
+                    tempArr[23] = 400;
 
                     endNum = j;
                 }
@@ -112,11 +112,11 @@
                  *   |d e f| y
                  *   |g h i| z
                  */
-                 a = Math.cos(0.05);
-                 c = -Math.sin(0.05);
-                 g = Math.sin(0.05);
+                 a = Math.cos(0.15);
+                 c = -Math.sin(0.15);
+                 g = Math.sin(0.15);
                  e = 1;
-                 i = Math.cos(0.05);
+                 i = Math.cos(0.15);
                  triArr[k][0] -=500;
                  triArr[k][1] -=250;
                  triArr[k][2] -=2000;
@@ -154,7 +154,7 @@
                 canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
 
                 console.time('raster');                
-                drawTriTex(triArr,canvasData, endNum,textures,1500);
+                drawTriTex(triArr,canvasData, endNum,textures,200);
                 console.timeEnd('raster');
 
                 console.time('texture');
@@ -166,7 +166,7 @@
 
 
         }
-            setInterval(draw,1000);
+            setInterval(draw,30);
 
             } 
 

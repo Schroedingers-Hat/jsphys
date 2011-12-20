@@ -541,6 +541,8 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
         gvl,gvr,
         guh,gvh,
         vm,um,
+
+        zc,zl,zr,gzl,gzr,gzh,zm,
         // Cache for one triangle because triArray[j][i] is very slow.
         // Seems somewhat silly, but it save a lot of time shuffling
         // Variables around re. sorting for the completely flat case.
@@ -592,7 +594,9 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
         r0 = tempArr[ 9  + j * 3];
         g0 = tempArr[ 10 + j * 3];
         b0 = tempArr[ 11 + j * 3];
-
+        z0 = 1/z0;
+        z1 = 1/z1;
+        z2 = 1/z2;
 
         r1 = tempArr[ 9  + k * 3];
         g1 = tempArr[ 10 + k * 3];
@@ -602,12 +606,12 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
         g2 = tempArr[ 10 + l * 3];
         b2 = tempArr[ 11 + l * 3]; 
 
-        u0 = tempArr[ 18 + j * 2];
-        v0 = tempArr[ 19 + j * 2];
-        u1 = tempArr[ 18 + k * 2];
-        v1 = tempArr[ 19 + k * 2];
-        u2 = tempArr[ 18 + l * 2];
-        v2 = tempArr[ 19 + l * 2];
+        u0 = tempArr[ 18 + j * 2]*z0;
+        v0 = tempArr[ 19 + j * 2]*z0;
+        u1 = tempArr[ 18 + k * 2]*z1;
+        v1 = tempArr[ 19 + k * 2]*z1;
+        u2 = tempArr[ 18 + l * 2]*z2;
+        v2 = tempArr[ 19 + l * 2]*z2;
         // Start drawing top part of triangle.
 
         // We're safe from divide by zero here because
@@ -619,7 +623,15 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
 
         // Where is that along the x edge?
         xm = (fm * (x2 - x0) + x0);
-        // Where is that in the u coordinate?
+        // What color is our mid-point?
+        rm = fm * (r2 - r0) + r0;
+        gm = fm * (g2 - g0) + g0;
+        bm = fm * (b2 - b0) + b0;
+
+        um = fm * (u2 - u0) + u0;
+        vm = fm * (v2 - v0) + v0;
+
+        zm = fm * (z2 - z0) + z0;
 
         // Does the top-triangle exist and is some part of it on the screen?
 
@@ -630,15 +642,6 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
               ( x1 >= 0 || x1 <= width )    )&& 
             (y0 !== y1))
         {
-            // What color is our mid-point?
-            rm = fm * (r2 - r0) + r0;
-            gm = fm * (g2 - g0) + g0;
-            bm = fm * (b2 - b0) + b0;
-
-            um = fm * (u2 - u0) + u0;
-            vm = fm * (v2 - v0) + v0;
-
-
 
             // Is 1 the left point?
             if( x1 < xm ) {
@@ -662,6 +665,9 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
                 gur = (um - u0) / (y1 - y0);
                 gvr = (vm - v0) / (y1 - y0);
 
+                gzl = (z1 - z0) / (y1 - y0);
+                gzr = (zm - z0) / (y1 - y0);
+
             } else {
                 // If not, swap them all.
                 xgr = (x1 - x0) / (y1 - y0); // dx/dy left line
@@ -680,6 +686,9 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
 
                 gul = (um - u0) / (y1 - y0);
                 gvl = (vm - v0) / (y1 - y0);
+
+                gzr = (z1 - z0) / (y1 - y0);
+                gzl = (zm - z0) / (y1 - y0);
             }
             
 
@@ -709,20 +718,23 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
             bl = b0 + gbl * k;
             ul = u0 + gul * k;
             vl = v0 + gvl * k;
+            zl = z0 + gzl * k;
             rc = rl;
             gc = gl;
             bc = bl;
             uc = ul;
             vc = vl;
+            zc = zl;
             rr = r0 + grr * k;
             gr = g0 + ggr * k;
             br = b0 + gbr * k;
             ur = u0 + gur * k;
             vr = v0 + gvr * k;   
+            zr = z0 + gzr * k;
     
     
     
-            drawHalfTri(j,k,l,m,xr,xl,xs,xe,ys,ye,xgl,xgr,width,rc,rl,rr,bc,bl,br,gc,gl,gr,grh,gbh,ggh,grl,grr,ggl,ggr,gbl,gbr,uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,data,lineW,round,floor,tdata,twidth);
+            drawHalfTri(j,k,l,m,xr,xl,xs,xe,ys,ye,xgl,xgr,zc,zl,zr,gzl,gzr,width,rc,rl,rr,bc,bl,br,gc,gl,gr,grh,gbh,ggh,grl,grr,ggl,ggr,gbl,gbr,uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,data,lineW,round,floor,tdata,twidth);
     
     
 
@@ -736,13 +748,6 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
               ( x2 >= 0 || x2 <= width )    )&& 
             (y1 !== y2))
         {
-            // What color is our mid-point?
-            rm = fm * (r2 - r0) + r0;
-            gm = fm * (g2 - g0) + g0;
-            bm = fm * (b2 - b0) + b0;
-
-            um = fm * (u2 - u0) + u0;
-            vm = fm * (v2 - v0) + v0;
 
             // Is 1 the left point?
             if( xm < x1 ) {
@@ -751,6 +756,9 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
 
                 xl = xm;
                 xr = x1;
+
+                zl = zm;
+                zr = z1;
 
                 rl = rm;
                 gl = gm;
@@ -768,6 +776,9 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
 
                 xgl = (x2 - xl) / (y2 - y1); // dx/dy left line
                 xgr = (x2 - xr) / (y2 - y1); // dx/dy right line, Recall y1 is ym.
+
+                gzl = (z2 - zl) / (y2 - y1);
+                gzr = (z2 - zr) / (y2 - y1);
 
                 grl = (r2 -  rm) / (y2 - y1); // Red gradient left line
                 ggl = (g2 -  gm) / (y2 - y1); // Rreen gradient left line
@@ -789,6 +800,9 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
                 xl = x1;
                 xr = xm;
 
+                zl = z1;
+                zr = zm;
+
                 rr = rm;
                 gr = gm;
                 br = bm;
@@ -805,6 +819,9 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
 
                 xgl = (x2 - xl) / (y2 - y1); // dx/dy left line
                 xgr = (x2 - xr) / (y2 - y1); // dx/dy right line, Recall y1 is ym.
+
+                gzl = (z2 - zl) / (y2 - y1);
+                gzr = (z2 - zr) / (y2 - y1);
 
                 grr = (r2 -  rm) / (y2 - y1); // Red gradient left line
                 ggr = (g2 -  gm) / (y2 - y1); // Rreen gradient left line
@@ -846,6 +863,7 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
             rl += grl * k;
             gl += ggl * k;
             bl += gbl * k;
+            zl += gzl * k;
 
             ul += gul * k;
             vl += gvl * k;
@@ -853,10 +871,14 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
             uc = ul;
             vc = vl;
 
+            zc = zl;
+
             rc = rl;
             gc = gl;
             bc = bl;
             
+            zr += gzr * k;
+
             ur += gur * k;
             vr += gvr * k;
 
@@ -864,7 +886,7 @@ var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
             gr += ggr * k;
             br += gbr * k;
     
-            drawHalfTri(j,k,l,m,xr,xl,xs,xe,ys,ye,xgl,xgr,width,rc,rl,rr,bc,bl,br,gc,gl,gr,grh,gbh,ggh,grl,grr,ggl,ggr,gbl,gbr,uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,data,lineW,round,floor,tdata,twidth);
+            drawHalfTri(j,k,l,m,xr,xl,xs,xe,ys,ye,xgl,xgr,zc,zl,zr,gzl,gzr,width,rc,rl,rr,bc,bl,br,gc,gl,gr,grh,gbh,ggh,grl,grr,ggl,ggr,gbl,gbr,uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,data,lineW,round,floor,tdata,twidth);
    
         }
     // End full-tri loop
@@ -931,6 +953,7 @@ function drawTexturedTriangle(ctx,img, triArr, end,
 // Draws half a triangle with colored lighting and alpha from a texture.
 var drawHalfTri = function(j,k,l,m,
        xr,xl,xs,xe,ys,ye,xgl,xgr,
+       zc,zl,zr,gzl,gzr,
        width,
        rc,rl,rr,
        bc,bl,br,
@@ -939,9 +962,7 @@ var drawHalfTri = function(j,k,l,m,
        grl,grr,ggl,
        ggr,gbl,gbr,
        uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,
-       data,lineW,round,floor,tdata,twidth,
-       zc,zl,zr,gzl,gzr){
-    var ceil = Math.ceil;
+       data,lineW,round,floor,tdata,twidth){
     var guh,gvh,gzh,ti;
     l = 4*width*round(ys);
     j = round(ye - ys);
@@ -957,6 +978,7 @@ var drawHalfTri = function(j,k,l,m,
         ggh = (gr - gl) / lineW;
         guh = (ur - ul) / lineW;
         gvh = (vr - vl) / lineW;
+        gzh = (zr - zl) / lineW;
 
         if (xr < 0 || xl > width) {
             xe = xs = 0;
@@ -978,6 +1000,8 @@ var drawHalfTri = function(j,k,l,m,
         uc = ul + guh * (xs - xl);
         vc = vl + gvh * (xs - xl);
 
+        zc = zl + gzh * (xs - xl);
+
         m = (l + 4*floor(xs)); // Index relating position and data[].
         // Duff's device
 
@@ -985,8 +1009,8 @@ var drawHalfTri = function(j,k,l,m,
         while(k--){
             // DRAW A PIXEL
             // Compound statements are faster. I'm assuming it only does the scope resolution once.
-            ti =  4*((uc|0)+width*(vc|0));
-            (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = tdata[ti],rc += grh,gc += ggh,bc += gbh, uc += guh, vc += gvh);
+            ti =  4*((uc/zc|0)+width*(vc/zc|0));
+            (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = tdata[ti],rc += grh,gc += ggh,bc += gbh, uc += guh, vc += gvh, zc += gzh);
         }
 
 
@@ -995,6 +1019,8 @@ var drawHalfTri = function(j,k,l,m,
         xl += xgl; // Increment left and right edges.
         xr += xgr;
 
+        zl += gzl;
+        zr += gzr;
         // Increment end colors.
         rl += grl;
         gl += ggl;
