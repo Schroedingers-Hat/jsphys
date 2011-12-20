@@ -2,6 +2,7 @@
  * Doppler shift a color temperature by simply multiplying it
  * by the Doppler factor.
  */
+colorFilter = 2;
 function dopplerShiftColor(colorTemp, velocity, gamma) {
     // Assuming this is accurate for transverse doppler, too.
     var dopplerFactor = 1 / ( 1 + (velocity / c) ) / gamma;
@@ -50,11 +51,7 @@ function wavelengthToColor(wavelength) {
     if (!(roundedWl.toString() in wavelengthToColor.cache)) {
         var xyz = spectrum_to_xyz(gauss_spectrum(roundedWl, 1e15, 1));
         var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
-        
-        var color = "#" + padRGB(Math.floor(rgb[0] * 255).toString(16)) + 
-                          padRGB(Math.floor(rgb[1] * 255).toString(16)) +
-                          padRGB(Math.floor(rgb[2] * 255).toString(16));
-        wavelengthToColor.cache[roundedWl.toString()] = color;
+        wavelengthToColor.cache[roundedWl.toString()] = rgb;
     }
     
     return wavelengthToColor.cache[roundedWl.toString()];
