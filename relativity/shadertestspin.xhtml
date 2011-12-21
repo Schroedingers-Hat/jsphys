@@ -141,12 +141,12 @@
                var oz = 1000/imax*40;
                var v = (8000/imax)|0;
                var u = (16180/jmax)|0;
-               px = 200*Math.cos(t/10);
-               vx = -Math.sin(t/10);
-               pz = 200*Math.sin(t/10);
-               vz = Math.cos(t/10);
-               py = 5;
-               vy = 0;
+               px = 200*Math.cos(t/20);
+               vx = -Math.sin(t/20);
+               py = 200*Math.sin(t/20);
+               vy = Math.cos(t/20);
+               pz = 5;
+               vz = 0;
 
                console.time('lighting');
                for ( var i = 0; i < imax; i++){
@@ -198,11 +198,19 @@
                                                 c21[0] * l21, c21[1] * l21, c21[2]*l21, 
                                                 c12[0] * l12, c12[1] * l12, c12[2]*l12, 
                                                 u*j%1000,v*(i+1)%500,   u*(j+1)%1000,v*i%500,   u*j%1000,v*(i+1)%500]);  
-                    }
-                }
+                                            }
+
+                                            }
+                                            pz = oz;
+                                            if (py < 80){
+                       triArr[0] = ([px,py,pz, px+10,py+10,pz, px,py+10,pz,
+                                                  0,255,0, 0,255,0, 0,255,0,                                                
+                                                  0,0, 100,100, 100,0]);                                   
+                                                  }
+
                 console.timeEnd('lighting');
 console.log(l1);
-                endNum = imax*jmax-1;
+                endNum = imax*jmax;
 
                 console.timeEnd('setup');
                 //                drawTriTex(triArr,canvasData, endNum, texture);
