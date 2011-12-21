@@ -8,7 +8,7 @@
 // 3) OCD
 // 4) Learning about scope.
 
-var drawTri = function(triArray,imageData,endNum) {
+var drawTri = function(triArray,imageData,endNum,fz) {
 
         // Define variables from most used to least used.
     var rc, gc, bc,                 // Working colors for one scanline
@@ -51,9 +51,9 @@ var drawTri = function(triArray,imageData,endNum) {
         tempArr,    
 
         // Even more cache for one triangle because tempArr[] is still slow.
-        x0,y0,
-        x1,y1,
-        x2,y2,
+        x0,y0,z0,
+        x1,y1,z1,
+        x2,y2,z2,
         r0,g0,b0,
         r1,g1,b1,
         r2,g2,b2;
@@ -68,35 +68,41 @@ var drawTri = function(triArray,imageData,endNum) {
         // Could do it with a temp variable, but there is a
         // threshold for number of local variables
         //  where the scope resolution becomes incredibly slow.
-        if ( tempArr[1 + 2 * j] > tempArr[1 + 2 * k] ) {
+        if ( tempArr[1 + 3 * j] / tempArr[2 + 3*j] > tempArr[1 + 3 * k] /tempArr[2 + 3*k] ) {
             k = (j += k -= j) - k;
         }
-        if ( tempArr[1 + 2 * k] > tempArr[1 + 2 * l] ) {
+        if ( tempArr[1 + 3 * k] /tempArr[2 + 3*k] > tempArr[1 + 3 * l] /tempArr[2 + 3*l] ) {
             l = (k += l -= k) - l;
         }       
-        if ( tempArr[1 + 2 * j] > tempArr[1 + 2 * k] ) {
+        if ( tempArr[1 + 3 * j] / tempArr[2 + 3*j] > tempArr[1 + 3 * k] /tempArr[2 + 3*k] ) {
             k = (j += k -= j) - k;
         }       
 
-        x0 = tempArr[ 0 + j * 2];
-        y0 = tempArr[ 1 + j * 2];
-        x1 = tempArr[ 0 + k * 2];
-        y1 = tempArr[ 1 + k * 2];
-        x2 = tempArr[ 0 + l * 2];
-        y2 = tempArr[ 1 + l * 2];
 
-        r0 = tempArr[ 6 + j * 3];
-        g0 = tempArr[ 7 + j * 3];
-        b0 = tempArr[ 8 + j * 3];
+        z0 = tempArr[ 2 + j * 3];
+        x0 = tempArr[ 0 + j * 3]*fz/z0 + width / 2;
+        y0 = tempArr[ 1 + j * 3]*fz/z0 + height / 2;
+
+        z1 = tempArr[ 2 + k * 3];
+        x1 = tempArr[ 0 + k * 3]*fz/z1 + width / 2;
+        y1 = tempArr[ 1 + k * 3]*fz/z1 + height / 2;
+
+        z2 = tempArr[ 2 + l * 3];
+        x2 = tempArr[ 0 + l * 3]*fz/z2 + width / 2;
+        y2 = tempArr[ 1 + l * 3]*fz/z2 + height / 2;
+
+        r0 = tempArr[  9 + j * 3];
+        g0 = tempArr[ 10 + j * 3];
+        b0 = tempArr[ 11 + j * 3];
 
 
-        r1 = tempArr[ 6 + k * 3];
-        g1 = tempArr[ 7 + k * 3];
-        b1 = tempArr[ 8 + k * 3];
+        r1 = tempArr[  9 + k * 3];
+        g1 = tempArr[ 10 + k * 3];
+        b1 = tempArr[ 11 + k * 3];
 
-        r2 = tempArr[ 6 + l * 3];
-        g2 = tempArr[ 7 + l * 3];
-        b2 = tempArr[ 8 + l * 3]; 
+        r2 = tempArr[  9 + l * 3];
+        g2 = tempArr[ 10 + l * 3];
+        b2 = tempArr[ 11 + l * 3]; 
 
         // Start drawing top part of triangle.
 
@@ -110,13 +116,14 @@ var drawTri = function(triArray,imageData,endNum) {
         xm = (fm * (x2 - x0) + x0);
 
         // Does the top-triangle exist and is some part of it on the screen?
-
+        y0--;
+        y1++;
         if( ( ( y0 <= height ) ||
               ( y1 >= 0 )   )&&
             ( ( x0 >= 0 || x0 <= width )  ||
               ( xm >= 0 || xm <= width )  ||
               ( x1 >= 0 || x1 <= width )    )&& 
-            (y0 !== y1))
+            (y0 < y1))
         {
             // What color is our mid-point?
             rm = fm * (r2 - r0) + r0;
@@ -189,85 +196,28 @@ var drawTri = function(triArray,imageData,endNum) {
     
     
     
-    
-    
-            l = 4*width*floor(ys);
-            j = floor(ye - ys);
-            while (j--){
-                // How wide is the current line?
-                lineW = xr - xl;
-                // Set current color.
-    
-                // Calculate new scanline gradient.
-                // Only thing that's not linear.
-                grh = (rr - rl) / lineW;
-                gbh = (br - bl) / lineW;
-                ggh = (gr - gl) / lineW;
-                if (xr < 0 || xl > width) {
-                    xe = xs = 0;
-                } else {
-                    if (xl >=0){
-                        xs = xl;
-                    } else{
-                        xs = 0;
-                    }
-                    if ( xr < width ) {
-                        xe = xr;
-                    } else { 
-                        xe = width;
-                    }
-                }
-                rc = rl + grh * (xs - xl);
-                gc = gl + ggh * (xs - xl);
-                bc = bl + gbh * (xs - xl);
-    
-                m = (l + 4*round(xs)); // Index relating position and data[].
-                // Duff's device
-    
-                k = floor(xe - xs)%8;
-                while(k--){
-                    // DRAW A PIXEL
-                    // Compound statements are faster. I'm assuming it only does the scope resolution once. 
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += grh,gc += ggh,bc += gbh);
-                }
-    
-                k =floor((xe - xs)/8);
-                while(k--){
-                    // DRAW A PIXEL 
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += grh,gc += ggh,bc += gbh),
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += grh,gc += ggh,bc += gbh),
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += grh,gc += ggh,bc += gbh),
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += grh,gc += ggh,bc += gbh),
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += grh,gc += ggh,bc += gbh),
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += grh,gc += ggh,bc += gbh),
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += grh,gc += ggh,bc += gbh),
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += grh,gc += ggh,bc += gbh);
-                }
-    
-                l += 4 * width; // Move to next line.
-                xl += xgl; // Increment left and right edges.
-                xr += xgr;
-    
-                // Increment end colors.
-                rl += grl;
-                gl += ggl;
-                bl += gbl;
-                rr += grr;
-                gr += ggr;
-                br += gbr;
-    
-            // End half-tri loop.
-            }
+    drawHalfTriN(j,k,l,m,
+       xr,xl,xs,xe,ys,ye,xgl,xgr,
+       width,
+       rc,rl,rr,
+       bc,bl,br,
+       gc,gl,gr,
+       grh,gbh,ggh,
+       grl,grr,ggl,
+       ggr,gbl,gbr,
+       data,lineW,round,floor);
 
         }
 
-
+        y1--;
+        y1--;
+        y2++;
         if( ( ( y1 <= height ) ||
               ( y2 >= 0 )   )&&
             ( ( x1 >= 0 || x1 <= width )  ||
               ( xm >= 0 || xm <= width )  ||
               ( x2 >= 0 || x2 <= width )    )&& 
-            (y1 !== y2))
+            (y1 < y2))
         {
             // What color is our mid-point?
             rm = fm * (r2 - r0) + r0;
@@ -360,9 +310,38 @@ var drawTri = function(triArray,imageData,endNum) {
             br += gbr * k;
     
     
+    drawHalfTriN(j,k,l,m,
+       xr,xl,xs,xe,ys,ye,xgl,xgr,
+       width,
+       rc,rl,rr,
+       bc,bl,br,
+       gc,gl,gr,
+       grh,gbh,ggh,
+       grl,grr,ggl,
+       ggr,gbl,gbr,
+       data,lineW,round,floor);
     
-    
-    
+
+
+        }
+    // End full-tri loop
+    }
+
+
+};
+
+var drawHalfTriN = function(j,k,l,m,
+       xr,xl,xs,xe,ys,ye,xgl,xgr,
+       width,
+       rc,rl,rr,
+       bc,bl,br,
+       gc,gl,gr,
+       grh,gbh,ggh,
+       grl,grr,ggl,
+       ggr,gbl,gbr,
+       data,lineW,round,floor){
+            xl--;
+            xr++; 
     
             l = 4*width*floor(ys);
             j = floor(ye - ys);
@@ -397,26 +376,14 @@ var drawTri = function(triArray,imageData,endNum) {
                 m = (l + 4*round(xs)); // Index relating position and data[].
                 // Duff's device
     
-                k = floor(xe - xs)%8;
+                k = floor(xe - xs);
                 while(k--){
                     // DRAW A PIXEL
                     // Compound statements are faster. I'm assuming it only does the scope resolution once. 
                     (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += grh,gc += ggh,bc += gbh);
                 }
     
-                k =floor((xe - xs)/8);
-                while(k--){
-                    // DRAW A PIXEL 
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,//rc += grh,gc += ggh,bc += gbh, //Gradient doesn't have to be updated every pixel
-                     data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,//rc += grh,gc += ggh,bc += gbh,
-                     data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,//rc += grh,gc += ggh,bc += gbh,
-                     data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += 4*grh,gc += 4*ggh,bc += 4*gbh),
-                    (data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,//rc += grh,gc += ggh,bc += gbh, //Gradient doesn't have to be updated every pixel
-                     data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,//rc += grh,gc += ggh,bc += gbh,
-                     data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,//rc += grh,gc += ggh,bc += gbh,
-                     data[m++] = rc, data[m++] = gc, data[m++] = bc, data[m++] = 255,rc += 4*grh,gc += 4*ggh,bc += 4*gbh);
-    
-                }
+
     
                 l += 4 * width; // Move to next line.
                 xl += xgl; // Increment left and right edges.
@@ -432,70 +399,9 @@ var drawTri = function(triArray,imageData,endNum) {
     
             // End half-tri loop.
             }
+       }
 
-        }
-    // End full-tri loop
-    }
-
-
-};
-
-// uses affine texture mapping to draw a textured triangle
-// at screen coordinates [x0, y0], [x1, y1], [x2, y2] from
-// img *pixel* coordinates [u0, v0], [u1, v1], [u2, v2]
-function drawTexturedTriangle(ctx,img, triArr, end,
-                                   u0, v0, u1, v1, u2, v2) {
-  var det, x0,x1,x2,y0,y1,y2,a,b,c,d,e,f;
-//  ctx.globalCompositeOperation = 'copy';
-//  ctx.globalCompositionOperation = 'xor'; 
-   for ( var i = end; i--;){ 
-
-   det = 1 / (u1*v2 - u2*v1),
-   x0 = triArr[i][0],
-   y0 = triArr[i][1],
-   x1 = triArr[i][2],
-   y1 = triArr[i][3],
-   x2 = triArr[i][4],
-   y2 = triArr[i][5];
-
-
-  ctx.beginPath();
-  ctx.moveTo(x0, y0);
-  ctx.lineTo(x1, y1);
-  ctx.lineTo(x2, y2);
-  ctx.closePath();
-
-
-
-  x1 -= x0;
-  y1 -= y0;
-  x2 -= x0;
-  y2 -= y0;
- 
-  u1 -= u0;
-  v1 -= v0;
-  u2 -= u0;
-  v2 -= v0;
- 
- 
-      // linear transformation
-      a = (v2*x1 - v1*x2) * det,
-      b = (v2*y1 - v1*y2) * det,
-      c = (u1*x2 - u2*x1) * det,
-      d = (u1*y2 - u2*y1) * det,
- 
-      // translation
-      e = x0 - a*u0 - c*v0,
-      f = y0 - b*u0 - d*v0;
-  ctx.save();
-  ctx.transform(a, b, c, d, e, f);
-  ctx.clip();
-  ctx.drawImage(img, 0, 0);
-    }
-
-}
-
-var drawTriTex = function(triArray,imageData,endNum,texture,fz) {
+var drawTriTex = function(triArray,imageData,endNum,fz,texture) {
 
         // Define variables from most used to least used.
     var rc, gc, bc,                 // Working colors for one scanline

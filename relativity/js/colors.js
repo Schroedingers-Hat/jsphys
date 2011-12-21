@@ -49,7 +49,7 @@ function wavelengthToColor(wavelength) {
     var roundedWl = Math.round(wavelength);
     
     if (!(roundedWl.toString() in wavelengthToColor.cache)) {
-        var xyz = spectrum_to_xyz(gauss_spectrum(roundedWl, 1e15, 1));
+        var xyz = spectrum_to_xyz(gauss_spectrum(roundedWl, 1e15, 10));
         var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
         wavelengthToColor.cache[roundedWl.toString()] = rgb;
     }

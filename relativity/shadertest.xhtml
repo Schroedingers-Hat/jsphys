@@ -7,12 +7,14 @@
         background: black;
       }
       canvas {
-        background: black;
+          background: black,
+          width: 500,
+          height: 250;
       }
   </style>
      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 
-    <script type="text/javascript" src="js/graphics/shader-min.js"></script>
+    <script type="text/javascript" src="js/graphics/shader.js"></script>
     <script>
         <![CDATA[
         function go() {
@@ -53,19 +55,25 @@
                 var ox,oy;
                 var i;
                 var s = 100;
-                var numT = 1e4;
+                var numT = 1;
                 console.time('setup');
                 for (var j = 0; j <= numT; j++){
                     ox = floor(rnd()*800) + 100;
                     oy = floor(rnd()*300) + 100;
                     if(!triArr[j]){triArr[j] = [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0];}
                     tempArr= triArr[j]; 
-                    tempArr[0]  = floor(rnd()*s)+ox,   
-                    tempArr[1]  = floor(rnd()*s)+oy,  
-                    tempArr[2]  = floor(rnd()*s)+ox,   
-                    tempArr[3]  = floor(rnd()*s)+oy,  
-                    tempArr[4]  = floor(rnd()*s)+ox,   
-                    tempArr[5]  = floor(rnd()*s)+oy,  
+//                    tempArr[0]  = floor(rnd()*s)+ox,   
+//                    tempArr[1]  = floor(rnd()*s)+oy,  
+//                    tempArr[2]  = floor(rnd()*s)+ox,   
+//                    tempArr[3]  = floor(rnd()*s)+oy,  
+//                    tempArr[4]  = floor(rnd()*s)+ox,   
+//                    tempArr[5]  = floor(rnd()*s)+oy, 
+                    tempArr[0]  = 0,
+                    tempArr[1]  = 0,
+                    tempArr[2]  = 1000,
+                    tempArr[3]  = 0,
+                    tempArr[4]  = 1000,
+                    tempArr[5]  = 500,
                     tempArr[6]  = floor(rnd()*0),
                     tempArr[7]  = floor(rnd()*0),
                     tempArr[8]  = floor(rnd()*0),
