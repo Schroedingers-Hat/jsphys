@@ -1,3 +1,108 @@
+/*                          SPECTRUM_TO_XYZ
+
+    Calculate the CIE X, Y, and Z coordinates corresponding to
+    a light source with spectral distribution given by  the
+    function SPEC_INTENS, which is called with a series of
+    wavelengths between 380 and 780 nm (the argument is 
+    expressed in meters), which returns emittance at  that
+    wavelength in arbitrary units.  The chromaticity
+    coordinates of the spectrum [x, y, z] are returned 
+    and respect the identity:
+
+            x + y + z = 1.
+*/
+function spectrum_to_xyz(spectrum) {
+    var X = 0, Y = 0, Z = 0, XYZ;
+
+    /* CIE colour matching functions xBar, yBar, and zBar for
+       wavelengths from 380 through 780 nanometers, every 5
+       nanometers.  For a wavelength lambda in this range:
+
+            cie_colour_match[(lambda - 380) / 5][0] = xBar
+            cie_colour_match[(lambda - 380) / 5][1] = yBar
+            cie_colour_match[(lambda - 380) / 5][2] = zBar
+
+       To save memory, this table can be declared as floats
+       rather than doubles; (IEEE) float has enough 
+       significant bits to represent the values. It's declared
+       as a double here to avoid warnings about "conversion
+       between floating-point types" from certain persnickety
+       compilers. */
+
+    var cie_colour_match = [
+        [0.0014,0.0000,0.0065], [0.0022,0.0001,0.0105], [0.0042,0.0001,0.0201],
+        [0.0076,0.0002,0.0362], [0.0143,0.0004,0.0679], [0.0232,0.0006,0.1102],
+        [0.0435,0.0012,0.2074], [0.0776,0.0022,0.3713], [0.1344,0.0040,0.6456],
+        [0.2148,0.0073,1.0391], [0.2839,0.0116,1.3856], [0.3285,0.0168,1.6230],
+        [0.3483,0.0230,1.7471], [0.3481,0.0298,1.7826], [0.3362,0.0380,1.7721],
+        [0.3187,0.0480,1.7441], [0.2908,0.0600,1.6692], [0.2511,0.0739,1.5281],
+        [0.1954,0.0910,1.2876], [0.1421,0.1126,1.0419], [0.0956,0.1390,0.8130],
+        [0.0580,0.1693,0.6162], [0.0320,0.2080,0.4652], [0.0147,0.2586,0.3533],
+        [0.0049,0.3230,0.2720], [0.0024,0.4073,0.2123], [0.0093,0.5030,0.1582],
+        [0.0291,0.6082,0.1117], [0.0633,0.7100,0.0782], [0.1096,0.7932,0.0573],
+        [0.1655,0.8620,0.0422], [0.2257,0.9149,0.0298], [0.2904,0.9540,0.0203],
+        [0.3597,0.9803,0.0134], [0.4334,0.9950,0.0087], [0.5121,1.0000,0.0057],
+        [0.5945,0.9950,0.0039], [0.6784,0.9786,0.0027], [0.7621,0.9520,0.0021],
+        [0.8425,0.9154,0.0018], [0.9163,0.8700,0.0017], [0.9786,0.8163,0.0014],
+        [1.0263,0.7570,0.0011], [1.0567,0.6949,0.0010], [1.0622,0.6310,0.0008],
+        [1.0456,0.5668,0.0006], [1.0026,0.5030,0.0003], [0.9384,0.4412,0.0002],
+        [0.8544,0.3810,0.0002], [0.7514,0.3210,0.0001], [0.6424,0.2650,0.0000],
+        [0.5419,0.2170,0.0000], [0.4479,0.1750,0.0000], [0.3608,0.1382,0.0000],
+        [0.2835,0.1070,0.0000], [0.2187,0.0816,0.0000], [0.1649,0.0610,0.0000],
+        [0.1212,0.0446,0.0000], [0.0874,0.0320,0.0000], [0.0636,0.0232,0.0000],
+        [0.0468,0.0170,0.0000], [0.0329,0.0119,0.0000], [0.0227,0.0082,0.0000],
+        [0.0158,0.0057,0.0000], [0.0114,0.0041,0.0000], [0.0081,0.0029,0.0000],
+        [0.0058,0.0021,0.0000], [0.0041,0.0015,0.0000], [0.0029,0.0010,0.0000],
+        [0.0020,0.0007,0.0000], [0.0014,0.0005,0.0000], [0.0010,0.0004,0.0000],
+        [0.0007,0.0002,0.0000], [0.0005,0.0002,0.0000], [0.0003,0.0001,0.0000],
+        [0.0002,0.0001,0.0000], [0.0002,0.0001,0.0000], [0.0001,0.0000,0.0000],
+        [0.0001,0.0000,0.0000], [0.0001,0.0000,0.0000], [0.0000,0.0000,0.0000]
+    ];
+
+    for (var i = 0, lambda = 380; lambda < 780.1; i++, lambda += 5) {
+        var Me = spectrum(lambda * 1e-9);
+        X += Me * cie_colour_match[i][0];
+        Y += Me * cie_colour_match[i][1];
+        Z += Me * cie_colour_match[i][2];
+    }
+    XYZ = (X + Y + Z);
+    if ( XYZ > 0 ) {
+        return [X / XYZ, Y / XYZ, Z / XYZ, Y];
+    } else {
+        return [0, 0, 0, 0];
+    }
+}
+
+/*                            BB_SPECTRUM
+
+    Calculate, by Planck's radiation law, the emittance of a black body
+    of temperature bbTemp at the given wavelength (in meters).  */
+function bb_spectrum(temperature, dopplerFactor) {
+    return function(wavelength) {
+
+        return (1.191043e-16 * Math.pow(wavelength / dopplerFactor, -5.0)) /
+               (Math.exp(1.4388e-2 / (wavelength / dopplerFactor * temperature)) - 1.0);
+    };
+}
+
+/** Here ends specrend.c code. **/
+
+/**
+ * Return a spectrum function defined by a Gaussian distribution centered
+ * at wavelength `center` (in nm) with amplitude `a` and standard deviation 
+ * `stddev`
+ */
+function gauss_spectrum(center, spread) {
+    return function(wavelength) {
+        return  Math.exp( -Math.pow(wavelength - center, 2) / (2 * Math.pow(spread, 2)) ) /
+                (spread * Math.sqrt(2 * Math.PI));
+
+    };
+}
+
+
+
+
 /**
  * Doppler shift a color temperature by simply multiplying it
  * by the Doppler factor.
@@ -9,47 +114,53 @@ function dopplerShiftColor(colorTemp, velocity, gamma) {
     return colorTemp * dopplerFactor;
 }
 
+
+
 /**
- * Convert a color temperature to an RGB color of form #RRGGBB by using
+ * Convert a color temperature to an RGB color of form [r, b, b] by using
  * the blackbody spectrum.
  *
  * Uses a temperature cache to avoid recalculating colors for similar color
  * temperatures needlessly, saving significant computation time.
  */
-function tempToColor(colorTemp) {
+function tempToColor(colorTemp, velocity, gamma, c) {
     if (!tempToColor.cache)
         tempToColor.cache = {};
-    
-    var roundedTemp = Math.exp(Math.round(Math.log(colorTemp) * dopplerRoundVal) / 
-                               dopplerRoundVal);
-    
-    if (!(roundedTemp.toString() in tempToColor.cache)) {
-        var xyz = spectrum_to_xyz(bb_spectrum(roundedTemp));
+    var tempRoundVal = 1;
+    var dopplerRoundVal = 1;
+    var roundedTemp = Math.round(Math.exp(Math.round(Math.log(colorTemp) * tempRoundVal) / 
+                               tempRoundVal));
+    var dopplerFactor =  1 / ( (1 + (velocity / c))  * gamma);
+    dopplerFactor = Math.round(Math.exp(Math.round(Math.log(dopplerFactor) * dopplerRoundVal) / 
+                               dopplerRoundVal));
+    var cacheStr = roundedTemp.toString() + dopplerFactor.toString();
+    if (!(cacheStr in tempToColor.cache)) {
+        var xyz = spectrum_to_xyz(bb_spectrum(roundedTemp, dopplerFactor));
         var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
-        
-        var color = "#" + padRGB(Math.floor(rgb[0] * 255).toString(16)) + 
-                          padRGB(Math.floor(rgb[1] * 255).toString(16)) +
-                          padRGB(Math.floor(rgb[2] * 255).toString(16));
-        tempToColor.cache[roundedTemp.toString()] = color;
+        tempToColor.cache[roundedTemp.toString()] = rgb;
     }
     
-    return tempToColor.cache[roundedTemp.toString()];
+    return tempToColor.cache[cacheStr];
 }
 
 /**
- * Take a wavelength, in nanometers, and return an RGB color.
+ * Take a wavelength, in meters, and return an RGB color.
  *
  * Represents the wavelength as a Gaussian centered at the wavelength with
  * a finite width, so that spectrum_to_xyz will have something to work with.
  */
-function wavelengthToColor(wavelength) {
-    if (!wavelengthToColor.cache)
+function wavelengthToColor(wavelength, velocity, gamma, c) {
+    if (!wavelengthToColor.cache) {
         wavelengthToColor.cache = {};
+    }
 
-    var roundedWl = Math.round(wavelength);
-    
-    if (!(roundedWl.toString() in wavelengthToColor.cache)) {
-        var xyz = spectrum_to_xyz(gauss_spectrum(roundedWl, 1e15, 10));
+    var roundedDopplerWl = Math.round(wavelength / ( (1 + (velocity / c))  * gamma));
+
+    // If it's not visible, make it 0.
+    roundedDopplerWl = (roundedDopplerWl < 750) ? ((roundedDopplerWl > 350) ? roundedDopplerWl : 0) : 0;
+
+    if (!(roundedWl.toString()   in wavelengthToColor.cache)) {
+        var xyz = spectrum_to_xyz(gauss_spectrum(roundedDopplerWl, 10));
         var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
         wavelengthToColor.cache[roundedWl.toString()] = rgb;
     }
@@ -147,7 +258,6 @@ function xyz_to_rgb(xyz) {
     
 */
 function constrain_rgb(rgb) {
-    var w;
     var r = Math.max(rgb[0], 0);
     var g = Math.max(rgb[1], 0);
     var b = Math.max(rgb[2], 0);
@@ -175,104 +285,3 @@ function norm_rgb(rgb) {
     return [r, g, b];
 }
 
-/*                          SPECTRUM_TO_XYZ
-
-    Calculate the CIE X, Y, and Z coordinates corresponding to
-    a light source with spectral distribution given by  the
-    function SPEC_INTENS, which is called with a series of
-    wavelengths between 380 and 780 nm (the argument is 
-    expressed in meters), which returns emittance at  that
-    wavelength in arbitrary units.  The chromaticity
-    coordinates of the spectrum [x, y, z] are returned 
-    and respect the identity:
-
-            x + y + z = 1.
-*/
-function spectrum_to_xyz(spectrum) {
-    var X = 0, Y = 0, Z = 0, XYZ;
-
-    /* CIE colour matching functions xBar, yBar, and zBar for
-       wavelengths from 380 through 780 nanometers, every 5
-       nanometers.  For a wavelength lambda in this range:
-
-            cie_colour_match[(lambda - 380) / 5][0] = xBar
-            cie_colour_match[(lambda - 380) / 5][1] = yBar
-            cie_colour_match[(lambda - 380) / 5][2] = zBar
-
-       To save memory, this table can be declared as floats
-       rather than doubles; (IEEE) float has enough 
-       significant bits to represent the values. It's declared
-       as a double here to avoid warnings about "conversion
-       between floating-point types" from certain persnickety
-       compilers. */
-
-    var cie_colour_match = [
-        [0.0014,0.0000,0.0065], [0.0022,0.0001,0.0105], [0.0042,0.0001,0.0201],
-        [0.0076,0.0002,0.0362], [0.0143,0.0004,0.0679], [0.0232,0.0006,0.1102],
-        [0.0435,0.0012,0.2074], [0.0776,0.0022,0.3713], [0.1344,0.0040,0.6456],
-        [0.2148,0.0073,1.0391], [0.2839,0.0116,1.3856], [0.3285,0.0168,1.6230],
-        [0.3483,0.0230,1.7471], [0.3481,0.0298,1.7826], [0.3362,0.0380,1.7721],
-        [0.3187,0.0480,1.7441], [0.2908,0.0600,1.6692], [0.2511,0.0739,1.5281],
-        [0.1954,0.0910,1.2876], [0.1421,0.1126,1.0419], [0.0956,0.1390,0.8130],
-        [0.0580,0.1693,0.6162], [0.0320,0.2080,0.4652], [0.0147,0.2586,0.3533],
-        [0.0049,0.3230,0.2720], [0.0024,0.4073,0.2123], [0.0093,0.5030,0.1582],
-        [0.0291,0.6082,0.1117], [0.0633,0.7100,0.0782], [0.1096,0.7932,0.0573],
-        [0.1655,0.8620,0.0422], [0.2257,0.9149,0.0298], [0.2904,0.9540,0.0203],
-        [0.3597,0.9803,0.0134], [0.4334,0.9950,0.0087], [0.5121,1.0000,0.0057],
-        [0.5945,0.9950,0.0039], [0.6784,0.9786,0.0027], [0.7621,0.9520,0.0021],
-        [0.8425,0.9154,0.0018], [0.9163,0.8700,0.0017], [0.9786,0.8163,0.0014],
-        [1.0263,0.7570,0.0011], [1.0567,0.6949,0.0010], [1.0622,0.6310,0.0008],
-        [1.0456,0.5668,0.0006], [1.0026,0.5030,0.0003], [0.9384,0.4412,0.0002],
-        [0.8544,0.3810,0.0002], [0.7514,0.3210,0.0001], [0.6424,0.2650,0.0000],
-        [0.5419,0.2170,0.0000], [0.4479,0.1750,0.0000], [0.3608,0.1382,0.0000],
-        [0.2835,0.1070,0.0000], [0.2187,0.0816,0.0000], [0.1649,0.0610,0.0000],
-        [0.1212,0.0446,0.0000], [0.0874,0.0320,0.0000], [0.0636,0.0232,0.0000],
-        [0.0468,0.0170,0.0000], [0.0329,0.0119,0.0000], [0.0227,0.0082,0.0000],
-        [0.0158,0.0057,0.0000], [0.0114,0.0041,0.0000], [0.0081,0.0029,0.0000],
-        [0.0058,0.0021,0.0000], [0.0041,0.0015,0.0000], [0.0029,0.0010,0.0000],
-        [0.0020,0.0007,0.0000], [0.0014,0.0005,0.0000], [0.0010,0.0004,0.0000],
-        [0.0007,0.0002,0.0000], [0.0005,0.0002,0.0000], [0.0003,0.0001,0.0000],
-        [0.0002,0.0001,0.0000], [0.0002,0.0001,0.0000], [0.0001,0.0000,0.0000],
-        [0.0001,0.0000,0.0000], [0.0001,0.0000,0.0000], [0.0000,0.0000,0.0000]
-    ];
-
-    for (var i = 0, lambda = 380; lambda < 780.1; i++, lambda += 5) {
-        var Me = spectrum(lambda);
-        X += Me * cie_colour_match[i][0];
-        Y += Me * cie_colour_match[i][1];
-        Z += Me * cie_colour_match[i][2];
-    }
-    XYZ = (X + Y + Z);
-    if ( XYZ > 0 ) {
-        return [X / XYZ, Y / XYZ, Z / XYZ, Y];
-    } else {
-        return [0, 0, 0, 0];
-    }
-}
-
-/*                            BB_SPECTRUM
-
-    Calculate, by Planck's radiation law, the emittance of a black body
-    of temperature bbTemp at the given wavelength (in metres).  */
-function bb_spectrum(temperature) {
-    return function(wavelength) {
-        var wlm = wavelength * 1e-9;   /* Wavelength in meters */
-
-        return (3.74183e-16 * Math.pow(wlm, -5.0)) /
-               (Math.exp(1.4388e-2 / (wlm * temperature)) - 1.0);
-    };
-}
-
-/** Here ends specrend.c code. **/
-
-/**
- * Return a spectrum function defined by a Gaussian distribution centered
- * at wavelength `center` (in nm) with amplitude `a` and standard deviation 
- * `stddev`
- */
-function gauss_spectrum(center, a, stddev) {
-    return function(wavelength) {
-        return a * Math.pow(Math.E, -(Math.pow(wavelength - center, 2)) / 
-               (2 * Math.pow(stddev, 2)));
-    };
-}

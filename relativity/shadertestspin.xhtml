@@ -22,6 +22,7 @@
             var ctx = canvas.getContext('2d');
             ctx.fillStyle = "#000";
             ctx.fillRect(0,0,canvas.width,canvas.height);
+            window.ctx = ctx;
             var canvasData2 = ctx.getImageData(0,0,canvas.width,canvas.height);
             var canvasData = ctx.createImageData(canvas.width, canvas.height);
             var buffer = document.createElement('canvas');
@@ -172,7 +173,7 @@
                        rd21 *= 0.2/Math.sqrt(pow(rx2,2) + pow(rz1,2) + pow(py-80,2));
                        rd22 *= 0.2/Math.sqrt(pow(rx2,2) + pow(rz2,2) + pow(py-80,2));
                        rdo *= 0.2/Math.sqrt(pow(px,2) + pow(pz+oz,2) + pow(py,2));
-                       var wavelength = 500 * (Math.sqrt( (1 + rd11)/(1-rd11)));
+                       
                        c11 = wavelengthToColor(wavelength);
 
                        wavelength = 500 * (Math.sqrt( (1 + rd12)/(1-rd12)));
@@ -223,10 +224,13 @@ console.log(l1);
                 //                drawTriTex(triArr,canvasData, endNum, texture);
                 ctx.fillStyle = '#000';
                 ctx.fillRect(0,0,canvas.width,canvas.height);
+
+                ctx.fillStyle = '#0f0';
+                ctx.fillRect(0,0,300,300);
                 canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
 
                 console.time('raster');                
-                drawTri(triArr,canvasData, endNum,500, textures);
+                drawTriTex(triArr,canvasData, endNum,500, textures);
                 console.timeEnd('raster');
 
                 console.time('texture');
@@ -238,8 +242,8 @@ console.log(l1);
 
 
         }
-            setInterval(draw,50);
-
+//            setInterval(draw,50);
+//            draw();
             } 
 
         ]]>
