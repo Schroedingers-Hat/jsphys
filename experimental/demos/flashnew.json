@@ -1,0 +1,12 @@
+{"name": "Relativistic flashlight",
+ "steps": [{"caption": "A flashlight emits a photon. It moves away at the speed of light. An observer moves past at a high speed. What will the observer see?",
+            "objects": [{"object": "extendedObject", "x": [0, 0, 0], 
+                         "p": [0, 0, 0], "m": 1, 
+                         "shape": [[0,0,0,0],[10,0,0,0],[10,10,0,0],[0,10,0,0]],
+                        "options" : {"triangles": [[0,1,2],[0,3,2]]} },
+                        {"object": "photon", "x": [3, 0, 0], "v": [1, 0, 0]}
+                       ],
+            "options": {"showFramePos": true, "showVisualPos": false,
+                        "showGamma": false}}
+          ]
+}
