@@ -1,3 +1,67 @@
+/*                          WAVELENGTH_TO_XYZ
+    Calculate the CIE X, Y, and Z coordinates that correspond to
+    a given wavelength.
+*/
+function wavelength_to_xyz(wavelength) {
+    var X = 0, Y = 0, Z = 0, XYZ;
+
+    /* CIE colour matching functions xBar, yBar, and zBar for
+       wavelengths from 380 through 780 nanometers, every 5
+       nanometers.  For a wavelength lambda in this range:
+
+            cie_colour_match[(lambda - 380) / 5][0] = xBar
+            cie_colour_match[(lambda - 380) / 5][1] = yBar
+            cie_colour_match[(lambda - 380) / 5][2] = zBar
+
+       To save memory, this table can be declared as floats
+       rather than doubles; (IEEE) float has enough 
+       significant bits to represent the values. It's declared
+       as a double here to avoid warnings about "conversion
+       between floating-point types" from certain persnickety
+       compilers. */
+
+    var cie_colour_match = [
+        [0.0014,0.0000,0.0065], [0.0022,0.0001,0.0105], [0.0042,0.0001,0.0201],
+        [0.0076,0.0002,0.0362], [0.0143,0.0004,0.0679], [0.0232,0.0006,0.1102],
+        [0.0435,0.0012,0.2074], [0.0776,0.0022,0.3713], [0.1344,0.0040,0.6456],
+        [0.2148,0.0073,1.0391], [0.2839,0.0116,1.3856], [0.3285,0.0168,1.6230],
+        [0.3483,0.0230,1.7471], [0.3481,0.0298,1.7826], [0.3362,0.0380,1.7721],
+        [0.3187,0.0480,1.7441], [0.2908,0.0600,1.6692], [0.2511,0.0739,1.5281],
+        [0.1954,0.0910,1.2876], [0.1421,0.1126,1.0419], [0.0956,0.1390,0.8130],
+        [0.0580,0.1693,0.6162], [0.0320,0.2080,0.4652], [0.0147,0.2586,0.3533],
+        [0.0049,0.3230,0.2720], [0.0024,0.4073,0.2123], [0.0093,0.5030,0.1582],
+        [0.0291,0.6082,0.1117], [0.0633,0.7100,0.0782], [0.1096,0.7932,0.0573],
+        [0.1655,0.8620,0.0422], [0.2257,0.9149,0.0298], [0.2904,0.9540,0.0203],
+        [0.3597,0.9803,0.0134], [0.4334,0.9950,0.0087], [0.5121,1.0000,0.0057],
+        [0.5945,0.9950,0.0039], [0.6784,0.9786,0.0027], [0.7621,0.9520,0.0021],
+        [0.8425,0.9154,0.0018], [0.9163,0.8700,0.0017], [0.9786,0.8163,0.0014],
+        [1.0263,0.7570,0.0011], [1.0567,0.6949,0.0010], [1.0622,0.6310,0.0008],
+        [1.0456,0.5668,0.0006], [1.0026,0.5030,0.0003], [0.9384,0.4412,0.0002],
+        [0.8544,0.3810,0.0002], [0.7514,0.3210,0.0001], [0.6424,0.2650,0.0000],
+        [0.5419,0.2170,0.0000], [0.4479,0.1750,0.0000], [0.3608,0.1382,0.0000],
+        [0.2835,0.1070,0.0000], [0.2187,0.0816,0.0000], [0.1649,0.0610,0.0000],
+        [0.1212,0.0446,0.0000], [0.0874,0.0320,0.0000], [0.0636,0.0232,0.0000],
+        [0.0468,0.0170,0.0000], [0.0329,0.0119,0.0000], [0.0227,0.0082,0.0000],
+        [0.0158,0.0057,0.0000], [0.0114,0.0041,0.0000], [0.0081,0.0029,0.0000],
+        [0.0058,0.0021,0.0000], [0.0041,0.0015,0.0000], [0.0029,0.0010,0.0000],
+        [0.0020,0.0007,0.0000], [0.0014,0.0005,0.0000], [0.0010,0.0004,0.0000],
+        [0.0007,0.0002,0.0000], [0.0005,0.0002,0.0000], [0.0003,0.0001,0.0000],
+        [0.0002,0.0001,0.0000], [0.0002,0.0001,0.0000], [0.0001,0.0000,0.0000],
+        [0.0001,0.0000,0.0000], [0.0001,0.0000,0.0000], [0.0000,0.0000,0.0000]
+    ];
+
+    WlIndex = (wavelength * 1e9 - 380)/5|0;
+    X = cie_colour_match[WlIndex][0];
+    Y = cie_colour_match[WlIndex][1];
+    Z = cie_colour_match[WlIndex][2];
+    XYZ = (X + Y + Z);
+    if ( XYZ > 0 ) {
+        return [X / XYZ, Y / XYZ, Z / XYZ, Y];
+    } else {
+        return [0, 0, 0, 0];
+    }
+}
+
 /*                          SPECTRUM_TO_XYZ
 
     Calculate the CIE X, Y, and Z coordinates corresponding to
@@ -6,8 +70,9 @@
     wavelengths between 380 and 780 nm (the argument is 
     expressed in meters), which returns emittance at  that
     wavelength in arbitrary units.  The chromaticity
-    coordinates of the spectrum [x, y, z] are returned 
-    and respect the identity:
+    coordinates x, y, z of the spectrum [x, y, z, Y] are returned 
+    along with a luminosity factor Y
+    x,y,z respect the identity:
 
             x + y + z = 1.
 */
@@ -67,7 +132,13 @@ function spectrum_to_xyz(spectrum) {
     }
     XYZ = (X + Y + Z);
     if ( XYZ > 0 ) {
-        return [X / XYZ, Y / XYZ, Z / XYZ, Y];
+        // 1e-10 is a magic number that brings the brightness down
+        // such that a luminoisity of 1 is reasonable for representing on a screen which
+        // only has a range of 1-255.
+        // There are still 5 orders of magnitude of variation in total luminosity
+        // and closer to 15 orders of magnitude in visible.
+        // This is taken care of elsewhere with a gamma correction.
+        return [X / XYZ, Y / XYZ, Z / XYZ, Y * 1e-13];
     } else {
         return [0, 0, 0, 0];
     }
@@ -80,8 +151,8 @@ function spectrum_to_xyz(spectrum) {
 function bb_spectrum(temperature, dopplerFactor) {
     return function(wavelength) {
 
-        return (1.191043e-16 * Math.pow(wavelength / dopplerFactor, -5.0)) /
-               (Math.exp(1.4388e-2 / (wavelength / dopplerFactor * temperature)) - 1.0);
+        return (1.191043e-16 * Math.pow(wavelength * dopplerFactor, -5.0)) /
+               (Math.exp(1.4388e-2 / (wavelength * dopplerFactor * temperature)) - 1.0); 
     };
 }
 
@@ -107,7 +178,7 @@ function gauss_spectrum(center, spread) {
  * Doppler shift a color temperature by simply multiplying it
  * by the Doppler factor.
  */
-colorFilter = 2;
+colorFilter = 1;
 function dopplerShiftColor(colorTemp, velocity, gamma) {
     // Assuming this is accurate for transverse doppler, too.
     var dopplerFactor = 1 / ( 1 + (velocity / c) ) / gamma;
@@ -126,18 +197,13 @@ function dopplerShiftColor(colorTemp, velocity, gamma) {
 function tempToColor(colorTemp, velocity, gamma, c) {
     if (!tempToColor.cache)
         tempToColor.cache = {};
-    var tempRoundVal = 1;
-    var dopplerRoundVal = 1;
-    var roundedTemp = Math.round(Math.exp(Math.round(Math.log(colorTemp) * tempRoundVal) / 
-                               tempRoundVal));
-    var dopplerFactor =  1 / ( (1 + (velocity / c))  * gamma);
-    dopplerFactor = Math.round(Math.exp(Math.round(Math.log(dopplerFactor) * dopplerRoundVal) / 
-                               dopplerRoundVal));
+    var roundedTemp = Math.round(Math.exp(Math.round(Math.log(colorTemp)*5)/5));
+    var dopplerFactor =  Math.round(50 / ( (1 + (velocity / c))  * gamma))/50;
     var cacheStr = roundedTemp.toString() + dopplerFactor.toString();
     if (!(cacheStr in tempToColor.cache)) {
         var xyz = spectrum_to_xyz(bb_spectrum(roundedTemp, dopplerFactor));
-        var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
-        tempToColor.cache[roundedTemp.toString()] = rgb;
+        var rgb = clamp_rgb(xyz_to_rgb(xyz));
+        tempToColor.cache[cacheStr] = rgb;
     }
     
     return tempToColor.cache[cacheStr];
@@ -151,21 +217,20 @@ function tempToColor(colorTemp, velocity, gamma, c) {
  */
 function wavelengthToColor(wavelength, velocity, gamma, c) {
     if (!wavelengthToColor.cache) {
-        wavelengthToColor.cache = {};
+        wavelengthToColor.cache = {'0': [0,0,0,0]};
     }
-
-    var roundedDopplerWl = Math.round(wavelength / ( (1 + (velocity / c))  * gamma));
+    var roundedDopplerWl = Math.round(5e9 * wavelength / ( (1 + (velocity / c))  * gamma))/ 5e9;
 
     // If it's not visible, make it 0.
-    roundedDopplerWl = (roundedDopplerWl < 750) ? ((roundedDopplerWl > 350) ? roundedDopplerWl : 0) : 0;
+    roundedDopplerWl = (roundedDopplerWl < 780e-9) ? ((roundedDopplerWl > 380e-9) ? roundedDopplerWl : 0) : 0;
 
-    if (!(roundedWl.toString()   in wavelengthToColor.cache)) {
-        var xyz = spectrum_to_xyz(gauss_spectrum(roundedDopplerWl, 10));
-        var rgb = norm_rgb(constrain_rgb(xyz_to_rgb(xyz)));
-        wavelengthToColor.cache[roundedWl.toString()] = rgb;
+    if (!(roundedDopplerWl.toString()   in wavelengthToColor.cache)) {
+        var xyz = wavelength_to_xyz(roundedDopplerWl);
+        var rgb = clamp_rgb(xyz_to_rgb(xyz));
+        wavelengthToColor.cache[roundedDopplerWl.toString()] = rgb;
     }
     
-    return wavelengthToColor.cache[roundedWl.toString()];
+    return wavelengthToColor.cache[roundedDopplerWl.toString()];
 }
 
 /**
@@ -207,7 +272,6 @@ function xyz_to_rgb(xyz) {
     var xc = xyz[0];
     var yc = xyz[1];
     var zc = xyz[2];
-    var Y  = Math.pow(xyz[3],0.05) / colorFilter; 
     // HDTV/sRGB color space
     var cs = { "red":   {"x": 0.670, "y": 0.330, "z": 0},
                "green": {"x": 0.210, "y": 0.710, "z": 0.080},
@@ -247,41 +311,26 @@ function xyz_to_rgb(xyz) {
     var g = (gx * xc) + (gy * yc) + (gz * zc);
     var b = (bx * xc) + (by * yc) + (bz * zc);
     
-    return [Y*r, Y*g, Y*b];
+    return [r, g, b, xyz[3]];
 }
 
-/*                          CONSTRAIN_RGB
+/*                          CLAMP_RGB
 
-    If the requested RGB shade contains a negative weight for
+    If the requested RGB shade contains a negative weight or
+    weight greater than 1 for
     one of the primaries, it lies outside the colour gamut 
-    accessible from the given triple of primaries.  Clamp it to 0.
+    accessible from the given triple of primaries.  Clamp it to 0 or 1.
     
 */
-function constrain_rgb(rgb) {
-    var r = Math.max(rgb[0], 0);
-    var g = Math.max(rgb[1], 0);
-    var b = Math.max(rgb[2], 0);
-    
-    return [r, g, b];
-}
+function clamp_rgb(rgb) {
+    var r =rgb[0],
+        g =rgb[1],
+        b =rgb[2];
 
-/*                          NORM_RGB
-
-    Normalise RGB components so that none have a value greater than 1.
+    r = (r > 0) ? (r < 1) ? r : 1 : 0;
+    g = (g > 0) ? (g < 1) ? g : 1 : 0;
+    b = (b > 0) ? (b < 1) ? b : 1 : 0;
     
-*/
-function norm_rgb(rgb) {
-    var r = rgb[0];
-    var g = rgb[1];
-    var b = rgb[2];
-    
-    if (r > 1.0)
-        r = 1.0;
-    if (g > 1.0)
-        g = 1.0;
-    if (b > 1.0)
-        b = 1.0;
-    
-    return [r, g, b];
+    return [r, g, b, rgb[3]];
 }
 

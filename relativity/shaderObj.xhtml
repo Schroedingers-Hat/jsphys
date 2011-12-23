@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <style>
+      body {
+        background: black;
+      }
+      canvas {
+        background: black;
+      }
+  </style>
+     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+    <script type="text/javascript" src="js/colors.js"></script>
+    <script type="text/javascript" src="js/graphics/testObj.js"></script>
+    <script type="text/javascript" src="js/graphics/shader.js"></script>
+    <script>
+        <![CDATA[
+        function go() {
+            var canvas = document.getElementById('myCanvasElt');
+
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            var canvasData2 = ctx.getImageData(0,0,canvas.width,canvas.height);
+            var canvasData = ctx.createImageData(canvas.width, canvas.height);
+            var buffer = document.createElement('canvas');
+            buffer.width = canvas.width;
+            buffer.height = canvas.height;
+            var bctx = buffer.getContext('2d');;
+            var triArr= [];
+            var texture = [],textures;
+            var image = new Image();
+            image.src = "texture.png";
+            $(image).load(function() {
+                ctx.fillStyle = '#000f';
+                ctx.fillRect(0,0,canvas.width,canvas.height); 
+                ctx.drawImage(image,0,0);
+                textures = ctx.getImageData(0,0,canvas.width,canvas.height);
+            });
+            this.draw = function ()
+            {
+                var endNum = -1;
+                var triArr = [];
+                console.time('lighting');
+                params = {
+                    c : 3e8, 
+                    bfc : true,
+                    doHeadlight : false,
+                    brightness : 1,
+                    rgbgamma : 0.2
+                };
+                endNum = queueDraw(testObj,triArr,endNum, params);
+                for (i = 4000; i--;){
+                    endNum = queueDraw(testObj2,triArr,endNum, params);
+                }
+                console.timeEnd('lighting');
+                console.timeEnd('setup');
+                //                drawTriTex(triArr,canvasData, endNum+1, texture);
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0,0,canvas.width,canvas.height);
+                canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
+                window.canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
+
+                console.time('raster');                
+                drawTri(triArr,canvasData, endNum,100, false);
+                console.timeEnd('raster');
+                window.triArr = triArr;
+                console.time('texture');
+                window.ctx = ctx;
+                ctx.putImageData(canvasData, 0, 0);
+
+
+                console.timeEnd('texture');
+
+
+        }
+//            setInterval(draw,50);
+        draw();  
+            } 
+
+        ]]>
+    </script>
+
+</head>
+
+<body onload="go()">
+    <canvas id="myCanvasElt" width="800" height="400"></canvas>
+</body>
+</html>
