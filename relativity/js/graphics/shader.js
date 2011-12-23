@@ -20,7 +20,15 @@ var sortAndDraw = function(context, triArr, endNum, dParams) {
     cacheArr.sort(zOrder);
     // Modifying elements of cacheArr will still modify elements of triArr
     // But the reordering does not alter triArr.
-    //
+
+    // TODO: Homogeneous CMBR can be implemented easily with a radial gradient.
+    // If drawn first it will be behind everything
+
+    // TODO: Section for background and far away objects. Anything less than 4px across
+    // could be drawn with a fillRect w/ area proportional to luminous intensity 
+    //  and sorted by color. This will be fast enough to do for as many such objects as we
+    //  can track.
+
     switch(dParams.render){
         case 'smooth':
             drawTriSmooth(cacheArr, context, endum,
@@ -42,9 +50,16 @@ var sortAndDraw = function(context, triArr, endNum, dParams) {
             ctx.putImageData(imageData, 0, 0);
             break;
     }
-    
+
+   // TODO: Put text on from our labelqueue.
 };
 
+// Queue any labels and their coordinates 
+// from an object while we interact with it
+// so they can all be drawn in the proper order.
+var queueLabels = function(object, labelQueue){
+
+};
 
 // Takes an object, does lighting and puts it into the drawing
 // Queue.
@@ -189,13 +204,15 @@ var queueDraw = function(object, triArr, endNum, lParams) {
             // Otherwise reuse this element of triArr.
         }
     }
+    endNum = triIdx-1; // Might see about passing this in in an object so the function can alter it.
+    // This whole section is much more c-like than the rest so it's not too bad stylistically.
     return triIdx - 1; // Set the end of the array to the last triangle we wanted to keep
 };
 
 
 
 
-var drawTriSmooth = function(triArray,ctx,endum,fz,ortho,width,height){
+var drawTriSmooth = function(triArray,ctx,endNum,fz,ortho,width,height){
     var i,j,k,l,
         x0,y0,z0,
         x1,y1,z1,

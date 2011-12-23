@@ -52,7 +52,7 @@
                     rgbgamma : 0.2
                 };
                 endNum = queueDraw(testObj,triArr,endNum, params);
-                for (i = 4000; i--;){
+                for (i = 2000; i--;){
                     endNum = queueDraw(testObj2,triArr,endNum, params);
                 }
                 console.timeEnd('lighting');
@@ -63,8 +63,13 @@
                 canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
                 window.canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
 
-                console.time('raster');                
+                console.time('raster');               
+//                drawTriSmooth(triArr, ctx, endNum,
+//                              100, false,
+//                              1000, 500);
+//
                 drawTri(triArr,canvasData, endNum,100, false);
+//                drawTriTex(triArr,canvasData, endNum,100, textures);
                 console.timeEnd('raster');
                 window.triArr = triArr;
                 console.time('texture');
