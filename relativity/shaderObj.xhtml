@@ -47,8 +47,10 @@
                 textures = bctx.getImageData(0,0,buffer.width,buffer.height);
             });
 
-            var thing = shape_triSphere({r: 1000, detail: 64/scale, UVpts: [ 0, 0, 1000/scale, 500/scale] });
-            var mongoose = new  newExtendedObject([0,0,2000,0], [0,0.2 * 3e8,0,3e8], {wavelength: 530e-9, lum: 1, temp: 5300}, thing, {c: 3e8});
+            var thing = shape_triSphere({r: 800, detail: 4/scale, UVpts: [ 0, 0, 1000/scale, 500/scale] });
+            var V  = [7 * 0.99 * 3e8, 0, 0, 7 * 3e8];
+            var V = [0,0,0,3e8];
+            var mongoose = new  newExtendedObject([0,0,2000,0], V, {wavelendgth: 530e-9, lum: 1, temp: 2300}, thing, {c: 3e8});
             window.mongoose = mongoose;
             this.draw = function ()
             {

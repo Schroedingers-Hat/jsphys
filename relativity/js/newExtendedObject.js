@@ -120,18 +120,22 @@ function newExtendedObject(X, V, options, appearance, constants){
         // Map vertex onto initial frame.
         // Create new quat4 to ensure correct data type to deal with rounding error.
         // TODO: Check to see if this redundant after checking use cases.
-        mat4.multiplyVec4(initialBoost,this.sVert[i]);
-        this.iVert[i] = [this.sVert[i][0] + X[0],
+//        this.sVert[i] = quat4.create(this.sVert[i]);
+        mat4.multiplyVec4(initialBoost,this.sVert[i], this.iVert[i]);
+        this.iVert[i] = quat4.create([this.sVert[i][0] + X[0],
                          this.sVert[i][1] + X[1],
                          this.sVert[i][2] + X[2],
-                         this.sVert[i][3] + X[3]];
+                         this.sVert[i][3] + X[3]]);
 
         this.rVert[i] = quat4.create(this.iVert[i]);
+        this.nVert[i] = quat4.create();
+        this.nVert[i] = quat4.add(this.iVert[i], quat4.scale(V, -this.iVert[i][3] / V[3], tempQuat4), this.nVert[i]);
+
         // Do we even want to track the whole thing on the future light cone?
         this.fVert[i] = quat4.create();
         this.pVert[i] = quat4.create();
-        this.nVert[i] = quat4.create();
     }
+    this.appearance.vertices = this.nVert;
     // If it's interesting we care about drawing it etc.
     this.interesting = true;
     // If it's bigger than a threshold size in pixels,

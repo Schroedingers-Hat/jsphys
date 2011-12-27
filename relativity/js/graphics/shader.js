@@ -170,14 +170,13 @@ var queueDraw = function(object, triArr, endNum, lParams) {
         tri = triangles[i];
 
         // Set sum of z normals.
-        zns = 0;
+        zns = false;
         for (j=0 ; j<3;j++){
 
-            zn = normals[tri[j]][2];
+            if(normals[tri[j]][2] < 0) { zns = true;}
             // What's the total of the z normals on this triangle?
             // It represents the average, but all I'm interested in is
             // the sign, so no divide is necessary.
-            zns += zn; 
 
             ver = vertices[tri[j]];
             scol = scolors[tri[j]];
@@ -200,7 +199,7 @@ var queueDraw = function(object, triArr, endNum, lParams) {
             tempArr[19 + k] = UVArr[tri[j]][1];
         }
         // Back-face  and z culling
-        if ( (!bfc || zns > 0)      &&  // If culling, is the normal negative?
+        if ( (!bfc || zns)      &&  // If culling, is the normal negative?
              (  (tempArr[2] > 0) ||     // And is some part of the triangle
                 (tempArr[5] > 0) ||     // In front of us.
                 (tempArr[8] > 0)   ) ){
@@ -586,8 +585,6 @@ var drawTri = function(triArray,imageData,endNum,fz, ortho) {
 
         }
 
-//        y1 -= 4;
-//        y2 += 2;
         if( ( ( y1 <= height ) ||
               ( y2 >= 0 )   )&&
             ( ( x1 >= 0 || x1 <= width )  ||
@@ -718,6 +715,7 @@ var drawHalfTri = function(j,k,l,m,
        data,lineW,round,floor){
            var ceil = Math.ceil;
             xl--; 
+            xr++;
             l = 4*width*round(ys);
             j = ceil(ye - ys);
             while (j--){

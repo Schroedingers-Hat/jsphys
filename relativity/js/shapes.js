@@ -176,9 +176,8 @@ function shape_triSphere(params) {
     return {vertices: vertices, 
             triangles: triangles,
             UV: UV,
-            slight : { temp : 3000, wavelength : 530e-9, lum : 0.1 },
+            slight : { temp : 5000, wavelength : 530e-9, lum : 0.1 },
             normals: normals,
-            v: [0,0.566 * 3e8,0,3e8]
     };
 
 }
