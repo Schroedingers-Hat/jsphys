@@ -13,6 +13,11 @@
      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 
     <script type="text/javascript" src="js/colors.js"></script>
+    <script type="text/javascript" src="../lib/glMatrix-0.9.5.min.js"></script>
+    <script type="text/javascript" src="js/relLibs.js"></script>
+    <script type="text/javascript" src="js/glMatrix-extensions.js"></script>
+    <script type="text/javascript" src="js/newExtendedObject.js"></script>
+    <script type="text/javascript" src="js/shapes.js"></script>
     <script type="text/javascript" src="js/graphics/testObj.js"></script>
     <script type="text/javascript" src="js/graphics/shader.js"></script>
     <script>
@@ -22,12 +27,14 @@
 
             var ctx = canvas.getContext('2d');
             ctx.fillStyle = "#000";
+            var scale = 1;
+            ctx.scale(scale,scale);
             ctx.fillRect(0,0,canvas.width,canvas.height);
             var canvasData2 = ctx.getImageData(0,0,canvas.width,canvas.height);
             var canvasData = ctx.createImageData(canvas.width, canvas.height);
             var buffer = document.createElement('canvas');
-            buffer.width = canvas.width;
-            buffer.height = canvas.height;
+            buffer.width = canvas.width / scale;
+            buffer.height = canvas.height / scale;
             var bctx = buffer.getContext('2d');;
             var triArr= [];
             var texture = [],textures;
@@ -35,10 +42,14 @@
             image.src = "texture.png";
             $(image).load(function() {
                 ctx.fillStyle = '#000f';
-                ctx.fillRect(0,0,canvas.width,canvas.height); 
-                ctx.drawImage(image,0,0);
-                textures = ctx.getImageData(0,0,canvas.width,canvas.height);
+                ctx.fillRect(0,0,buffer.width, buffer.height); 
+                bctx.drawImage(image,0,0,buffer.width, buffer.height);
+                textures = bctx.getImageData(0,0,buffer.width,buffer.height);
             });
+
+            var thing = shape_triSphere({r: 1000, detail: 64/scale, UVpts: [ 0, 0, 1000/scale, 500/scale] });
+            var mongoose = new  newExtendedObject([0,0,2000,0], [0,0.2 * 3e8,0,3e8], {wavelength: 530e-9, lum: 1, temp: 5300}, thing, {c: 3e8});
+            window.mongoose = mongoose;
             this.draw = function ()
             {
                 var endNum = -1;
@@ -51,33 +62,30 @@
                     brightness : 1,
                     rgbgamma : 0.2
                 };
-                endNum = queueDraw(testObj,triArr,endNum, params);
-                for (i = 2000; i--;){
-                    endNum = queueDraw(testObj2,triArr,endNum, params);
-                }
+//                endNum = queueDraw(testObj,triArr,endNum, params);
+//                endNum = queueDraw(testObj2,triArr,endNum, params);
+                endNum = queueDraw(mongoose.appearance, triArr, endNum, params);
                 console.timeEnd('lighting');
                 console.timeEnd('setup');
-                //                drawTriTex(triArr,canvasData, endNum+1, texture);
                 ctx.fillStyle = '#000';
-                ctx.fillRect(0,0,canvas.width,canvas.height);
-                canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
-                window.canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
+                ctx.fillRect(0,0,canvas.width / scale,canvas.height / scale);
+                bctx.fillStyle = '#0000';
+                bctx.fillRect(0,0,buffer.width,buffer.height);
+                canvasData = bctx.getImageData(0,0,buffer.width,buffer.height);
+                canvasData = bctx.createImageData(buffer.width,buffer.height);
 
                 console.time('raster');               
-//                drawTriSmooth(triArr, ctx, endNum,
-//                              100, false,
-//                              1000, 500);
-//
-                drawTri(triArr,canvasData, endNum,100, false);
-//                drawTriTex(triArr,canvasData, endNum,100, textures);
-                console.timeEnd('raster');
+
+
+                drawTri(triArr,canvasData, endNum,500 / scale, false);
+//                drawTriTex(triArr,canvasData, endNum,500 / scale, textures);
                 window.triArr = triArr;
-                console.time('texture');
                 window.ctx = ctx;
-                ctx.putImageData(canvasData, 0, 0);
+                bctx.putImageData(canvasData, 0, 0);
+//                drawTriSmooth(triArr, bctx, endNum, 500 / scale, false, canvas.width / scale, canvas.height / scale);
+                ctx.drawImage(buffer,0, 0);
 
-
-                console.timeEnd('texture');
+                console.timeEnd('raster');
 
 
         }
@@ -91,6 +99,6 @@
 </head>
 
 <body onload="go()">
-    <canvas id="myCanvasElt" width="800" height="400"></canvas>
+    <canvas id="myCanvasElt" width="1000" height="500"></canvas>
 </body>
 </html>

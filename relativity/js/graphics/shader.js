@@ -80,13 +80,17 @@ var queueDraw = function(object, triArr, endNum, lParams) {
         elights = object.elights,       // Self light
 
         doHeadlight = true,
+        // TODO: Include parameters for turning off doppler shift,
+        // headlight effect turning off the relativistic portion of dopplershift,
+        // falling back onto 3d lighting (once lighting is done)
+        // or  just setting the whole lot to a single color.
         brightness = lParams.brightness,
         rgbgamma = lParams.rgbgamma,
-        bfc = lParams.bfc,
+        bfc = lParams.bfc,              // are we back face culling?
         c = lParams.c,
         lightFuncS, lp,
         lum = slight.lum,
-        g  = object.v[3],               // Gamma.
+        g  = object.v[3] / c,               // Gamma.
         vx = object.v[0]/g,             // 3-velocity
         vy = object.v[1]/g,
         vz = object.v[2]/g,
@@ -102,6 +106,7 @@ var queueDraw = function(object, triArr, endNum, lParams) {
     // Are we a black body, or monochromatic source?
     // TODO: Add other specra.
     // TODO: Support multiple self lights. Ie. something that emits many wavelengths.
+    // Or something that emits a combination of bb and wavelengths.
    if (slight.wavelength) {
         lightFuncS = wavelengthToColor;
         lp = slight.wavelength;
@@ -123,8 +128,8 @@ var queueDraw = function(object, triArr, endNum, lParams) {
 
         // TODO: Do environmental lighting.
         // For now it can just be 3d directional to give some sense of shape.
-        // TODO: This is a memory leak.
-        ecolors[i] = [0* 30 * xn, 0* 30 * xn, 0*30 * xn, 0];
+        // TODO: This is a garbage creator.
+        ecolors[i] = [30 * xn, 30 * xn, 30 * xn, 255];
 
         // Luminous lighting. Much less complicated.
         r = sqrt( x*x + y*y + z*z );
@@ -195,7 +200,7 @@ var queueDraw = function(object, triArr, endNum, lParams) {
             tempArr[19 + k] = UVArr[tri[j]][1];
         }
         // Back-face  and z culling
-        if ( (!bfc || zns < 0)      &&  // If culling, is the normal negative?
+        if ( (!bfc || zns > 0)      &&  // If culling, is the normal negative?
              (  (tempArr[2] > 0) ||     // And is some part of the triangle
                 (tempArr[5] > 0) ||     // In front of us.
                 (tempArr[8] > 0)   ) ){
@@ -231,8 +236,9 @@ var drawTriSmooth = function(triArray,ctx,endNum,fz,ortho,width,height){
     // Doesn't matter which end we start from.
     for ( i = endNum+1; i--; ) {
         tempArr = triArray[i];
-        if ( tempArr[2] <= 0 || tempArr[5] <= 0 || tempArr[8] <= 0 ){
-            if ( i-- ){ return; }
+        while ( tempArr[2] <= 0 || tempArr[5] <= 0 || tempArr[8] <= 0 ){
+            if ( i-- === 0 ){ return; }
+            tempArr = triArray[i];
         }
         j = 0; 
         k = 1;
@@ -300,7 +306,7 @@ var drawTriSmooth = function(triArray,ctx,endNum,fz,ortho,width,height){
         b0 = round((tempArr[ 11 + j * 3] + tempArr[ 11 + k * 3] + tempArr[ 11 + l * 3])/3);
 
         if ( r0 !== rp || gp !== g0 || bp !== b0){ 
-            ctx.fillStyle = 'rgba(' + r0 + ',' +  b0 + ',' + g0 + ',' + '1)';
+            ctx.fillStyle = 'rgba(' + r0 + ',' +  g0 + ',' + b0 + ',' + '1)';
         }
 
         rp = r0;
@@ -487,8 +493,8 @@ var drawTri = function(triArray,imageData,endNum,fz, ortho) {
         xm = (fm * (x2 - x0) + x0);
 
         // Does the top-triangle exist and is some part of it on the screen?
-        y0--;
-        y1++;
+//        y0 -= 2;
+//        y1 +=2;
         if( ( ( y0 <= height ) ||
               ( y1 >= 0 )   )&&
             ( ( x0 >= 0 || x0 <= width )  ||
@@ -580,9 +586,8 @@ var drawTri = function(triArray,imageData,endNum,fz, ortho) {
 
         }
 
-        y1--;
-        y1--;
-        y2++;
+//        y1 -= 4;
+//        y2 += 2;
         if( ( ( y1 <= height ) ||
               ( y2 >= 0 )   )&&
             ( ( x1 >= 0 || x1 <= width )  ||
@@ -711,11 +716,10 @@ var drawHalfTri = function(j,k,l,m,
        grl,grr,ggl,
        ggr,gbl,gbr,
        data,lineW,round,floor){
-            xl--;
-            xr++; 
-    
-            l = 4*width*floor(ys);
-            j = floor(ye - ys);
+           var ceil = Math.ceil;
+            xl--; 
+            l = 4*width*round(ys);
+            j = ceil(ye - ys);
             while (j--){
                 // How wide is the current line?
                 lineW = xr - xl;
@@ -745,9 +749,8 @@ var drawHalfTri = function(j,k,l,m,
                 bc = bl + gbh * (xs - xl);
     
                 m = (l + 4*round(xs)); // Index relating position and data[].
-                // Duff's device
     
-                k = round(xe - xs);
+                k = ceil(xe - xs);
                 while(k--){
                     // DRAW A PIXEL
                     // Compound statements are faster. 
@@ -919,8 +922,6 @@ var drawTriTex = function(triArray,imageData,endNum,fz,texture) {
         zm = fm * (z2 - z0) + z0;
 
         // Does the top-triangle exist and is some part of it on the screen?
-        y0--;
-        y1++;
         if( ( ( y0 <= height ) ||
               ( y1 >= 0 )   )&&
             ( ( x0 >= 0 || x0 <= width )  ||
@@ -1021,10 +1022,6 @@ var drawTriTex = function(triArray,imageData,endNum,fz,texture) {
     
     
             drawHalfTriTex(j,k,l,m,xr,xl,xs,xe,ys,ye,xgl,xgr,zc,zl,zr,gzl,gzr,width,rc,rl,rr,bc,bl,br,gc,gl,gr,grh,gbh,ggh,grl,grr,ggl,ggr,gbl,gbr,uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,data,lineW,round,floor,tdata,twidth);
-            y2++;
-            y1--;
-            y1--;   
-    
 
         }
 
@@ -1197,10 +1194,11 @@ var drawHalfTriTex = function(j,k,l,m,
        uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,
        data,lineW,round,floor,tdata,twidth){
     var guh,gvh,gzh,ti,val;
+    var ceil = Math.ceil;
     xl--;
     xr++;
     l = 4*width*round(ys);
-    j = round(ye - ys);
+    j = ceil(ye - ys);
     while (j--){
         // How wide is the current line?
         lineW = xr - xl;
@@ -1237,7 +1235,7 @@ var drawHalfTriTex = function(j,k,l,m,
 
         zc = zl + gzh * (xs - xl);
 
-        m = (l + 4*floor(xs)); // Index relating position and data[].
+        m = (l + 4*round(xs)); // Index relating position and data[].
         // Duff's device
 
         k = round(xe - xs);
@@ -1412,8 +1410,6 @@ var drawTriTexOrtho = function(triArray,imageData,endNum,texture) {
         vm = fm * (v2 - v0) + v0;
 
         // Does the top-triangle exist and is some part of it on the screen?
-        y0--;
-        y1++;
         if( ( ( y0 <= height ) ||
               ( y1 >= 0 )   )&&
             ( ( x0 >= 0 || x0 <= width )  ||
@@ -1507,8 +1503,6 @@ var drawTriTexOrtho = function(triArray,imageData,endNum,texture) {
     
     
             drawHalfTriTexOrtho(j,k,l,m,xr,xl,xs,xe,ys,ye,xgl,xgr,width,rc,rl,rr,bc,bl,br,gc,gl,gr,grh,gbh,ggh,grl,grr,ggl,ggr,gbl,gbr,uc,vc,ul,vl,ur,vr,gul,gvl,gur,gvr,data,lineW,round,floor,tdata,twidth);
-            y2++;
-            y1--;
             y1--;   
     
 
@@ -1703,7 +1697,7 @@ var drawHalfTriTexOrtho = function(j,k,l,m,
         uc = ul + guh * (xs - xl);
         vc = vl + gvh * (xs - xl);
 
-        m = (l + 4*floor(xs)); // Index relating position and data[].
+        m = (l + 4*round(xs)); // Index relating position and data[].
         // Duff's device
 
         k = round(xe - xs);

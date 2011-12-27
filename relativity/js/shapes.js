@@ -129,3 +129,56 @@ function shape_rAsteroid(params) {
     rAsteroid.push(rAsteroid[0]);
     return rAsteroid;
 }
+
+
+function shape_triSphere(params) {
+    var r = params.r;
+    var detail = params.detail;
+    var UVpts = params.UVpts;
+    var UVlen = UVpts[2] - UVpts[0];
+    var UVht  = UVpts[3] - UVpts[1];
+
+
+    var triangles = [];
+    var vertices = [];
+    var UV = [];
+    var normals = [];
+    var cos = Math.cos;
+    var sin = Math.sin;
+
+    var psteps = detail;
+    var tsteps = detail;
+    var ct1, st1, ct2, st2, cp1, sp1, cp2, sp2;
+    var t,p;
+
+    for ( p = 0; p <= psteps; p++ ) {
+        cp1 = cos(p / (psteps) *  Math.PI);
+        sp1 = sin(p / (psteps) *  Math.PI);
+
+        for ( t = 0; t <= tsteps; t++ ) {
+            ct1 = cos(t / (tsteps) * 2 * Math.PI);
+            st1 = sin(t / (tsteps) * 2 * Math.PI);
+            vertices[tsteps * p + t]           = [r * ct1 * sp1, -r * st1 * sp1, r * cp1,0];
+            vertices[tsteps * p + t]           = [r * ct1 * sp1, -r * cp1, r * st1 * sp1,0];
+            UV[tsteps * p + t]           = [(t) / tsteps * UVlen + UVpts[0], (p) / psteps * UVht + UVpts[1]];
+            normals[tsteps * p + t]           = [ct1 * sp1, -st1 * sp1, cp1];
+            normals[tsteps * p + t]           = [ct1 * sp1, -cp1,  st1 * sp1];
+            if ( p < psteps && t < tsteps) {
+            triangles[2*(tsteps * p + t)] = [tsteps * p + t,
+                                             tsteps * p + t + 1,
+                                             tsteps * (p + 1) + t];
+            triangles[2*(tsteps * p + t) + 1] = [tsteps * p + t + 1,
+                                             tsteps * (p + 1) + t + 1,
+                                             tsteps * (p + 1) + t];
+            }
+        }
+    }
+    return {vertices: vertices, 
+            triangles: triangles,
+            UV: UV,
+            slight : { temp : 3000, wavelength : 530e-9, lum : 0.1 },
+            normals: normals,
+            v: [0,0.566 * 3e8,0,3e8]
+    };
+
+}

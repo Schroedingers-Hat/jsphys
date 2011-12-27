@@ -212,7 +212,8 @@ Scene.prototype = {
             thingy = new extendedObject(obj.x, obj.p,
                                         obj.label, obj.options, obj.shape);
             break;
-            
+        case "newExtendedObject":
+            return;
         case "photon":
             thingy = new photon(obj.x, obj.v, obj.label, obj.options);
             break;
