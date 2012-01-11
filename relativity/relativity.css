@@ -33,6 +33,7 @@ body {
     background-color: #333;
     padding: 1px;
     border-bottom: 1px solid #2A2A2A;
+    border-radius: 2px;
 }
 
 #controls button {
@@ -157,8 +158,9 @@ body {
 
 #caption {
     background-color: #333;
+    border-radius: 4px;
     padding: 1em;
     float: left;
-    margin-right: 13em;
+    margin: 0 13em 1em 0;
     min-height: 7em;
 }
