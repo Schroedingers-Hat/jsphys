@@ -230,7 +230,12 @@ photon.prototype.drawNow = function(scene) {
         // As you can't see or reflect light off of a photon, doppler shift in this context represents something a bit different.
         // In the unphysical view the photon is shown with the wavelength corresponding to its momentum in the current frame.
         // V is proportional to momentum in units of per meter for now.
-        scene.g.fillStyle = wavelengthToColor(1/this.V[3]);
+        if (scene.options.alwaysDoppler ||
+            (this.options.showDoppler && !scene.options.neverDoppler)) {
+           scene.g.fillStyle = wavelengthToColor(1/this.V[3]);
+        } else {
+            scene.g.fillStyle = wavelengthToColor(this.wavelength);
+        }
         scene.g.beginPath();
         scene.g.arc(this.X0[0] / scene.zoom + scene.origin[0],
                     -this.X0[1] / scene.zoom + scene.origin[1],
