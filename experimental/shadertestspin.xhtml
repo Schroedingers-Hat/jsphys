@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <style>
+      body {
+        background: black;
+      }
+      canvas {
+        background: black;
+      }
+  </style>
+     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+    <script type="text/javascript" src="js/graphics/shader.js"></script>
+    <script type="text/javascript" src="js/colors.js"></script>
+    <script>
+        <![CDATA[
+        function go() {
+            var canvas = document.getElementById('myCanvasElt');
+
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            var canvasData2 = ctx.getImageData(0,0,canvas.width,canvas.height);
+            var canvasData = ctx.createImageData(canvas.width, canvas.height);
+            var buffer = document.createElement('canvas');
+            buffer.width = canvas.width;
+            buffer.height = canvas.height;
+            var bctx = buffer.getContext('2d');;
+            var triAr = [];
+            var tempy = new Array(3);
+            var ox, oy;
+            var texture = [],textures;
+            var image = new Image();
+            var t = 0;
+            var z11,z21,z31,z12,z22,z32;
+            image.src = "texture.png";
+            $(image).load(function() {
+                ctx.fillStyle = '#000f';
+                ctx.fillRect(0,0,canvas.width,canvas.height); 
+                ctx.drawImage(image,0,0);
+                textures = ctx.getImageData(0,0,canvas.width,canvas.height);
+            });
+            var floor = Math.floor,
+                rnd   = Math.random;
+                var triArr = triAr;
+                var tempArr;
+                var ox,oy;
+                var i;
+                var px,pz;
+                var s = 100;
+                var numT = 1;
+                console.time('setup');
+                for (var j = 0; j <= 1; j++){
+                    ox = floor(rnd()*800) + 100;
+                    oy = floor(rnd()*300) + 100;
+                    if(!triArr[j]){triArr[j] = [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0];}
+                    tempArr= triArr[j]; 
+//                    tempArr[0]  = floor(rnd()*s)+ox,   
+//                    tempArr[1]  = floor(rnd()*s)+oy,  
+//                    tempArr[2]  = floor(rnd()*s)+ox,   
+//                    tempArr[3]  = floor(rnd()*s)+oy,  
+//                    tempArr[4]  = floor(rnd()*s)+ox,   
+//                    tempArr[5]  = floor(rnd()*s)+oy, 
+                    tempArr[0]  = -500,        // v1
+                    tempArr[1]  = -250,
+                    tempArr[2]  = 2000,
+
+                    tempArr[3]  = 500*Math.pow(-1,j), //v2
+                    tempArr[4]  = 250*Math.pow(-1,(1-j)),
+                    tempArr[5]  = 2000,
+
+                    tempArr[6]  = 500,  //v3
+                    tempArr[7]  = 250,
+                    tempArr[8]  = 2000,
+
+                    tempArr[9]  = 155,    //c1
+                    tempArr[10]  = 255,
+                    tempArr[11] = 155,
+
+                    tempArr[12] = 255,
+                    tempArr[13] = 155,
+                    tempArr[14] = 255,
+
+                    tempArr[15] = 255,
+                    tempArr[16] = 255,
+                    tempArr[17] = 155,
+
+                    tempArr[18] = 0,
+                    tempArr[19] = 0,
+
+                    tempArr[20] = 400*j,
+                    tempArr[21] = 400*(1-j),
+
+                    tempArr[22] = 400,
+                    tempArr[23] = 400;
+
+                    endNum = j;
+                }
+                z11 = z21 = z31 = 0;
+                z12 = z22 = z32 = 0;
+            this.draw = function ()
+            {
+
+                var l1=0,l2=0,l3=0,l4=0;
+                var px=pz=0;
+                t++;
+                for (var k = 0; k<=1;k++){
+                var a,b,c,d,e,f,g,h,i;
+                a=b=c=d=e=f=g=h=i=0;
+                /**
+                 *   |a b c| x
+                 *   |d e f| y
+                 *   |g h i| z
+                 */
+                 a = Math.cos(0.05);
+                 c = -Math.sin(0.05);
+                 g = Math.sin(0.05);
+                 e = 1;
+                 i = Math.cos(0.05);
+                 triArr[k][2] -=2000;
+                 triArr[k][5] -=2000;
+                 triArr[k][8] -=2000;
+
+                 triArr[k][0] = triArr[k][0] * a + triArr[k][2] * c,
+                 triArr[k][2] = triArr[k][0] * g + triArr[k][2] * e,
+
+                 triArr[k][3] = triArr[k][3] * a + triArr[k][5] * c,
+                 triArr[k][5] = triArr[k][3] * g + triArr[k][5] * e,
+
+                 triArr[k][6] = triArr[k][6] * a + triArr[k][8] * c,
+                 triArr[k][8] = triArr[k][6] * g + triArr[k][8] * e;
+                 triArr[k][2] +=2000;
+                 triArr[k][5] +=2000;
+                 triArr[k][8] +=2000;
+               }
+               var pow = Math.pow;
+               var imax = 100;
+               var jmax = 100;
+               var oz = 1000/imax*40;
+               var v = (8000/imax)|0;
+               var u = (16180/jmax)|0;
+               px = 100*Math.cos(t/20);
+               vx = -Math.sin(t/20);
+               pz = 100*Math.sin(t/20);
+               vz = Math.cos(t/20);
+               py = 60;
+               vy = 0;
+
+               console.time('lighting');
+               for ( var i = 0; i < imax; i++){
+                    for( var j = 0; j < jmax; j++){
+                       x1 = 200/jmax*(j-(jmax|0)/2);
+                       x2 = 200/jmax*(j-(jmax|0)/2 -1);
+                       y  = 80;
+                       z1 = 500/imax*(i-(imax|0)/5);
+                       z2 = 500/imax*(i-(imax|0)/5-1);
+                       rx1 = px - x1;
+                       rx2 = px - x2;
+                       rz1 = pz - z1;
+                       rz2 = pz - z2;
+                       ry  = py;
+                       rd11 = rx1*vx + rz1*vz + (py-80) * vy;
+                       rd12 = rx1*vx + rz2*vz + (py-80) * vy;
+                       rd21 = rx2*vx + rz1*vz + (py-80) * vy;
+                       rd22 = rx2*vx + rz2*vz + (py-80) * vy;
+
+                       rdo = px*vx + (pz+oz)*vz + (py) * vy;
+                       rd11 *= 0.2/Math.sqrt(pow(rx1,2) + pow(rz1,2) + pow(py-80,2));
+                       rd12 *= 0.2/Math.sqrt(pow(rx1,2) + pow(rz2,2) + pow(py-80,2));
+                       rd21 *= 0.2/Math.sqrt(pow(rx2,2) + pow(rz1,2) + pow(py-80,2));
+                       rd22 *= 0.2/Math.sqrt(pow(rx2,2) + pow(rz2,2) + pow(py-80,2));
+                       rdo *= 0.2/Math.sqrt(pow(px,2) + pow(pz+oz,2) + pow(py,2));
+                       var wavelength = 500 * (Math.sqrt( (1 + rd11)/(1-rd11)));
+                       c11 = wavelengthToColor(wavelength);
+
+                       wavelength = 500 * (Math.sqrt( (1 + rd12)/(1-rd12)));
+                       c21 = wavelengthToColor(wavelength);
+
+                       wavelength = 500 * (Math.sqrt( (1 + rd21)/(1-rd21)));
+
+                       c12 = wavelengthToColor(wavelength);
+
+                       wavelength = 500 * (Math.sqrt( (1 + rd22)/(1-rd22)));
+                       c22 = wavelengthToColor(wavelength);
+
+                       var wo = 500 * (Math.sqrt( (1 + rdo)/(1-rdo)));
+
+                       var co = wavelengthToColor(wavelength);
+                       l11 = Math.min(1000000/( pow(py,2) + pow (rx1,2) + pow(rz1,2)),110);
+                       l21 = Math.min(1000000/( pow(py,2) + pow (rx2,2) + pow(rz1,2)),110);
+                       l12 = Math.min(1000000/( pow(py,2) + pow (rx1,2) + pow(rz2,2)),110);
+                       l22 = Math.min(1000000/( pow(py,2) + pow (rx2,2) + pow(rz2,2)),110);
+
+                       triArr[2*(jmax*i+j)]   = ([x1,80,z1+oz, x2,80,z1+oz, x1,80,z2+oz,
+                                                c11[0] * l11+20, c11[1] * l11+20, c11[2]*l11+20, 
+                                                c21[0] * l21+20, c21[1] * l21+20, c21[2]*l21+20, 
+                                                c12[0] * l12+20, c12[1] * l12+20, c12[2]*l12+20, 
+                                                u*j%1000,v*(i)%500,   u*(j+1)%1000,v*i%500,   u*j%1000,v*(i+1)%500]);                                   
+
+                       triArr[2*(jmax*i+j)+1] = ([x2,80,z2+oz, x2,80,z1+oz, x1,80,z2+oz,
+                                                c22[0] * l22+20, c22[1] * l22+20, c22[2]*l22+20, 
+                                                c21[0] * l21+20, c21[1] * l21+20, c21[2]*l21+20, 
+                                                c12[0] * l12+20, c12[1] * l12+20, c12[2]*l12+20, 
+                                                u*j%1000,v*(i+1)%500,   u*(j+1)%1000,v*i%500,   u*j%1000,v*(i+1)%500]);  
+                                            }
+
+                                            }
+                                            if (py < 80){
+                       triArr[0] = ([px,py,pz+oz, px+10,py+10,pz+oz, px,py+10,pz+oz,
+                                                co[0] * 200+50, co[1] * 200+50, co[2]*200+50, 
+                                                co[0] * 200+50, co[1] * 200+50, co[2]*200+50, 
+                                                co[0] * 200+50, co[1] * 200+50, co[2]*200+50, 
+                                                  0,0, 100,100, 100,0]);                                   
+                                                  }
+
+                console.timeEnd('lighting');
+console.log(l1);
+                endNum = imax*jmax;
+
+                console.timeEnd('setup');
+                //                drawTriTex(triArr,canvasData, endNum, texture);
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0,0,canvas.width,canvas.height);
+                canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
+
+                console.time('raster');                
+                drawTri(triArr,canvasData, endNum,500, textures);
+                console.timeEnd('raster');
+
+                console.time('texture');
+
+                ctx.putImageData(canvasData, 0, 0);
+
+
+                console.timeEnd('texture');
+
+
+        }
+            setInterval(draw,50);
+
+            } 
+
+        ]]>
+    </script>
+
+</head>
+
+<body onload="go()">
+    <canvas id="myCanvasElt" width="800" height="400"></canvas>
+</body>
+</html>

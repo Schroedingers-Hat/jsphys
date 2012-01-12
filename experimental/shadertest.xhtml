@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <style>
+      body {
+        background: black;
+      }
+      canvas {
+          background: black,
+          width: 500,
+          height: 250;
+      }
+  </style>
+     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+    <script type="text/javascript" src="js/graphics/shader.js"></script>
+    <script>
+        <![CDATA[
+        function go() {
+            var canvas = document.getElementById('myCanvasElt');
+
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            var canvasData2 = ctx.getImageData(0,0,canvas.width,canvas.height);
+            var canvasData = ctx.createImageData(canvas.width, canvas.height);
+            var buffer = document.createElement('canvas');
+            buffer.width = canvas.width;
+            buffer.height = canvas.height;
+            var bctx = buffer.getContext('2d');;
+            var triAr = [];
+            var tempy = new Array(3);
+            var ox, oy;
+            var texture = [],textures;
+            var image = new Image();
+            var t = 0;
+            image.src = "texture.png";
+            $(image).load(function() {
+                ctx.fillStyle = '#000f';
+                ctx.fillRect(0,0,canvas.width,canvas.height); 
+                ctx.drawImage(image,0,0);
+                ctx.drawImage(image,300,0);
+                ctx.drawImage(image,0,300);
+                ctx.drawImage(image,300,300);
+                textures = ctx.getImageData(0,0,canvas.width,canvas.height);
+            });
+            this.draw = function ()
+            {
+                t++;
+            var floor = Math.floor,
+                rnd   = Math.random;
+                var triArr = triAr;
+                var tempArr;
+                var ox,oy;
+                var i;
+                var s = 100;
+                var numT = 1;
+                console.time('setup');
+                for (var j = 0; j <= numT; j++){
+                    ox = floor(rnd()*800) + 100;
+                    oy = floor(rnd()*300) + 100;
+                    if(!triArr[j]){triArr[j] = [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0];}
+                    tempArr= triArr[j]; 
+//                    tempArr[0]  = floor(rnd()*s)+ox,   
+//                    tempArr[1]  = floor(rnd()*s)+oy,  
+//                    tempArr[2]  = floor(rnd()*s)+ox,   
+//                    tempArr[3]  = floor(rnd()*s)+oy,  
+//                    tempArr[4]  = floor(rnd()*s)+ox,   
+//                    tempArr[5]  = floor(rnd()*s)+oy, 
+                    tempArr[0]  = 0,
+                    tempArr[1]  = 0,
+                    tempArr[2]  = 1000,
+                    tempArr[3]  = 0,
+                    tempArr[4]  = 1000,
+                    tempArr[5]  = 500,
+                    tempArr[6]  = floor(rnd()*0),
+                    tempArr[7]  = floor(rnd()*0),
+                    tempArr[8]  = floor(rnd()*0),
+                    tempArr[9]  = floor(rnd()*255),
+                    tempArr[10] = floor(rnd()*255),
+                    tempArr[11] = floor(rnd()*255),
+                    tempArr[12] = floor(rnd()*255),
+                    tempArr[13] = floor(rnd()*255),
+                    tempArr[14] = floor(rnd()*255);
+                    if ( tempArr[1] > tempArr[3] ) { i = tempArr[1], tempArr[1] = tempArr[3], tempArr[3] = i;}
+                    if ( tempArr[5] > tempArr[3] ) { i = tempArr[5], tempArr[5] = tempArr[3], tempArr[3] = i;}
+                    if ( tempArr[1] > tempArr[3] ) { i = tempArr[1], tempArr[1] = tempArr[3], tempArr[3] = i;}
+                    tempArr[15] = 0,
+                    tempArr[16] = 0,
+                    tempArr[17] = 0,
+                    tempArr[18] = 300,
+                    tempArr[19] = 300,
+                    tempArr[20] = 300;
+
+                    endNum = j;
+                }
+                console.timeEnd('setup');
+                //                drawTriTex(triArr,canvasData, endNum, texture);
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0,0,canvas.width,canvas.height);
+                canvasData = ctx.getImageData(0,0,canvas.width,canvas.height);
+
+                console.time('raster');                
+                drawTriTex(triArr,canvasData, endNum,textures);
+                console.timeEnd('raster');
+
+                console.time('texture');
+
+                ctx.putImageData(canvasData, 0, 0);
+
+
+                console.timeEnd('texture');
+
+
+        }
+            setInterval(draw,800);
+
+            } 
+
+        ]]>
+    </script>
+
+</head>
+
+<body onload="go()">
+    <canvas id="myCanvasElt" width="1000" height="600"></canvas>
+</body>
+</html>
