@@ -23,7 +23,11 @@ AudioManager.prototype = {
         this.tracks[track] = a;
     },
     
-    play: function(track) {
+    /**
+     * Play the track. Optionally provide onFinish, a callback which is called
+     * when the audio has completed playing.
+     */
+    play: function(track, onFinish) {
         if (!(track in this.tracks)) {
             throw "Track cannot be played before being loaded.";
         }
@@ -35,6 +39,10 @@ AudioManager.prototype = {
             // Another track is playing, so queue this one.
             this.queue.push(track);
             return;
+        }
+        
+        if (onFinish) {
+            this.tracks[track].addEventListener("ended", onFinish);
         }
         
         var endedCallback = $.proxy(this.playbackEnded, this);
