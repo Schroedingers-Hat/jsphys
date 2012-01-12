@@ -3,6 +3,7 @@
 function AudioManager() {
     this.tracks = {};
     this.currentTrack = null;
+    this.queue = [];
 }
 
 /**
@@ -26,10 +27,32 @@ AudioManager.prototype = {
         if (!(track in this.tracks)) {
             throw "Track cannot be played before being loaded.";
         }
-        this.tracks[track].addEventListener("ended", function() {
-           this.currentTrack = false; 
-        });
+        
+        if (this.currentTrack === track) {
+            // Let it finish.
+            return;
+        } else if (this.currentTrack !== null) {
+            // Another track is playing, so queue this one.
+            this.queue.push(track);
+            return;
+        }
+        
+        var endedCallback = $.proxy(this.playbackEnded, this);
+        
+        this.tracks[track].addEventListener("ended", endedCallback);
         this.tracks[track].play();
         this.currentTrack = track;
+    },
+    
+    /**
+     * When playback of the current track has ended, play the next track in the
+     * queue, if necessary.
+     */
+    playbackEnded: function() {
+        this.currentTrack = null;
+        
+        if (this.queue.length > 0) {
+            this.play(this.queue.shift());
+        }
     }
 };

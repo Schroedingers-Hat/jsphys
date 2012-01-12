@@ -8,6 +8,7 @@ function fourEvent(X, options, scene) {
     if (options.caption) this.caption = options.caption;
     if (options.audio) {
         this.audioTrack = options.audio;
+        this.audioPlayed = false;
         scene.audio.load(this.audioTrack);
     }
     this.X0 = quat4.create(X);
@@ -45,9 +46,12 @@ fourEvent.prototype.draw = function(scene) {
     }
     // Later is also back in time if time is reversed.
     if ((this.X0[3] < 0 && this.later >= 0) ||
-        (this.X0[3] > 0 && this.later <=0) && this.caption) {
-        scene.pushCaption(this.caption);
-        if (this.audioTrack) scene.audio.play(this.audioTrack);
+        (this.X0[3] > 0 && this.later <=0)) {
+        if (this.caption) scene.pushCaption(this.caption);
+        if (this.audioTrack && !this.audioPlayed) {
+            scene.audio.play(this.audioTrack);
+            this.audioPlayed = true;
+        }
     }
 };
 
