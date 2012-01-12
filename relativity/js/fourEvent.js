@@ -4,8 +4,12 @@
  * Create a new fourEvent. Takes an initial position X and a 3-velocity V,
  * which will be rescaled to have a magnitude of c.
  */
-function fourEvent(X, options) {
+function fourEvent(X, options, scene) {
     if (options.caption) this.caption = options.caption;
+    if (options.audio) {
+        this.audioTrack = options.audio;
+        scene.audio.load(this.audioTrack);
+    }
     this.X0 = quat4.create(X);
     this.later = X[3] + 1;
 }
@@ -23,26 +27,27 @@ fourEvent.prototype.changeFrame = function(translation1, rotation, translation2)
     // Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
     // Optional translation.
-    if ( translation2) quat4.subtract(this.X0, translation2);
+    if (translation2) quat4.subtract(this.X0, translation2);
 };
 
 fourEvent.prototype.draw = function(scene) {
-    if(this.visible) {
+    if (this.visible) {
         // Only makes sense to display if we're showing the current position.
         if (scene.options.alwaysShowFramePos || 
             (this.options.showFramePos && !scene.options.neverShowFramePos)) {
             this.drawNow(scene);
         } 
         this.drawXT(scene);
-        if(scene.options.alwaysShowVisualPos ||
+        if (scene.options.alwaysShowVisualPos ||
             (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {
             this.drawPast(scene);
         }
     }
     // Later is also back in time if time is reversed.
-    if((this.X0[3] < 0 && this.later >= 0) ||
-       (this.X0[3] > 0 && this.later <=0) && this.caption) {
+    if ((this.X0[3] < 0 && this.later >= 0) ||
+        (this.X0[3] > 0 && this.later <=0) && this.caption) {
         scene.pushCaption(this.caption);
+        if (this.audioTrack) scene.audio.play(this.audioTrack);
     }
 };
 

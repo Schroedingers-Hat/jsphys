@@ -100,6 +100,8 @@ function Scene() {
                     "zoomOut": false,
                     "timeZoomIn": false,
                     "timeZoomOut": false};
+    
+    this.audio = new AudioManager();
 }
 
 Scene.prototype = {
@@ -218,7 +220,7 @@ Scene.prototype = {
             break;
             
         case "fourEvent":
-            thingy = new fourEvent(obj.x, obj.options);
+            thingy = new fourEvent(obj.x, obj.options, this);
             break;
         }
     
