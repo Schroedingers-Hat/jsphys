@@ -24,7 +24,7 @@
                        ],
             "timeScale": 0.005,
             "options": {"showVisualPos": false, "showFramePos": true,
-                        "showGamma": false},
+                        "showGamma": false, "showDoppler": false},
             "shift": [0, 0, 0, -10]
            },
            {"caption": "Let's try that again with a Lorentz transform. If the distance from Luke to Han is the same as the distance from Luke to Greedo, then the only conclusion is that Han shot first.",
@@ -53,7 +53,7 @@
             "timeScale": 0.005,
             "frame": 2,
             "options": {"showVisualPos": false, "showFramePos": true,
-                        "showGamma": false},
+                        "showGamma": false, "showDoppler": false},
             "shift": [0, 30, 0, -50]
            } 
           ]
