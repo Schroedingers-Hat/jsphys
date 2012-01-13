@@ -52,7 +52,7 @@
                         {"object": "fourEvent", "x": [86.6, 0, 0, 100],
                          "options":{"caption": "This is the asymmetric part of the paradox.", "audio": "bro"}},
                          {"object": "fourEvent", "x": [86.7, 0, 0, 105],
-                         "options":{"caption": "Badabing", "audio": "bro-1"}},
+                         "options":{"caption": "Badabing", "audio": "bro-1", "afterAudio": ["caption"], "onEvent": ["audio"]}},
                         {"object": "fourEvent", "x": [0, -40, 0, 0],
                          "options":{"caption": "Now watch from the point of view of observer 2. At first it looks the same, but watch. When the travelling twin turns around the amount of time dilation changes."}},
                         {"object": "extendedObject", "x": [0, 0, 0],
