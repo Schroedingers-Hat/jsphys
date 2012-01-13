@@ -1,15 +1,16 @@
 "use strict";
 
-function AudioManager() {
-    this.reset();
-}
-
 /**
  * The AudioManager implements a queueing system to be used for audio narration
  * of demos. Objects can load media files which should be played, and when those
  * objects decide the media should be played (based on time, a button, or
- * whatever), they call `play`.
+ * whatever), they call `play`. Objects can also specify callbacks which fire
+ * when the audio track has completed.
  */
+function AudioManager() {
+    this.reset();
+}
+
 AudioManager.prototype = {
     /**
      * Load a track so it will be ready to play in advance.
@@ -52,10 +53,7 @@ AudioManager.prototype = {
      */
     playbackEnded: function() {
         this.currentTrack = null;
-        this.playFromQueue();
-    },
-    
-    playFromQueue: function() {
+ 
         if (this.queue.length > 0) {
             var track = this.queue.shift();
             this.play(track.track, track.onFinish);
@@ -63,7 +61,7 @@ AudioManager.prototype = {
     },
     
     /**
-     * Pause current audio playback.
+     * Pause/resume current audio playback.
      */
     pause: function() {
         this.paused = true;
@@ -81,6 +79,11 @@ AudioManager.prototype = {
         }
     },
     
+    /**
+     * Reset the audio manager, pausing any current tracks before they're
+     * destroyed. If the audio were not stopped, switching to a new demo
+     * would leave the previous demo's audio running.
+     */
     reset: function() {
         if (this.tracks) {
             $.each(this.tracks, function(name, track) {
