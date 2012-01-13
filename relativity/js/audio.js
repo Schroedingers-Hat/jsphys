@@ -1,9 +1,7 @@
 "use strict";
 
 function AudioManager() {
-    this.tracks = {};
-    this.currentTrack = null;
-    this.queue = [];
+    this.reset();
 }
 
 /**
@@ -55,10 +53,46 @@ AudioManager.prototype = {
      */
     playbackEnded: function() {
         this.currentTrack = null;
-        
+        this.playFromQueue();
+    },
+    
+    playFromQueue: function() {
         if (this.queue.length > 0) {
             var track = this.queue.shift();
             this.play(track.track, track.onFinish);
         }
+    },
+    
+    /**
+     * Pause current audio playback.
+     */
+    pause: function() {
+        this.paused = true;
+        if (this.currentTrack) {
+            this.resumeTrack = true;
+            this.tracks[this.currentTrack].pause();
+        }
+    },
+    
+    resume: function() {
+        this.paused = false;
+        if (this.currentTrack && this.resumeTrack) {
+            this.tracks[this.currentTrack].play();
+            this.resumeTrack = false;
+        }
+    },
+    
+    reset: function() {
+        if (this.tracks) {
+            $.each(this.tracks, function(name, track) {
+                track.pause();
+            });
+        }
+        
+        this.tracks = {};
+        this.currentTrack = null;
+        this.queue = [];
+        this.paused = false;
+        this.resumeTrack = false;
     }
 };
