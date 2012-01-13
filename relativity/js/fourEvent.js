@@ -131,6 +131,10 @@ fourEvent.prototype.playCallbacks = function(callbacks, scene) {
             case "audio":
             this.playAudio(scene);
             break;
+            
+            case "highlightNext":
+            this.highlightNext();
+            break;
         }
     }, this);
 };
@@ -147,6 +151,14 @@ fourEvent.prototype.pause = function(scene) {
 
 fourEvent.prototype.nextStep = function(scene) {
     scene.nextStep();
+};
+
+fourEvent.prototype.prevStep = function(scene) {
+    scene.prevStep();
+};
+
+fourEvent.prototype.highlightNext = function() {
+    highlightNext();
 };
 
 fourEvent.prototype.playAudio = function(scene) {
