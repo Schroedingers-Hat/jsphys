@@ -133,6 +133,10 @@ function zoomToSlider(scene) {
     };
 }
 
+function highlightNext() {
+    $("#nextStep").addClass("button-highlight");
+}
+
 /**
  * Create a pause callback for the specified scene, which will pause it
  * when called.
@@ -141,10 +145,10 @@ function doPause(scene) {
     return function(event) {
         if (!scene.drawing) {
             $("#pause").html("Pause");
-            $("#pause").removeClass("play-button");
+            $("#pause").removeClass("button-highlight");
         } else {
             $("#pause").html("Play");
-            $("#pause").addClass("play-button");
+            $("#pause").addClass("button-highlight");
         }
         scene.pause();
         updateSliders(scene);
@@ -296,6 +300,7 @@ function nextStep(scene) {
             $("#nextStep").prop('disabled', true);
         }
         $("#prevStep").prop('disabled', false);
+        $("#nextStep").removeClass("button-highlight");
     };
 }
 
@@ -311,6 +316,7 @@ function prevStep(scene) {
             $("#prevStep").prop('disabled', true);
         }
         $("#nextStep").prop('disabled', false);
+        $("#nextStep").removeClass("button-highlight");
     };
 }
 

@@ -41,7 +41,7 @@ body {
     opacity: 0.6;
 }
 
-.play-button {
+.button-highlight {
     box-shadow: 0 0 2px 2px #fff;
 }
 
@@ -149,6 +149,7 @@ body {
     text-align: left;
     color: #fff;
     clear: left;
+    margin-bottom: 2pt;
 }
 
 #steps button:disabled {
