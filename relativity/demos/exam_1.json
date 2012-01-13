@@ -1,4 +1,4 @@
-{"name": "Exam 1 Question 4",
+{"name": "Relativistic train",
  "steps": [
      {"caption": "A train of length 100 m (as measured in its own rest frame) rushes past a platform at a speed of v = 0.8c. The train is equipped with two beacons, one on the front and one on the rear of the train, which each emit a flash of light as the front of the train reaches the end of the platform. Alice, who is seated right in the middle of the train, sees both flashes simultaneously. In the Minkowski diagram below, bright white lines represent the light flashes as they travel to Alice.",
       "objects": [{"object": "extendedObject", "label": "Platform", 
