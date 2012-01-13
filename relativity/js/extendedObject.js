@@ -333,12 +333,12 @@ extendedObject.prototype = {
                                      textX, textY - 10 * i);
                     i++;
                 }
-                if (this.label !== "") {
-                    scene.g.fillText(this.label, textX, textY - 10 * i);
-                    i++;
-                }
                 if (this.options.showTime || scene.options.showTime) {
                     scene.g.fillText("tau = " + (Math.round((this.COM.tau / c))), textX, textY - 10 * i);
+                    i++;
+                }
+                if (this.label !== "") {
+                    scene.g.fillText(this.label, textX, textY - 10 * i);
                     i++;
                 }
             }
@@ -427,10 +427,6 @@ extendedObject.prototype = {
                                      textX, textY - 10 * i);
                     i++;
                 }
-                if (this.label !== "") {
-                    scene.g.fillText(this.label, textX, textY - 10 * i);
-                    i++;
-                }
                 if (this.options.showTime || scene.options.showTime) {
                     scene.g.fillText("t = " + (-Math.round((this.COM.viewTime / c)*10) / 10), 
                                      textX, textY - 10 * i);
@@ -444,6 +440,10 @@ extendedObject.prototype = {
                  if (this.options.showPos || scene.options.showPos) {
                      scene.g.fillText("XYZ: " + Math.round(this.COM.XView[0]) + ", " + Math.round(this.COM.XView[1]) + ", " + Math.round(this.COM.XView[2]),
                                       textX, textY - 10 * i);
+                }
+                if (this.label !== "") {
+                    scene.g.fillText(this.label, textX, textY - 10 * i);
+                    i++;
                 }
             }
         }
