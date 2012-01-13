@@ -5,7 +5,8 @@
   {"name": "Relativistic ruler", "source": "ruler"}
  ],
  "Time dilation/length contraction":
- [{"name": "Velocity addition", "source": "velocity-addition"},
+ [{"name": "Muon decay", "source": "muons"},
+  {"name": "Velocity addition", "source": "velocity-addition"},
   {"name": "Relativistic flashlight", "source": "flashlight"},
   {"name": "Relativistic Doppler shift", "source": "doppler-shift"},
   {"name": "Twin paradox", "source": "twin-paradox"},
