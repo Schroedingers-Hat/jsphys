@@ -40,9 +40,8 @@ AudioManager.prototype = {
             this.tracks[track].addEventListener("ended", onFinish);
         }
         
-        var endedCallback = $.proxy(this.playbackEnded, this);
-        
-        this.tracks[track].addEventListener("ended", endedCallback);
+        this.tracks[track].addEventListener("ended",
+                                            $.proxy(this.playbackEnded, this));
         this.tracks[track].play();
         this.currentTrack = track;
     },
