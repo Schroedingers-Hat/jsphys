@@ -29,15 +29,12 @@ AudioManager.prototype = {
      */
     play: function(track, onFinish) {
         if (!(track in this.tracks)) {
-            throw "Track cannot be played before being loaded.";
+            throw "Track '" + track + "' cannot be played before being loaded.";
         }
         
-        if (this.currentTrack === track) {
-            // Let it finish.
-            return;
-        } else if (this.currentTrack !== null) {
+        if (this.currentTrack !== null) {
             // Another track is playing, so queue this one.
-            this.queue.push(track);
+            this.queue.push({"track": track, "onFinish": onFinish});
             return;
         }
         
@@ -60,7 +57,8 @@ AudioManager.prototype = {
         this.currentTrack = null;
         
         if (this.queue.length > 0) {
-            this.play(this.queue.shift());
+            var track = this.queue.shift();
+            this.play(track.track, track.onFinish);
         }
     }
 };
