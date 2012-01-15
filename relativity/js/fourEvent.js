@@ -108,7 +108,7 @@ fourEvent.prototype.pushCaption = function(scene) {
 
 fourEvent.prototype.pause = function(scene) {
     if (scene.drawing) {
-        scene.pause();
+        doPause(scene)();
     }
 };
 

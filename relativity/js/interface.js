@@ -152,8 +152,10 @@ function doPause(scene) {
         }
         scene.pause();
         updateSliders(scene);
-        if (event.preventDefault) event.preventDefault();
-        else event.returnValue = false;
+        if (event) {
+            if (event.preventDefault) event.preventDefault();
+            else event.returnValue = false;
+        }
     };
 }
 
