@@ -100,7 +100,6 @@ function Scene() {
                     "zoomOut": false,
                     "timeZoomIn": false,
                     "timeZoomOut": false};
-    
     this.audio = new AudioManager();
 }
 
@@ -117,6 +116,9 @@ Scene.prototype = {
         this.carray = [];
         this.curStep = step;
         this.demo = demo;
+        
+        // If audio is playing from a previous demo, kill it.
+        this.audio.reset();
         
         // If the demo specifies global options, set 'em
         if (typeof demo.steps[step].origin === "object") {
@@ -473,8 +475,10 @@ Scene.prototype = {
             this.frameStartTime = new Date().getTime();
             this.drawing = true;
             this.draw();
+            this.audio.resume();
         } else {
             this.drawing = false;
+            this.audio.pause();
         }
     },
 

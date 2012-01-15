@@ -1,0 +1,37 @@
+{"name": "Muon decay",
+ "steps": [{"caption": "Muons are subatomic particles which decay after just 2.2 µs in existence. They're produced when high-energy protons collide with the upper atmosphere, and rapidly travel toward Earth's surface. Their short lifetime might make you think they don't get very far &mdash; but time dilation allows most to reach Earth's surface.",
+            "objects": [{"object": "extendedObject", "x": [-50, 0, 0, 0], 
+                         "p": [0, 0, 0], "m": 1, 
+                         "shape": {"type": "circle", "params": [30, 100]},
+                         "label": "Earth"},
+                        {"object": "extendedObject", "x": [0, 0, 0, 0], 
+                         "p": [-10, 0, 0], "m": 1, 
+                         "shape": {"type": "circle", "params": [2, 10]},
+                         "label": "Muon"},
+                        {"object": "fourEvent", "x": [-20, 0, 0, 22],
+                         "options": {"caption": "By now, the muon decays. Look how little time has elapsed for it, compared to Earth's reference frame.",
+                                     "onEvent": ["pause", "highlightNext"]}}
+                        ],
+            "options": {"showGamma": false, "showVelocity": true, "showTime": true,
+                        "showFramePos": true, "showVisualPos": false}
+     
+     }, 
+           {"caption": "Now we'll watch from the perspective of the muon. Here, the muon has to travel only a very short distance, because the Earth is rapidly approaching it and the distance is length-contracted.",
+            "objects": [{"object": "extendedObject", "x": [-50, 0, 0, 0], 
+                         "p": [0, 0, 0], "m": 1, 
+                         "shape": {"type": "circle", "params": [30, 100]},
+                         "label": "Earth"},
+                        {"object": "extendedObject", "x": [0, 0, 0, 0], 
+                         "p": [-10, 0, 0], "m": 1, 
+                         "shape": {"type": "circle", "params": [2, 10]},
+                         "label": "Muon"},
+                        {"object": "fourEvent", "x": [-20, 0, 0, 22],
+                         "options": {"caption": "The muon decays after its short trip.",
+                                     "onEvent": ["pause"]}}
+                        ],
+            "options": {"showGamma": false, "showVelocity": true, "showTime": true,
+                        "showFramePos": true, "showVisualPos": false},
+            "frame": 1
+     
+     }]
+}

@@ -125,7 +125,7 @@ inertialObject.prototype.calcPast = function() {
         this.tauFut = this.tau;
         quat4.set(nullQuat4,this.XFut);
         return;
-    }
+    };
 
     timeSqrt = Math.sqrt(Math.pow(vDotx,2) + a * xDotx) ;
 

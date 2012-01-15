@@ -22,6 +22,6 @@
                          "shape": {"type": "sphere", "params": [3, 50]}}],
             "frame": 3,
             "options": {"showFramePos": true, "showVisualPos": false,
-                        "showGamma": false}}
+                        "showGamma": false, "showDoppler": false}}
           ]
 }

@@ -27,7 +27,8 @@
                          "options": {"showVelocity": true}}
                        ],
             "options": {"showFramePos": true, "showVisualPos": false,
-                        "showGamma": false, "c": 1, "showVelocity": false},
+                        "showGamma": false, "c": 1, "showVelocity": false,
+                        "showDoppler": false},
             "timeScale": 0.02
            },
            {"caption": "In the observer's frame, the light is travelling on the diagonal. It must travel further to hit the mirror, so the clock runs slower.",
@@ -58,7 +59,8 @@
                          "label": "Mirror"}
                        ],
             "options": {"showFramePos": true, "showVisualPos": false,
-                        "showGamma": false, "c": 1, "showVelocity": false},
+                        "showGamma": false, "c": 1, "showVelocity": false,
+                        "showDoppler": false},
             "timeScale": 0.02,
             "frame": 0,
             "shift": [-40,0,0,0]

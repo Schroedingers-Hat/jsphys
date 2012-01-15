@@ -37,7 +37,7 @@
             <div style="width:1000px;height:500px;position:absolute;float:left;z-index:6000;" onclick="clickHandler(event)">&nbsp;</div>
             <![endif]-->
             <div id="controls">
-              <button id="pause" class="play-button">Play</button><button id="replayStep">Replay</button>
+              <button id="pause" class="button-highlight">Play</button><button id="replayStep">Replay</button>
               <div id="speed">Speed: <span id="curSpeed"></span><div><a href="#" id="slowDown">-</a><div id="speed-slider"></div><a href="#" id="speedUp">+</a></div></div>
               <div id="more"><a href="#" onclick="$('#advancedOpts').toggle(200); return false;">More &raquo;</a></div>
               <div id="advancedOpts">
@@ -72,12 +72,13 @@
           <h3>Keyboard Controls</h3>
           <br> w, a, s and d, or arrow keys: Accelerate 
           <br> q and e: Rotate left and right (yaw) 
-          <br> 3: Show 3D 
-          <br> t: Toggle display time.
-          <br> p: Toggle display positions.
+          <br> 3: Show 3D view
+          <br> t: Toggle clock display.
+          <br> p: Toggle coordinate display.
           <br> Page up/down: Zoom in and out
           <br> space: Fire photon (rasteroids only).
           <br> h: Toggle help screen.
+          <br> Press Next to advance to the next step in a demonstration.
           <br> <a href="#" onclick="$('#help-screen').toggle(); return false">Close</a>
         </div>
         <div id="zoom">
