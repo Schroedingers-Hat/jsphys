@@ -396,6 +396,25 @@ function showHelp(event) {
 }
 
 /**
+ * We support three views: "2D", "3D", and "minkowski". This produces a
+ * callback which toggles which is visible.
+ */
+function switchToView(view) {
+    return function() {
+        $("#canvas-minkowski").hide();
+        $('#canvas-2d').hide();
+        $('#canvas-3d').hide();
+        
+        $('#canvas-' + view).show();
+        
+        $('#view-2d').removeClass('nav-active');
+        $('#view-3d').removeClass('nav-active');
+        $('#view-minkowski').removeClass('nav-active');
+        $('#view-' + view).addClass('nav-active');
+    };
+}
+
+/**
  * Do not quite comprehend what this does, copypasta from Paul Irish's tutorial
  * requestAnim shim layer by Paul Irish
  */
@@ -413,9 +432,9 @@ window.requestAnimFrame = (function(){
 // Use JQuery to wait for document load
 $(document).ready(function() {
     var viewportWidth = $('body').width() - 16;
-    $("#canvas").attr('width', viewportWidth);
-    $("#minkowski").attr('width', viewportWidth);
-    $("#3DCanvas").attr('width', viewportWidth);
+    $("#canvas-2d").attr('width', viewportWidth);
+    $("#canvas-minkowski").attr('width', viewportWidth);
+    $("#canvas-3d").attr('width', viewportWidth);
     $('#help-screen').hide();
     var scene = new Scene();
 
@@ -450,6 +469,18 @@ $(document).ready(function() {
     $("#slowDown").click(slowDown(scene));
     $("#speedUp").click(speedUp(scene));
     
+    $('#demo-chooser-activate').click(function() {
+        $('#demo-chooser').toggle();
+    });
+    
+    $('#settings-activate').click(function() {
+        $("#settings").toggle();
+    });
+    
+    $("#view-minkowski").click(switchToView('minkowski'));
+    $("#view-2d").click(switchToView('2d'));
+    $("#view-3d").click(switchToView('3d'));
+    
     // Capture back/forward events and take them to the corresponding demo,
     // if they've viewed more than one.
     window.onpopstate = function(e) {
@@ -469,9 +500,9 @@ $(document).ready(function() {
         return function(event) {
             if (typeof FlashCanvas === "undefined") {
                 var viewportWidth = $('body').width() - 16;
-                $("#canvas").attr('width', viewportWidth);
-                $("#minkowski").attr('width', viewportWidth);
-                $("#3DCanvas").attr('width', viewportWidth);
+                $("#canvas-2d").attr('width', viewportWidth);
+                $("#canvas-minkowski").attr('width', viewportWidth);
+                $("#canvas-3d").attr('width', viewportWidth);
                 scene.setSize();
             }
         };

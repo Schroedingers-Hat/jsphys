@@ -15,14 +15,14 @@ function Scene() {
     this.initialTime = new Date().getTime();
     
     if (typeof FlashCanvas != "undefined") {
-        FlashCanvas.initElement($('#canvas')[0]);
-        FlashCanvas.initElement($('#minkowski')[0]);
-        FlashCanvas.initElement($('#3DCanvas')[0]);
+        FlashCanvas.initElement($('#canvas-2d')[0]);
+        FlashCanvas.initElement($('#canvas-minkowski')[0]);
+        FlashCanvas.initElement($('#canvas-3d')[0]);
     }
     var defFont = "0.8em Helvetiker, helvetica, arial, sans-serif";
-    this.g = $('#canvas')[0].getContext("2d");
-    this.h = $('#minkowski')[0].getContext("2d");
-    this.TDC = $('#3DCanvas')[0].getContext("2d");
+    this.g = $('#canvas-2d')[0].getContext("2d");
+    this.h = $('#canvas-minkowski')[0].getContext("2d");
+    this.TDC = $('#canvas-3d')[0].getContext("2d");
     this.g.font = defFont;
     this.h.font = defFont;
     this.loaded = false;
@@ -418,12 +418,12 @@ Scene.prototype = {
      * cone canvas. Set the location of the origin of our reference frame.
      */
     setSize: function () {
-        this.width = $("#canvas").width();
-        this.height = $("#canvas").height();
-        this.mWidth = $("#minkowski").width();
-        this.mHeight = $("#minkowski").height();
-        this.tWidth = $("#3DCanvas").width();
-        this.tHeight = $("#3DCanvas").height();
+        this.width = $("#canvas-2d").width();
+        this.height = $("#canvas-2d").height();
+        this.mWidth = $("#canvas-minkowski").width();
+        this.mHeight = $("#canvas-minkowski").height();
+        this.tWidth = $("#canvas-3d").width();
+        this.tHeight = $("#canvas-3d").height();
         this.lightConeCanvas.width = this.mWidth;
         this.lightConeCanvas.height = this.mHeight;
         this.hwidth = this.width / 2;

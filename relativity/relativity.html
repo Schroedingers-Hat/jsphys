@@ -29,39 +29,57 @@
     </head>
 
     <body>
+      <header>
+        <ul id="views">
+          <li id="view-2d" class="nav-active">2D</li>
+          <li id="view-minkowski" title="View a Minkowski diagram of this demonstration">Minkowski</li>
+          <li id="view-3d">3D</li>
+        </ul>
+        <ul id="tools">
+          <li id="demo-chooser-activate">Choose new demo</li>
+          <li id="settings-activate">Settings</li>
+          <li id="help">Help</li>
+        </ul>
+      </header>
+      <div id="settings">
+        <label for="doppler">Doppler:</label>
+        <select id="doppler">
+          <option value="default" selected="selected">Use default</option>
+          <option value="always">Always on</option>
+          <option value="never">Always off</option>
+        </select>
+        <label for="framePos">Absolute positions:</label>
+        <select id="framePos">
+          <option value="default" selected="selected">Use default</option>
+          <option value="always">Always on</option>
+          <option value="never">Always off</option>
+        </select>
+        <label for="vPos">Apparent positions:</label>
+        <select id="vPos">
+          <option value="default" selected="selected">Use default</option>
+          <option value="always">Always on</option>
+          <option value="never">Always off</option>
+        </select>
+        <label for="debug">Debug mode:</label>
+        <input id="debug" type="checkbox" />
+      </div>
+
         <div style="position:relative">
-            <canvas id="canvas" height="500"><p>You need a browser that supports canvas to view this simulation.</p>
-            <p>Firefox 3.6+, a recent version of Google Chrome, Safari 4+ or Opera 10+ are recommended.</p>
-            <p>Firefox 2+, any version of Google Chrome, Safari 3.2+, Opera 9+ and IE8 should work with some missing features.</p></canvas>
+            <canvas id="canvas-2d" height="500">
+              <p>You need a browser that supports canvas to view this simulation.</p>
+              <p>Firefox 3.6+, a recent version of Google Chrome, Safari 4+ or Opera 10+ are recommended.</p>
+              <p>Firefox 2+, any version of Google Chrome, Safari 3.2+, Opera 9+ and IE8 should work with some missing features.</p>
+            </canvas>
+            <canvas id="canvas-minkowski" height="500"></canvas>
+            <canvas id="canvas-3d" height="500"></canvas>
             <!--[if IE 8]>
             <div style="width:1000px;height:500px;position:absolute;float:left;z-index:6000;" onclick="clickHandler(event)">&nbsp;</div>
             <![endif]-->
             <div id="controls">
               <button id="pause" class="button-highlight">Play</button><button id="replayStep">Replay</button>
               <div id="speed">Speed: <span id="curSpeed"></span><div><a href="#" id="slowDown">-</a><div id="speed-slider"></div><a href="#" id="speedUp">+</a></div></div>
-              <div id="more"><a href="#" onclick="$('#advancedOpts').toggle(200); return false;">More &raquo;</a></div>
-              <div id="advancedOpts">
-                <label for="doppler">Doppler:</label>
-                <select id="doppler">
-                  <option value="default" selected="selected">Use default</option>
-                  <option value="always">Always on</option>
-                  <option value="never">Always off</option>
-                </select>
-                <label for="framePos">Absolute positions:</label>
-                <select id="framePos">
-                  <option value="default" selected="selected">Use default</option>
-                  <option value="always">Always on</option>
-                  <option value="never">Always off</option>
-                </select>
-                <label for="vPos">Apparent positions:</label>
-                <select id="vPos">
-                  <option value="default" selected="selected">Use default</option>
-                  <option value="always">Always on</option>
-                  <option value="never">Always off</option>
-                </select>
-                <label for="debug">Debug mode:</label>
-                <input id="debug" type="checkbox" />
-              </div>
+              <button id="prevStep">&laquo; Previous</button>
+              <button id="nextStep">Next &raquo;</button>
             </div>
         </div>
         <div id="demo-chooser">
@@ -87,27 +105,12 @@
           <a href="#" id="zoomOut">-</a>
         </div>
 
-        <div style="position:relative">
-          <div id="steps">
-            <button id="nextStep">Next &raquo;</button><br/>
-            <button id="prevStep">&laquo; Previous</button><br/>
-            <button onclick="$('#demo-chooser').show();">Choose new demo</button><br/>
-            <button id="help">Help</button>
-          </div>
-          <div id="caption">
-            <p id="caption-text">Welcome to the jsphys relativity simulator. Choose a demonstration to start with and hit Play.</p>
-          </div>
-        </div>
-        
-        <div style="position:relative;clear:both">
-          <canvas id="minkowski" height="500"></canvas>
-        </div>
-        <div style="position:relative">
-          <canvas id="3DCanvas" height="500"></canvas>
+        <div id="caption">
+          <p id="caption-text">Welcome to the jsphys relativity simulator. Choose a demonstration to start with and hit Play.</p>
         </div>
         <script type="text/javascript">
           /* load canvas.text.js only when needed */
-          if($('#canvas')[0].getContext && !$('#canvas')[0].getContext("2d").fillText) {
+          if($('#canvas-2d')[0].getContext && !$('#canvas-2d')[0].getContext("2d").fillText) {
           document.write('<script src="../lib/canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
           document.write('<script src="../lib/canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
           document.write('<script src="../lib/canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
