@@ -475,6 +475,7 @@ $(document).ready(function() {
     
     $('#settings-activate').click(function() {
         $("#settings").toggle();
+        $('#settings-activate').toggleClass('nav-active');
     });
     
     $("#view-minkowski").click(switchToView('minkowski'));
