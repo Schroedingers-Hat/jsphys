@@ -2,11 +2,62 @@ body {
     color: #ccc;
     font-family: sans-serif;
     background-color: #000000;
+    margin: 0;
 }
+
+/** Navigation bar **/
+header {
+    height: 3em;
+    background-color: #212121;
+}
+
+header ul {
+    margin: 0 0.5em;
+    padding: 0 0 0 2em;
+}
+
+header ul li {
+    list-style-type: none;
+    display: inline-block;
+    color: #B7B7B7;
+    margin-right: 1em;
+    padding: 1em;
+    cursor: pointer;
+}
+
+header ul li:hover, li.nav-active {
+    background-color: #333333;
+}
+
+#tools {
+    float: right
+}
+
+#views {
+    float: left;
+}
+
+/** Settings menu **/
+#settings {
+    position: absolute;
+    top: 3em;
+    right: 0;
+    background-color: #212121;
+    color: #aaa;
+    z-index: 10;
+    padding: 0.25em 1em;
+    display: none;
+}
+
+#settings select, #settings label {
+    font-size: 0.75em;
+}
+
+/** Zoom controls **/
 
 #zoom {
     position: absolute;
-    top: 3em;
+    top: 7em;
     right: 0.5em;
     width: 20px;
     font-size: 9pt;
@@ -23,6 +74,8 @@ body {
     font-size: 12pt;
     color: #ccc;
 }
+
+/** Animation control panel **/
 
 #controls {
     position: absolute;
@@ -77,23 +130,16 @@ body {
     display: inline-block;
 }
 
-#more {
-    padding: 0.5em;
-    float: left;
-}
-
-#more a {
-    text-decoration: none;
-    color: #aaa;
-}
-
-#advancedOpts {
+/** Canvases **/
+#canvas-minkowski {
     display: none;
-    float: left;
-    clear: left;
-    padding: 0.5em;
-    color: #aaa;
 }
+
+#canvas-3d {
+    display: none;
+}
+
+/** Demo chooser **/
 
 #demo-chooser {
     position: absolute;
@@ -102,7 +148,7 @@ body {
     width: 300px;
     left: 50%;
     margin-left: -150px;
-    top: 50px;
+    top: 6em;
     padding: 1em;
 }
 
@@ -123,6 +169,8 @@ body {
     margin: 0;
 }
 
+/** Help **/
+
 #help-screen {
     position: absolute;
     opacity: 0.8;
@@ -130,13 +178,15 @@ body {
     width: 400px;
     left: 50%;
     margin-left: -200px;
-    top: 50px;
+    top: 6em;
     padding: 1em;
 }
 
 #help-screen a {
     color: #fff;
 }
+
+/** Step controls **/
 
 #steps {
     position: absolute;
