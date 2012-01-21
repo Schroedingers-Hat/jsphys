@@ -27,6 +27,7 @@ header ul li {
 
 header ul li:hover, li.nav-active {
     background-color: #333333;
+    color: #fff;
 }
 
 #tools {
@@ -89,16 +90,13 @@ header ul li:hover, li.nav-active {
     border-radius: 2px;
 }
 
-#controls button {
-    min-width: 6em;
-    opacity: 0.6;
-}
-
 .button-highlight {
     box-shadow: 0 0 2px 2px #fff;
 }
 
-#steps button, #controls button {
+#controls button {
+    min-width: 6em;
+    opacity: 0.6;
     background-color: #000;
     font-size: 10pt;
     color: #ddd;
@@ -108,6 +106,11 @@ header ul li:hover, li.nav-active {
     padding: 0.5em 1em;
     float: left;
     cursor: pointer;
+}
+
+#controls button:hover {
+    color: #fff;
+    opacity: 0.8;
 }
 
 #controls button:disabled {
@@ -198,6 +201,5 @@ header ul li:hover, li.nav-active {
     border-radius: 4px;
     padding: 1em;
     float: left;
-    margin: 0 13em 1em 0;
-    min-height: 7em;
+    margin: 0 1em 1em 0;
 }

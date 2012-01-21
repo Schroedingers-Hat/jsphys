@@ -24,14 +24,16 @@
                          "p": [0, 1.73, 0], "m": 1,
                          "shape": {"type": "circle", "params": [5, 20]},
                          "label": "Observer",
-                         "options": {"showVelocity": true}}
+                         "options": {"showVelocity": true}},
+                        {"object": "fourEvent", "x": [1, 1, 0, 130],
+                         "options": {"onEvent": ["highlightNext"]}}
                        ],
             "options": {"showFramePos": true, "showVisualPos": false,
                         "showGamma": false, "c": 1, "showVelocity": false,
                         "showDoppler": false},
             "timeScale": 0.02
            },
-           {"caption": "In the observer's frame, the light is travelling on the diagonal. It must travel further to hit the mirror, so the clock runs slower.",
+           {"caption": "In the observer's frame, the light is travelling on the diagonal. It must travel farther to hit the mirror, so the clock runs slower.",
             "objects": [{"object": "extendedObject", "x": [40, -60, 0],
                          "p": [0, 1.73, 0], "m": 1,
                          "shape": {"type": "circle", "params": [5, 20]},

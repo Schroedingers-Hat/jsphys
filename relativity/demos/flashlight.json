@@ -10,7 +10,9 @@
                         {"object": "extendedObject", "x": [50, -30, 0], 
                          "p": [-6, 0, 0], "m": 1, 
                          "shape": {"type": "sphere", "params": [3, 50]}, 
-                         "label": "Observer"}
+                         "label": "Observer"},
+                        {"object": "fourEvent", "x": [1, 1, 0, 100],
+                         "options": {"onEvent": ["highlightNext"]}}
                        ],
             "options": {"showFramePos": true, "showVisualPos": false,
                         "showGamma": false, "showDoppler": false}},

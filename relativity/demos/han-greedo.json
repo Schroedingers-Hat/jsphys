@@ -20,14 +20,15 @@
                                      "endPt": [0, 0, 0, 0]}},
                         {"object": "photon", "x": [90, 0, 0], "v": [-1, 0, 0],
                          "options": {"showCircle": false,
-                                     "endPt": [0, 0, 0, 0] }}
+                                     "endPt": [0, 0, 0, 0]}},
+                        {"object": "fourEvent", "x": [1, 1, 0, 90],
+                         "options": {"onEvent": ["highlightNext"]}}
                        ],
-            "timeScale": 0.005,
             "options": {"showVisualPos": false, "showFramePos": true,
                         "showGamma": false, "showDoppler": false},
             "shift": [0, 0, 0, -10]
            },
-           {"caption": "Let's try that again with a Lorentz transform. If the distance from Luke to Han is the same as the distance from Luke to Greedo, then the only conclusion is that Han shot first.",
+           {"caption": "Now we see this from Luke's reference frame. Since Luke sees the photons as both traveling at the speed of light, Han has to fire first &mdash; his laser shot needs time to catch up with the potted plant. Of course, if Luke were running in the other direction, he would see Greedo shooting first.",
             "objects": [{"object": "extendedObject", "x": [-100, 0, 0],
                          "p": [0,0,0], "m": 1,
                          "label": "Greedo", 
@@ -50,7 +51,6 @@
                          "options": {"showCircle": false,
                                      "endPt": [0, 0, 0, 0]}}
                        ],
-            "timeScale": 0.005,
             "frame": 2,
             "options": {"showVisualPos": false, "showFramePos": true,
                         "showGamma": false, "showDoppler": false},

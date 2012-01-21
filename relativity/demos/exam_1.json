@@ -1,6 +1,6 @@
 {"name": "Relativistic train",
  "steps": [
-     {"caption": "A train of length 100 m (as measured in its own rest frame) rushes past a platform at a speed of v = 0.8c. The train is equipped with two beacons, one on the front and one on the rear of the train, which each emit a flash of light as the front of the train reaches the end of the platform. Alice, who is seated right in the middle of the train, sees both flashes simultaneously. In the Minkowski diagram below, bright white lines represent the light flashes as they travel to Alice.",
+     {"caption": "A train of length rushes past a platform at a speed of v = 0.8c. The train is equipped with two beacons, one on the front and one on the rear of the train, which each emit a flash of light as the front of the train reaches the end of the platform. Alice, who is seated right in the middle of the train, sees both flashes simultaneously. In the Minkowski diagram, bright white lines represent the light flashes as they travel to Alice.",
       "objects": [{"object": "extendedObject", "label": "Platform", 
                    "x": [0, 0, 0], "p": [-4, 0, 0], "m": 1, 
                    "shape": [[-30, 5, 0, 0], [-30, -15, 0, 0], 
@@ -31,13 +31,15 @@
                   {"object": "photon", "x": [-160, 10, 0, 170], 
                    "v": [-1, 0, 0], "options": {"showCircle": true}},
                   {"object": "photon", "x": [-240, 10, 0, 170], 
-                   "v": [1, 0, 0], "options": {"showCircle": true}}
+                   "v": [1, 0, 0], "options": {"showCircle": true}},
+                  {"object": "fourEvent", "x": [0, 0, 0, 300],
+                   "options": {"onEvent": ["highlightNext"]}}
                  ],
       "options": {"showFramePos": true, "showVisualPos": false, 
                   "showGamma": false},
       "frame": 4
      },
-     {"caption": "Now we view from Bob's perspective on the platform. According to Bob, the beacons do not flash simultaneously. In fact, the rear beacon must fire long before the train ever reaches the station.",
+     {"caption": "Now we view from Bob's perspective on the platform. According to Bob, the beacons do not flash simultaneously. In fact, the rear beacon must fire long before the train ever reaches the station. If it didn't, Alice couldn't see the flashes reaching her simultaneously.",
       "objects": [{"object": "extendedObject", "x": [0, 0, 0], 
                    "p": [-4, 0, 0], "m": 1, 
                    "shape": [[-30, 5, 0, 0], [-30, -15, 0, 0], 

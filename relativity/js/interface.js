@@ -475,6 +475,7 @@ $(document).ready(function() {
     
     $('#settings-activate').click(function() {
         $("#settings").toggle();
+        $('#settings-activate').toggleClass('nav-active');
     });
     
     $("#view-minkowski").click(switchToView('minkowski'));
@@ -504,6 +505,9 @@ $(document).ready(function() {
                 $("#canvas-minkowski").attr('width', viewportWidth);
                 $("#canvas-3d").attr('width', viewportWidth);
                 scene.setSize();
+                if (!scene.drawing && !scene.keyDown) {
+                    scene.draw();
+                }
             }
         };
     }());
