@@ -90,7 +90,7 @@ header ul li:hover, li.nav-active {
 }
 
 #controls button {
-    width: 5em;
+    min-width: 6em;
     opacity: 0.6;
 }
 
@@ -108,6 +108,11 @@ header ul li:hover, li.nav-active {
     padding: 0.5em 1em;
     float: left;
     cursor: pointer;
+}
+
+#controls button:disabled {
+    opacity: 0.3;
+    cursor: default;
 }
 
 #speed {
@@ -186,26 +191,7 @@ header ul li:hover, li.nav-active {
     color: #fff;
 }
 
-/** Step controls **/
-
-#steps {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-#steps button {
-    width: 13em;
-    text-align: left;
-    color: #fff;
-    clear: left;
-    margin-bottom: 2pt;
-}
-
-#steps button:disabled {
-    visibility: hidden;
-    cursor: default;
-}
+/** Captions **/
 
 #caption {
     background-color: #333;

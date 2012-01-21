@@ -32,7 +32,7 @@
       <header>
         <ul id="views">
           <li id="view-2d" class="nav-active">2D</li>
-          <li id="view-minkowski">Minkowski</li>
+          <li id="view-minkowski" title="View a Minkowski diagram of this demonstration">Minkowski</li>
           <li id="view-3d">3D</li>
         </ul>
         <ul id="tools">
@@ -78,6 +78,8 @@
             <div id="controls">
               <button id="pause" class="button-highlight">Play</button><button id="replayStep">Replay</button>
               <div id="speed">Speed: <span id="curSpeed"></span><div><a href="#" id="slowDown">-</a><div id="speed-slider"></div><a href="#" id="speedUp">+</a></div></div>
+              <button id="prevStep">&laquo; Previous</button>
+              <button id="nextStep">Next &raquo;</button>
             </div>
         </div>
         <div id="demo-chooser">
@@ -103,14 +105,8 @@
           <a href="#" id="zoomOut">-</a>
         </div>
 
-        <div style="position:relative">
-          <div id="steps">
-            <button id="nextStep">Next &raquo;</button><br/>
-            <button id="prevStep">&laquo; Previous</button><br/>
-          </div>
-          <div id="caption">
-            <p id="caption-text">Welcome to the jsphys relativity simulator. Choose a demonstration to start with and hit Play.</p>
-          </div>
+        <div id="caption">
+          <p id="caption-text">Welcome to the jsphys relativity simulator. Choose a demonstration to start with and hit Play.</p>
         </div>
         <script type="text/javascript">
           /* load canvas.text.js only when needed */
