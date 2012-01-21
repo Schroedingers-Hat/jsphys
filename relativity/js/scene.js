@@ -19,21 +19,19 @@ function Scene() {
         FlashCanvas.initElement($('#canvas-minkowski')[0]);
         FlashCanvas.initElement($('#canvas-3d')[0]);
     }
-    var defFont = "0.8em Helvetiker, helvetica, arial, sans-serif";
+    
     this.g = $('#canvas-2d')[0].getContext("2d");
     this.h = $('#canvas-minkowski')[0].getContext("2d");
     this.TDC = $('#canvas-3d')[0].getContext("2d");
-    this.g.font = defFont;
-    this.h.font = defFont;
+    
     this.loaded = false;
-    this.TDC.font = defFont;
+    
     this.lightConeCanvas = document.createElement('canvas');
     if (typeof FlashCanvas != "undefined") {
         FlashCanvas.initElement(this.lightConeCanvas);
     }
 
     this.lCCtx = this.lightConeCanvas.getContext('2d');
-    this.lCCtx.font = defFont;
     
     // fillText was only introduced with Firefox 3.5, and some older browsers do
     // not support it. Provide empty functions if there's no browser implementation.
@@ -415,7 +413,8 @@ Scene.prototype = {
     
     /**
      * Compute this scene's canvas sizes, including the 3D canvas and the light
-     * cone canvas. Set the location of the origin of our reference frame.
+     * cone canvas. Set the location of the origin of our reference frame. Reset
+     * the font size, since altering canvas dimensions seems to ruin it.
      */
     setSize: function () {
         this.width = $("#canvas-2d").width();
@@ -429,6 +428,13 @@ Scene.prototype = {
         this.hwidth = this.width / 2;
         this.hheight = this.height / 2;
         this.origin = [this.hwidth, this.hheight, this.hheight];
+        
+        var defFont = "0.8em Helvetiker, helvetica, arial, sans-serif";
+        this.g.font = defFont;
+        this.h.font = defFont;
+        this.TDC.font = defFont;
+        this.lCCtx.font = defFont;
+        
         drawLightCone(this, this.lCCtx);
     },
 
