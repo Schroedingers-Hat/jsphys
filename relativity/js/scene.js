@@ -276,6 +276,19 @@ Scene.prototype = {
         }
     },
     
+    /**
+     * Calling draw() when unpaused causes extra draw events, since draw() is
+     * called on a timer automatically. ensureUpdate checks whether the scene
+     * is already drawing, and either (a) causes it to draw or (b) lets it
+     * draw itself. This is useful for keyboard shortcuts which change
+     * some aspect of the display, even when paused.
+     */
+    ensureUpdate: function() {
+        if (!this.drawing && !this.keyDown) {
+            this.draw();
+        }
+    },
+    
     // Fire a photon aimed upwards from the current reference frame origin
     fireLaser: function() {
         var firstCollisionIdx = 0;

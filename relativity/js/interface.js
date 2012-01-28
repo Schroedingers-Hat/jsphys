@@ -36,26 +36,12 @@ function bindKeys(scene) {
 
     k.down('t', function() {
         scene.options.showTime = !scene.options.showTime;
+        scene.ensureUpdate();
     });
 
     k.down('p', function() {
         scene.options.showPos = !scene.options.showPos;
-    });
-
-    /*k.down('x', function(evt) {
-        framePosClick(scene)(evt);
-    });
-
-    k.down('c', function(evt) {
-        vPosClick(scene)(evt);
-    });
-
-    k.down('z', function(evt) {
-        dopplerButtonClick(scene)(evt);
-    });*/
-
-    k.down('3', function(evt) {
-        scene.toggle3D();
+        scene.ensureUpdate();
     });
 
     k.down('h', function() {
@@ -93,9 +79,7 @@ function zoomTo(scene, zoom) {
     scene.boost.up    = boostFrom3Vel(0,  0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0);
     scene.boost.down  = boostFrom3Vel(0, -0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0);
 
-    if (!scene.drawing && !scene.keyDown) {
-        drawScene(scene)();
-    }
+    scene.ensureUpdate();
     updateSliders(scene);
 }
 
@@ -505,9 +489,7 @@ $(document).ready(function() {
                 $("#canvas-minkowski").attr('width', viewportWidth);
                 $("#canvas-3d").attr('width', viewportWidth);
                 scene.setSize();
-                if (!scene.drawing && !scene.keyDown) {
-                    scene.draw();
-                }
+                scene.ensureUpdate();
             }
         };
     }());
