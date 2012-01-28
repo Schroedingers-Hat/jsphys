@@ -2,6 +2,12 @@
 
 "use strict";
 
+// glMatrix defaults to 32-bit arrays, but we'd like 64-bit arrays
+// as we sometimes get nasty rounding errors otherwise.
+if (typeof Float64Array !== "undefined") {
+    glMatrixArrayType = Float64Array;
+}
+
 // Convenient constants.
 var c; // Default value set in scene.defaults
 var nullQuat4 = quat4.create([0,0,0,0]);
@@ -70,24 +76,32 @@ function genEnergy(P,c,m) {
 }
 
 /**
- * Takes a velocity and a speed of light and returns a boost matrix
- * A bit less efficient than it should be, create some temporary variables lazy git. :/
- *
- * Until that time, here's an explanation.
- * An acceleration (or boost) in relativity is almost exactly equivalent to a rotation.
- * You can think of a particle/object as moving at the speed of light at all times in the t direction,
- * The acceleration 'rotates' that path so that it is moving in the x direction a little bit as well as the y.
- * This matrix implements the appropriate cosh(artanh(B)) and similar values, using linear algebra for speed (although not clarity)
- * One way to get an idea for how hyperbolic space works is to play with a triangle. Declare the wrong side to be the hypotenuse, and change
- * The angles. You'll notice that both the opposite and adjacent tend to infinity, so too do x and t intervals for a given proper time (hypotenuse)
+ * Takes a velocity and a speed of light and returns a boost matrix 
+ * 
+ * A bit less efficient than it should be, create some temporary variables lazy
+ * git. :/
+ * 
+ * Until that time, here's an explanation. An acceleration (or boost) in
+ * relativity is almost exactly equivalent to a rotation. You can think of a
+ * particle/object as moving at the speed of light at all times in the t
+ * direction. The acceleration 'rotates' that path so that it is moving in the x
+ * direction a little bit as well as the y.  This matrix implements the
+ * appropriate cosh(artanh(B)) and similar values, using linear algebra for
+ * speed (although not clarity).
+ * 
+ * One way to get an idea for how hyperbolic space  works is to play with a 
+ * triangle. Declare the wrong side to be the hypotenuse, and change the angles.
+ * You'll notice that both the opposite and adjacent tend to infinity, so too do
+ * x and t intervals for a given proper time (hypotenuse).
+ * 
  * I plan to make a demo of this some time.
- *
- * NB: Does not yet handle boost in z direction. If you give it a z component it will not work correctly.
+ * 
+ * NB: Does not yet handle boost in z direction. If you give it a z component it
+ * will not work correctly.
  */
 function cBoostMat(boostV, c) {
     var gamma = boostV[3] / c;
-    if (gamma - 1 < 0.0000001)
-    {
+    if (gamma - 1 < 0.0000001) {
         return (mat4.create([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]));
     }
     var bx = boostV[0] / boostV[3];
@@ -103,7 +117,6 @@ function cBoostMat(boostV, c) {
 
 /**
  * Take a 3-velocity and return a boost matrix from cBoostMat.
- *
  */
 function boostFrom3Vel(vx, vy, vz) {
     var gamma = vToGamma([vx, vy, vz]);

@@ -6,31 +6,19 @@
  * demo and set of interacting objects.
  */
 function Scene() {
-    // glMatrix defaults to 32-bit arrays, but we'd like 64-bit arrays
-    // as we sometimes get nasty rounding errors otherwise.
-    if (typeof Float64Array !== "undefined") {
-        glMatrixArrayType = Float64Array;
-    }
-
     this.initialTime = new Date().getTime();
     
-    if (typeof FlashCanvas != "undefined") {
+    this.lightConeCanvas = document.createElement('canvas');
+    if (typeof FlashCanvas !== "undefined") {
         FlashCanvas.initElement($('#canvas-2d')[0]);
         FlashCanvas.initElement($('#canvas-minkowski')[0]);
         FlashCanvas.initElement($('#canvas-3d')[0]);
+        FlashCanvas.initElement(this.lightConeCanvas);
     }
     
     this.g = $('#canvas-2d')[0].getContext("2d");
     this.h = $('#canvas-minkowski')[0].getContext("2d");
     this.TDC = $('#canvas-3d')[0].getContext("2d");
-    
-    this.loaded = false;
-    
-    this.lightConeCanvas = document.createElement('canvas');
-    if (typeof FlashCanvas != "undefined") {
-        FlashCanvas.initElement(this.lightConeCanvas);
-    }
-
     this.lCCtx = this.lightConeCanvas.getContext('2d');
     
     // fillText was only introduced with Firefox 3.5, and some older browsers do
@@ -49,6 +37,10 @@ function Scene() {
     this.timeZoom = 0.25;
     this.t = 0;
     this.keyDown = false;
+    this.loaded = false;
+    this.drawing = false;
+    this.debug = false;
+    this.audio = new AudioManager();
     
     // The default set of object-specific settings. These can be overridden by
     // a specific demo, and by individual objects in that demo.
@@ -74,11 +66,7 @@ function Scene() {
                     "neverShowFramePos": false,
                     "alwaysShowVisualPos": false,
                     "neverShowVisualPos": false,
-                    "interactions": true
-                   };
-
-    this.drawing = false;
-    this.debug = false;
+                    "interactions": true};
     
     // Records whether the keys for various actions are currently pressed
     // interface.js binds various key events to these actions and toggles their
@@ -98,14 +86,9 @@ function Scene() {
                     "zoomOut": false,
                     "timeZoomIn": false,
                     "timeZoomOut": false};
-    this.audio = new AudioManager();
 }
 
 Scene.prototype = {
-    toggle3D: function() {
-        this.curOptions.show3D = !this.curOptions.show3D;
-    },
-    
     /**
      * Load the specified demo at the given step. (The step indexes into
      * the demo's steps array.)
@@ -133,7 +116,7 @@ Scene.prototype = {
 
         // Clone our default object-specific options into curOptions, rather than
         // getting a reference
-        this.curOptions = jQuery.extend({}, this.defaults);
+        this.curOptions = $.extend({}, this.defaults);
 
         // If the demo specifies option overrides, apply them
         if (typeof demo.steps[step].options === "object") {
@@ -255,9 +238,10 @@ Scene.prototype = {
         
         this.clear();
         
-        // Draw the light cone; if we're using flashCanvas, don't use offscreen canvas.
+        // Draw the light cone; if we're using flashCanvas, don't use offscreen 
+        // canvas.
         if (typeof FlashCanvas != "undefined") {
-            drawLightCone(this,this.h);
+            drawLightCone(this, this.h);
         } else {
             this.h.drawImage(this.lightConeCanvas, 0, 0);
         }
@@ -467,6 +451,10 @@ Scene.prototype = {
             this.replay();
         }
     },
+    
+    toggle3D: function() {
+        this.curOptions.show3D = !this.curOptions.show3D;
+    },
 
     /**
      * Reload the current demo from scratch and restart the animation.
@@ -535,7 +523,7 @@ Scene.prototype = {
 
 /**
  * Helper function to draw the scene. Necessary because of the setInterval()
- * this problem.
+ * `this` problem.
  */
 function drawScene(scene) {
     return function (event) {
