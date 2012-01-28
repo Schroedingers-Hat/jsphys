@@ -86,17 +86,27 @@
             
         </div>
         <div id="help-screen">
+          <a class="close" href="#" onclick="$('#help-screen').toggle(); return false">Close</a>
           <h3>Keyboard Controls</h3>
-          <br> w, a, s and d, or arrow keys: Accelerate 
-          <br> q and e: Rotate left and right (yaw) 
-          <br> 3: Show 3D view
-          <br> t: Toggle clock display.
-          <br> p: Toggle coordinate display.
-          <br> Page up/down: Zoom in and out
-          <br> space: Fire photon (rasteroids only).
-          <br> h: Toggle help screen.
-          <br> Press Next to advance to the next step in a demonstration.
-          <br> <a href="#" onclick="$('#help-screen').toggle(); return false">Close</a>
+          <dl>
+            <dt>w, a, s and d, or arrow keys</dt>
+            <dd>Accelerate<br/></dd>
+            <dt>q, e</dt>
+            <dd>Rotate left and right (yaw)<br/></dd>
+            <dt>3</dt> 
+            <dd>Show 3D view<br/></dd>
+            <dt>t</dt>
+            <dd>Toggle clock display<br/></dd>
+            <dt>p</dt>
+            <dd>Toggle coordinate display<br/></dd>
+            <dt>Page up/down</dt>
+            <dd>Zoom in and out<br/></dd>
+            <dt>Space</dt>
+            <dd>Fire photon (rasteroids only)<br/></dd>
+            <dt>h</dt>
+            <dd>Toggle help screen</dd>
+          </dl> 
+          Press Next to advance to the next step in a demonstration.
         </div>
         <div id="zoom">
           <a href="#" id="zoomIn">+</a>

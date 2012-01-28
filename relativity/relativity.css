@@ -194,6 +194,29 @@ header ul li:hover, li.nav-active {
     color: #fff;
 }
 
+#help-screen dt, #help-screen dd {
+    display: inline;
+}
+
+#help-screen dt {
+    font-weight: bold;
+    margin: 0.5em 0;
+}
+
+#help-screen dd {
+    margin-left: 0.5em;
+}
+
+#help-screen .close {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+}
+
+#help-screen h3 {
+    margin: 0 0 1em;
+}
+
 /** Captions **/
 
 #caption {
