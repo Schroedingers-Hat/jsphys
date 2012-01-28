@@ -265,9 +265,9 @@ Scene.prototype = {
         // Doesn't seem to work in opera 9, not sure why.
         if (this.curOptions.showText) {
             this.h.fillStyle = "#fff";
-            this.h.fillText("x(m)", this.mWidth - 30, this.origin[2] - 10);
+            this.h.fillText("x(m)", this.mWidth - 40, this.origin[2] - 10);
             this.h.fillText("t(s)", 5 + this.origin[0], 10);
-            this.h.fill();
+            this.h.fillText("Present", 5, this.origin[2] - 10);
         }
         
         // Advance every object forward in time, then draw it to the canvas.

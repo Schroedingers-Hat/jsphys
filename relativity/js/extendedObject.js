@@ -721,7 +721,7 @@ extendedObject.prototype = {
             (!this.COM.endPt || this.COM.endPt[3] > 0)){
                 scene.h.beginPath();
                 scene.h.fillStyle = "#777";
-                scene.h.fillText(this.label + " (present)",
+                scene.h.fillText(this.label,
                                   xvis + scene.origin[0] + 5,
                                   -5 + scene.origin[2]);
             }
