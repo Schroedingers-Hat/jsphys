@@ -28,7 +28,7 @@
                    "p": [-4, 0, 0], "m": 1, 
                    "shape": {"type": "man", "params": [3, 7]}, 
                    "options": {"showVelocity": false}},
-                  {"object": "photon", "x": [-160, 10, 0, 170], 
+                  {"object": "lightFlash", "x": [-160, 10, 0, 170], 
                    "v": [-1, 0, 0], "options": {"showCircle": true}},
                   {"object": "photon", "x": [-240, 10, 0, 170], 
                    "v": [1, 0, 0], "options": {"showCircle": true}},
@@ -67,7 +67,7 @@
                    "x": [0, -5, 0], "p": [-4, 0, 0], "m": 1, 
                    "shape": {"type": "man", "params": [3, 7]}, 
                    "options": {"showVelocity": false}},
-                  {"object": "photon", "x": [-160, 10, 0, 170],
+                  {"object": "lightFlash", "x": [-160, 10, 0, 170],
                    "v": [-1, 0, 0], "options": {"showCircle": true}},
                   {"object": "photon", "x": [-240, 10, 0, 170], 
                    "v": [1, 0, 0], "options": {"showCircle": true}}

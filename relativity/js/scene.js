@@ -201,6 +201,10 @@ Scene.prototype = {
         case "photon":
             thingy = new photon(obj.x, obj.v, obj.label, obj.options);
             break;
+        
+        case "lightFlash":
+            thingy = new lightFlash(obj.x, obj.v, obj.label, obj.options);
+            break;
             
         case "fourEvent":
             thingy = new fourEvent(obj.x, obj.options, this);

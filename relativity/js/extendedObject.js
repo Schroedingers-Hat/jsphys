@@ -1,5 +1,4 @@
-// Time is component 3
-//lNB: Shape is four dimensional,
+// Time is component 3. NB: Shape is four dimensional.
 
 "use strict";
 
@@ -37,14 +36,12 @@ function extendedObject(X, P, label, options, shape) {
         this.created = false;
     }
 
+    // Objects are modeled as blackbodies, so their color is determined by
+    // temperature.
     this.temp = (options.temperature) ? options.temperature : 5600;
     this.stillColor = tempToColor(this.temp);
 
     this.label = label;
-
-    if (options.interestingPts) {
-        this.interestingPts = options.interestingPts;
-    }
 
     if (options.endPt) this.COM.endPt = quat4.create(options.endPt);
     if (options.initialPt) this.COM.initialPt = options.initialPt;
@@ -78,7 +75,8 @@ function extendedObject(X, P, label, options, shape) {
                 this.shapePoints[this.boundingIdx[2 * j + 1]][j]) {
                 this.boundingIdx[2 * j + 1] = i;
             }
-            if (this.shapePoints[i][j] > this.shapePoints[this.boundingIdx[2 * j]][j]) {
+            if (this.shapePoints[i][j] > 
+                this.shapePoints[this.boundingIdx[2 * j]][j]) {
                 this.boundingIdx[2 *j] = i;
             }
         }
@@ -117,7 +115,7 @@ extendedObject.prototype = {
         // If not, just compute the new locations of the bounding box vertices.
         // Doing things this way means it takes one frame after the object is
         // in view before we start drawing it, but saves redundant computation
-        // or further if statements if it is visible.
+        // or further `if` statements if it is visible.
         else {
             for (var j = 0; j < (this.boundingIdx.length); j++) {
                 var i = this.boundingIdx[j];
@@ -128,8 +126,8 @@ extendedObject.prototype = {
             }
         }
         
-        // See if we need the light delayed points. Note that calPastPoints also
-        // takes care of is/was interesting.
+        // See if we need the light delayed points. Note that calcPastPoints 
+        // also takes care of is/was interesting.
         if (scene.options.alwaysShowVisualPos || scene.options.interactions ||
             (!scene.options.neverShowVisualPos && this.options.showVisualPos)) {
             this.calcPastPoints();
@@ -141,8 +139,8 @@ extendedObject.prototype = {
 
     /**
      * Find the bounding boxes from the updated points and the indices.
-     * The bounding box does not always contain the whole object, but it comes close.
-     * Best case is a circle/sphere (always contained), worst case is a 
+     * The bounding box does not always contain the whole object, but it comes
+     * close. Best case is a circle/sphere (always contained), worst case is a
      * slightly oblate square/cube.
      */
     findBB: function(pointsArr, BB) {
@@ -172,7 +170,7 @@ extendedObject.prototype = {
     /**
      * Map all the vectors involved in this object onto a new frame.
      * translation1 is a translation in the present frame.
-     * rotation is lorentz transform defined by a matrix including boost or rotation.
+     * rotation is Lorentz transform matrix including boost or rotation.
      * translation2 is a translation in the new frame.
      */
     changeFrame: function(translation1, rotation, translation2) {
@@ -208,6 +206,8 @@ extendedObject.prototype = {
             }
         }
         if (this.options.showMinkowski) this.drawXT(scene);
+        
+        // In debug mode, draw the future bounding box.
         if (scene.debug) {
             for (var i = 0; i < this.boundingBox.length; i++) {
                 scene.g.beginPath();
@@ -223,9 +223,9 @@ extendedObject.prototype = {
     
     /**
      * NB: these methods assume a model of Born rigidity.
-     * Objects are assumed to have an infinite speed of sound.
-     * This can lead to non-local effects under high acceleration.
-     * Future cone is calculated in here for now as there is a lot of redundant calculation.
+     * Objects are assumed to have an infinite speed of sound. This can lead to
+     * non-local effects under high acceleration. Future cone is calculated in
+     * here for now as there is a lot of redundant calculation.
      */
     calcPastPoints: function() {
         var gamma = this.COM.V[3] / c;
@@ -239,8 +239,8 @@ extendedObject.prototype = {
 
         var v = quat4.scale(this.COM.V, 1 / gamma, tempQuat4);
         
-        // If it's interesting, solve for the intersection of this world-line and the 
-        // light cone for every point.
+        // If it's interesting, solve for the intersection of this world-line
+        // and the light cone for every point.
         if (this.wI3d || this.wI2d) {
             var j = 0;
             for (var i = 0; i < (this.shapePoints.length); i++) {
@@ -318,13 +318,13 @@ extendedObject.prototype = {
             scene.g.stroke();
             
             // If we're drawing text, find the appropriate position and draw some text.
-            if(scene.curOptions.showText) {
+            if (scene.curOptions.showText) {
                 var i = 1;
                 var textX =  (this.boundingBox[0] + this.boundingBox[1]) /
             (2 * scene.zoom) + scene.origin[0] - 10;
                 var textY = -this.boundingBox[3] / scene.zoom + scene.origin[1];
                 if (this.options.showVelocity) {
-                    scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1-Math.min(1/Math.pow(this.COM.V[3] / c, 2), 1))) / 1000) + "c",
+                    scene.g.fillText("v = " + (Math.round(1000 * Math.sqrt(1 - Math.min(1 / Math.pow(this.COM.V[3] / c, 2), 1))) / 1000) + "c",
                                      textX, textY - 10 * i);
                     i++;
                 }

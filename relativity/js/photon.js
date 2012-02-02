@@ -48,9 +48,11 @@ function photon(X, V, label, options) {
 photon.prototype.update = function(timeStep) {
     // Bring it to now.
     quat4.scale(this.V, timeStep/this.V[3], this.displace);
-    // No c needed here, the speed of light dependance comes from timeStep being in metres.
+    // No c needed here, the speed of light dependence comes from timeStep
+    // being in metres.
     quat4.add(this.X0, this.displace);
-    // Move it back in time one timeStep (so we go forward in time and wind up at now)
+    // Move it back in time one timeStep (so we go forward in time and wind up
+    // at now)
     this.X0[3] = this.X0[3] - timeStep;
     this.initialPt[3] = this.initialPt[3] - timeStep;
     // If there's an end point, move that back in time, too.
@@ -226,25 +228,25 @@ photon.prototype.drawXT = function(scene) {
 };
 
 photon.prototype.drawNow = function(scene) {
-    if (this.initialPt[3] < 0) {
-        // As you can't see or reflect light off of a photon, doppler shift in this context represents something a bit different.
-        // In the unphysical view the photon is shown with the wavelength corresponding to its momentum in the current frame.
-        // V is proportional to momentum in units of per meter for now.
-        if (scene.options.alwaysDoppler ||
-            (this.options.showDoppler && !scene.options.neverDoppler)) {
-           scene.g.fillStyle = wavelengthToColor(1/this.V[3]);
-        } else {
-            scene.g.fillStyle = wavelengthToColor(this.wavelength);
-        }
-        scene.g.beginPath();
-        scene.g.arc(this.X0[0] / scene.zoom + scene.origin[0],
-                    -this.X0[1] / scene.zoom + scene.origin[1],
-                    2, 0, twopi, true);
-        scene.g.fill();
-        if (this.label !== "") {
-            scene.g.fillText(this.label, this.X0[0] / scene.zoom + scene.origin[0], 
-                                        -this.X0[1] / scene.zoom + scene.origin[1] + 10);
-        }
+    // As you can't see or reflect light off of a photon, doppler shift in this
+    // context represents something a bit different. In the unphysical view the
+    // photon is shown with the wavelength corresponding to its momentum in the 
+    // current frame. V is proportional to momentum in units of per meter for
+    // now.
+    if (scene.options.alwaysDoppler ||
+        (this.options.showDoppler && !scene.options.neverDoppler)) {
+        scene.g.fillStyle = wavelengthToColor(1/this.V[3]);
+    } else {
+        scene.g.fillStyle = wavelengthToColor(this.wavelength);
+    }
+    scene.g.beginPath();
+    scene.g.arc(this.X0[0] / scene.zoom + scene.origin[0],
+                -this.X0[1] / scene.zoom + scene.origin[1],
+                2, 0, twopi, true);
+    scene.g.fill();
+    if (this.label !== "") {
+        scene.g.fillText(this.label, this.X0[0] / scene.zoom + scene.origin[0], 
+                         -this.X0[1] / scene.zoom + scene.origin[1] + 10);
     }
 };
 
