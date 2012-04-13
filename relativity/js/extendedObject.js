@@ -654,7 +654,7 @@ extendedObject.prototype = {
         var bOfLinet = -(scene.height + scene.origin[2]);
         var bOfLinex = bOfLinet * dxdtVis + this.COM.X0[0]  / scene.zoom;
 
-        scene.h.strokeStyle = "#666";
+        scene.h.strokeStyle = "#fff";
         scene.h.fillStyle = "#0a0";
 
         // A world Line.
@@ -717,7 +717,7 @@ extendedObject.prototype = {
         }
 
         if (this.label !== "" && scene.curOptions.showText) {
-        if ((this.COM.initialPt[3] < 0) &&
+        if ((this.COM.initialPt[3] <= 0) &&
             (!this.COM.endPt || this.COM.endPt[3] > 0)){
                 scene.h.beginPath();
                 scene.h.fillStyle = "#777";

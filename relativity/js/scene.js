@@ -554,7 +554,7 @@ function drawLightCone(scene, ctx){
     var xcoeff = Math.min(size, size * c / scene.zoom * scene.timeZoom);
     if (xcoeff == size) ycoeff = size / c * scene.zoom / scene.timeZoom;
     else ycoeff = size;
-    ctx.fillStyle = "#300";
+    /*ctx.fillStyle = "#300";
     ctx.beginPath();
     ctx.moveTo(0,0);
     ctx.lineTo(0,ycoeff + scene.origin[2]);
@@ -578,9 +578,9 @@ function drawLightCone(scene, ctx){
     ctx.lineTo( xcoeff+ scene.origin[0], ycoeff + scene.origin[2]);
     ctx.lineTo(-xcoeff+ scene.origin[0], -ycoeff + scene.origin[2]);
     ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle = "#FFF";
-    ctx.lineWidth = 3;
+    ctx.fill();*/
+    ctx.strokeStyle = "#666";
+    ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(0, scene.origin[2]);
     ctx.lineTo(scene.mWidth, scene.origin[2]);

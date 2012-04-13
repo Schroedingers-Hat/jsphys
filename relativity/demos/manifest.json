@@ -2,7 +2,8 @@
  [{"name": "Relativistic train", "source": "exam_1"},
   {"name": "Han and Greedo", "source": "han-greedo"},
   {"name": "Relativistic snake", "source": "snake"},
-  {"name": "Relativistic ruler", "source": "ruler"}
+  {"name": "Relativistic ruler", "source": "ruler"},
+  {"name": "Speed of light", "source": "speed-light"}
  ],
  "Time dilation/length contraction":
  [{"name": "Muon decay", "source": "muons"},
