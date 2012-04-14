@@ -3,26 +3,6 @@
     <head>
         <meta charset="UTF-8" />
         <title>Relativity Simulator</title>
-        <!--[if lt IE 9]>
-        <script type="text/javascript" src="../lib/ie7/ie9.js"></script>
-        <script type="text/javascript" src="../lib/FlashCanvas/bin/flashcanvas.js"></script>
-        <![endif]-->
-        <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
-        <script type="text/javascript" src="../lib/kibo.js"></script>
-        <script type="text/javascript" src="js/ieLibs.js"></script>
-        <script type="text/javascript" src="js/extendedObject.js"></script>
-        <script type="text/javascript" src="../lib/glMatrix-0.9.5.min.js"></script>
-        <script type="text/javascript" src="js/glMatrix-extensions.js"></script>
-        <script type="text/javascript" src="js/inertialObject.js"></script>
-        <script type="text/javascript" src="js/photon.js"></script>
-        <script type="text/javascript" src="js/relLibs.js"></script>
-        <script type="text/javascript" src="js/fourEvent.js"></script>
-        <script type="text/javascript" src="js/colors.js"></script>
-        <script type="text/javascript" src="js/interface.js"></script>
-        <script type="text/javascript" src="js/audio.js"></script>
-        <script type="text/javascript" src="js/scene.js"></script>
-        <script type="text/javascript" src="js/shapes.js"></script>
-        <script type="text/javascript" src="../lib/jquery/jquery-ui-1.8.16.custom.min.js"></script>
         <link rel="stylesheet" type="text/css" href="../css/ui-lightness/jquery-ui-1.8.16.custom.css" />
         <link rel="stylesheet" type="text/css" href="relativity.css" />
     </head>
@@ -117,13 +97,5 @@
         <div id="caption">
           <p id="caption-text">Welcome to the jsphys relativity simulator. Choose a demonstration to start with and hit Play.</p>
         </div>
-        <script type="text/javascript">
-          /* load canvas.text.js only when needed */
-          if($('#canvas-2d')[0].getContext && !$('#canvas-2d')[0].getContext("2d").fillText) {
-          document.write('<script src="../lib/canvas-text/canvas.text.js" type="text/javascript"></s' + 'cript>');
-          document.write('<script src="../lib/canvas-text/faces/helvetiker-normal-normal.js" type="text/javascript"></s' + 'cript>');
-          document.write('<script src="../lib/canvas-text/faces/optimer-normal-normal.js" type="text/javascript"></s' + 'cript>');
-          }
-		</script>
     </body>
 </html>
