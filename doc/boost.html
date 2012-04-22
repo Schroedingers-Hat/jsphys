@@ -124,16 +124,60 @@
     the correct way of measuring distance. Working with 4 variables is
     difficult so \(y\) and \(z\) shall be assumed to be 0 and suppressed until
     they are needed.</p>
-
-    <p>
+    <br>
     <script>putv4(V)</script>
-    <script>
-      (new Graph('first',{zoom: 250})).addfunc(
-          function(x){return x*x;}, 'green'
-          ).addfunc(
-          function(x){return Math.sin(x);});
-    </script>
+    <br>
 
-
+    <div id='thingie'></div>
+    <center>
+      <table>
+        <tr>
+          <td>
+            <div id = 'hyp'></div>
+            <script>
+              (new Graph('hyp',{height: 250, width: 250, zoom: 50})).addfunc(
+                function(t){
+                  return {x: t, y:  Math.sqrt(1 + t*t)
+                };}, 'green').addfunc(
+                function(t){
+                  return {x: t, y: -Math.sqrt(1 + t*t)
+                };}, 'green').addfunc(
+                function(t){
+                  return {x:  Math.sqrt(1 + t*t), y: t
+                };}, 'green').addfunc(
+                function(t){
+                  return {x: -Math.sqrt(1 + t*t), y: t
+                };}, 'green').addLine(
+                function(x,y){
+                  return {x: 0, y: 0};
+                },
+                function(x,y){ 
+                  var xmag = Math.abs(x),
+                      ymag = Math.abs(y),
+                      sgx = x/xmag,
+                      sgy = y/ymag; 
+                      return ymag > xmag ? {x: x, y: sgy * Math.sqrt(1 + x*x)}:
+                                           {x: sgx * Math.sqrt(1 + y*y), y: y};
+               }, {});
+            </script>
+          </td>
+          <td>
+            <div id = 'circle'></div>
+            <script>
+              (new Graph('circle',{height: 250, width: 250,zoom: 50})).addfunc(
+              function(t){
+                return {x: Math.cos(t * Math.PI), y:  Math.sin(t * Math.PI)};
+              }, 'green').addLine(
+              function(x,y){return {x: 0, y: 0};},
+              function(x,y){ 
+                var r = Math.sqrt(x*x + y*y);
+                return {x:x/r, y: y/r};
+              }, {});
+            </script>
+          </td>
+        </tr>
+      </table>
+    </center>
+    testing
   </body>
 </html>
