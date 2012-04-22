@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Relativity Simulator</title>
+        <script type="text/javascript" src="../js/extern/jquery/jquery.js"></script>
+        <script type="text/javascript" src="../js/extern/jquery/jquery-ui-1.8.16.custom.min.js"></script>
+        <script type="text/javascript" src="../js/jsrel/jsrel-concat.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="../css/extern/ui-lightness/jquery-ui-1.8.16.custom.css" />
+        <link rel="stylesheet" type="text/css" href="jsrel.css" />
+    </head>
+
+    <body>
+      <header>
+        <ul id="views">
+          <li id="view-2d" class="nav-active" title="View this demonstration in 2D">2D</li>
+          <li id="view-minkowski" title="View a Minkowski diagram of this demonstration">Minkowski</li>
+          <li id="view-3d" title="View this demonstration in 3D">3D</li>
+        </ul>
+        <ul id="tools">
+          <li id="demo-chooser-activate">Choose new demo</li>
+          <li id="settings-activate">Settings</li>
+          <li id="help">Help</li>
+        </ul>
+      </header>
+      <div id="settings">
+        <label for="doppler">Doppler:</label>
+        <select id="doppler">
+          <option value="default" selected="selected">Use default</option>
+          <option value="always">Always on</option>
+          <option value="never">Always off</option>
+        </select>
+        <label for="framePos">Absolute positions:</label>
+        <select id="framePos">
+          <option value="default" selected="selected">Use default</option>
+          <option value="always">Always on</option>
+          <option value="never">Always off</option>
+        </select>
+        <label for="vPos">Apparent positions:</label>
+        <select id="vPos">
+          <option value="default" selected="selected">Use default</option>
+          <option value="always">Always on</option>
+          <option value="never">Always off</option>
+        </select>
+        <label for="debug">Debug mode:</label>
+        <input id="debug" type="checkbox" />
+      </div>
+
+        <div style="position:relative">
+            <canvas id="canvas-2d" height="500">
+              <p>You need a browser that supports canvas to view this simulation.</p>
+              <p>Firefox 3.6+, a recent version of Google Chrome, Safari 4+ or Opera 10+ are recommended.</p>
+              <p>Firefox 2+, any version of Google Chrome, Safari 3.2+, Opera 9+ and IE8 should work with some missing features.</p>
+            </canvas>
+            <div id="controls">
+              <button id="pause" class="button-highlight">Play</button><button id="replayStep">Replay</button>
+              <div id="speed">Speed: <span id="curSpeed"></span><div><a href="#" id="slowDown">-</a>
+                      <div id="speed-slider"></div><a href="#" id="speedUp">+</a></div></div>
+              <button id="prevStep">&laquo; Previous</button>
+              <button id="nextStep">Next &raquo;</button>
+            </div>
+        </div>
+        <div id="demo-chooser">
+          <h3>Choose a demo</h3>
+            
+        </div>
+        <div id="help-screen">
+          <a class="close" href="#" onclick="$('#help-screen').hide();">Close</a>
+          <h3>Keyboard Controls</h3>
+          <dl id='controls'></dl>
+          Press Next to advance to the next step in a demonstration.
+        </div>
+        <div id="zoom">
+          <a href="#" id="zoomIn">+</a>
+          <div id="zoom-slider"></div>
+          <a href="#" id="zoomOut">-</a>
+        </div>
+
+        <div id="caption">
+          <p id="caption-text">Welcome to the jsphys relativity simulator. Choose a demonstration to start with and hit Play.</p>
+        </div>
+    </body>
+</html>

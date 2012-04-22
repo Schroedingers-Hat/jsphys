@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Derivation and explanation of boost formulae.</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" src="../js/maths/matrix.js"></script>
+    <script type="text/javascript" src="../js/maths/algebra.js"></script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script type="text/javascript" src="jush.js"></script>
+    <script type="text/javascript">
+    jush.style('jush.css');
+    jush.highlight_tag('code');
+    </script>
+    <script>
+      MathJax.Hub.Config({
+        tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        processEscapes: true
+        }
+      });
+      var g = mat4.create(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,-1);
+      var Bx = mat4.create(
+        '\\gamma_x','(-\\beta_x\\gamma_x)','0','0',
+        '(-\\beta_x\\gamma_x)','\\gamma_x','0','0',
+        '0','0','1','0',
+        '0','0','0','1');
+      var By = mat4.create(
+        '\\gamma_y','0','(-\\beta_y\\gamma_y)','0',
+        '0','1','0','0',
+        '(-\\beta_y\\gamma_y)','0','\\gamma_y','0',
+        '0','0','0','1'
+        );
+      var Bz = mat4.create(
+        '\\gamma_z','0','0','(-\\beta_z\\gamma_z)',
+        '0','1','0','0',
+        '0','0','1','0',
+        '(-\\beta_z\\gamma_z)','0','0','\\gamma_z'
+        );
+      var V = vec4.create('v_x','v_y','v_z','c v_t');
+      var X = vec4.create('x','y','z','c t');
+
+      function putm4(obj, type) {
+        document.write(mat4.toLat(obj,type));
+      }
+      function putv4(obj, type) {
+        document.write(vec4.toLat(obj,type));
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>Quick and dirty intro to the basic maths behind the jsrel portion 
+    of jsphys.
+    </h1>
+    <dl>
+      <dt>
+      Assumed background knowledge, suffix 1 denotes some course at roughly
+      highschool level, or intro college level depending on country. suffix 2
+      denotes a college or university level course. This document should be 
+      comprehensible but may be somewhat meaningless with just the maths:
+      </dt>
+        <dd>Linear Algebra 1</dd>
+        <dd>Calc 1</dd>
+        <dd>Trig 1</dd>
+      <dt>Recommended:</dt>
+        <dd>Calc 2</dd>
+        <dd>Linear Algebra 2</dd>
+        <dd>Physics 1</dd>
+    </dl>
+    <h2>Conventions and notation</h2>
+    <dl>
+      <dt>Brief list of conventions and notation used in this document
+      and in the code where possible:</dt>
+      <dd>
+      Capital letters denote four vectors with time component last.
+      Column vectors generally assumed unless stated.
+      ie. <script>putv4(X)</script>
+      </dd>
+      <dd>
+      Lower case non-bold letters \(x\) usually denote components but may
+      denote 3-vectors in the code. 3-vectors will be bolded \(\mathbf{x}\)
+      where possible.
+      </dd>
+      <dd>
+      The metric used will be: <script>putm4(g)</script>
+      This makes time-like intervals negative, and the interval formula is:
+      \[s^2 = x^2 + y^2 + z^2 - c^2t^2\]
+      </dd>
+      <dd>
+      Within the internal-facing parts of the code, all spacetime units
+      should metres, or the equivalent distance-like quantity including times.
+      Energies will be in units of \(\mathrm{kg\,m^2}\). Anything intended to
+      be seen by the user will be in the usual SI units.<br>
+      Use of units in which \(c=1\) within this document except where directly
+      referencing code should be considered grounds for hitting the author with
+      a stick.
+      </dd>
+      <dd>The constant c, where it appears, should be kept in vectors rather
+      than operators.</dd>
+      <dd>
+      \(V\) where it appears without a qualifier should be considered as the
+      four-velocity \(\frac{d X}{d\tau}\) where \(\tau\) is proper time.
+      </dd>
+      <dd>\(v_t\) being the time component of four-velocity is interchangable
+      with the lorentz constant \(\gamma\). The convention within the code is
+      for the time component of any vector \(U\) to be U.t, ie.
+      <code class='jush'><br>
+        var U = vec4.create(1,2,3,4);<br>
+        U.t
+      </code> will be 4.
+    </dl>
+    <h2>Part 1: Derivation of boost formula from interval.</h2>
+    <p>At its heart, this simulation is just lines and geometry. It maps a
+    set of 4D points onto 3D and subsequently 2D in a way that is very
+    closely analogous to the way traditional computer graphics maps 3D on
+    to 2D. Even things like aberration which seem complicated and unrelated
+    in component form are just intersections of lines and cones.</p>
+    
+    <script>putv4(V)</script>
+  </body>
+</html>

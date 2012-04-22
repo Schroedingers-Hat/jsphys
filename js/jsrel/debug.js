@@ -1,0 +1,3 @@
+function DEBUG(debugstuff) {
+  debugstuff();
+}

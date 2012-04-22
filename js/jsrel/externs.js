@@ -1,0 +1,2 @@
+/** @nosideeffects */
+function DEBUG(debugstuff) {}
