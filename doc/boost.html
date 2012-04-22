@@ -4,7 +4,7 @@
     <title>Derivation and explanation of boost formulae.</title>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="../js/maths/matrix.js"></script>
-    <script type="text/javascript" src="../js/maths/algebra.js"></script>
+    <script type="text/javascript" src="../js/utils/graph.js"></script>
 
     <script type="text/javascript"
       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
@@ -118,7 +118,22 @@
     closely analogous to the way traditional computer graphics maps 3D on
     to 2D. Even things like aberration which seem complicated and unrelated
     in component form are just intersections of lines and cones.</p>
-    
+
+    <p>Physics is not part of the scope of this document, so we shall start by
+    simply accepting the interval formula \(s^2 = x^2 + y^2 + z^2 - c^2t^2\) as
+    the correct way of measuring distance. Working with 4 variables is
+    difficult so \(y\) and \(z\) shall be assumed to be 0 and suppressed until
+    they are needed.</p>
+
+    <p>
     <script>putv4(V)</script>
+    <script>
+      (new Graph('first',{zoom: 250})).addfunc(
+          function(x){return x*x;}, 'green'
+          ).addfunc(
+          function(x){return Math.sin(x);});
+    </script>
+
+
   </body>
 </html>
