@@ -88,8 +88,8 @@ var vec3 = {
   ###vec3.set
     Set vector from components.
 
-      vec3.set(A, B);
-      var B = vec3.set(A, {});
+      vec3.set(x,y,z, A);
+      var A = vec3.set(x,y,z, {});
   */
   set: function(x, y, z, dest) {
     dest.x = x;
@@ -113,11 +113,11 @@ var vec3 = {
   },
   /*
   ###vec3.subtract
-    Subtract two vectors.
-    $$\mathbf{C} = \mathbf{A} - \mathbf{B}$$
+    subtract two vectors.
+    $$\mathbf{c} = \mathbf{a} - \mathbf{b}$$
 
-      vec3.subtract(A, B, C);
-      var C = vec3.subtract(A, B, {});
+      vec3.subtract(a, b, c);
+      var c = vec3.subtract(a, b, {});
   */
   subtract: function(vec1, vec2, dest) {
     dest.x = vec1.x - vec2.x;
@@ -330,9 +330,28 @@ var mat3 = {
 
 
 var vec4 = {
+  /*
+  ###vec4.create
+    Usage:
+
+      var X = vec3.create(1,2,3,4);
+    Somewhat redundant as it's equivalent to:
+
+      var X = vec3.setScalar(1,2,3,4,{});
+  */
   create: function(x, y, z, t) {
     return {x: x, y: y, z: z, t: t};
   },
+  /*
+  ###vec4.setVec
+    Usage:
+
+      B = vec3.setVec(A,B);
+      vec3.setVec(A,B);
+      var B = vec3.setVec(A,{});
+    Set one vector from another. Or create one using an object literal
+    as the destination.
+  */
   setVec: function(vec, dest) {
     dest.x = vec.x;
     dest.y = vec.y;
@@ -340,13 +359,28 @@ var vec4 = {
     dest.t = vec.t;
     return dest;
   },
-  setScalar: function(x, y, z, t, dest) {
+  /*
+  ###vec4.set
+    Set vector from components.
+
+      vec4.set(1,2,3,4, B);
+      var B = vec3.set(1,2,3,4, {});
+  */
+  set: function(x, y, z, t, dest) {
     dest.x = x;
     dest.y = y;
     dest.z = z;
     dest.t = t;
     return dest;
   },
+  /*
+  ###vec4.add
+    Add two vectors.
+    $$\mathbf{C} = \mathbf{A} + \mathbf{B}$$
+
+      vec4.add(A, B, C);
+      var C = vec4.add(A, B, {});
+  */
   add: function(vec1, vec2, dest) {
     dest.x = vec1.x + vec2.x;
     dest.y = vec1.y + vec2.y;
@@ -354,13 +388,33 @@ var vec4 = {
     dest.t = vec1.t + vec2.t;
     return dest;
   },
+  /*
+  ###vec4.subtract
+    Subtract two vectors.
+    $$\mathbf{C} = \mathbf{A} - \mathbf{B}$$
+
+      vec4.subtract(A, B, C);
+      var C = vec4.subtract(A, B, {});
+  */
   subtract: function(vec1, vec2, dest) {
     dest.x = vec1.x - vec2.x;
     dest.y = vec1.y - vec2.y;
     dest.z = vec1.z - vec2.z;
-    dest.t = vec1.t - vec2.t;
     return dest;
   },
+  /*
+  ###vec4.norm
+    Normalize a vector. With 4D Euclidean norm.
+    $$B=\frac{A}{|A|}$$
+
+      vec4.norm(A, B);
+      var B = vec4.norm(A, {});
+    $$\frac{A}{|A|} = 1$$
+
+      vec4.norm(A,A);
+
+    Returns a vector of 0s if the magnitude is 0.
+  */
   norm: function(vec, dest) {
     var mag = Math.sqrt(x * x + y * y + z * z + t * t);
     // Return 0 vector if mag is null.
@@ -371,7 +425,22 @@ var vec4 = {
     dest.t = vec.t * mag;
     return dest;
   },
-  spacenorm: function(vec, dest) {
+  /*
+  ###vec4.spaceNorm
+    Normalize a 4D vector. With 3D euclidean norm.
+    $$A = \begin{pmatrix}t\\\\x\\\\y\\\\z\end{pmatrix}$$
+    $$a=\sqrt{x^2 + y^2 + z^2}$$
+    $$B=\frac{A}{a}$$
+
+      vec4.norm(A, B);
+      var B = vec4.norm(A, {});
+    $$\frac{A}{a} = 1$$
+
+      vec4.norm(A,A);
+
+    Returns a vector of 0s if the magnitude is 0.
+  */
+  spaceNorm: function(vec, dest) {
     var mag = Math.sqrt(x * x + y * y + z * z);
     // Return 0 vector if mag is null.
     mag = mag ? 1/mag : 0;
@@ -381,6 +450,19 @@ var vec4 = {
     dest.t = vec.t * mag;
     return dest;
   },
+  /*
+  ###vec4.stNorm
+    Normalize a vector. With 4D Minkowski norm.
+    $$B=\frac{A}{|A|}$$
+
+      vec4.norm(A, B);
+      var B = vec4.norm(A, {});
+    $$\frac{A}{|A|} = 1$$
+
+      vec4.norm(A,A);
+
+    Returns a null vector with t component 1 if the magnitude is 0.
+  */
   stNorm: function(vec, dest) {
     var mag = Math.sqrt(x * x + y * y + z * z - t * t);
     mag = mag ? 1 / mag : 1 / vec.t;
@@ -391,22 +473,53 @@ var vec4 = {
     dest.t = vec.t * mag;
     return dest;
   },
+  /*
+  ###vec4.dot
+    4D Euclidean inner product between two vectors.
+    $$c = \mathbf{A}\cdot\mathbf{B} = 
+    A_tB_t + A_xB_x + A_yB_y + A_zB_z$$
+
+      var c = vec4.dot(A,B);
+
+  */
   dot: function(vec1, vec2) {
-    return vec1.x * vec2.x +
+    return vec1.t * vec2.t +
+           vec1.x * vec2.x +
            vec1.y * vec2.y +
-           vec1.z * vec2.z +
-           vec1.t * vec2.t;
+           vec1.z * vec2.z;
   },
+  /*
+  ###vec4.spaceDot
+  Spatial magnitude. Good for distances.
+  $$\begin{pmatrix}A_t&A_x&A_y&A_z\end{pmatrix}
+  \begin{pmatrix}0&0&0&0\\\\
+                 0&1&0&0\\\\
+                 0&0&1&0\\\\
+                 0&0&0&1\end{pmatrix}
+  \begin{pmatrix}B_t\\\\B_x\\\\B_y\\\\B_z\end{pmatrix}$$
+  Usage:
+
+      r = spaceDot(A,B);
+  */
   spaceDot: function(vec1, vec2) {
     return vec1.x * vec2.x +
            vec1.y * vec2.y +
            vec1.z * vec2.z;
   },
+  /*
+  ###vec4.dot
+    1+3D Minkowski inner product between two vectors.
+    $$c = \mathbf{A}\cdot\mathbf{B} = 
+    -A_tB_t + A_xB_x + A_yB_y + A_zB_z$$
+
+      var c = vec4.dot(A,B);
+
+  */
   stDot: function(vec1, vec2) {
-    return vec1.x * vec2.x +
-           vec1.y * vec2.y +
-           vec1.z * vec2.z +
-           vec1.t * vec2.t;
+    return -vec1.t * vec2.t + 
+            vec1.x * vec2.x +
+            vec1.y * vec2.y +
+            vec1.z * vec2.z;
   },
   scale: function(vec, scale, dest) {
     dest.x = scale * vec.x;
@@ -415,6 +528,7 @@ var vec4 = {
     dest.t = scale * vec.t;
     return dest;
   },
+
   toLat: function(vec,type) {
     type = type || 'pmatrix';
     return '\\[\\begin{'+type+'}' +

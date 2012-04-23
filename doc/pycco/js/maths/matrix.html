@@ -154,8 +154,8 @@ var B = vec3.setVec(A,{});
       </div>
       <h3>vec3.set</h3>
 <p>Set vector from components.</p>
-<pre><code>vec3.set(A, B);
-var B = vec3.set(A, {});
+<pre><code>vec3.set(x,y,z, A);
+var A = vec3.set(x,y,z, {});
 </code></pre>
     </div>
     <div class='code'>
@@ -196,10 +196,10 @@ var C = vec3.add(A, B, {});
         <a class='octothorpe' href='#section-8'>#</a>
       </div>
       <h3>vec3.subtract</h3>
-<p>Subtract two vectors.
-  $$\mathbf{C} = \mathbf{A} - \mathbf{B}$$</p>
-<pre><code>vec3.subtract(A, B, C);
-var C = vec3.subtract(A, B, {});
+<p>subtract two vectors.
+  $$\mathbf{c} = \mathbf{a} - \mathbf{b}$$</p>
+<pre><code>vec3.subtract(a, b, c);
+var c = vec3.subtract(a, b, {});
 </code></pre>
     </div>
     <div class='code'>
@@ -491,40 +491,7 @@ mat3.vecToRows(X, Y, Z, T);
 <span class="p">};</span>
 
 
-<span class="kd">var</span> <span class="nx">vec4</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="nx">create</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="p">{</span><span class="nx">x</span><span class="o">:</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span><span class="o">:</span> <span class="nx">z</span><span class="p">,</span> <span class="nx">t</span><span class="o">:</span> <span class="nx">t</span><span class="p">};</span>
-  <span class="p">},</span>
-  <span class="nx">setVec</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span>
-    <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">setScalar</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">z</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">t</span><span class="p">;</span>
-    <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">add</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">+</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">t</span> <span class="o">+</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span>
-    <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">subtract</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">-</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">t</span> <span class="o">-</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span>
-    <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">norm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span> <span class="o">+</span> <span class="nx">t</span> <span class="o">*</span> <span class="nx">t</span><span class="p">);</span></pre></div>
+<span class="kd">var</span> <span class="nx">vec4</span> <span class="o">=</span> <span class="p">{</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -533,18 +500,18 @@ mat3.vecToRows(X, Y, Z, T);
       <div class='octowrap'>
         <a class='octothorpe' href='#section-19'>#</a>
       </div>
-      <p>Return 0 vector if mag is null.</p>
+      <h3>vec4.create</h3>
+<p>Usage:</p>
+<pre><code>var X = vec3.create(1,2,3,4);
+</code></pre>
+<p>Somewhat redundant as it's equivalent to:</p>
+<pre><code>var X = vec3.setScalar(1,2,3,4,{});
+</code></pre>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">mag</span> <span class="o">=</span> <span class="nx">mag</span> <span class="o">?</span> <span class="mi">1</span><span class="o">/</span><span class="nx">mag</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
-    <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">spacenorm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span><span class="p">);</span></pre></div>
+      <div class="highlight"><pre>  <span class="nx">create</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span><span class="nx">x</span><span class="o">:</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span><span class="o">:</span> <span class="nx">z</span><span class="p">,</span> <span class="nx">t</span><span class="o">:</span> <span class="nx">t</span><span class="p">};</span>
+  <span class="p">},</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -552,6 +519,120 @@ mat3.vecToRows(X, Y, Z, T);
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <h3>vec4.setVec</h3>
+<p>Usage:</p>
+<pre><code>B = vec3.setVec(A,B);
+vec3.setVec(A,B);
+var B = vec3.setVec(A,{});
+</code></pre>
+<p>Set one vector from another. Or create one using an object literal
+  as the destination.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">setVec</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <h3>vec4.set</h3>
+<p>Set vector from components.</p>
+<pre><code>vec4.set(1,2,3,4, B);
+var B = vec3.set(1,2,3,4, {});
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">z</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">t</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <h3>vec4.add</h3>
+<p>Add two vectors.
+  $$\mathbf{C} = \mathbf{A} + \mathbf{B}$$</p>
+<pre><code>vec4.add(A, B, C);
+var C = vec4.add(A, B, {});
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">add</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">+</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">t</span> <span class="o">+</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <h3>vec4.subtract</h3>
+<p>Subtract two vectors.
+  $$\mathbf{C} = \mathbf{A} - \mathbf{B}$$</p>
+<pre><code>vec4.subtract(A, B, C);
+var C = vec4.subtract(A, B, {});
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">subtract</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">-</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <h3>vec4.norm</h3>
+<p>Normalize a vector. With 4D Euclidean norm.
+  $$B=\frac{A}{|A|}$$</p>
+<pre><code>vec4.norm(A, B);
+var B = vec4.norm(A, {});
+</code></pre>
+<p>$$\frac{A}{|A|} = 1$$</p>
+<pre><code>vec4.norm(A,A);
+</code></pre>
+<p>Returns a vector of 0s if the magnitude is 0.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">norm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span> <span class="o">+</span> <span class="nx">t</span> <span class="o">*</span> <span class="nx">t</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
       </div>
       <p>Return 0 vector if mag is null.</p>
     </div>
@@ -562,17 +643,79 @@ mat3.vecToRows(X, Y, Z, T);
     <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">stNorm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <h3>vec4.spaceNorm</h3>
+<p>Normalize a 4D vector. With 3D euclidean norm.
+  $$A = \begin{pmatrix}t\\x\\y\\z\end{pmatrix}$$
+  $$a=\sqrt{x^2 + y^2 + z^2}$$
+  $$B=\frac{A}{a}$$</p>
+<pre><code>vec4.norm(A, B);
+var B = vec4.norm(A, {});
+</code></pre>
+<p>$$\frac{A}{a} = 1$$</p>
+<pre><code>vec4.norm(A,A);
+</code></pre>
+<p>Returns a vector of 0s if the magnitude is 0.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">spaceNorm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>Return 0 vector if mag is null.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nx">mag</span> <span class="o">=</span> <span class="nx">mag</span> <span class="o">?</span> <span class="mi">1</span><span class="o">/</span><span class="nx">mag</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <h3>vec4.stNorm</h3>
+<p>Normalize a vector. With 4D Minkowski norm.
+  $$B=\frac{A}{|A|}$$</p>
+<pre><code>vec4.norm(A, B);
+var B = vec4.norm(A, {});
+</code></pre>
+<p>$$\frac{A}{|A|} = 1$$</p>
+<pre><code>vec4.norm(A,A);
+</code></pre>
+<p>Returns a null vector with t component 1 if the magnitude is 0.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">stNorm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span> <span class="o">-</span> <span class="nx">t</span> <span class="o">*</span> <span class="nx">t</span><span class="p">);</span>
     <span class="nx">mag</span> <span class="o">=</span> <span class="nx">mag</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">/</span> <span class="nx">mag</span> <span class="o">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-21'>
+  <div class='section' id='section-29'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-21'>#</a>
+        <a class='octothorpe' href='#section-29'>#</a>
       </div>
       <p>If the vector is null, normalise it so t component == 1.</p>
     </div>
@@ -582,23 +725,76 @@ mat3.vecToRows(X, Y, Z, T);
     <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">dot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <h3>vec4.dot</h3>
+<p>4D Euclidean inner product between two vectors.
+  $$c = \mathbf{A}\cdot\mathbf{B} = 
+  A_tB_t + A_xB_x + A_yB_y + A_zB_z$$</p>
+<pre><code>var c = vec4.dot(A,B);
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">dot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">t</span> <span class="o">+</span>
+           <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span>
            <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span>
-           <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span> <span class="o">+</span>
-           <span class="nx">vec1</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">spaceDot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">)</span> <span class="p">{</span>
+           <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <h3>vec4.spaceDot</h3>
+<p>Spatial magnitude. Good for distances.
+$$\begin{pmatrix}A_t&amp;A_x&amp;A_y&amp;A_z\end{pmatrix}
+\begin{pmatrix}0&amp;0&amp;0&amp;0\\
+               0&amp;1&amp;0&amp;0\\
+               0&amp;0&amp;1&amp;0\\
+               0&amp;0&amp;0&amp;1\end{pmatrix}
+\begin{pmatrix}B_t\\B_x\\B_y\\B_z\end{pmatrix}$$
+Usage:</p>
+<pre><code>r = spaceDot(A,B);
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">spaceDot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span>
            <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span>
            <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">stDot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span>
-           <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span>
-           <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span> <span class="o">+</span>
-           <span class="nx">vec1</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <h3>vec4.dot</h3>
+<p>1+3D Minkowski inner product between two vectors.
+  $$c = \mathbf{A}\cdot\mathbf{B} = 
+  -A_tB_t + A_xB_x + A_yB_y + A_zB_z$$</p>
+<pre><code>var c = vec4.dot(A,B);
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">stDot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">-</span><span class="nx">vec1</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">t</span> <span class="o">+</span> 
+            <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span>
+            <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span>
+            <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
   <span class="p">},</span>
   <span class="nx">scale</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">scale</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">scale</span> <span class="o">*</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
@@ -607,6 +803,7 @@ mat3.vecToRows(X, Y, Z, T);
     <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">scale</span> <span class="o">*</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span>
     <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
   <span class="p">},</span>
+
   <span class="nx">toLat</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">type</span> <span class="o">=</span> <span class="nx">type</span> <span class="o">||</span> <span class="s1">&#39;pmatrix&#39;</span><span class="p">;</span>
     <span class="k">return</span> <span class="s1">&#39;\\[\\begin{&#39;</span><span class="o">+</span><span class="nx">type</span><span class="o">+</span><span class="s1">&#39;}&#39;</span> <span class="o">+</span>
@@ -644,10 +841,10 @@ mat3.vecToRows(X, Y, Z, T);
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-22'>
+  <div class='section' id='section-33'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-22'>#</a>
+        <a class='octothorpe' href='#section-33'>#</a>
       </div>
       <p>Yuck.
 Multiply AB as below:</p>
@@ -682,10 +879,10 @@ Multiply AB as below:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-23'>
+  <div class='section' id='section-34'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-23'>#</a>
+        <a class='octothorpe' href='#section-34'>#</a>
       </div>
       <p>Cat matrices together string style.</p>
     </div>
@@ -705,10 +902,10 @@ Multiply AB as below:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-24'>
+  <div class='section' id='section-35'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-24'>#</a>
+        <a class='octothorpe' href='#section-35'>#</a>
       </div>
       <p>Nobody likes you, jslint; it's a string
 Also what if I <em>want</em> to coerce comparison to 0?</p>
@@ -718,10 +915,10 @@ Also what if I <em>want</em> to coerce comparison to 0?</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-25'>
+  <div class='section' id='section-36'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-25'>#</a>
+        <a class='octothorpe' href='#section-36'>#</a>
       </div>
       <p>If we have no term, set it to '' else, combine two components w a
 timesChar.</p>
@@ -734,10 +931,10 @@ timesChar.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-26'>
+  <div class='section' id='section-37'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-26'>#</a>
+        <a class='octothorpe' href='#section-37'>#</a>
       </div>
       <p>If it's time for a plusChar, give us a plusChar. Append current
 term to current element.</p>
@@ -747,10 +944,10 @@ term to current element.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-27'>
+  <div class='section' id='section-38'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-27'>#</a>
+        <a class='octothorpe' href='#section-38'>#</a>
       </div>
       <p>If we have a non '' term, make it the reference term for plusChar.</p>
     </div>
@@ -760,10 +957,10 @@ term to current element.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-28'>
+  <div class='section' id='section-39'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-28'>#</a>
+        <a class='octothorpe' href='#section-39'>#</a>
       </div>
       <p>If we didn't generate anything, bung in a 0.</p>
     </div>
