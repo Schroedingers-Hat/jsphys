@@ -41,13 +41,7 @@ preferable.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
-      <h2>vec3</h2>
-<p>Functions for 3 element vectors consisting of an object with members x, y, z
-  as in:</p>
-<pre><code>X = {x: 1, y: 2, z: 3};
-</code></pre>
-<p>Allowed to contain other elements such as being a vec4.
-  Intended for numbers but many of the functions work with string elements.
+      <p>These functions were Intended for numbers but many work with string elements
   Most funcitons return the destination variable as well as requiring you to
   provide one (to avoid unnecessary if statements).
   As such they can either be used in a more imperative style</p>
@@ -68,7 +62,7 @@ vec3.add(A, B, C);
   destination.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="kd">var</span> <span class="nx">vec3</span> <span class="o">=</span> <span class="p">{</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -76,6 +70,23 @@ vec3.add(A, B, C);
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h2>vec3</h2>
+<p>Functions for 3 element vectors consisting of an object with members x, y, z
+  as in:</p>
+<pre><code>X = {x: 1, y: 2, z: 3};
+</code></pre>
+<p>Allowed to contain other elements such as being a vec4.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">var</span> <span class="nx">vec3</span> <span class="o">=</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
       </div>
       <h3>vec3.create</h3>
 <p>Usage:</p>
@@ -92,10 +103,10 @@ vec3.add(A, B, C);
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-3'>
+  <div class='section' id='section-4'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-3'>#</a>
+        <a class='octothorpe' href='#section-4'>#</a>
       </div>
       <h3>vec3.setVec</h3>
 <p>Usage:</p>
@@ -116,10 +127,10 @@ var B = vec3.setVec(A,{});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-4'>
+  <div class='section' id='section-5'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
+        <a class='octothorpe' href='#section-5'>#</a>
       </div>
       <h3>vec3.setArr</h3>
 <p>Set a vector from an array. Can also be used for creation.</p>
@@ -136,10 +147,10 @@ var B = vec3.setVec(A,{});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-5'>
+  <div class='section' id='section-6'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-5'>#</a>
+        <a class='octothorpe' href='#section-6'>#</a>
       </div>
       <h3>vec3.set</h3>
 <p>Set vector from components.</p>
@@ -157,10 +168,10 @@ var B = vec3.set(A, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-6'>
+  <div class='section' id='section-7'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-6'>#</a>
+        <a class='octothorpe' href='#section-7'>#</a>
       </div>
       <h3>vec3.add</h3>
 <p>Add two vectors.
@@ -179,10 +190,10 @@ var C = vec3.add(A, B, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-7'>
+  <div class='section' id='section-8'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-7'>#</a>
+        <a class='octothorpe' href='#section-8'>#</a>
       </div>
       <h3>vec3.subtract</h3>
 <p>Subtract two vectors.
@@ -201,10 +212,10 @@ var C = vec3.subtract(A, B, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-8'>
+  <div class='section' id='section-9'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-8'>#</a>
+        <a class='octothorpe' href='#section-9'>#</a>
       </div>
       <h3>vec3.norm</h3>
 <p>Normalize a vector.
@@ -230,10 +241,10 @@ var B = vec3.norm(A, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-9'>
+  <div class='section' id='section-10'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-9'>#</a>
+        <a class='octothorpe' href='#section-10'>#</a>
       </div>
       <h3>vec3.cross</h3>
 <p>Cross product. If you use it on a vec4 you'll get nonsense.
@@ -255,10 +266,10 @@ var C = vec3.cross(A, B, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-10'>
+  <div class='section' id='section-11'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-10'>#</a>
+        <a class='octothorpe' href='#section-11'>#</a>
       </div>
       <h3>vec3.dot</h3>
 <p>Dot product between two vectors.
@@ -275,10 +286,10 @@ var C = vec3.cross(A, B, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-11'>
+  <div class='section' id='section-12'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
+        <a class='octothorpe' href='#section-12'>#</a>
       </div>
       <h3>vec3.scale</h3>
 <p>Scale a vector by a constant.
@@ -296,60 +307,174 @@ vec3.scale{2, A, A};
     <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">scale</span> <span class="o">*</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
     <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
   <span class="p">}</span>
-<span class="p">};</span>
-<span class="kd">var</span> <span class="nx">mat3</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="nx">create</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">aa</span><span class="p">,</span> <span class="nx">ab</span><span class="p">,</span> <span class="nx">ac</span><span class="p">,</span> <span class="nx">ba</span><span class="p">,</span> <span class="nx">bb</span><span class="p">,</span> <span class="nx">bc</span><span class="p">,</span> <span class="nx">ca</span><span class="p">,</span> <span class="nx">cb</span><span class="p">,</span> <span class="nx">cc</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">};</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <h2>mat3</h2>
+<p>Functions for 3x3 element matrices of format:</p>
+<pre><code>A = {aa: aa, ab: ab, ac: ac,
+     ba: ba, bb: bb, bc: bc,
+     ca: ca, cb: cb, cc: cc}
+</code></pre>
+<p>First letter is column, second is row.
+  $$\begin{pmatrix}aa&amp;ab&amp;ac\\
+                   ba&amp;bb&amp;bc\\
+                   ca&amp;cb&amp;cc
+  \end{pmatrix}$$</p>
+<p>Any vec3 is assumed to be column vectors unless mentioned.
+  Default multiplication is with the matrix on the left.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">var</span> <span class="nx">mat3</span> <span class="o">=</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <h3>mat3.create</h3>
+<p>Usage:</p>
+<pre><code>var A = vec3.create(1,2,3,4,5,6,7,8,9);
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">create</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">aa</span><span class="p">,</span> <span class="nx">ab</span><span class="p">,</span> <span class="nx">ac</span><span class="p">,</span> <span class="nx">ba</span><span class="p">,</span> <span class="nx">bb</span><span class="p">,</span> <span class="nx">bc</span><span class="p">,</span> <span class="nx">ca</span><span class="p">,</span> <span class="nx">cb</span><span class="p">,</span> <span class="nx">cc</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">{</span>
       <span class="nx">aa</span><span class="o">:</span> <span class="nx">aa</span><span class="p">,</span> <span class="nx">ab</span><span class="o">:</span> <span class="nx">ab</span><span class="p">,</span> <span class="nx">ac</span><span class="o">:</span> <span class="nx">ac</span><span class="p">,</span>
       <span class="nx">ba</span><span class="o">:</span> <span class="nx">ba</span><span class="p">,</span> <span class="nx">bb</span><span class="o">:</span> <span class="nx">bb</span><span class="p">,</span> <span class="nx">bc</span><span class="o">:</span> <span class="nx">bc</span><span class="p">,</span>
       <span class="nx">ca</span><span class="o">:</span> <span class="nx">ca</span><span class="p">,</span> <span class="nx">cb</span><span class="o">:</span> <span class="nx">cb</span><span class="p">,</span> <span class="nx">cc</span><span class="o">:</span> <span class="nx">cc</span>
     <span class="p">};</span>
-  <span class="p">},</span>
-  <span class="nx">mulVec3</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">mat3</span><span class="p">,</span> <span class="nx">vec3</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">vec3</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span>
-        <span class="nx">y</span> <span class="o">=</span> <span class="nx">vec3</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span>
-        <span class="nx">z</span> <span class="o">=</span> <span class="nx">vec3</span><span class="p">.</span><span class="nx">z</span><span class="p">,</span>
-        <span class="nx">m</span> <span class="o">=</span> <span class="nx">mat3</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">aa</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">ab</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">ac</span> <span class="o">*</span> <span class="nx">z</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">ba</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">bb</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">bc</span> <span class="o">*</span> <span class="nx">z</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">ca</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">cb</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">cc</span> <span class="o">*</span> <span class="nx">z</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">mul</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">mat1</span><span class="p">,</span> <span class="nx">mat2</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span></pre></div>
+  <span class="p">},</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-12'>
+  <div class='section' id='section-15'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
+        <a class='octothorpe' href='#section-15'>#</a>
       </div>
-      <p>Yuck.
-aa ab ac | aa ab ac
-ba bb bc | ba bb bc
-ca cb cc | ca cb cc</p>
+      <h3>mat3.set</h3>
+<p>Usage:</p>
+<pre><code>var A = vec3.create(1,2,3,4,5,6,7,8,9, {});
+</code></pre>
+<p>Alternate:</p>
+<pre><code>vec3.create(1,2,3,4,5,6,7,8,9, A);
+</code></pre>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">aa1</span> <span class="o">=</span> <span class="nx">mat1</span><span class="p">.</span><span class="nx">aa</span><span class="p">,</span> <span class="nx">ab1</span> <span class="o">=</span> <span class="nx">mat1</span><span class="p">.</span><span class="nx">ab</span><span class="p">,</span> <span class="nx">ac1</span> <span class="o">=</span> <span class="nx">mat1</span><span class="p">.</span><span class="nx">ac</span><span class="p">,</span>
-        <span class="nx">ba1</span> <span class="o">=</span> <span class="nx">mat1</span><span class="p">.</span><span class="nx">ba</span><span class="p">,</span> <span class="nx">bb1</span> <span class="o">=</span> <span class="nx">mat1</span><span class="p">.</span><span class="nx">bb</span><span class="p">,</span> <span class="nx">bc1</span> <span class="o">=</span> <span class="nx">mat1</span><span class="p">.</span><span class="nx">bc</span><span class="p">,</span>
-        <span class="nx">ca1</span> <span class="o">=</span> <span class="nx">mat1</span><span class="p">.</span><span class="nx">ca</span><span class="p">,</span> <span class="nx">cb1</span> <span class="o">=</span> <span class="nx">mat1</span><span class="p">.</span><span class="nx">cb</span><span class="p">,</span> <span class="nx">cc1</span> <span class="o">=</span> <span class="nx">mat1</span><span class="p">.</span><span class="nx">cc</span><span class="p">,</span>
-        <span class="nx">aa2</span> <span class="o">=</span> <span class="nx">mat2</span><span class="p">.</span><span class="nx">aa</span><span class="p">,</span> <span class="nx">ab2</span> <span class="o">=</span> <span class="nx">mat2</span><span class="p">.</span><span class="nx">ab</span><span class="p">,</span> <span class="nx">ac2</span> <span class="o">=</span> <span class="nx">mat2</span><span class="p">.</span><span class="nx">ac</span><span class="p">,</span>
-        <span class="nx">ba2</span> <span class="o">=</span> <span class="nx">mat2</span><span class="p">.</span><span class="nx">ba</span><span class="p">,</span> <span class="nx">bb2</span> <span class="o">=</span> <span class="nx">mat2</span><span class="p">.</span><span class="nx">bb</span><span class="p">,</span> <span class="nx">bc2</span> <span class="o">=</span> <span class="nx">mat2</span><span class="p">.</span><span class="nx">bc</span><span class="p">,</span>
-        <span class="nx">ca2</span> <span class="o">=</span> <span class="nx">mat2</span><span class="p">.</span><span class="nx">ca</span><span class="p">,</span> <span class="nx">cb2</span> <span class="o">=</span> <span class="nx">mat2</span><span class="p">.</span><span class="nx">cb</span><span class="p">,</span> <span class="nx">cc2</span> <span class="o">=</span> <span class="nx">mat2</span><span class="p">.</span><span class="nx">cc</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">aa</span> <span class="o">=</span> <span class="nx">aa1</span> <span class="o">*</span> <span class="nx">aa2</span> <span class="o">+</span> <span class="nx">ab1</span> <span class="o">*</span> <span class="nx">ba2</span> <span class="o">+</span> <span class="nx">ac1</span> <span class="o">*</span> <span class="nx">ca2</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">ab</span> <span class="o">=</span> <span class="nx">aa1</span> <span class="o">*</span> <span class="nx">ab2</span> <span class="o">+</span> <span class="nx">ab1</span> <span class="o">*</span> <span class="nx">bb2</span> <span class="o">+</span> <span class="nx">ac1</span> <span class="o">*</span> <span class="nx">cb2</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">ac</span> <span class="o">=</span> <span class="nx">aa1</span> <span class="o">*</span> <span class="nx">ac2</span> <span class="o">+</span> <span class="nx">ab1</span> <span class="o">*</span> <span class="nx">bc2</span> <span class="o">+</span> <span class="nx">ac1</span> <span class="o">*</span> <span class="nx">cc2</span><span class="p">;</span>
+      <div class="highlight"><pre>  <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">aa</span><span class="p">,</span> <span class="nx">ab</span><span class="p">,</span> <span class="nx">ac</span><span class="p">,</span> <span class="nx">ba</span><span class="p">,</span> <span class="nx">bb</span><span class="p">,</span> <span class="nx">bc</span><span class="p">,</span> <span class="nx">ca</span><span class="p">,</span> <span class="nx">cb</span><span class="p">,</span> <span class="nx">cc</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">aa</span> <span class="o">=</span> <span class="nx">aa</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">ab</span> <span class="o">=</span> <span class="nx">ab</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">ac</span> <span class="o">=</span> <span class="nx">ac</span><span class="p">;</span>
 
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">ba</span> <span class="o">=</span> <span class="nx">ba1</span> <span class="o">*</span> <span class="nx">aa2</span> <span class="o">+</span> <span class="nx">bb1</span> <span class="o">*</span> <span class="nx">ba2</span> <span class="o">+</span> <span class="nx">bc1</span> <span class="o">*</span> <span class="nx">ca2</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">bb</span> <span class="o">=</span> <span class="nx">ba1</span> <span class="o">*</span> <span class="nx">ab2</span> <span class="o">+</span> <span class="nx">bb1</span> <span class="o">*</span> <span class="nx">bb2</span> <span class="o">+</span> <span class="nx">bc1</span> <span class="o">*</span> <span class="nx">cb2</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">bc</span> <span class="o">=</span> <span class="nx">ba1</span> <span class="o">*</span> <span class="nx">ac2</span> <span class="o">+</span> <span class="nx">bb1</span> <span class="o">*</span> <span class="nx">bc2</span> <span class="o">+</span> <span class="nx">bc1</span> <span class="o">*</span> <span class="nx">cc2</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">ba</span> <span class="o">=</span> <span class="nx">ba</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">bb</span> <span class="o">=</span> <span class="nx">bb</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">bc</span> <span class="o">=</span> <span class="nx">bc</span><span class="p">;</span>
 
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">ca</span> <span class="o">=</span> <span class="nx">ca1</span> <span class="o">*</span> <span class="nx">aa2</span> <span class="o">+</span> <span class="nx">cb1</span> <span class="o">*</span> <span class="nx">ba2</span> <span class="o">+</span> <span class="nx">cc1</span> <span class="o">*</span> <span class="nx">ca2</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">cb</span> <span class="o">=</span> <span class="nx">ca1</span> <span class="o">*</span> <span class="nx">ab2</span> <span class="o">+</span> <span class="nx">cb1</span> <span class="o">*</span> <span class="nx">bb2</span> <span class="o">+</span> <span class="nx">cc1</span> <span class="o">*</span> <span class="nx">cb2</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">cc</span> <span class="o">=</span> <span class="nx">ca1</span> <span class="o">*</span> <span class="nx">ac2</span> <span class="o">+</span> <span class="nx">cb1</span> <span class="o">*</span> <span class="nx">bc2</span> <span class="o">+</span> <span class="nx">cc1</span> <span class="o">*</span> <span class="nx">cc2</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">ca</span> <span class="o">=</span> <span class="nx">ca</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">cb</span> <span class="o">=</span> <span class="nx">cb</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">cc</span> <span class="o">=</span> <span class="nx">cc</span><span class="p">;</span>
+      <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <h3>mat3.mulVec3</h3>
+<p>Multiply a vec3 by a mat3 on the left putting the result into a vec3.
+$$\mathbf{U} = A\mathbf{V}$$</p>
+<pre><code>U = mat3.mulVec3(A, V, {});
+</code></pre>
+<p>Or:</p>
+<pre><code>mat3.mulVec3(A, V, U);
+</code></pre>
+<p>Or with an implicit 1 if dest is the same as the input and a vec4:
+$$\begin{pmatrix}1&amp; 0&amp; 0&amp; 0\\
+               0&amp;aa&amp;ab&amp;ac\\
+               0&amp;ba&amp;bb&amp;bc\\
+               0&amp;ca&amp;cb&amp;cc\end{pmatrix}
+\begin{pmatrix}t\\x\\y\\z\end{pmatrix}$$</p>
+<pre><code>mat3.mulVec3(mat3, U, U);
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">mulVec3</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">m</span><span class="p">,</span> <span class="nx">vec3</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">vec3</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span>
+        <span class="nx">y</span> <span class="o">=</span> <span class="nx">vec3</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span>
+        <span class="nx">z</span> <span class="o">=</span> <span class="nx">vec3</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">aa</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">ab</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">ac</span> <span class="o">*</span> <span class="nx">z</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">ba</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">bb</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">bc</span> <span class="o">*</span> <span class="nx">z</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">ca</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">cb</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">m</span><span class="p">.</span><span class="nx">cc</span> <span class="o">*</span> <span class="nx">z</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <h3>mat3.mul</h3>
+<p>Multiply two 3x3 matrices.
+Empirical testing showed caching was detrimental on recent browsers.
+  $$\begin{pmatrix}aa&amp;ab&amp;ac\\
+                   ba&amp;bb&amp;bc\\
+                   ca&amp;cb&amp;cc\end{pmatrix}
+    \begin{pmatrix}aa&amp;ab&amp;ac\\
+                   ba&amp;bb&amp;bc\\
+                   ca&amp;cb&amp;cc\end{pmatrix}$$
+Usage:</p>
+<pre><code>C = mat3.mul(A,B,{});
+mat3.mul(A,B,C);
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">mul</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">m1</span><span class="p">,</span> <span class="nx">m2</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">aa</span> <span class="o">=</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">aa</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">aa</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ab</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ba</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ac</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ca</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">ab</span> <span class="o">=</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">aa</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ab</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ab</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">bb</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ac</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">cb</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">ac</span> <span class="o">=</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">aa</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ac</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ab</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">bc</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ac</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">cc</span><span class="p">;</span>
+
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">ba</span> <span class="o">=</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ba</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">aa</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">bb</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ba</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">bc</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ca</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">bb</span> <span class="o">=</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ba</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ab</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">bb</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">bb</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">bc</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">cb</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">bc</span> <span class="o">=</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ba</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ac</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">bb</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">bc</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">bc</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">cc</span><span class="p">;</span>
+
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">ca</span> <span class="o">=</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ca</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">aa</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">cb</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ba</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">cc</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ca</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">cb</span> <span class="o">=</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ca</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ab</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">cb</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">bb</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">cc</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">cb</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">cc</span> <span class="o">=</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">ca</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">ac</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">cb</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">bc</span> <span class="o">+</span> <span class="nx">m1</span><span class="p">.</span><span class="nx">cc</span> <span class="o">*</span> <span class="nx">m2</span><span class="p">.</span><span class="nx">cc</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="nx">vec2Rows</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">,</span> <span class="nx">vec3</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <h3>mat3.vecToRows</h3>
+<p>Make a matrix with rows consisting of vec3s (or the x,y,z components of
+vec4s.
+Useful for producing a transformation from a set of basis vectors.
+Usage:</p>
+<pre><code>T = mat3.vecToRows(X,Y,Z,{});
+mat3.vecToRows(X, Y, Z, T);
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">vecToRows</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">,</span> <span class="nx">vec3</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">aa</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">ab</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">ac</span> <span class="o">=</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
@@ -399,7 +524,19 @@ ca cb cc | ca cb cc</p>
     <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
   <span class="p">},</span>
   <span class="nx">norm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span> <span class="o">+</span> <span class="nx">t</span> <span class="o">*</span> <span class="nx">t</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span> <span class="o">+</span> <span class="nx">t</span> <span class="o">*</span> <span class="nx">t</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Return 0 vector if mag is null.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nx">mag</span> <span class="o">=</span> <span class="nx">mag</span> <span class="o">?</span> <span class="mi">1</span><span class="o">/</span><span class="nx">mag</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
@@ -407,16 +544,40 @@ ca cb cc | ca cb cc</p>
     <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
   <span class="p">},</span>
   <span class="nx">spacenorm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Return 0 vector if mag is null.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nx">mag</span> <span class="o">=</span> <span class="nx">mag</span> <span class="o">?</span> <span class="mi">1</span><span class="o">/</span><span class="nx">mag</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
   <span class="p">},</span>
-  <span class="nx">stnorm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span> <span class="o">-</span> <span class="nx">t</span> <span class="o">*</span> <span class="nx">t</span><span class="p">);</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
+  <span class="nx">stNorm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">mag</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">z</span> <span class="o">*</span> <span class="nx">z</span> <span class="o">-</span> <span class="nx">t</span> <span class="o">*</span> <span class="nx">t</span><span class="p">);</span>
+    <span class="nx">mag</span> <span class="o">=</span> <span class="nx">mag</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">/</span> <span class="nx">mag</span> <span class="o">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>If the vector is null, normalise it so t component == 1.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nx">dest</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
@@ -428,12 +589,12 @@ ca cb cc | ca cb cc</p>
            <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span> <span class="o">+</span>
            <span class="nx">vec1</span><span class="p">.</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">t</span><span class="p">;</span>
   <span class="p">},</span>
-  <span class="nx">spacedot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">spaceDot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span>
            <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span>
            <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span><span class="p">;</span>
   <span class="p">},</span>
-  <span class="nx">stdot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">stDot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span>
            <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span>
            <span class="nx">vec1</span><span class="p">.</span><span class="nx">z</span> <span class="o">*</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">z</span> <span class="o">+</span>
@@ -453,9 +614,6 @@ ca cb cc | ca cb cc</p>
            <span class="nx">vec</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="s1">&#39; \\\\\n&#39;</span> <span class="o">+</span> 
            <span class="nx">vec</span><span class="p">.</span><span class="nx">z</span> <span class="o">+</span> <span class="s1">&#39; \\\\\n&#39;</span> <span class="o">+</span> 
            <span class="nx">vec</span><span class="p">.</span><span class="nx">t</span> <span class="o">+</span> <span class="s1">&#39; \\end{&#39;</span><span class="o">+</span><span class="nx">type</span><span class="o">+</span><span class="s1">&#39;}\\]&#39;</span><span class="p">;</span> 
-  <span class="p">},</span>
-  <span class="nx">put</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span> <span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">vec4</span><span class="p">.</span><span class="nx">toLat</span><span class="p">(</span><span class="nx">vec</span><span class="p">,</span><span class="nx">type</span><span class="p">));</span>
   <span class="p">}</span>
 <span class="p">};</span>
 
@@ -486,10 +644,10 @@ ca cb cc | ca cb cc</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-13'>
+  <div class='section' id='section-22'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
+        <a class='octothorpe' href='#section-22'>#</a>
       </div>
       <p>Yuck.
 Multiply AB as below:</p>
@@ -524,10 +682,10 @@ Multiply AB as below:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-14'>
+  <div class='section' id='section-23'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-14'>#</a>
+        <a class='octothorpe' href='#section-23'>#</a>
       </div>
       <p>Cat matrices together string style.</p>
     </div>
@@ -547,10 +705,10 @@ Multiply AB as below:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-15'>
+  <div class='section' id='section-24'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
+        <a class='octothorpe' href='#section-24'>#</a>
       </div>
       <p>Nobody likes you, jslint; it's a string
 Also what if I <em>want</em> to coerce comparison to 0?</p>
@@ -560,10 +718,10 @@ Also what if I <em>want</em> to coerce comparison to 0?</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-16'>
+  <div class='section' id='section-25'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
+        <a class='octothorpe' href='#section-25'>#</a>
       </div>
       <p>If we have no term, set it to '' else, combine two components w a
 timesChar.</p>
@@ -576,10 +734,10 @@ timesChar.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
+  <div class='section' id='section-26'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
+        <a class='octothorpe' href='#section-26'>#</a>
       </div>
       <p>If it's time for a plusChar, give us a plusChar. Append current
 term to current element.</p>
@@ -589,10 +747,10 @@ term to current element.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-18'>
+  <div class='section' id='section-27'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
+        <a class='octothorpe' href='#section-27'>#</a>
       </div>
       <p>If we have a non '' term, make it the reference term for plusChar.</p>
     </div>
@@ -602,10 +760,10 @@ term to current element.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-19'>
+  <div class='section' id='section-28'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
+        <a class='octothorpe' href='#section-28'>#</a>
       </div>
       <p>If we didn't generate anything, bung in a 0.</p>
     </div>
@@ -647,9 +805,6 @@ term to current element.</p>
            <span class="nx">A</span><span class="p">.</span><span class="nx">ba</span> <span class="o">+</span> <span class="s1">&#39; &amp; &#39;</span> <span class="o">+</span> <span class="nx">A</span><span class="p">.</span><span class="nx">bb</span> <span class="o">+</span> <span class="s1">&#39; &amp; &#39;</span> <span class="o">+</span> <span class="nx">A</span><span class="p">.</span><span class="nx">bc</span> <span class="o">+</span> <span class="s1">&#39; &amp; &#39;</span> <span class="o">+</span> <span class="nx">A</span><span class="p">.</span><span class="nx">bd</span> <span class="o">+</span> <span class="s1">&#39; \\\\\n&#39;</span> <span class="o">+</span> 
            <span class="nx">A</span><span class="p">.</span><span class="nx">ca</span> <span class="o">+</span> <span class="s1">&#39; &amp; &#39;</span> <span class="o">+</span> <span class="nx">A</span><span class="p">.</span><span class="nx">cb</span> <span class="o">+</span> <span class="s1">&#39; &amp; &#39;</span> <span class="o">+</span> <span class="nx">A</span><span class="p">.</span><span class="nx">cc</span> <span class="o">+</span> <span class="s1">&#39; &amp; &#39;</span> <span class="o">+</span> <span class="nx">A</span><span class="p">.</span><span class="nx">cd</span> <span class="o">+</span> <span class="s1">&#39; \\\\\n&#39;</span> <span class="o">+</span> 
            <span class="nx">A</span><span class="p">.</span><span class="nx">da</span> <span class="o">+</span> <span class="s1">&#39; &amp; &#39;</span> <span class="o">+</span> <span class="nx">A</span><span class="p">.</span><span class="nx">db</span> <span class="o">+</span> <span class="s1">&#39; &amp; &#39;</span> <span class="o">+</span> <span class="nx">A</span><span class="p">.</span><span class="nx">dc</span> <span class="o">+</span> <span class="s1">&#39; &amp; &#39;</span> <span class="o">+</span> <span class="nx">A</span><span class="p">.</span><span class="nx">dd</span> <span class="o">+</span> <span class="s1">&#39; \\end{&#39;</span><span class="o">+</span><span class="nx">type</span><span class="o">+</span><span class="s1">&#39;}\\]&#39;</span><span class="p">;</span> 
-  <span class="p">},</span>
-  <span class="nx">put</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">mat</span><span class="p">,</span> <span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">mat4</span><span class="p">.</span><span class="nx">toLat</span><span class="p">(</span><span class="nx">mat</span><span class="p">,</span><span class="nx">type</span><span class="p">));</span>
   <span class="p">}</span>
 <span class="p">};</span>
 

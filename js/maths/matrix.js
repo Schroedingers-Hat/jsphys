@@ -14,13 +14,7 @@ preferable.
 
 
 /*
-##vec3
-  Functions for 3 element vectors consisting of an object with members x, y, z
-  as in:
-
-    X = {x: 1, y: 2, z: 3};
-  Allowed to contain other elements such as being a vec4.
-  Intended for numbers but many of the functions work with string elements.
+  These functions were Intended for numbers but many work with string elements
   Most funcitons return the destination variable as well as requiring you to
   provide one (to avoid unnecessary if statements).
   As such they can either be used in a more imperative style
@@ -39,6 +33,15 @@ preferable.
     C = vec3.add(A, B, C);
   Is fine, but a bit redundant due to the requirement of providing a 
   destination.
+*/
+
+/*
+##vec3
+  Functions for 3 element vectors consisting of an object with members x, y, z
+  as in:
+
+    X = {x: 1, y: 2, z: 3};
+  Allowed to contain other elements such as being a vec4.
 */
 var vec3 = {
   /*
@@ -189,7 +192,30 @@ var vec3 = {
     return dest;
   }
 };
+
+/*
+##mat3
+  Functions for 3x3 element matrices of format:
+
+    A = {aa: aa, ab: ab, ac: ac,
+         ba: ba, bb: bb, bc: bc,
+         ca: ca, cb: cb, cc: cc}
+  First letter is column, second is row.
+  $$\begin{pmatrix}aa&ab&ac\\\\
+                   ba&bb&bc\\\\
+                   ca&cb&cc
+  \end{pmatrix}$$
+ 
+  Any vec3 is assumed to be column vectors unless mentioned.
+  Default multiplication is with the matrix on the left.
+*/
 var mat3 = {
+  /*
+  ###mat3.create
+    Usage:
+
+      var A = vec3.create(1,2,3,4,5,6,7,8,9);
+  */
   create: function(aa, ab, ac, ba, bb, bc, ca, cb, cc) {
     return {
       aa: aa, ab: ab, ac: ac,
@@ -197,41 +223,96 @@ var mat3 = {
       ca: ca, cb: cb, cc: cc
     };
   },
-  mulVec3: function(mat3, vec3, dest) {
+  /*
+  ###mat3.set
+    Usage:
+
+      var A = vec3.create(1,2,3,4,5,6,7,8,9, {});
+    Alternate:
+
+      vec3.create(1,2,3,4,5,6,7,8,9, A);
+  */
+  set: function(aa, ab, ac, ba, bb, bc, ca, cb, cc, dest) {
+      dest.aa = aa;
+      dest.ab = ab;
+      dest.ac = ac;
+
+      dest.ba = ba;
+      dest.bb = bb;
+      dest.bc = bc;
+
+      dest.ca = ca;
+      dest.cb = cb;
+      dest.cc = cc;
+      return dest;
+  },
+  /*
+  ###mat3.mulVec3
+  Multiply a vec3 by a mat3 on the left putting the result into a vec3.
+  $$\mathbf{U} = A\mathbf{V}$$
+
+      U = mat3.mulVec3(A, V, {});
+  Or:
+
+      mat3.mulVec3(A, V, U);
+  Or with an implicit 1 if dest is the same as the input and a vec4:
+  $$\begin{pmatrix}1& 0& 0& 0\\\\
+                 0&aa&ab&ac\\\\
+                 0&ba&bb&bc\\\\
+                 0&ca&cb&cc\end{pmatrix}
+  \begin{pmatrix}t\\\\x\\\\y\\\\z\end{pmatrix}$$
+
+      mat3.mulVec3(mat3, U, U);
+  */
+  mulVec3: function(m, vec3, dest) {
     var x = vec3.x,
         y = vec3.y,
-        z = vec3.z,
-        m = mat3;
+        z = vec3.z;
     dest.x = m.aa * x + m.ab * y + m.ac * z;
     dest.y = m.ba * x + m.bb * y + m.bc * z;
     dest.z = m.ca * x + m.cb * y + m.cc * z;
   },
-  mul: function(mat1, mat2, dest) {
-    // Yuck.
-    // aa ab ac | aa ab ac
-    // ba bb bc | ba bb bc
-    // ca cb cc | ca cb cc
-    var aa1 = mat1.aa, ab1 = mat1.ab, ac1 = mat1.ac,
-        ba1 = mat1.ba, bb1 = mat1.bb, bc1 = mat1.bc,
-        ca1 = mat1.ca, cb1 = mat1.cb, cc1 = mat1.cc,
-        aa2 = mat2.aa, ab2 = mat2.ab, ac2 = mat2.ac,
-        ba2 = mat2.ba, bb2 = mat2.bb, bc2 = mat2.bc,
-        ca2 = mat2.ca, cb2 = mat2.cb, cc2 = mat2.cc;
-    dest.aa = aa1 * aa2 + ab1 * ba2 + ac1 * ca2;
-    dest.ab = aa1 * ab2 + ab1 * bb2 + ac1 * cb2;
-    dest.ac = aa1 * ac2 + ab1 * bc2 + ac1 * cc2;
+  /*
+  ###mat3.mul
+  Multiply two 3x3 matrices.
+  Empirical testing showed caching was detrimental on recent browsers.
+    $$\begin{pmatrix}aa&ab&ac\\\\
+                     ba&bb&bc\\\\
+                     ca&cb&cc\end{pmatrix}
+      \begin{pmatrix}aa&ab&ac\\\\
+                     ba&bb&bc\\\\
+                     ca&cb&cc\end{pmatrix}$$
+  Usage:
 
-    dest.ba = ba1 * aa2 + bb1 * ba2 + bc1 * ca2;
-    dest.bb = ba1 * ab2 + bb1 * bb2 + bc1 * cb2;
-    dest.bc = ba1 * ac2 + bb1 * bc2 + bc1 * cc2;
+      C = mat3.mul(A,B,{});
+      mat3.mul(A,B,C);
+  */
+  mul: function(m1, m2, dest) {
+    dest.aa = m1.aa * m2.aa + m1.ab * m2.ba + m1.ac * m2.ca;
+    dest.ab = m1.aa * m2.ab + m1.ab * m2.bb + m1.ac * m2.cb;
+    dest.ac = m1.aa * m2.ac + m1.ab * m2.bc + m1.ac * m2.cc;
 
-    dest.ca = ca1 * aa2 + cb1 * ba2 + cc1 * ca2;
-    dest.cb = ca1 * ab2 + cb1 * bb2 + cc1 * cb2;
-    dest.cc = ca1 * ac2 + cb1 * bc2 + cc1 * cc2;
+    dest.ba = m1.ba * m2.aa + m1.bb * m2.ba + m1.bc * m2.ca;
+    dest.bb = m1.ba * m2.ab + m1.bb * m2.bb + m1.bc * m2.cb;
+    dest.bc = m1.ba * m2.ac + m1.bb * m2.bc + m1.bc * m2.cc;
+
+    dest.ca = m1.ca * m2.aa + m1.cb * m2.ba + m1.cc * m2.ca;
+    dest.cb = m1.ca * m2.ab + m1.cb * m2.bb + m1.cc * m2.cb;
+    dest.cc = m1.ca * m2.ac + m1.cb * m2.bc + m1.cc * m2.cc;
 
     return dest;
   },
-  vec2Rows: function(vec1, vec2, vec3, dest) {
+  /*
+  ###mat3.vecToRows
+  Make a matrix with rows consisting of vec3s (or the x,y,z components of
+  vec4s.
+  Useful for producing a transformation from a set of basis vectors.
+  Usage:
+
+      T = mat3.vecToRows(X,Y,Z,{});
+      mat3.vecToRows(X, Y, Z, T);
+  */
+  vecToRows: function(vec1, vec2, vec3, dest) {
     dest.aa = vec1.x;
     dest.ab = vec1.y;
     dest.ac = vec1.z;
@@ -281,7 +362,9 @@ var vec4 = {
     return dest;
   },
   norm: function(vec, dest) {
-    var mag = 1 / Math.sqrt(x * x + y * y + z * z + t * t);
+    var mag = Math.sqrt(x * x + y * y + z * z + t * t);
+    // Return 0 vector if mag is null.
+    mag = mag ? 1/mag : 0;
     dest.x = vec.x * mag;
     dest.y = vec.y * mag;
     dest.z = vec.z * mag;
@@ -289,15 +372,19 @@ var vec4 = {
     return dest;
   },
   spacenorm: function(vec, dest) {
-    var mag = 1 / Math.sqrt(x * x + y * y + z * z);
+    var mag = Math.sqrt(x * x + y * y + z * z);
+    // Return 0 vector if mag is null.
+    mag = mag ? 1/mag : 0;
     dest.x = vec.x * mag;
     dest.y = vec.y * mag;
     dest.z = vec.z * mag;
     dest.t = vec.t * mag;
     return dest;
   },
-  stnorm: function(vec, dest) {
-    var mag = 1 / Math.sqrt(x * x + y * y + z * z - t * t);
+  stNorm: function(vec, dest) {
+    var mag = Math.sqrt(x * x + y * y + z * z - t * t);
+    mag = mag ? 1 / mag : 1 / vec.t;
+    // If the vector is null, normalise it so t component == 1.
     dest.x = vec.x * mag;
     dest.y = vec.y * mag;
     dest.z = vec.z * mag;
@@ -310,12 +397,12 @@ var vec4 = {
            vec1.z * vec2.z +
            vec1.t * vec2.t;
   },
-  spacedot: function(vec1, vec2) {
+  spaceDot: function(vec1, vec2) {
     return vec1.x * vec2.x +
            vec1.y * vec2.y +
            vec1.z * vec2.z;
   },
-  stdot: function(vec1, vec2) {
+  stDot: function(vec1, vec2) {
     return vec1.x * vec2.x +
            vec1.y * vec2.y +
            vec1.z * vec2.z +
@@ -335,9 +422,6 @@ var vec4 = {
            vec.y + ' \\\\\n' + 
            vec.z + ' \\\\\n' + 
            vec.t + ' \\end{'+type+'}\\]'; 
-  },
-  put: function(vec, type) {
-    document.write(vec4.toLat(vec,type));
   }
 };
 
@@ -460,9 +544,6 @@ var mat4 = {
            A.ba + ' & ' + A.bb + ' & ' + A.bc + ' & ' + A.bd + ' \\\\\n' + 
            A.ca + ' & ' + A.cb + ' & ' + A.cc + ' & ' + A.cd + ' \\\\\n' + 
            A.da + ' & ' + A.db + ' & ' + A.dc + ' & ' + A.dd + ' \\end{'+type+'}\\]'; 
-  },
-  put: function(mat, type) {
-    document.write(mat4.toLat(mat,type));
   }
 };
 

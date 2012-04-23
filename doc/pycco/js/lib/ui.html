@@ -20,15 +20,44 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      <p>Use JQuery to wait for document load</p>
+      <p>Use JQuery to wait for document load
+$(document).ready(function() {
+ var viewportWidth = $('body').width() - 16;
+ $('#canvas').attr('width', viewportWidth);
+ $('#help-screen').hide();</p>
+<p>$('#debug').change(function() {
+   // Enable/disable debug mode based on checkbox state
+ });
+ $('#demo-chooser-activate').click(function() {
+   $('#demo-chooser').toggle();
+ });
+ $('#help').click(function() {
+   $('#help-screen').toggle();
+ });
+ $('#settings-activate').click(function() {
+   $('#settings').toggle();
+   $('#settings-activate').toggleClass('nav-active');
+ });
+ // If the URL hash contains a demo, load the specified demo and place it
+ // in the history so we can go back to it later.
+ if (window.location.hash !== '') {
+   var demo = window.location.hash.substr(1);
+   loadDemo({source: demo, name: demo}, scene)();
+ }</p>
+<p>$(window).resize(function() {
+   return function(event) {
+     if (typeof FlashCanvas === 'undefined') {
+       var viewportWidth = $('body').width() - 16;
+       $('#canvas').attr('width', viewportWidth);
+     }
+   };
+ }());</p>
+<p>mainLoop = new MainLoop(0);
+ mainLoop.start();
+});</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">viewportWidth</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">).</span><span class="nx">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">16</span><span class="p">;</span>
-  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#canvas&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="nx">viewportWidth</span><span class="p">);</span>
-  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#help-screen&#39;</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
-
-  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#debug&#39;</span><span class="p">).</span><span class="nx">change</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -36,57 +65,6 @@
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
-      </div>
-      <p>Enable/disable debug mode based on checkbox state</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>  <span class="p">});</span>
-  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#demo-chooser-activate&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#demo-chooser&#39;</span><span class="p">).</span><span class="nx">toggle</span><span class="p">();</span>
-  <span class="p">});</span>
-  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#help&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#help-screen&#39;</span><span class="p">).</span><span class="nx">toggle</span><span class="p">();</span>
-  <span class="p">});</span>
-  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#settings-activate&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#settings&#39;</span><span class="p">).</span><span class="nx">toggle</span><span class="p">();</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#settings-activate&#39;</span><span class="p">).</span><span class="nx">toggleClass</span><span class="p">(</span><span class="s1">&#39;nav-active&#39;</span><span class="p">);</span>
-  <span class="p">});</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-2'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-2'>#</a>
-      </div>
-      <p>If the URL hash contains a demo, load the specified demo and place it
-in the history so we can go back to it later.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span> <span class="o">!==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">demo</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-    <span class="nx">loadDemo</span><span class="p">({</span><span class="nx">source</span><span class="o">:</span> <span class="nx">demo</span><span class="p">,</span> <span class="nx">name</span><span class="o">:</span> <span class="nx">demo</span><span class="p">},</span> <span class="nx">scene</span><span class="p">)();</span>
-  <span class="p">}</span>
-
-  <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">resize</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">FlashCanvas</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">viewportWidth</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">).</span><span class="nx">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">16</span><span class="p">;</span>
-        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#canvas&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="nx">viewportWidth</span><span class="p">);</span>
-      <span class="p">}</span>
-    <span class="p">};</span>
-  <span class="p">}());</span>
-
-  <span class="nx">mainLoop</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MainLoop</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-  <span class="nx">mainLoop</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
-<span class="p">});</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-3'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-3'>#</a>
       </div>
       <p>Pair of functions to recursively accumulate offsets.
 Because the builtin functions are eminently retarded.
@@ -97,10 +75,10 @@ TODO: Put them somewhere sensible.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-4'>
+  <div class='section' id='section-2'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
+        <a class='octothorpe' href='#section-2'>#</a>
       </div>
       <p>If we have a parent, run again on parent and add. Else report offset.</p>
     </div>
@@ -112,10 +90,10 @@ TODO: Put them somewhere sensible.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-5'>
+  <div class='section' id='section-3'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-5'>#</a>
+        <a class='octothorpe' href='#section-3'>#</a>
       </div>
       <p>If we have a parent, run again on parent and add. Else report offset.</p>
     </div>

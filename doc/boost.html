@@ -17,7 +17,8 @@
         processEscapes: true
         }
       });
-      var g = mat4.create(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,-1);
+      var g = mat4.create(-1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+      // These are stil -1, 0, 0 ,0.
       var Bx = mat4.create(
         '\\gamma_x','(-\\beta_x\\gamma_x)','0','0',
         '(-\\beta_x\\gamma_x)','\\gamma_x','0','0',
@@ -35,9 +36,14 @@
         '0','0','1','0',
         '(-\\beta_z\\gamma_z)','0','0','\\gamma_z'
         );
-      var V = vec4.create('v_x','v_y','v_z','c v_t');
-      var X = vec4.create('x','y','z','c t');
-
+      var V = vec4.create('c v_t', 'v_x','v_y','v_z');
+      var X = vec4.create('c t', 'x','y','z');
+      function cosh(x) {
+        return 0.5*(Math.exp(x) + Math.exp(-x));
+      }
+      function sinh(x) {
+        return 0.5*(Math.exp(x) - Math.exp(-x));
+      }
       function putm4(obj, type) {
         document.write(mat4.toLat(obj,type));
       }
@@ -104,7 +110,7 @@
       with the lorentz constant \(\gamma\). The convention within the code is
       for the time component of any vector \(U\) to be U.t, ie.<br>
       var U = vec4.create(1,2,3,4);<br>
-        U.t will evaluate to 4.
+        U.t will evaluate to 1.
     </dl>
     <h2>Part 1: Derivation of boost formula from interval.</h2>
     <p>At its heart, this simulation is just lines and geometry. It maps a
@@ -130,36 +136,22 @@
             <div id = 'hyp'></div>
             <a href = 'pycco/js/utils/graph.html'>What's this thing?</a>
             <script>
-              (new Graph('hyp',{height: 250, width: 250, zoom: 50})).addfunc(
-                function(t){
-                  return {x: t, y:  Math.sqrt(1 + t*t)
-                };}, 'green').addfunc(
-                function(t){
-                  return {x: t, y: -Math.sqrt(1 + t*t)
-                };}, 'green').addfunc(
-                function(t){
-                  return {x:  Math.sqrt(1 + t*t), y: t
-                };}, 'green').addfunc(
-                function(t){
-                  return {x: -Math.sqrt(1 + t*t), y: t
-                };}, 'green').addLine(
-                function(x,y){
-                  return {x: 0, y: 0};
-                },
-                function(x,y){ 
-                  var xmag = Math.abs(x),
-                      ymag = Math.abs(y),
-                      sgx = x/xmag,
-                      sgy = y/ymag; 
-                      return ymag > xmag ? {x: x, y: sgy * Math.sqrt(1 + x*x)}:
-                                           {x: sgx * Math.sqrt(1 + y*y), y: y};
+              (new Graph('hyp', {height: 350, width: 350, zoom: 100})).addFunc(
+               function(t){return {x: sinh(t), y: cosh(t)};}, 'green').addFunc(
+               function(t){return {x: sinh(t), y:-cosh(t)};}, 'green').addFunc(
+               function(t){return {x: cosh(t), y: sinh(t)};}, 'green').addFunc(
+               function(t){return {x:-cosh(t), y: sinh(t)};}, 'green').addLine(
+               function(x,y){return {x: 0, y: 0};},
+               function(x,y){
+                 var s = Math.sqrt(Math.abs(x*x - y*y));
+                 return {x: x/s, y: y/s};
                }, {});
             </script>
           </td>
           <td>
-            <div id = 'circle'></div>
+            <div id = 'circ'></div>
             <script>
-              (new Graph('circle',{height: 250, width: 250,zoom: 50})).addfunc(
+             (new Graph('circ', {height: 250, width: 250, zoom: 100})).addFunc(
               function(t){
                 return {x: Math.cos(t * Math.PI), y:  Math.sin(t * Math.PI)};
               }, 'green').addLine(
