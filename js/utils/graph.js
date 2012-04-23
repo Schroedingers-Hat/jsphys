@@ -91,8 +91,8 @@ var Graph = function(name, options){
       vec2: point, format {x: x, y: y}
       ctx: canvas context
       options: object format {c: 'green', w: 1} containing optionally:
-      c: color '#rrbbggaa' or pre-set color names as strings.
-      w: lineWidth in screen coordinates
+        c: color '#rrbbggaa' or pre-set color names as strings.
+        w: lineWidth in screen coordinates
   */
   function line(vec1, vec2, ctx, width, style){
     // Cache and compare local versions of ctx.strokeStyle and ctx.lineWidth

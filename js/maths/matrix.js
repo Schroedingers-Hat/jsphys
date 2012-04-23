@@ -507,12 +507,12 @@ var vec4 = {
            vec1.z * vec2.z;
   },
   /*
-  ###vec4.dot
+  ###vec4.stDot
     1+3D Minkowski inner product between two vectors.
     $$c = \mathbf{A}\cdot\mathbf{B} = 
     -A_tB_t + A_xB_x + A_yB_y + A_zB_z$$
 
-      var c = vec4.dot(A,B);
+      var c = vec4.stDot(A,B);
 
   */
   stDot: function(vec1, vec2) {
@@ -521,6 +521,16 @@ var vec4 = {
             vec1.y * vec2.y +
             vec1.z * vec2.z;
   },
+  /*
+  ###vec4.scale
+    Scale a vector by a constant.
+    $$\mathbf{B} = a\mathbf{A}$$
+
+      var a = 5,
+          A = vec4.create(1,2,3);
+      B = vec4.scale(a,A, {});
+      vec4.scale{2, A, A};
+  */
   scale: function(vec, scale, dest) {
     dest.x = scale * vec.x;
     dest.y = scale * vec.y;
@@ -528,7 +538,10 @@ var vec4 = {
     dest.t = scale * vec.t;
     return dest;
   },
-
+  /*
+  ###vec4.toLat
+  Projuce latex formatted output with optional type.
+  */
   toLat: function(vec,type) {
     type = type || 'pmatrix';
     return '\\[\\begin{'+type+'}' +
@@ -592,7 +605,12 @@ var mat4 = {
 
     return dest;
   },
-  // Cat matrices together string style.
+  /*
+  ###mat4.textMul
+  Some very simple symbolic manipulation, assuming input is a string and
+  outputting a string.
+  Nobody is quite sure why this happened.
+  */
   textMul: function(A, B, dest, timesChar, plusChar) {
     var t = timesChar || '*',
         p = plusChar || '+';
@@ -601,10 +619,13 @@ var mat4 = {
     var i,j,k;
     var cur,prev = '';
     for(i in a) {
+      if (a.hasOwnProperty(i)){
       for(j in a) {
+        if (a.hasOwnProperty(j)){
         dest[a[i]+a[j]] = '(';
         prev = '';
         for(k in a){
+          if (a.hasOwnProperty(k)){
           // Nobody likes you, jslint; it's a string
           // Also what if I _want_ to coerce comparison to 0?
 
@@ -620,14 +641,26 @@ var mat4 = {
           // If we have a non '' term, make it the reference term for plusChar.
           prev = (cur === '') ? prev : cur;
         }
+        }
         // If we didn't generate anything, bung in a 0.
         dest[a[i]+a[j]] += ')';
         dest[a[i]+a[j]] = dest[a[i]+a[j]] === '()' ? ' 0 ': 
-          dest[a[i]+a[j]] === '(1)' ? 1 : dest[a[i]+a[j]];
+        dest[a[i]+a[j]] === '(1)' ? 1 : dest[a[i]+a[j]];
       }
+      }
+    }
     }
     return dest;
   },
+  /*
+  ###mat4.toText
+  Take a mat4 with numbers and output one with either fixed precision or fixed
+  place decimal strings.
+  Usage:
+
+      mat4.toText(a, 4, true); // Outputs 0.xxxx
+      mat4.toText(a, 3, false); // Outputs 3 sig figs.
+  */
   toText: function(A, prec, fixed) {
     var el, dest = {};
     for(el in A) {
@@ -639,18 +672,54 @@ var mat4 = {
     }
     return dest;
   },
+  /*
+  ###mat4.toArr
+  Take {aa,...dd} formatted matrix and return 16 element vector with same
+  elements.
+  */
   toArr: function(A) {
-    return [[aa,ab,ac,ad],
-            [ba,bb,bc,bd],
-            [ca,cb,cc,cd],
-            [da,db,dc,dd]];
+    return [A.aa,A.ab,A.ac,A.ad,
+            A.ba,A.bb,A.bc,A.bd,
+            A.ca,A.cb,A.cc,A.cd,
+            A.da,A.db,A.dc,A.dd];
   },
+  /*
+  ###mat4.toArr2
+  Take {aa,...dd} formatted matrix and return 4 element vector with elements
+  of 4 element vectors with same elements.
+  */
+  toArr2: function(A) {
+    return [[A.aa,A.ab,A.ac,A.ad],
+            [A.ba,A.bb,A.bc,A.bd],
+            [A.ca,A.cb,A.cc,A.cd],
+            [A.da,A.db,A.dc,A.dd]];
+  },
+  /*
+  ###mat4.fromArr
+  Same as mat4.toArr in reverse.
+  */
   fromArr: function(ar) {
+    return mat4.create(ar[ 0],ar[ 1],ar[ 2],ar[ 3],
+                       ar[ 4],ar[ 5],ar[ 6],ar[ 7],
+                       ar[ 8],ar[ 9],ar[10],ar[11],
+                       ar[12],ar[13],ar[14],ar[15]);
+  },
+  /*
+  ###mat4.fromArr2
+  Same as mat4.toArr2 in reverse.
+  */
+  fromArr2: function(ar) {
     return mat4.create(ar[0][0],ar[0][1],ar[0][2],ar[0][3],
                        ar[1][0],ar[1][1],ar[1][2],ar[1][3],
                        ar[2][0],ar[2][1],ar[2][2],ar[2][3],
                        ar[3][0],ar[3][1],ar[3][2],ar[3][3]);
   },
+  /*
+  ###mat4.toLat
+  Take matrix and return latex formatted string with optional type.
+  Type is anything that fits foo in \begin{foo} and accepts row/column input.
+  ie. pmatrix bmatrix etc.
+  */
   toLat: function(A,type) {
     type = type || 'pmatrix';
     return '\\[\\begin{'+type+'}' +
@@ -661,5 +730,69 @@ var mat4 = {
   }
 };
 
+/*
+##mat
+General purpose matrix functions.
+Let's see if all that retardedness was worth it.
+*/
+mat = {
+  create: function(arr, h, w) {
+    arr = arr || [];
+    w = w || 1;
+    h = h || arr.length || 1;
+    var len = h*w;
+      if (!(arr && arr.length === len)) {
+        arr = [];
+        arr.length = len;
+      }
+      var A = {h : h, w: w, arr: arr, len: len};
+      return A;
+  },
+  set: function(A, arr, h, w) {
+    var i;
+    if (h) {
+      w = w || 1;
+    } else {
+      h = arr.length;
+      w = 1;
+    }
+    A.h = h;
+    A.w = w;
+    A.len = h*w;
+    A.arr.length = A.len;
+
+    for (i = 0,ii = A.len; i < ii; i++) {
+      this.arr[i] = iArr[i];
+    }
+    return A;
+  },
+  mul: function(A, B, dest) {
+    var i, j, k, c, t,
+        h = A.h,
+        w = B.w,
+        kk = A.w,
+        len = h*w,
+        Aa = A.arr,
+        Ba = B.arr,
+        arr;
+    dest.h = h;
+    dest.w = w;
+    dest.len = len;
+    arr = dest.arr || [];
+    arr.length = len;
+    dest.arr = arr;
+    for (i = 0, ii = h; i < ii; i++) {
+      c = i * h;
+      for (j = 0, jj = w; j < jj; j++) {
+        t = 0;
+        for (k = 0; k < kk; k++) {
+          t += Aa[c+k] * Ba[j+h*k];
+        }
+      arr[c+j] = t;
+      }
+    }
+    return dest;
+  }
+};
 window['vec3'] = vec3;
 window['mat3'] = mat3;
