@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>graph.js</title>
+  <link rel="stylesheet" href="../../pycco.css">
+  <script type="text/javascript"
+     src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>graph.js</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Graph
+  =====
+  Typing a long comment to explain some stuff about Graph.
+  Some stuff
+  Takes functions defining lines or parametric equations
+  $$[x,y] = f(t)$$
+  $$\frac{\partial y}{\partial x}$$*/</p>
+<p>// blah
+var Graph = function(name, options){
+  // Protected variables.</p>
+<p>var height = options.height || 500, // Set defaults for options if not set.
+      width = options.width || 500,
+      zoom = options.zoom || 2,
+      mouse = options.mouse || true,  // Do we have mouse control?
+      animate = options.animate || false, // Animate?
+      cv, ctx,                        // canvas and context.
+      hcw, hch,                       // Halfwidth and halfheight.
+      ti = new Date().getTime(),      // Initial time for animations.
+      points = [],                    // Array of functions specifying points.
+      functions = [],                 // Array of functions specifying curves.
+      lines = [];                     // Array of functions specifying lines.</p>
+<p>// Insert canvas element.
+  $('#' + name).html(
+    '<canvas id="' + name + 'canvas" height="' + height + '" width="' + 
+    width +'"></canvas>'
+  );
+  // Mousemove TODO: Move this to a global mousemove somewhere else?
+  // TODO: Click/lastclick. Allow graphs to access last click location.
+  if (mouse){
+    $("#"+name).mousemove(function(e,ui){
+      var x = (e.pageX - xOffset(this));
+      var y = (e.pageY - yOffset(this));
+      draw(x,y);
+    });<br />
+  }
+  cv = $('#' + name + 'canvas')[0];</p>
+<p>// Private methods.</p>
+<p>function line(vec1, vec2, ctx, width, style){
+    // TODO: These are expensive, store a temp ver. and compare.
+    ctx.strokeStyle = style || 'black';
+    ctx.lineWidth = width / zoom || 1 / zoom;</p>
+<pre><code>ctx.beginPath();
+ctx.moveTo(vec1.x, vec1.y);
+ctx.lineTo(vec2.x, vec2.y);
+ctx.stroke();
+</code></pre>
+<p>}</p>
+<p>function init() {
+    ctx = cv.getContext("2d");
+    hcw = cv.width / 2;
+    hch = cv.height / 2;
+    ctx.save();
+  }</p>
+<p>function draw(mx, my){
+    var i,j,jj, f;</p>
+<pre><code>// Clear.
+ctx.restore();
+ctx.clearRect(0,0,2*hcw,2*hch);
+ctx.save();
+ctx.transform(zoom,0,0,-zoom,hcw,hch);
+
+// Axes.
+line({x: -hcw, y: 0},
+     {x: hcw, y: 0}, ctx);
+line({x: 0, y: -hch}, {x: 0, y: hch},ctx);
+
+// Calibrate mouse position to graph coordinates.
+mx = (mx - hcw) / zoom;
+my = (-my + hch) / zoom;
+
+// Iterate over functions and plot.
+// TODO: Provide options for:
+//   Max/min parameter, color, width.
+for(i in functions) {
+  if (functions.hasOwnProperty(i)) {
+    f = functions[i].func;
+    for(j = -hcw / zoom, jj = hcw / zoom; j &lt; jj; j+= 2 / zoom) {
+      line(f(j,mx,my), f(j+2/zoom, mx, my), ctx, 0.5, functions[i].color);
+    }
+  }
+}
+// Iterate over lines and plot.
+for(i in lines) {
+  if (lines.hasOwnProperty(i)) {
+    var p1 = lines[i].p1,
+        p2 = lines[i].p2;
+      line(p1(mx,my), p2(mx,my), ctx, 0.5, lines[i].options.color);
+  }
+}
+if (animate) {
+  setTImeout(draw, 100);
+}
+</code></pre>
+<p>}</p>
+<p>// Public methods.
+  this.addfunc = function(func, color){
+    functions[functions.length] = {func: func, color: color};
+    return this;
+  };
+  this.addLine = function(p1, p2 , options) {
+    lines[lines.length] = {p1: p1, p2: p2, options: options};
+    return this;
+  };
+  $(document).ready(function(){
+    init();
+    draw();
+  });
+};</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

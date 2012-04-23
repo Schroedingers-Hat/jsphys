@@ -36,3 +36,18 @@ $(document).ready(function() {
   mainLoop = new MainLoop(0);
   mainLoop.start();
 });
+
+
+// Pair of functions to recursively accumulate offsets.
+// Because the builtin functions are eminently retarded.
+// TODO: Put them somewhere sensible.
+function xOffset(item) {
+  // If we have a parent, run again on parent and add. Else report offset.
+  return item.offsetParent ? xOffset(item.offsetParent) + item.offsetLeft :
+                             item.offsetLeft;
+}
+function yOffset(item) {
+  // If we have a parent, run again on parent and add. Else report offset.
+  return item.offsetParent ? yOffset(item.offsetParent) + item.offsetTop :
+                             item.offsetTop;
+}

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>jsrel-concat.js</title>
+  <link rel="stylesheet" href="../../pycco.css">
+  <script type="text/javascript"
+     src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>jsrel-concat.js</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="s1">&#39;use strict&#39;</span><span class="p">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <ul>
+<li>The AudioManager implements a queueing system to be used for audio narration</li>
+<li>of demos. Objects can load media files which should be played, and when those</li>
+<li>objects decide the media should be played (based on time, a button, or</li>
+<li>whatever), they call <code>play</code>. Objects can also specify callbacks which fire</li>
+<li>when the audio track has completed.</li>
+</ul>
+<p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">function</span> <span class="nx">AudioManager</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">AudioManager</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <ul>
+<li>Load a track so it will be ready to play in advance.</li>
+</ul>
+<p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">load</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">track</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;audio&#39;</span><span class="p">);</span>
+    <span class="nx">a</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;demos/audio/&#39;</span> <span class="o">+</span> <span class="nx">track</span> <span class="o">+</span> <span class="s1">&#39;.ogg&#39;</span><span class="p">);</span>
+    <span class="nx">a</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="nx">track</span><span class="p">]</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <ul>
+<li>Play the track. Optionally provide onFinish, a callback which is called</li>
+<li>when the audio has completed playing.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">play</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">track</span><span class="p">,</span> <span class="nx">onFinish</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="p">(</span><span class="nx">track</span> <span class="k">in</span> <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Track &#39;&quot;</span> <span class="o">+</span> <span class="nx">track</span> <span class="o">+</span> <span class="s2">&quot;&#39; cannot be played before being loaded.&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Another track is playing, so queue this one.
+*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">this</span><span class="p">.</span><span class="nx">queue</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+        <span class="s1">&#39;track&#39;</span><span class="o">:</span> <span class="nx">track</span><span class="p">,</span>
+        <span class="s1">&#39;onFinish&#39;</span><span class="o">:</span> <span class="nx">onFinish</span>
+      <span class="p">});</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">onFinish</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="nx">track</span><span class="p">].</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;ended&#39;</span><span class="p">,</span> <span class="nx">onFinish</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="nx">track</span><span class="p">].</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;ended&#39;</span><span class="p">,</span> <span class="nx">$</span><span class="p">.</span><span class="nx">proxy</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">playbackEnded</span><span class="p">,</span> <span class="k">this</span><span class="p">));</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="nx">track</span><span class="p">].</span><span class="nx">play</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span> <span class="o">=</span> <span class="nx">track</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <ul>
+<li>When playback of the current track has ended, play the next track in the</li>
+<li>queue, if necessary.</li>
+</ul>
+<p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">playbackEnded</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">queue</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">track</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">queue</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">play</span><span class="p">(</span><span class="nx">track</span><span class="p">.</span><span class="nx">track</span><span class="p">,</span> <span class="nx">track</span><span class="p">.</span><span class="nx">onFinish</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <ul>
+<li>Pause/resume current audio playback.</li>
+</ul>
+<p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">pause</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">paused</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">resumeTrack</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span><span class="p">].</span><span class="nx">pause</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="nx">resume</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">paused</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">resumeTrack</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span><span class="p">].</span><span class="nx">play</span><span class="p">();</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">resumeTrack</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <ul>
+<li>Reset the audio manager, pausing any current tracks before they're</li>
+<li>destroyed. If the audio were not stopped, switching to a new demo</li>
+<li>would leave the previous demo's audio running.</li>
+</ul>
+<p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">reset</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">track</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">track</span><span class="p">.</span><span class="nx">pause</span><span class="p">();</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">queue</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">paused</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">resumeTrack</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <ul>
+<li>Load a demo from the given JSON source file.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">function</span> <span class="nx">loadDemo</span><span class="p">(</span><span class="nx">demo</span><span class="p">,</span> <span class="nx">scene</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s1">&#39;demos/&#39;</span> <span class="o">+</span> <span class="nx">demo</span><span class="p">.</span><span class="nx">source</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">FlashCanvas</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">}</span>
+
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#prevStep&#39;</span><span class="p">).</span><span class="nx">prop</span><span class="p">(</span><span class="s1">&#39;disabled&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#nextStep&#39;</span><span class="p">).</span><span class="nx">prop</span><span class="p">(</span><span class="s1">&#39;disabled&#39;</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#demo-chooser&#39;</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
+    <span class="p">});</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Add this demo to the browser history so users can share links, use
+back/forward, and so on</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">history</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span> <span class="o">!==</span> <span class="p">(</span><span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nx">demo</span><span class="p">.</span><span class="nx">source</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nb">window</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">pushState</span><span class="p">({</span>
+          <span class="nx">demo</span><span class="o">:</span> <span class="nx">demo</span>
+        <span class="p">},</span>
+        <span class="nx">demo</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nx">demo</span><span class="p">.</span><span class="nx">source</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Necessary in case the user has followed a direct link to this
+demo, in which case the history state would not be set yet
+*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nb">window</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">replaceState</span><span class="p">({</span>
+          <span class="nx">demo</span><span class="o">:</span> <span class="nx">demo</span>
+        <span class="p">},</span>
+        <span class="nx">demo</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+<span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <ul>
+<li>Builds the demo chooser menu by iterating through our provided demos array.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">function</span> <span class="nx">loadDemoList</span><span class="p">(</span><span class="nx">scene</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">$</span><span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s1">&#39;demos/manifest.json&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">demos</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">e</span><span class="p">;</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">demos</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">category</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#demo-chooser&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;h4&gt;&#39;</span> <span class="o">+</span> <span class="nx">category</span> <span class="o">+</span> <span class="s1">&#39;&lt;/h4&gt;&#39;</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">ul</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;ul&gt;&lt;/ul&gt;&#39;</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#demo-chooser&#39;</span><span class="p">));</span>
+      <span class="nx">list</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">demo</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">e</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;li&gt;&#39;</span> <span class="o">+</span> <span class="nx">demo</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s1">&#39;&lt;/li&gt;&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="nx">loadDemo</span><span class="p">(</span><span class="nx">demo</span><span class="p">,</span> <span class="nx">scene</span><span class="p">));</span>
+        <span class="nx">ul</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Load</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nx">loadDemoList</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="nx">scene</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Scene</span><span class="p">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Main loop</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">var</span> <span class="nx">MainLoop</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">scene</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">running</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="kd">function</span> <span class="nx">run</span><span class="p">()</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Process input.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Do bookkeeping with timers and shit for real world times.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">counter</span><span class="o">++%</span> <span class="mi">10</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">counter</span><span class="p">);}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Process any relevant io.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Do update scene stuff.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">running</span><span class="p">)</span> <span class="p">{</span><span class="nx">requestAnimFrame</span><span class="p">(</span><span class="nx">run</span><span class="p">);}</span>
+  <span class="p">}</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">start</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">running</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">run</span><span class="p">();</span>
+  <span class="p">};</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">stop</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">running</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+<span class="kd">function</span> <span class="nx">Scene</span><span class="p">(</span><span class="nx">canvas</span><span class="p">)</span> <span class="p">{</span>
+  
+
+<span class="p">}</span>
+
+<span class="nx">Scene</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+
+<span class="p">};</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Use JQuery to wait for document load</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">viewportWidth</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">).</span><span class="nx">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">16</span><span class="p">;</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#canvas&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="nx">viewportWidth</span><span class="p">);</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#help-screen&#39;</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
+
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#debug&#39;</span><span class="p">).</span><span class="nx">change</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Enable/disable debug mode based on checkbox state</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="p">});</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#demo-chooser-activate&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#demo-chooser&#39;</span><span class="p">).</span><span class="nx">toggle</span><span class="p">();</span>
+  <span class="p">});</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#help&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#help-screen&#39;</span><span class="p">).</span><span class="nx">toggle</span><span class="p">();</span>
+  <span class="p">});</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#settings-activate&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#settings&#39;</span><span class="p">).</span><span class="nx">toggle</span><span class="p">();</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#settings-activate&#39;</span><span class="p">).</span><span class="nx">toggleClass</span><span class="p">(</span><span class="s1">&#39;nav-active&#39;</span><span class="p">);</span>
+  <span class="p">});</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>If the URL hash contains a demo, load the specified demo and place it
+in the history so we can go back to it later.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span> <span class="o">!==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">demo</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="nx">loadDemo</span><span class="p">({</span><span class="nx">source</span><span class="o">:</span> <span class="nx">demo</span><span class="p">,</span> <span class="nx">name</span><span class="o">:</span> <span class="nx">demo</span><span class="p">},</span> <span class="nx">scene</span><span class="p">)();</span>
+  <span class="p">}</span>
+
+  <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">resize</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">FlashCanvas</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">viewportWidth</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">).</span><span class="nx">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">16</span><span class="p">;</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#canvas&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="nx">viewportWidth</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
+  <span class="p">}());</span>
+
+  <span class="nx">mainLoop</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MainLoop</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+  <span class="nx">mainLoop</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+<span class="p">});</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

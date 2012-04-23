@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>audio.js</title>
+  <link rel="stylesheet" href="../../pycco.css">
+  <script type="text/javascript"
+     src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>audio.js</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="s1">&#39;use strict&#39;</span><span class="p">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <ul>
+<li>The AudioManager implements a queueing system to be used for audio narration</li>
+<li>of demos. Objects can load media files which should be played, and when those</li>
+<li>objects decide the media should be played (based on time, a button, or</li>
+<li>whatever), they call <code>play</code>. Objects can also specify callbacks which fire</li>
+<li>when the audio track has completed.</li>
+</ul>
+<p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">function</span> <span class="nx">AudioManager</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">AudioManager</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <ul>
+<li>Load a track so it will be ready to play in advance.</li>
+</ul>
+<p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">load</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">track</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;audio&#39;</span><span class="p">);</span>
+    <span class="nx">a</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;demos/audio/&#39;</span> <span class="o">+</span> <span class="nx">track</span> <span class="o">+</span> <span class="s1">&#39;.ogg&#39;</span><span class="p">);</span>
+    <span class="nx">a</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="nx">track</span><span class="p">]</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <ul>
+<li>Play the track. Optionally provide onFinish, a callback which is called</li>
+<li>when the audio has completed playing.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">play</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">track</span><span class="p">,</span> <span class="nx">onFinish</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="p">(</span><span class="nx">track</span> <span class="k">in</span> <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Track &#39;&quot;</span> <span class="o">+</span> <span class="nx">track</span> <span class="o">+</span> <span class="s2">&quot;&#39; cannot be played before being loaded.&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Another track is playing, so queue this one.
+*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">this</span><span class="p">.</span><span class="nx">queue</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+        <span class="s1">&#39;track&#39;</span><span class="o">:</span> <span class="nx">track</span><span class="p">,</span>
+        <span class="s1">&#39;onFinish&#39;</span><span class="o">:</span> <span class="nx">onFinish</span>
+      <span class="p">});</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">onFinish</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="nx">track</span><span class="p">].</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;ended&#39;</span><span class="p">,</span> <span class="nx">onFinish</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="nx">track</span><span class="p">].</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;ended&#39;</span><span class="p">,</span> <span class="nx">$</span><span class="p">.</span><span class="nx">proxy</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">playbackEnded</span><span class="p">,</span> <span class="k">this</span><span class="p">));</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="nx">track</span><span class="p">].</span><span class="nx">play</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span> <span class="o">=</span> <span class="nx">track</span><span class="p">;</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <ul>
+<li>When playback of the current track has ended, play the next track in the</li>
+<li>queue, if necessary.</li>
+</ul>
+<p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">playbackEnded</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">queue</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">track</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">queue</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">play</span><span class="p">(</span><span class="nx">track</span><span class="p">.</span><span class="nx">track</span><span class="p">,</span> <span class="nx">track</span><span class="p">.</span><span class="nx">onFinish</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <ul>
+<li>Pause/resume current audio playback.</li>
+</ul>
+<p>*</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">pause</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">paused</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">resumeTrack</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span><span class="p">].</span><span class="nx">pause</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="nx">resume</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">paused</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">resumeTrack</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span><span class="p">].</span><span class="nx">play</span><span class="p">();</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">resumeTrack</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <ul>
+<li>Reset the audio manager, pausing any current tracks before they're</li>
+<li>destroyed. If the audio were not stopped, switching to a new demo</li>
+<li>would leave the previous demo's audio running.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">reset</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">tracks</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">track</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">track</span><span class="p">.</span><span class="nx">pause</span><span class="p">();</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">tracks</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">currentTrack</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">queue</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">paused</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">resumeTrack</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -10,18 +10,42 @@
  */
 
 
-
+/*vec3
+  ----
+  Functions for 3 element vectors consisting of an object with members x, y, z
+  Intended for numbers but many of the functions work with string elements.
+   */
 var vec3 = {
+  /*vec3.create
+    -----------
+    Usage:
+    var X = vec3.create(1,2,3);
+    Somewhat redundant as it's equivalent to:
+    var X = vec3.setScalar(1,2,3,{});
+  */
   create: function(x, y, z) {
     return {x: x, y: y, z: z};
   },
-  setVec: function(iVec, dest) {
-    dest.x = iVec.x;
-    dest.y = iVec.y;
-    dest.z = iVec.z;
+  /*vec3.setVec
+    -----------
+    Usage:
+    A = setVec(A,B);
+    setVec(A,B);
+    Set one vector from another.
+  */
+  setVec: function(vec, dest) {
+    dest.x = vec.x;
+    dest.y = vec.y;
+    dest.z = vec.z;
     return dest;
   },
-  setScalar: function(x, y, z, dest) {
+  setArr: function(arr, dest) {
+    dest.x = arr[0];
+    dest.y = arr[1];
+    dest.z = arr[2];
+    return dest;
+  },
+  set: function(x, y, z, dest) {
     dest.x = x;
     dest.y = y;
     dest.z = z;

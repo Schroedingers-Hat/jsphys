@@ -1,18 +1,12 @@
-// Pair of functions to recursively accumulate offsets.
-// Because the builtin functions are eminently retarded.
-// TODO: Put them somewhere sensible.
-function xOffset(item) {
-  // If we have a parent, run again on parent and add. Else report offset.
-  return item.offsetParent ? xOffset(item.offsetParent) + item.offsetLeft :
-                             item.offsetLeft;
-}
-function yOffset(item) {
-  // If we have a parent, run again on parent and add. Else report offset.
-  return item.offsetParent ? yOffset(item.offsetParent) + item.offsetTop :
-                             item.offsetTop;
-}
+/*Graph
+  =====
+  Typing a long comment to explain some stuff about Graph.
+  Some stuff
+  Takes functions defining lines or parametric equations
+  $$[x,y] = f(t)$$
+  $$\frac{\partial y}{\partial x}$$*/
 
-
+// blah
 var Graph = function(name, options){
   // Protected variables.
 
@@ -121,5 +115,3 @@ var Graph = function(name, options){
     draw();
   });
 };
-
-
