@@ -98,6 +98,7 @@ var vec3 = {
   ###vec3.add
     Add two vectors.
     $$\mathbf{C} = \mathbf{A} + \mathbf{B}$$
+
       vec3.add(A, B, C);
       var C = vec3.add(A, B, {});
   */
