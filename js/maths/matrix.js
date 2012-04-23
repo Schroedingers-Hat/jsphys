@@ -1,37 +1,67 @@
-/**
- *  This file is part of the jsphys web physics package.
- *  Copyright (C) 2012 Matthew Watson
- * @fileoverview 3d and 4d linear algebra library.
- *
- * Use with care, there are no checks on anything because it needs to be fast.
- * Empirical testing showed objects to be fastest. This also discourages
- * frequent direct component access where a more abstract operation would be
- * preferable.
- */
+/*
+This file is part of the jsphys web physics package.  
+Copyright (C) 2012 Matthew Watson  
+@fileoverview 3d and 4d linear algebra library.
+
+Use with care, there are no checks on anything because it needs to be fast.
+Empirical testing  as of early 2012 showed objects to be faster than arrays for
+some purposes, although I suspect this may change when firefox finish their
+compiler overhaul.  
+This is also partially a self-control measure as it discourages
+frequent direct component access where a more abstract operation would be 
+preferable.
+*/
 
 
-/*vec3
-  ----
+/*
+##vec3
   Functions for 3 element vectors consisting of an object with members x, y, z
+  as in:
+
+    X = {x: 1, y: 2, z: 3};
+  Allowed to contain other elements such as being a vec4.
   Intended for numbers but many of the functions work with string elements.
-   */
+  Most funcitons return the destination variable as well as requiring you to
+  provide one (to avoid unnecessary if statements).
+  As such they can either be used in a more imperative style
+
+    var A = vec3.create(1,2,3),
+        B = vec3.create(1,2,3),
+        C = {};
+    vec3.add(A, B, C);
+  Or in a more functional style
+
+    var A = vec3.create(1,2,3),
+        B = vec3.create(1,2,3),
+        C = vec3.add(A, B, {});
+  Using in a functional style every time
+
+    C = vec3.add(A, B, C);
+  Is fine, but a bit redundant due to the requirement of providing a 
+  destination.
+*/
 var vec3 = {
-  /*vec3.create
-    -----------
+  /*
+  ###vec3.create
     Usage:
-    var X = vec3.create(1,2,3);
+
+      var X = vec3.create(1,2,3);
     Somewhat redundant as it's equivalent to:
-    var X = vec3.setScalar(1,2,3,{});
+
+      var X = vec3.setScalar(1,2,3,{});
   */
   create: function(x, y, z) {
     return {x: x, y: y, z: z};
   },
-  /*vec3.setVec
-    -----------
+  /*
+  ###vec3.setVec
     Usage:
-    A = setVec(A,B);
-    setVec(A,B);
-    Set one vector from another.
+
+      B = vec3.setVec(A,B);
+      vec3.setVec(A,B);
+      var B = vec3.setVec(A,{});
+    Set one vector from another. Or create one using an object literal
+    as the destination.
   */
   setVec: function(vec, dest) {
     dest.x = vec.x;
@@ -39,30 +69,69 @@ var vec3 = {
     dest.z = vec.z;
     return dest;
   },
+  /*
+  ###vec3.setArr
+    Set a vector from an array. Can also be used for creation.
+
+      var A = vec3.setArr([1,2,3],{});
+  */
   setArr: function(arr, dest) {
     dest.x = arr[0];
     dest.y = arr[1];
     dest.z = arr[2];
     return dest;
   },
+  /*
+  ###vec3.set
+    Set vector from components.
+
+      vec3.set(A, B);
+      var B = vec3.set(A, {});
+  */
   set: function(x, y, z, dest) {
     dest.x = x;
     dest.y = y;
     dest.z = z;
     return dest;
   },
+  /*
+  ###vec3.add
+    Add two vectors.
+    $$\mathbf{C} = \mathbf{A} + \mathbf{B}$$
+      vec3.add(A, B, C);
+      var C = vec3.add(A, B, {});
+  */
   add: function(vec1, vec2, dest) {
     dest.x = vec1.x + vec2.x;
     dest.y = vec1.y + vec2.y;
     dest.z = vec1.z + vec2.z;
     return dest;
   },
+  /*
+  ###vec3.subtract
+    Subtract two vectors.
+    $$\mathbf{C} = \mathbf{A} - \mathbf{B}$$
+
+      vec3.subtract(A, B, C);
+      var C = vec3.subtract(A, B, {});
+  */
   subtract: function(vec1, vec2, dest) {
     dest.x = vec1.x - vec2.x;
     dest.y = vec1.y - vec2.y;
     dest.z = vec1.z - vec2.z;
     return dest;
   },
+  /*
+  ###vec3.norm
+    Normalize a vector.
+    $$B=\frac{A}{|A|}$$
+
+      vec3.norm(A, B);
+      var B = vec3.norm(A, {});
+    $$\frac{A}{|A|} = 1$$
+
+      vec3.norm(A,A);
+  */
   norm: function(vec, dest) {
     var x = vec.x,
         y = vec.y,
@@ -73,9 +142,14 @@ var vec3 = {
     dest.z = z * imag;
     return dest;
   },
-  // i j k
-  // x y z
-  // a b c
+  /*
+  ###vec3.cross
+    Cross product. If you use it on a vec4 you'll get nonsense.
+    $$ \mathbf{C} = \mathbf{A}\times\mathbf{B}$$
+
+      vec3.cross(A, B, C);
+      var C = vec3.cross(A, B, {});
+  */
   cross: function(vec1, vec2, dest) {
     var x1 = vec1.x, x2 = vec2.x,
         y1 = vec1.y, y2 = vec2.y,
@@ -85,12 +159,29 @@ var vec3 = {
     dest.z = x1 * y2 - y1 * x2;
     return dest;
   },
+  /*
+  ###vec3.dot
+    Dot product between two vectors.
+    $$c = \mathbf{A}\cdot\mathbf{B}$$
+
+      var c = vec3.dot(A,B);
+  */
   dot: function(vec1, vec2) {
     return vec1.x * vec2.x +
            vec1.y * vec2.y +
            vec1.z * vec2.z;
   },
-  scale: function(vec, scale, dest) {
+  /*
+  ###vec3.scale
+    Scale a vector by a constant.
+    $$\mathbf{B} = a\mathbf{A}$$
+
+      var a = 5,
+          A = vec3.create(1,2,3);
+      B = vec3.scale(a,A, {});
+      vec3.scale{2, A, A};
+  */
+  scale: function(scale, vec, dest) {
     dest.x = scale * vec.x;
     dest.y = scale * vec.y;
     dest.z = scale * vec.z;
