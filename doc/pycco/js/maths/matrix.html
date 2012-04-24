@@ -30,18 +30,17 @@ compiler overhaul.<br />
 This is also partially a self-control measure as it discourages
 frequent direct component access where a more abstract operation would be 
 preferable.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-1'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-1'>#</a>
-      </div>
-      <p>These functions were Intended for numbers but many work with string elements
+<p>$$A\wedge B\wedge C = (A\wedge B)\wedge C$$</p>
+<p>$$=\left&lt; AB \right&gt; _2\wedge C$$</p>
+<p>$$=\left&lt;(A_te_t + A_xe_x + A_ye_y + A_ze_z)
+     (B_te_t + B_xe_x + B_ye_y + B_ze_z)\right&gt;_2\wedge C$$
+  $$= (A_tB_xe_te_x + A_tB_ye_te_y + A_tB_ze_te_z +\\ 
+       A_xB_te_xe_t + A_xB_ye_xe_y + A_xB_ze_xe_z +\\
+       A_yB_te_ye_t + A_yB_xe_ye_x + A_yB_ze_ye_z +\\
+       A_zB_te_ze_t + A_zB_xe_ze_x + A_zB_ye_ze_y)\wedge C$$</p>
+<pre><code>   (A_tB_x - A_xB_t)e_te_x +
+</code></pre>
+<p>These functions were Intended for numbers but many work with string elements
   Most funcitons return the destination variable as well as requiring you to
   provide one (to avoid unnecessary if statements).
   As such they can either be used in a more imperative style</p>
@@ -66,10 +65,10 @@ vec3.add(A, B, C);
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-2'>
+  <div class='section' id='section-1'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-2'>#</a>
+        <a class='octothorpe' href='#section-1'>#</a>
       </div>
       <h2>vec3</h2>
 <p>Functions for 3 element vectors consisting of an object with members x, y, z
@@ -83,10 +82,10 @@ vec3.add(A, B, C);
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-3'>
+  <div class='section' id='section-2'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-3'>#</a>
+        <a class='octothorpe' href='#section-2'>#</a>
       </div>
       <h3>vec3.create</h3>
 <p>Usage:</p>
@@ -103,10 +102,10 @@ vec3.add(A, B, C);
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-4'>
+  <div class='section' id='section-3'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
+        <a class='octothorpe' href='#section-3'>#</a>
       </div>
       <h3>vec3.setVec</h3>
 <p>Usage:</p>
@@ -127,10 +126,10 @@ var B = vec3.setVec(A,{});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-5'>
+  <div class='section' id='section-4'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-5'>#</a>
+        <a class='octothorpe' href='#section-4'>#</a>
       </div>
       <h3>vec3.setArr</h3>
 <p>Set a vector from an array. Can also be used for creation.</p>
@@ -147,10 +146,10 @@ var B = vec3.setVec(A,{});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-6'>
+  <div class='section' id='section-5'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-6'>#</a>
+        <a class='octothorpe' href='#section-5'>#</a>
       </div>
       <h3>vec3.set</h3>
 <p>Set vector from components.</p>
@@ -168,10 +167,10 @@ var A = vec3.set(x,y,z, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-7'>
+  <div class='section' id='section-6'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-7'>#</a>
+        <a class='octothorpe' href='#section-6'>#</a>
       </div>
       <h3>vec3.add</h3>
 <p>Add two vectors.
@@ -190,10 +189,10 @@ var C = vec3.add(A, B, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-8'>
+  <div class='section' id='section-7'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-8'>#</a>
+        <a class='octothorpe' href='#section-7'>#</a>
       </div>
       <h3>vec3.subtract</h3>
 <p>subtract two vectors.
@@ -212,10 +211,10 @@ var c = vec3.subtract(a, b, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-9'>
+  <div class='section' id='section-8'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-9'>#</a>
+        <a class='octothorpe' href='#section-8'>#</a>
       </div>
       <h3>vec3.norm</h3>
 <p>Normalize a vector.
@@ -241,10 +240,10 @@ var B = vec3.norm(A, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-10'>
+  <div class='section' id='section-9'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-10'>#</a>
+        <a class='octothorpe' href='#section-9'>#</a>
       </div>
       <h3>vec3.cross</h3>
 <p>Cross product. If you use it on a vec4 you'll get nonsense.
@@ -266,10 +265,10 @@ var C = vec3.cross(A, B, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-11'>
+  <div class='section' id='section-10'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
+        <a class='octothorpe' href='#section-10'>#</a>
       </div>
       <h3>vec3.dot</h3>
 <p>Dot product between two vectors.
@@ -286,10 +285,10 @@ var C = vec3.cross(A, B, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-12'>
+  <div class='section' id='section-11'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
+        <a class='octothorpe' href='#section-11'>#</a>
       </div>
       <h3>vec3.scale</h3>
 <p>Scale a vector by a constant.
@@ -311,10 +310,10 @@ vec3.scale{2, A, A};
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-13'>
+  <div class='section' id='section-12'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
+        <a class='octothorpe' href='#section-12'>#</a>
       </div>
       <h2>mat3</h2>
 <p>Functions for 3x3 element matrices of format:</p>
@@ -335,10 +334,10 @@ vec3.scale{2, A, A};
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-14'>
+  <div class='section' id='section-13'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-14'>#</a>
+        <a class='octothorpe' href='#section-13'>#</a>
       </div>
       <h3>mat3.create</h3>
 <p>Usage:</p>
@@ -356,10 +355,10 @@ vec3.scale{2, A, A};
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-15'>
+  <div class='section' id='section-14'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
+        <a class='octothorpe' href='#section-14'>#</a>
       </div>
       <h3>mat3.set</h3>
 <p>Usage:</p>
@@ -387,10 +386,10 @@ vec3.scale{2, A, A};
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-16'>
+  <div class='section' id='section-15'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
+        <a class='octothorpe' href='#section-15'>#</a>
       </div>
       <h3>mat3.mulVec3</h3>
 <p>Multiply a vec3 by a mat3 on the left putting the result into a vec3.
@@ -421,10 +420,10 @@ $$\begin{pmatrix}1&amp; 0&amp; 0&amp; 0\\
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
+  <div class='section' id='section-16'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
+        <a class='octothorpe' href='#section-16'>#</a>
       </div>
       <h3>mat3.mul</h3>
 <p>Multiply two 3x3 matrices.
@@ -459,10 +458,10 @@ mat3.mul(A,B,C);
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-18'>
+  <div class='section' id='section-17'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
+        <a class='octothorpe' href='#section-17'>#</a>
       </div>
       <h3>mat3.vecToRows</h3>
 <p>Make a matrix with rows consisting of vec3s (or the x,y,z components of
@@ -495,10 +494,10 @@ mat3.vecToRows(X, Y, Z, T);
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-19'>
+  <div class='section' id='section-18'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
+        <a class='octothorpe' href='#section-18'>#</a>
       </div>
       <h3>vec4.create</h3>
 <p>Usage:</p>
@@ -515,10 +514,10 @@ mat3.vecToRows(X, Y, Z, T);
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-20'>
+  <div class='section' id='section-19'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-20'>#</a>
+        <a class='octothorpe' href='#section-19'>#</a>
       </div>
       <h3>vec4.setVec</h3>
 <p>Usage:</p>
@@ -540,10 +539,10 @@ var B = vec3.setVec(A,{});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-21'>
+  <div class='section' id='section-20'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-21'>#</a>
+        <a class='octothorpe' href='#section-20'>#</a>
       </div>
       <h3>vec4.set</h3>
 <p>Set vector from components.</p>
@@ -562,10 +561,10 @@ var B = vec3.set(1,2,3,4, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-22'>
+  <div class='section' id='section-21'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-22'>#</a>
+        <a class='octothorpe' href='#section-21'>#</a>
       </div>
       <h3>vec4.add</h3>
 <p>Add two vectors.
@@ -585,10 +584,10 @@ var C = vec4.add(A, B, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-23'>
+  <div class='section' id='section-22'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-23'>#</a>
+        <a class='octothorpe' href='#section-22'>#</a>
       </div>
       <h3>vec4.subtract</h3>
 <p>Subtract two vectors.
@@ -607,10 +606,10 @@ var C = vec4.subtract(A, B, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-24'>
+  <div class='section' id='section-23'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-24'>#</a>
+        <a class='octothorpe' href='#section-23'>#</a>
       </div>
       <h3>vec4.norm</h3>
 <p>Normalize a vector. With 4D Euclidean norm.
@@ -629,10 +628,10 @@ var B = vec4.norm(A, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-25'>
+  <div class='section' id='section-24'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-25'>#</a>
+        <a class='octothorpe' href='#section-24'>#</a>
       </div>
       <p>Return 0 vector if mag is null.</p>
     </div>
@@ -647,10 +646,10 @@ var B = vec4.norm(A, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-26'>
+  <div class='section' id='section-25'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-26'>#</a>
+        <a class='octothorpe' href='#section-25'>#</a>
       </div>
       <h3>vec4.spaceNorm</h3>
 <p>Normalize a 4D vector. With 3D euclidean norm.
@@ -671,10 +670,10 @@ var B = vec4.norm(A, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-27'>
+  <div class='section' id='section-26'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-27'>#</a>
+        <a class='octothorpe' href='#section-26'>#</a>
       </div>
       <p>Return 0 vector if mag is null.</p>
     </div>
@@ -689,10 +688,10 @@ var B = vec4.norm(A, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-28'>
+  <div class='section' id='section-27'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-28'>#</a>
+        <a class='octothorpe' href='#section-27'>#</a>
       </div>
       <h3>vec4.stNorm</h3>
 <p>Normalize a vector. With 4D Minkowski norm.
@@ -712,10 +711,10 @@ var B = vec4.norm(A, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-29'>
+  <div class='section' id='section-28'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-29'>#</a>
+        <a class='octothorpe' href='#section-28'>#</a>
       </div>
       <p>If the vector is null, normalise it so t component == 1.</p>
     </div>
@@ -729,10 +728,10 @@ var B = vec4.norm(A, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-30'>
+  <div class='section' id='section-29'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-30'>#</a>
+        <a class='octothorpe' href='#section-29'>#</a>
       </div>
       <h3>vec4.dot</h3>
 <p>4D Euclidean inner product between two vectors.
@@ -751,10 +750,10 @@ var B = vec4.norm(A, {});
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-31'>
+  <div class='section' id='section-30'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-31'>#</a>
+        <a class='octothorpe' href='#section-30'>#</a>
       </div>
       <h3>vec4.spaceDot</h3>
 <p>Spatial magnitude. Good for distances.
@@ -777,10 +776,10 @@ Usage:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-32'>
+  <div class='section' id='section-31'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-32'>#</a>
+        <a class='octothorpe' href='#section-31'>#</a>
       </div>
       <h3>vec4.stDot</h3>
 <p>1+3D Minkowski inner product between two vectors.
@@ -799,10 +798,10 @@ Usage:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-33'>
+  <div class='section' id='section-32'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-33'>#</a>
+        <a class='octothorpe' href='#section-32'>#</a>
       </div>
       <h3>vec4.scale</h3>
 <p>Scale a vector by a constant.
@@ -824,10 +823,10 @@ vec4.scale{2, A, A};
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-34'>
+  <div class='section' id='section-33'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-34'>#</a>
+        <a class='octothorpe' href='#section-33'>#</a>
       </div>
       <h3>vec4.toLat</h3>
 <p>Projuce latex formatted output with optional type.</p>
@@ -870,10 +869,10 @@ vec4.scale{2, A, A};
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-35'>
+  <div class='section' id='section-34'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-35'>#</a>
+        <a class='octothorpe' href='#section-34'>#</a>
       </div>
       <p>Yuck.
 Multiply AB as below:</p>
@@ -908,10 +907,10 @@ Multiply AB as below:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-36'>
+  <div class='section' id='section-35'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-36'>#</a>
+        <a class='octothorpe' href='#section-35'>#</a>
       </div>
       <h3>mat4.textMul</h3>
 <p>Some very simple symbolic manipulation, assuming input is a string and
@@ -937,10 +936,10 @@ Nobody is quite sure why this happened.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-37'>
+  <div class='section' id='section-36'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-37'>#</a>
+        <a class='octothorpe' href='#section-36'>#</a>
       </div>
       <p>Nobody likes you, jslint; it's a string
 Also what if I <em>want</em> to coerce comparison to 0?</p>
@@ -950,10 +949,10 @@ Also what if I <em>want</em> to coerce comparison to 0?</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-38'>
+  <div class='section' id='section-37'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-38'>#</a>
+        <a class='octothorpe' href='#section-37'>#</a>
       </div>
       <p>If we have no term, set it to '' else, combine two components w a
 timesChar.</p>
@@ -966,10 +965,10 @@ timesChar.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-39'>
+  <div class='section' id='section-38'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-39'>#</a>
+        <a class='octothorpe' href='#section-38'>#</a>
       </div>
       <p>If it's time for a plusChar, give us a plusChar. Append current
 term to current element.</p>
@@ -979,10 +978,10 @@ term to current element.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-40'>
+  <div class='section' id='section-39'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-40'>#</a>
+        <a class='octothorpe' href='#section-39'>#</a>
       </div>
       <p>If we have a non '' term, make it the reference term for plusChar.</p>
     </div>
@@ -993,10 +992,10 @@ term to current element.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-41'>
+  <div class='section' id='section-40'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-41'>#</a>
+        <a class='octothorpe' href='#section-40'>#</a>
       </div>
       <p>If we didn't generate anything, bung in a 0.</p>
     </div>
@@ -1013,10 +1012,10 @@ term to current element.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-42'>
+  <div class='section' id='section-41'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-42'>#</a>
+        <a class='octothorpe' href='#section-41'>#</a>
       </div>
       <h3>mat4.toText</h3>
 <p>Take a mat4 with numbers and output one with either fixed precision or fixed
@@ -1041,10 +1040,10 @@ mat4.toText(a, 3, false); // Outputs 3 sig figs.
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-43'>
+  <div class='section' id='section-42'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-43'>#</a>
+        <a class='octothorpe' href='#section-42'>#</a>
       </div>
       <h3>mat4.toArr</h3>
 <p>Take {aa,...dd} formatted matrix and return 16 element vector with same
@@ -1060,10 +1059,10 @@ elements.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-44'>
+  <div class='section' id='section-43'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-44'>#</a>
+        <a class='octothorpe' href='#section-43'>#</a>
       </div>
       <h3>mat4.toArr2</h3>
 <p>Take {aa,...dd} formatted matrix and return 4 element vector with elements
@@ -1079,10 +1078,10 @@ of 4 element vectors with same elements.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-45'>
+  <div class='section' id='section-44'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-45'>#</a>
+        <a class='octothorpe' href='#section-44'>#</a>
       </div>
       <h3>mat4.fromArr</h3>
 <p>Same as mat4.toArr in reverse.</p>
@@ -1097,10 +1096,10 @@ of 4 element vectors with same elements.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-46'>
+  <div class='section' id='section-45'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-46'>#</a>
+        <a class='octothorpe' href='#section-45'>#</a>
       </div>
       <h3>mat4.fromArr2</h3>
 <p>Same as mat4.toArr2 in reverse.</p>
@@ -1115,10 +1114,10 @@ of 4 element vectors with same elements.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-47'>
+  <div class='section' id='section-46'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-47'>#</a>
+        <a class='octothorpe' href='#section-46'>#</a>
       </div>
       <h3>mat4.toLat</h3>
 <p>Take matrix and return latex formatted string with optional type.
@@ -1138,10 +1137,10 @@ ie. pmatrix bmatrix etc.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-48'>
+  <div class='section' id='section-47'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-48'>#</a>
+        <a class='octothorpe' href='#section-47'>#</a>
       </div>
       <h2>mat</h2>
 <p>General purpose matrix functions.
@@ -1149,7 +1148,7 @@ Let's see if all that retardedness was worth it.</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="nx">mat</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="nx">create</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="nx">h</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">cre</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="nx">h</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">arr</span> <span class="o">=</span> <span class="nx">arr</span> <span class="o">||</span> <span class="p">[];</span>
     <span class="nx">w</span> <span class="o">=</span> <span class="nx">w</span> <span class="o">||</span> <span class="mi">1</span><span class="p">;</span>
     <span class="nx">h</span> <span class="o">=</span> <span class="nx">h</span> <span class="o">||</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">||</span> <span class="mi">1</span><span class="p">;</span>
@@ -1161,7 +1160,7 @@ Let's see if all that retardedness was worth it.</p>
       <span class="kd">var</span> <span class="nx">A</span> <span class="o">=</span> <span class="p">{</span><span class="nx">h</span> <span class="o">:</span> <span class="nx">h</span><span class="p">,</span> <span class="nx">w</span><span class="o">:</span> <span class="nx">w</span><span class="p">,</span> <span class="nx">arr</span><span class="o">:</span> <span class="nx">arr</span><span class="p">,</span> <span class="nx">len</span><span class="o">:</span> <span class="nx">len</span><span class="p">};</span>
       <span class="k">return</span> <span class="nx">A</span><span class="p">;</span>
   <span class="p">},</span>
-  <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">arr</span><span class="p">,</span> <span class="nx">h</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">sAr</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">arr</span><span class="p">,</span> <span class="nx">h</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">i</span><span class="p">;</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">h</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">w</span> <span class="o">=</span> <span class="nx">w</span> <span class="o">||</span> <span class="mi">1</span><span class="p">;</span>
@@ -1179,32 +1178,274 @@ Let's see if all that retardedness was worth it.</p>
     <span class="p">}</span>
     <span class="k">return</span> <span class="nx">A</span><span class="p">;</span>
   <span class="p">},</span>
-  <span class="nx">mul</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">B</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">c</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span>
-        <span class="nx">h</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span><span class="p">,</span>
-        <span class="nx">w</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">w</span><span class="p">,</span>
-        <span class="nx">kk</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span><span class="p">,</span>
-        <span class="nx">len</span> <span class="o">=</span> <span class="nx">h</span><span class="o">*</span><span class="nx">w</span><span class="p">,</span>
-        <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
-        <span class="nx">Ba</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
-        <span class="nx">arr</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">h</span> <span class="o">=</span> <span class="nx">h</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nx">w</span><span class="p">;</span>
-    <span class="nx">dest</span><span class="p">.</span><span class="nx">len</span> <span class="o">=</span> <span class="nx">len</span><span class="p">;</span>
+  <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">ii</span><span class="p">,</span>
+      <span class="nx">arr</span><span class="p">,</span>
+      <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">;</span>
+    <span class="nx">dest</span> <span class="o">=</span> <span class="nx">dest</span> <span class="o">||</span> <span class="p">{};</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">h</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span><span class="p">;</span>
     <span class="nx">arr</span> <span class="o">=</span> <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">||</span> <span class="p">[];</span>
-    <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="nx">len</span><span class="p">;</span>
     <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">ii</span> <span class="o">=</span> <span class="nx">h</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">c</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">*</span> <span class="nx">h</span><span class="p">;</span>
-      <span class="k">for</span> <span class="p">(</span><span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">jj</span> <span class="o">=</span> <span class="nx">w</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">jj</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="k">for</span> <span class="p">(</span><span class="nx">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">k</span> <span class="o">&lt;</span> <span class="nx">kk</span><span class="p">;</span> <span class="nx">k</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">t</span> <span class="o">+=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">c</span><span class="o">+</span><span class="nx">k</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Ba</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="nx">h</span><span class="o">*</span><span class="nx">k</span><span class="p">];</span>
-        <span class="p">}</span>
-      <span class="nx">arr</span><span class="p">[</span><span class="nx">c</span><span class="o">+</span><span class="nx">j</span><span class="p">]</span> <span class="o">=</span> <span class="nx">t</span><span class="p">;</span>
-      <span class="p">}</span>
+    <span class="nx">ii</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">len</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">len</span> <span class="o">=</span> <span class="nx">ii</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="nx">ii</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+  <span class="p">},</span>
+  <span class="nx">add</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">B</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span><span class="nx">ii</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">len</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">((</span><span class="nx">ii</span> <span class="o">===</span> <span class="nx">B</span><span class="p">.</span><span class="nx">len</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="nx">B</span><span class="p">.</span><span class="nx">h</span><span class="p">))</span> <span class="p">{</span>
+      <span class="nx">dest</span> <span class="o">=</span> <span class="nx">dest</span> <span class="o">||</span> <span class="p">{};</span>
+      <span class="kd">var</span> <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+          <span class="nx">Ba</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+          <span class="nx">arr</span> <span class="o">=</span> <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">||</span> <span class="p">[];</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">h</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span><span class="p">;</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="nx">Ba</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Matrix dimensions mismatched.&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">sub</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">B</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span><span class="nx">ii</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">len</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">((</span><span class="nx">ii</span> <span class="o">===</span> <span class="nx">B</span><span class="p">.</span><span class="nx">len</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="nx">B</span><span class="p">.</span><span class="nx">h</span><span class="p">))</span> <span class="p">{</span>
+      <span class="nx">dest</span> <span class="o">=</span> <span class="nx">dest</span> <span class="o">||</span> <span class="p">{};</span>
+      <span class="kd">var</span> <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+          <span class="nx">Ba</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+          <span class="nx">arr</span> <span class="o">=</span> <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">||</span> <span class="p">[];</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">h</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span><span class="p">;</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">-</span> <span class="nx">Ba</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Matrix dimensions mismatched.&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">dot</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">B</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
+        <span class="nx">ii</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">len</span><span class="p">,</span>
+        <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+        <span class="nx">Ba</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+        <span class="nx">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="nx">A</span><span class="p">.</span><span class="nx">w</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;&amp;</span> 
+        <span class="nx">ii</span> <span class="o">===</span> <span class="nx">B</span><span class="p">.</span><span class="nx">len</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="nx">res</span> <span class="o">+=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">*</span><span class="nx">Ba</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Not a vector or lengths do not match&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">hDt</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">B</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
+        <span class="nx">ii</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">len</span><span class="p">,</span>
+        <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+        <span class="nx">Ba</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+        <span class="nx">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="nx">A</span><span class="p">.</span><span class="nx">w</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;&amp;</span> 
+        <span class="nx">ii</span> <span class="o">===</span> <span class="nx">B</span><span class="p">.</span><span class="nx">len</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">res</span> <span class="o">-=</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nx">Ba</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+      <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="nx">res</span> <span class="o">+=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Ba</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Not a vector or lengths do not match&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">sDt</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">B</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
+        <span class="nx">ii</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">len</span><span class="p">,</span>
+        <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+        <span class="nx">Ba</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+        <span class="nx">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="nx">A</span><span class="p">.</span><span class="nx">w</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;&amp;</span> 
+        <span class="nx">ii</span> <span class="o">===</span> <span class="nx">B</span><span class="p">.</span><span class="nx">len</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="nx">res</span> <span class="o">+=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Ba</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Not a vector or lengths do not match&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">mag</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span><span class="nx">ii</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">len</span><span class="p">,</span> <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span> <span class="nx">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">res</span> <span class="o">+=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Not a vector.&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">hMg</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span><span class="nx">ii</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">len</span><span class="p">,</span> <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span> <span class="nx">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">res</span> <span class="o">-=</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">res</span> <span class="o">+=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Not a vector.&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">nrm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dest</span> <span class="o">=</span> <span class="nx">dest</span> <span class="o">||</span> <span class="p">{};</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
+        <span class="nx">ii</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">len</span><span class="p">,</span>
+        <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+        <span class="nx">arr</span> <span class="o">=</span> <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">||</span> <span class="p">[],</span>
+        <span class="nx">mag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="nx">ii</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">h</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">mag</span> <span class="o">+=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="p">}</span>
+      <span class="nx">mag</span> <span class="o">=</span> <span class="nx">mag</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">mag</span><span class="p">)</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Not a vector.&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">hNm</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dest</span> <span class="o">=</span> <span class="nx">dest</span> <span class="o">||</span> <span class="p">{};</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
+        <span class="nx">ii</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">len</span><span class="p">,</span>
+        <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+        <span class="nx">arr</span> <span class="o">=</span> <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">||</span> <span class="p">[],</span>
+        <span class="nx">mag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="nx">ii</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">h</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span><span class="p">;</span>
+    <span class="nx">dest</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">mag</span> <span class="o">-=</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">mag</span> <span class="o">+=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="p">}</span>
+      <span class="nx">mag</span> <span class="o">=</span> <span class="nx">mag</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">mag</span><span class="p">))</span> <span class="o">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">*</span> <span class="nx">mag</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Not a vector.&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">crs</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">B</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">A</span><span class="p">.</span><span class="nx">len</span> <span class="o">===</span> <span class="mi">3</span> <span class="o">&amp;&amp;</span> <span class="nx">B</span><span class="p">.</span><span class="nx">len</span> <span class="o">===</span> <span class="mi">3</span> <span class="o">&amp;&amp;</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="nx">B</span><span class="p">.</span><span class="nx">h</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">dest</span> <span class="o">=</span> <span class="nx">dest</span> <span class="o">||</span> <span class="p">{};</span>
+      <span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">||</span> <span class="p">[],</span>
+          <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+          <span class="nx">Ba</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">arr</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">h</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">len</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+      <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+      <span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Ba</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Ba</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+      <span class="nx">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Ba</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Ba</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+      <span class="nx">arr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Ba</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="nx">Aa</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Ba</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+      <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Not a 3-vector or mismatched dimensions.&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      <h3>mat.tri</h3>
+<p>Psuedovector triple product of three 4-vectors.
+$$\begin{align}
+A\wedge B\wedge C =&amp; (A\wedge B)\wedge C\\
+=&amp;\left<AB\\right>_2\wedge C\\
+=&amp;\left&lt;(A_te_t + A_xe_x + A_ye_y + A_ze_z)
+   (B_te_t + B_xe_x + B_ye_y + B_ze_z)\right&gt;_2\wedge C\\
+=&amp; (A_tB_xe_te_x + A_tB_ye_te_y + A_tB_ze_te_z + 
+    A_xB_te_xe_t + A_xB_ye_xe_y + A_xB_ze_xe_z + 
+    A_yB_te_ye_t + A_yB_xe_ye_x + A_yB_ze_ye_z + 
+    A_zB_te_ze_t + A_zB_xe_ze_x + A_zB_ye_ze_y)
+\end{align*}$$</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="nx">tri</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">B</span><span class="p">,</span> <span class="nx">C</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dest</span> <span class="o">=</span> <span class="nx">dest</span> <span class="o">||</span> <span class="p">{};</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">A</span><span class="p">.</span><span class="nx">len</span> <span class="o">===</span> <span class="mi">4</span> <span class="o">&amp;&amp;</span> 
+        <span class="nx">B</span><span class="p">.</span><span class="nx">len</span> <span class="o">===</span> <span class="mi">4</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">C</span><span class="p">.</span><span class="nx">len</span> <span class="o">===</span> <span class="mi">4</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">A</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="nx">B</span><span class="p">.</span><span class="nx">h</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">B</span><span class="p">.</span><span class="nx">h</span> <span class="o">===</span> <span class="nx">C</span><span class="p">.</span><span class="nx">h</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">||</span> <span class="p">[],</span>
+          <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+          <span class="nx">Ba</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+          <span class="nx">Ca</span> <span class="o">=</span> <span class="nx">C</span><span class="p">.</span><span class="nx">arr</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
+      <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">len</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">h</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span><span class="p">;</span>
+      <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> 
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+  <span class="p">},</span>
+  <span class="nx">mul</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">B</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">kk</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">w</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">kk</span> <span class="o">===</span> <span class="nx">B</span><span class="p">.</span><span class="nx">h</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">c</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span>
+          <span class="nx">h</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">h</span><span class="p">,</span>
+          <span class="nx">w</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">w</span><span class="p">,</span>
+          <span class="nx">len</span> <span class="o">=</span> <span class="nx">h</span><span class="o">*</span><span class="nx">w</span><span class="p">,</span>
+          <span class="nx">Aa</span> <span class="o">=</span> <span class="nx">A</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+          <span class="nx">Ba</span> <span class="o">=</span> <span class="nx">B</span><span class="p">.</span><span class="nx">arr</span><span class="p">,</span>
+          <span class="nx">arr</span><span class="p">;</span>
+      <span class="nx">dest</span> <span class="o">=</span> <span class="nx">dest</span> <span class="o">||</span> <span class="p">{};</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">h</span> <span class="o">=</span> <span class="nx">h</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nx">w</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">len</span> <span class="o">=</span> <span class="nx">len</span><span class="p">;</span>
+      <span class="nx">arr</span> <span class="o">=</span> <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">||</span> <span class="p">[];</span>
+      <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="nx">len</span><span class="p">;</span>
+      <span class="nx">dest</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">h</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">c</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">*</span> <span class="nx">h</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">w</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="k">for</span> <span class="p">(</span><span class="nx">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">k</span> <span class="o">&lt;</span> <span class="nx">kk</span><span class="p">;</span> <span class="nx">k</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">t</span> <span class="o">+=</span> <span class="nx">Aa</span><span class="p">[</span><span class="nx">c</span><span class="o">+</span><span class="nx">k</span><span class="p">]</span> <span class="o">*</span> <span class="nx">Ba</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="nx">h</span><span class="o">*</span><span class="nx">k</span><span class="p">];</span>
+          <span class="p">}</span>
+        <span class="nx">arr</span><span class="p">[</span><span class="nx">c</span><span class="o">+</span><span class="nx">j</span><span class="p">]</span> <span class="o">=</span> <span class="nx">t</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">dest</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Matrix dimensions do not match.&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">};</span>
 <span class="nb">window</span><span class="p">[</span><span class="s1">&#39;vec3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">vec3</span><span class="p">;</span>

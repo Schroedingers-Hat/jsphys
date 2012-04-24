@@ -44,13 +44,18 @@ anonymously, ie.</p>
 </code></pre>
 <p>The graph will be re-drawn on a mousemove over the canvas, or at regular
 intervals while it is on screen.
-Primary use case is functional, but state may be provided with a closure:</p>
+Primary use case is functional, but state and access to other apis may be
+provided with a closure:</p>
 <pre><code>function StateHolder() {
   var myState = 1;
+  var aJQueryThing = $('#thing')
+  function lookAtOtherStuff(t) {
+    return anotherApi(t) + aJQueryThing.value;
+  }
   this.publicFunction = function(p, dest) {
     myState++;
     desr.x = Math.sin(myState) * p.tau;
-    dest.y = p.tau;
+    dest.y = plookAtOtherStuff(p.tau);
     return dest;
   };
 }
@@ -93,12 +98,22 @@ rather than creating a new one for each part of each frame.</p>
       <span class="nx">cv</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span>                            <span class="c1">// canvas and context.</span>
       <span class="nx">hcw</span><span class="p">,</span> <span class="nx">hch</span><span class="p">,</span>                           <span class="c1">// Halfwidth and halfheight.</span>
       <span class="nx">ti</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">(),</span>          <span class="c1">// Initial time for animations.</span>
-      <span class="nx">points</span> <span class="o">=</span> <span class="p">[],</span>                        <span class="c1">// Array of functions for points.</span>
-      <span class="nx">functions</span> <span class="o">=</span> <span class="p">[],</span>                     <span class="c1">// Array of functions for curves.</span>
-      <span class="nx">lines</span> <span class="o">=</span> <span class="p">[],</span>                         <span class="c1">// Array of functions for lines.</span>
+      <span class="nx">elements</span> <span class="o">=</span> <span class="p">[],</span>
       <span class="nx">strokeStyle</span><span class="p">,</span>
       <span class="nx">fillStyle</span><span class="p">,</span>
-      <span class="nx">lineWidth</span><span class="p">;</span></pre></div>
+      <span class="nx">lineWidth</span><span class="p">,</span>
+      <span class="nx">maxScore</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nx">p</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;mx&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;my&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;ct&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;dt&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;cx&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;cy&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;md&#39;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="s1">&#39;tau&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;win&#39;</span><span class="o">:</span> <span class="kc">false</span>
+      <span class="p">};</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -127,11 +142,14 @@ TODO: Click/lastclick. Allow graphs to access last click location.</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">mouse</span><span class="p">){</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="o">+</span><span class="nx">name</span><span class="p">).</span><span class="nx">mousemove</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span><span class="nx">ui</span><span class="p">){</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="o">+</span><span class="nx">name</span><span class="p">).</span><span class="nx">mousemove</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
       <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">-</span> <span class="nx">xOffset</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
       <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="nx">yOffset</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
-      <span class="nx">draw</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="nx">y</span><span class="p">);</span>
-    <span class="p">});</span>  
+      <span class="nx">ensureDraw</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="nx">y</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">).</span><span class="nx">onClick</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+
+    <span class="p">});</span>
   <span class="p">}</span>
   <span class="nx">cv</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nx">name</span> <span class="o">+</span> <span class="s1">&#39;canvas&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span></pre></div>
     </div>
@@ -181,7 +199,9 @@ options: object format {c: 'green', w: 1} containing optionally:
     <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
     <span class="nx">ctx</span><span class="p">.</span><span class="nx">stroke</span><span class="p">();</span>
   <span class="p">}</span>
-
+  <span class="kd">function</span> <span class="nx">ensureDraw</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">draw</span><span class="p">();</span>
+  <span class="p">}</span>
   <span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">ctx</span> <span class="o">=</span> <span class="nx">cv</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">&quot;2d&quot;</span><span class="p">);</span>
     <span class="nx">hcw</span> <span class="o">=</span> <span class="nx">cv</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
@@ -258,14 +278,16 @@ and encountering strange behavior.
 See Crockford's Javascript, The Good Parts.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="nx">functions</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">functions</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">i</span><span class="p">))</span> <span class="p">{</span>
-        <span class="nx">f</span> <span class="o">=</span> <span class="nx">functions</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">func</span><span class="p">;</span>
-        <span class="k">for</span><span class="p">(</span><span class="nx">j</span> <span class="o">=</span> <span class="o">-</span><span class="nx">hcw</span> <span class="o">/</span> <span class="nx">zoom</span><span class="p">,</span> <span class="nx">jj</span> <span class="o">=</span> <span class="nx">hcw</span> <span class="o">/</span> <span class="nx">zoom</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">jj</span><span class="p">;</span> <span class="nx">j</span><span class="o">+=</span> <span class="mi">2</span> <span class="o">/</span> <span class="nx">zoom</span><span class="p">)</span> <span class="p">{</span>
+      <div class="highlight"><pre>    <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="nx">elements</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">elements</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">i</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">f</span> <span class="o">=</span> <span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">func</span><span class="p">;</span>
+        <span class="nx">o</span> <span class="o">=</span> 
+        <span class="k">for</span><span class="p">(</span><span class="nx">j</span> <span class="o">=</span> <span class="o">-</span><span class="nx">hcw</span> <span class="o">/</span> <span class="nx">zoom</span><span class="p">,</span> <span class="nx">jj</span> <span class="o">=</span> <span class="nx">hcw</span> <span class="o">/</span> <span class="nx">zoom</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">jj</span><span class="p">;</span> <span class="nx">j</span><span class="o">+=</span> <span class="p">)</span> <span class="p">{</span>
           <span class="nx">line</span><span class="p">(</span><span class="nx">f</span><span class="p">(</span><span class="nx">j</span><span class="p">,</span><span class="nx">mx</span><span class="p">,</span><span class="nx">my</span><span class="p">),</span> <span class="nx">f</span><span class="p">(</span><span class="nx">j</span><span class="o">+</span><span class="mi">2</span><span class="o">/</span><span class="nx">zoom</span><span class="p">,</span> <span class="nx">mx</span><span class="p">,</span> <span class="nx">my</span><span class="p">),</span> <span class="nx">ctx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="nx">functions</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">color</span><span class="p">);</span>
         <span class="p">}</span>
       <span class="p">}</span>
-    <span class="p">}</span></pre></div>
+    <span class="p">}</span>
+  <span class="p">}</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -273,28 +295,6 @@ See Crockford's Javascript, The Good Parts.</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-11'>#</a>
-      </div>
-      <p>Iterate over lines and plot.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="nx">lines</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">lines</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">i</span><span class="p">))</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">p1</span> <span class="o">=</span> <span class="nx">lines</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">p1</span><span class="p">,</span>
-            <span class="nx">p2</span> <span class="o">=</span> <span class="nx">lines</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">p2</span><span class="p">;</span>
-          <span class="nx">line</span><span class="p">(</span><span class="nx">p1</span><span class="p">(</span><span class="nx">mx</span><span class="p">,</span><span class="nx">my</span><span class="p">),</span> <span class="nx">p2</span><span class="p">(</span><span class="nx">mx</span><span class="p">,</span><span class="nx">my</span><span class="p">),</span> <span class="nx">ctx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="nx">lines</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">options</span><span class="p">.</span><span class="nx">color</span><span class="p">);</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">animate</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">setTImeout</span><span class="p">(</span><span class="nx">draw</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">}</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-12'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
       </div>
       <h3>graph.addFunc</h3>
 <p>Adds a parametric function to be plotted.
@@ -313,6 +313,8 @@ These include:</p>
 <pre><code>tau: Parameter ranging from -1 to 1 as the graph is called a number of 
   times. This is the parameter to use for parametric equations.
 t: The time since the graph was initialised in milliseconds.
+dt: How much time has elapsed between beginning of last frame
+  and beginning of this one?
 mx: x position of the mouse cursor in graph coordinates relative to the 
 origin
 my: as mx but for y.
@@ -334,17 +336,16 @@ s: score. All functions, lines, points, and texts will have their s
  Color and width will be overridden if c and w are provided.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>  <span class="k">this</span><span class="p">.</span><span class="nx">addFunc</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">func</span><span class="p">,</span> <span class="nx">color</span><span class="p">){</span>
-    <span class="nx">functions</span><span class="p">[</span><span class="nx">functions</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">func</span><span class="o">:</span> <span class="nx">func</span><span class="p">,</span> <span class="nx">color</span><span class="o">:</span> <span class="nx">color</span><span class="p">};</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+      <div class="highlight"><pre>  <span class="k">this</span><span class="p">.</span><span class="nx">add</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">func</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">elements</span><span class="p">[</span><span class="nx">elements</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">func</span><span class="o">:</span> <span class="nx">func</span><span class="p">,</span> <span class="nx">options</span><span class="o">:</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="nx">type</span><span class="p">};</span>
   <span class="p">};</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-13'>
+  <div class='section' id='section-12'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
+        <a class='octothorpe' href='#section-12'>#</a>
       </div>
       <h3>Graph.addLine</h3>
 <p>Similar to addFunc, except it draws a single line between the points
@@ -358,43 +359,9 @@ w,c,s: same as addFunc
 </code></pre>
 <p>TODO: Expand addLine to expect a vector containing an arbitrary number of
 pairs of points.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>  <span class="k">this</span><span class="p">.</span><span class="nx">addLine</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">p1</span><span class="p">,</span> <span class="nx">p2</span> <span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">lines</span><span class="p">[</span><span class="nx">lines</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">p1</span><span class="o">:</span> <span class="nx">p1</span><span class="p">,</span> <span class="nx">p2</span><span class="o">:</span> <span class="nx">p2</span><span class="p">,</span> <span class="nx">options</span><span class="o">:</span> <span class="nx">options</span><span class="p">};</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-14'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-14'>#</a>
-      </div>
-      <h3>Graph.addPoints</h3>
-<p>Same principle as addLine/addLines but expects a single point for each item
-in the vector and a radius in each point.</p>
 <p>[{x: x, y: y, r: r}, ...]</p>
-<p>TODO: Write this.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>  <span class="k">this</span><span class="p">.</span><span class="nx">addPoints</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">func</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">points</span><span class="p">[</span><span class="nx">points</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">func</span><span class="o">:</span> <span class="nx">func</span><span class="p">,</span> <span class="nx">options</span><span class="o">:</span> <span class="nx">options</span><span class="p">};</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-15'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
-      </div>
-      <h3>Graph.addText</h3>
-<p>Same principle as addPoints, but outputs a string.
-Output expected:</p>
-<p>[{x: x, y: y, str: 'Hamster'},...]</p>
+<p>TODO: Write this.
+[{x: x, y: y, str: 'Hamster'},...]</p>
 <p>Text size, color, etc to be specified in options.</p>
     </div>
     <div class='code'>

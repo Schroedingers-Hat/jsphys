@@ -11,8 +11,20 @@ This is also partially a self-control measure as it discourages
 frequent direct component access where a more abstract operation would be 
 preferable.
 */
+/*
+  $$A\wedge B\wedge C = (A\wedge B)\wedge C$$
 
+  $$=\left< AB \right> _2\wedge C$$
 
+  $$=\left<(A_te_t + A_xe_x + A_ye_y + A_ze_z)
+     (B_te_t + B_xe_x + B_ye_y + B_ze_z)\right>_2\wedge C$$
+  $$= (A_tB_xe_te_x + A_tB_ye_te_y + A_tB_ze_te_z +\\\\ 
+       A_xB_te_xe_t + A_xB_ye_xe_y + A_xB_ze_xe_z +\\\\
+       A_yB_te_ye_t + A_yB_xe_ye_x + A_yB_ze_ye_z +\\\\
+       A_zB_te_ze_t + A_zB_xe_ze_x + A_zB_ye_ze_y)\wedge C$$
+
+       (A_tB_x - A_xB_t)e_te_x + 
+*/
 /*
   These functions were Intended for numbers but many work with string elements
   Most funcitons return the destination variable as well as requiring you to
@@ -736,7 +748,7 @@ General purpose matrix functions.
 Let's see if all that retardedness was worth it.
 */
 mat = {
-  create: function(arr, h, w) {
+  cre: function(arr, h, w) {
     arr = arr || [];
     w = w || 1;
     h = h || arr.length || 1;
@@ -748,7 +760,7 @@ mat = {
       var A = {h : h, w: w, arr: arr, len: len};
       return A;
   },
-  set: function(A, arr, h, w) {
+  sAr: function(A, arr, h, w) {
     var i;
     if (h) {
       w = w || 1;
@@ -766,32 +778,266 @@ mat = {
     }
     return A;
   },
-  mul: function(A, B, dest) {
-    var i, j, k, c, t,
-        h = A.h,
-        w = B.w,
-        kk = A.w,
-        len = h*w,
-        Aa = A.arr,
-        Ba = B.arr,
-        arr;
-    dest.h = h;
-    dest.w = w;
-    dest.len = len;
+  set: function(A, dest) {
+    var i, ii,
+      arr,
+      Aa = A.arr;
+    dest = dest || {};
+    dest.h = A.h;
+    dest.w = A.w;
     arr = dest.arr || [];
-    arr.length = len;
     dest.arr = arr;
-    for (i = 0, ii = h; i < ii; i++) {
-      c = i * h;
-      for (j = 0, jj = w; j < jj; j++) {
-        t = 0;
-        for (k = 0; k < kk; k++) {
-          t += Aa[c+k] * Ba[j+h*k];
-        }
-      arr[c+j] = t;
-      }
+    ii = A.len;
+    dest.len = ii;
+    dest.arr.length = ii;
+    for(i = 0; i < ii; i++) {
+      arr[i] = Aa[i];
     }
     return dest;
+  },
+  add: function(A, B, dest) {
+    var i,ii = A.len;
+    if((ii === B.len) && (A.h === B.h)) {
+      dest = dest || {};
+      var Aa = A.arr,
+          Ba = B.arr,
+          arr = dest.arr || [];
+      dest.arr = arr;
+      dest.h = A.h;
+      dest.w = A.w;
+      for (i = 0; i < ii; i++) {
+        arr[i] = Aa[i] + Ba[i];
+      }
+      return dest;
+    } else {
+      throw "Matrix dimensions mismatched.";
+    }
+  },
+  sub: function(A, B, dest) {
+    var i,ii = A.len;
+    if((ii === B.len) && (A.h === B.h)) {
+      dest = dest || {};
+      var Aa = A.arr,
+          Ba = B.arr,
+          arr = dest.arr || [];
+      dest.arr = arr;
+      dest.h = A.h;
+      dest.w = A.w;
+      for (i = 0; i < ii; i++) {
+        arr[i] = Aa[i] - Ba[i];
+      }
+      return dest;
+    } else {
+      throw "Matrix dimensions mismatched.";
+    }
+  },
+  dot: function(A, B) {
+    var i,
+        ii = A.len,
+        Aa = A.arr,
+        Ba = B.arr,
+        res = 0;
+    if ((A.w === 1 || A.h === 1) && 
+        ii === B.len) {
+      for(i = 0; i < ii; i++){
+        res += Aa[i]*Ba[i];
+      }
+      return res;
+    } else {
+      throw "Not a vector or lengths do not match";
+    }
+  },
+  hDt: function(A, B) {
+    var i,
+        ii = A.len,
+        Aa = A.arr,
+        Ba = B.arr,
+        res = 0;
+    if ((A.w === 1 || A.h === 1) && 
+        ii === B.len) {
+      res -= Aa[0]*Ba[0];
+      for(i = 1; i < ii; i++){
+        res += Aa[i] * Ba[i];
+      }
+      return res;
+    } else {
+      throw "Not a vector or lengths do not match";
+    }
+  },
+  sDt: function(A, B) {
+    var i,
+        ii = A.len,
+        Aa = A.arr,
+        Ba = B.arr,
+        res = 0;
+    if ((A.w === 1 || A.h === 1) && 
+        ii === B.len) {
+      for(i = 1; i < ii; i++){
+        res += Aa[i] * Ba[i];
+      }
+      return res;
+    } else {
+      throw "Not a vector or lengths do not match";
+    }
+  },
+  mag: function(A) {
+    var i,ii = A.len, Aa = A.arr, res = 0;
+    if(A.h === 1 || A.w === 1) {
+      for (i = 0; i < ii; i++) {
+        res += Aa[i] * Aa[i];
+      }
+      return res;
+    } else {
+      throw "Not a vector.";
+    }
+  },
+  hMg: function(A) {
+    var i,ii = A.len, Aa = A.arr, res = 0;
+    if(A.h === 1 || A.w === 1) {
+      res -= Aa[0] * Aa[0];
+      for (i = 1; i < ii; i++) {
+        res += Aa[i] * Aa[i];
+      }
+      return res;
+    } else {
+      throw "Not a vector.";
+    }
+  },
+  nrm: function(A, dest) {
+    dest = dest || {};
+    var i,
+        ii = A.len,
+        Aa = A.arr,
+        arr = dest.arr || [],
+        mag = 0;
+    arr.length = ii;
+    dest.arr = arr;
+    dest.h = A.h;
+    dest.w = A.w;
+    if(A.h === 1 || A.w === 1) {
+      for (i = 0; i < ii; i++) {
+        mag += Aa[i] * Aa[i];
+      }
+      mag = mag ? 1 / Math.sqrt(mag) : 0;
+      for (i = 0; i < ii; i++) {
+        arr[i] = Aa[i] * mag;
+      }
+      return dest;
+    } else {
+      throw "Not a vector.";
+    }
+  },
+  hNm: function(A, dest) {
+    dest = dest || {};
+    var i,
+        ii = A.len,
+        Aa = A.arr,
+        arr = dest.arr || [],
+        mag = 0;
+    arr.length = ii;
+    dest.arr = arr;
+    dest.h = A.h;
+    dest.w = A.w;
+    if(A.h === 1 || A.w === 1) {
+      mag -= Aa[0] * Aa[0];
+      for (i = 1; i < ii; i++) {
+        mag += Aa[i] * Aa[i];
+      }
+      mag = mag ? 1 / Math.sqrt(Math.abs(mag)) : 1 / Aa[0];
+      for (i = 0; i < ii; i++) {
+        arr[i] = Aa[i] * mag;
+      }
+      return dest;
+    } else {
+      throw "Not a vector.";
+    }
+  },
+  crs: function(A, B, dest) {
+    if (A.len === 3 && B.len === 3 && A.h === B.h) {
+      dest = dest || {};
+      var arr = dest.arr || [],
+          Aa = A.arr,
+          Ba = B.arr;
+      dest.h = A.h;
+      dest.w = A.w;
+      dest.len = 3;
+      arr.length = 3;
+      arr[0] = Aa[1] * Ba[2] - Aa[2] * Ba[1];
+      arr[1] = - Aa[0] * Ba[2] + Aa[2] * Ba[0];
+      arr[2] = Aa[0] * Ba[1] - Aa[1] * Ba[0];
+      return dest;
+    } else {
+      throw "Not a 3-vector or mismatched dimensions.";
+    }
+  },
+  /*
+  ###mat.tri
+  Psuedovector triple product of three 4-vectors.
+  $$\begin{align}
+  A\wedge B\wedge C =& (A\wedge B)\wedge C\\\\
+  =&\left<AB\right>_2\wedge C\\\\
+  =&\left<(A_te_t + A_xe_x + A_ye_y + A_ze_z)
+     (B_te_t + B_xe_x + B_ye_y + B_ze_z)\right>_2\wedge C\\\\
+  =& (A_tB_xe_te_x + A_tB_ye_te_y + A_tB_ze_te_z + 
+      A_xB_te_xe_t + A_xB_ye_xe_y + A_xB_ze_xe_z + 
+      A_yB_te_ye_t + A_yB_xe_ye_x + A_yB_ze_ye_z + 
+      A_zB_te_ze_t + A_zB_xe_ze_x + A_zB_ye_ze_y)
+  \end{align\*}$$
+  */
+  tri: function(A, B, C, dest) {
+    dest = dest || {};
+    if (A.len === 4 && 
+        B.len === 4 &&
+        C.len === 4 &&
+        A.h === B.h &&
+        B.h === C.h) {
+      var arr = dest.arr || [],
+          Aa = A.arr,
+          Ba = B.arr,
+          Ca = C.arr;
+      dest.arr = arr;
+      arr.length = 4;
+      dest.len = 4;
+      dest.h = A.h;
+      dest.w = A.w;
+      for(i = 0; i < 4; i++) {
+
+        arr[i] =1 ;
+      }
+    }
+
+  },
+  mul: function(A, B, dest) {
+    var kk = A.w;
+    if (kk === B.h) {
+      var i, j, k, c, t,
+          h = A.h,
+          w = B.w,
+          len = h*w,
+          Aa = A.arr,
+          Ba = B.arr,
+          arr;
+      dest = dest || {};
+      dest.h = h;
+      dest.w = w;
+      dest.len = len;
+      arr = dest.arr || [];
+      arr.length = len;
+      dest.arr = arr;
+      for (i = 0; i < h; i++) {
+        c = i * h;
+        for (j = 0; j < w; j++) {
+          t = 0;
+          for (k = 0; k < kk; k++) {
+            t += Aa[c+k] * Ba[j+h*k];
+          }
+        arr[c+j] = t;
+        }
+      }
+      return dest;
+    } else {
+      throw "Matrix dimensions do not match.";
+    }
   }
 };
 window['vec3'] = vec3;

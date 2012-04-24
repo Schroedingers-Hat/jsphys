@@ -51,3 +51,16 @@ function yOffset(item) {
   return item.offsetParent ? yOffset(item.offsetParent) + item.offsetTop :
                              item.offsetTop;
 }
+function rgbStr(r,g,b) {
+  return '#' + ((1<<24) + (r<<16) + (g<<8) + b|0).toString(16).slice(1);
+}
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+          window.webkitRequestAnimationFrame || 
+          window.mozRequestAnimationFrame    || 
+          window.oRequestAnimationFrame      || 
+          window.msRequestAnimationFrame     || 
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();

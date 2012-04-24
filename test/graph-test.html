@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>QUnit Test Suite</title>
+        <script src="../js/extern/jquery/jquery.js"></script>
+        <script type="text/javascript" src="../js/maths/matrix.js"></script>
+        <script type="text/javascript" src="../js/utils/graph.js"></script>
+        <script type="text/javascript" src="../js/lib/ui.js"></script>
+    </head>
+
+    <body>
+      <div id='mygraph'></div>
+      <script>
+        (new Graph('mygraph', {zoom: 10})).add(
+        function(p, res) {
+          var k = -10*(p.u - 0.1*p.ct);
+          res.pt.x = p.v * p.mx * Math.cos((p.cx+10)/20*(k));
+          res.pt.y = p.v * p.my * Math.sin((p.cy+3)/20*(k));
+          var r = ((1+Math.sin(k/10))*4)<<5,
+              g = ((1+Math.sin(k/30))*4)<<5,
+              b = ((1+ Math.sin(k/5))*4)<<5;
+          res.c = rgbStr(r,g,b);
+          return res;
+        },{uStep: 0.02, vStep: 1, vMax: 2});
+      </script>
+    </body>
+</html>
