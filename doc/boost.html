@@ -127,39 +127,51 @@
     <br>
     <script>putv4(V)</script>
     <br>
-
-    <div id='thingie'></div>
+    <a href = 'pycco/js/utils/graph.html'>What's this thing?</a>
     <center>
       <table>
         <tr>
-          <td>
-            <div id = 'hyp'></div>
-            <a href = 'pycco/js/utils/graph.html'>What's this thing?</a>
-            <script>
-              (new Graph('hyp', {height: 350, width: 350, zoom: 100})).addFunc(
-               function(t){return {x: sinh(t), y: cosh(t)};}, 'green').addFunc(
-               function(t){return {x: sinh(t), y:-cosh(t)};}, 'green').addFunc(
-               function(t){return {x: cosh(t), y: sinh(t)};}, 'green').addFunc(
-               function(t){return {x:-cosh(t), y: sinh(t)};}, 'green').addLine(
-               function(x,y){return {x: 0, y: 0};},
-               function(x,y){
-                 var s = Math.sqrt(Math.abs(x*x - y*y));
-                 return {x: x/s, y: y/s};
-               }, {});
-            </script>
-          </td>
-          <td>
+         <td>
+           <div id = 'hyp'></div>
+             <script>
+               var hyperbolas = function(p, res) {
+                 res.pt.x = (((p.v / 4) | 0) + 1) * Math.pow(-1,p.v) * 
+                  ((p.v % 4 < 2) ? cosh(p.u) : sinh(p.u));
+                res.pt.y = (((p.v / 4) | 0) + 1) * Math.pow(-1,p.v) * 
+                  ((p.v % 4 < 2) ? sinh(p.u) : cosh(p.u));
+                 return res;
+               };
+               (new Graph('hyp', {width: 250, height: 250, mouseMove: true, zoom: 25})).add(hyperbolas,
+               {uStep: 0.2, uMin: -3, uMax: 3,
+                 vMin: 0, vMax: 17, vStep: 1, color: 'green'}).add(
+               function(p, res) {
+                 var mag = Math.sqrt(Math.abs(p.mx * p.mx - p.my * p.my)),
+                     rmag = 0.5+mag|0;
+                 res.pt.x = p.u * p.mx / mag * rmag;
+                 res.pt.y = p.u*p.u * p.my / mag * rmag;
+                 return res;
+               },{uMin: 0, uStep: 2, color: 'blue'});
+             </script>
+             </td>
+        <td>
             <div id = 'circ'></div>
             <script>
-             (new Graph('circ', {height: 250, width: 250, zoom: 100})).addFunc(
-              function(t){
-                return {x: Math.cos(t * Math.PI), y:  Math.sin(t * Math.PI)};
-              }, 'green').addLine(
-              function(x,y){return {x: 0, y: 0};},
-              function(x,y){ 
-                var r = Math.sqrt(x*x + y*y);
-                return {x:x/r, y: y/r};
-              }, {});
+               var circles = function(p, res) {
+                 res.pt.x = p.v * Math.cos(p.u);
+                 res.pt.y = p.v * Math.sin(p.u);
+                 return res;
+               };
+              (new Graph('circ', {width: 250, height: 250, mouseMove: true, zoom: 25})).add(
+               circles,
+               {uStep: 0.1, uMin: 0, uMax: Math.PI*2,
+                 vMin: 1, vMax: 4, vStep: 1, color: 'orange'}).add(
+               function(p, res) {
+                 var mag = Math.sqrt(Math.abs(p.mx * p.mx + p.my * p.my)),
+                     rmag = 0.5+mag|0;
+                 res.pt.x = p.u * p.mx / mag * rmag;
+                 res.pt.y = p.u*p.u * p.my / mag * rmag;
+                 return res;
+               },{uMin: 0, uStep: 2, color: 'blue'});
             </script>
           </td>
         </tr>

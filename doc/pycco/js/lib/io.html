@@ -5,7 +5,7 @@
   <title>io.js</title>
   <link rel="stylesheet" href="../../pycco.css">
   <script type="text/javascript"
-     src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
 </head>
 <body>
@@ -20,11 +20,13 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      <p>*
- * Load a demo from the given JSON source file.</p>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="kd">function</span> <span class="nx">loadDemo</span><span class="p">(</span><span class="nx">demo</span><span class="p">,</span> <span class="nx">scene</span><span class="p">)</span> <span class="p">{</span>
+      <div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * Load a demo from the given JSON source file.</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">loadDemo</span><span class="p">(</span><span class="nx">demo</span><span class="p">,</span> <span class="nx">scene</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">$</span><span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s1">&#39;demos/&#39;</span> <span class="o">+</span> <span class="nx">demo</span><span class="p">.</span><span class="nx">source</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">FlashCanvas</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
@@ -62,8 +64,7 @@ back/forward, and so on</p>
         <a class='octothorpe' href='#section-2'>#</a>
       </div>
       <p>Necessary in case the user has followed a direct link to this
-demo, in which case the history state would not be set yet
-*</p>
+demo, in which case the history state would not be set yet</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>        <span class="nb">window</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">replaceState</span><span class="p">({</span>
@@ -73,21 +74,12 @@ demo, in which case the history state would not be set yet
       <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">};</span>
-<span class="p">}</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-3'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-3'>#</a>
-      </div>
-      <ul>
-<li>Builds the demo chooser menu by iterating through our provided demos array.</li>
-</ul>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="kd">function</span> <span class="nx">loadDemoList</span><span class="p">(</span><span class="nx">scene</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Builds the demo chooser menu by iterating through our provided demos array.</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">loadDemoList</span><span class="p">(</span><span class="nx">scene</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">$</span><span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s1">&#39;demos/manifest.json&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">demos</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">e</span><span class="p">;</span>
     <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">demos</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">category</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>

@@ -5,7 +5,7 @@
   <title>graph.js</title>
   <link rel="stylesheet" href="../../pycco.css">
   <script type="text/javascript"
-     src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
 </head>
 <body>
@@ -20,50 +20,11 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      <h2>Graph</h2>
-<p>TODO: Update behavior to match documented/intended syntax.
-yping a long comment to explain some stuff about Graph.
-Some stuff
-Takes functions defining lines or parametric equations
-$$[x,y] = f(tau)$$
-There are other variables provided to the function for advanced features
-$$[x,y] = f(\tau,t,m_x,m_y,c_x,c_y,...)$$</p>
-<p>Usage:</p>
-<pre><code>var myGraph = new Graph('myGraph',
-  {height: 350, width: 350, zoom: 100}));
-</code></pre>
-<p>It will place a canvas in the element with the id matching the provided
-name string and then proceed to draw in it.
-Calls to addFunc, addLine etc may be chained together as they
-all return the original graph object. This allows it to be called
-anonymously, ie.</p>
-<pre><code>(new Graph('myGraph',{height: 50, width: 50, zoom: 1})).addFunc(
-  function(p){ return { x: p.tau, y: Math.pow(p.tau,2) };},{}).addLine(
-  function(p){ return { x: 0, y: 0};},
-  function(p){ return { x: p.mx, y: p.my };},{});
-</code></pre>
-<p>The graph will be re-drawn on a mousemove over the canvas, or at regular
-intervals while it is on screen.
-Primary use case is functional, but state and access to other apis may be
-provided with a closure:</p>
-<pre><code>function StateHolder() {
-  var myState = 1;
-  var aJQueryThing = $('#thing')
-  function lookAtOtherStuff(t) {
-    return anotherApi(t) + aJQueryThing.value;
-  }
-  this.publicFunction = function(p, dest) {
-    myState++;
-    desr.x = Math.sin(myState) * p.tau;
-    dest.y = plookAtOtherStuff(p.tau);
-    return dest;
-  };
-}
-myHolder = new StateHolder();
-myGraph.addFunc(myHolder.publicFunction, {});
-</code></pre>
-<p>If speed is a concern, provided functions can accept a dest object and alter it
-rather than creating a new one for each part of each frame.</p>
+      <p>@fileoverview<br />
+Contains graphing utilities for use in jsphys educational physics
+  package.<br />
+@author<br />
+Matthew Watson, Copyright 2012</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
@@ -75,10 +36,49 @@ rather than creating a new one for each part of each frame.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
-      
+      <p>@module jsphys/utils/Graph</p>
+<p>Constructs a new Graph object.</p>
+<p>@class<br />
+Graph class for putting a HTML canvas graph on a page.
+<a href="/test/utils/graph-test.html">Example</a><br />
+Features include animation, reaction to mouse movement, reaction to clicking,
+two-parameter equations with output of x, y, color, thickness.</p>
+<p>@param<br />
+{String} name Name for the graph. Must match the id for some element in
+the html for which jQuery can access the html. </p>
+<p>@param<br />
+{{height: number, width: number, zoom: number, mouse: boolean,
+animate: boolean}} options Options governing the overall graph.</p>
+<p>@returns<br />
+{Graph} The graph object, and all public functions return the graph
+  object. This allows calls to be chained together.</p>
+<p>@example</p>
+<pre><code>(new Graph('ham')).add(fun1(p){}).add(fun2(p){});
+</code></pre>
+<p>@requires jsphys/lib/UI</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="kd">var</span> <span class="nx">Graph</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">options</span><span class="p">){</span></pre></div>
+      <div class="highlight"><pre><span class="kd">var</span> <span class="nx">Graph</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">optIn</span><span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">defOps</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">frameRate</span><span class="o">:</span> <span class="mi">24</span><span class="p">,</span>
+    <span class="nx">zoom</span><span class="o">:</span> <span class="nx">optIn</span> <span class="o">?</span> <span class="p">(</span><span class="nx">optIn</span><span class="p">.</span><span class="nx">height</span> <span class="o">||</span> <span class="mi">250</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">:</span> <span class="mi">250</span><span class="p">,</span>
+    <span class="nx">height</span><span class="o">:</span> <span class="mi">500</span><span class="p">,</span> <span class="nx">width</span><span class="o">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="nx">mouseClick</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">mouseMove</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">animate</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">needFocus</span><span class="o">:</span> <span class="kc">false</span>
+  <span class="p">};</span>
+  <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">defOps</span><span class="p">,</span> <span class="nx">optIn</span><span class="p">),</span>
+      <span class="nx">cv</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span>                            <span class="c1">// canvas and context.</span>
+      <span class="nx">hcw</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="nx">hch</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>           <span class="c1">// Halfwidth and halfheight.</span>
+      <span class="nx">ts</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">(),</span>          <span class="c1">// Initial time for animations.</span>
+      <span class="nx">to</span> <span class="o">=</span> <span class="nx">ts</span><span class="p">,</span>
+      <span class="nx">tn</span> <span class="o">=</span> <span class="nx">ts</span><span class="p">,</span>
+      <span class="nx">elements</span> <span class="o">=</span> <span class="p">[],</span>
+      <span class="nx">strokeStyle</span><span class="p">,</span>
+      <span class="nx">lineWidth</span><span class="p">,</span>
+      <span class="nx">gotFocus</span><span class="p">,</span>
+      <span class="nx">maxScore</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nx">winner</span><span class="p">,</span> <span class="nx">winV</span><span class="p">,</span> <span class="nx">winU</span><span class="p">,</span> <span class="nx">cwin</span><span class="p">,</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -87,33 +87,55 @@ rather than creating a new one for each part of each frame.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
       </div>
-      <h4>Protected variables.</h4>
+      <p>@description Parameter list. Passed to any functions.
+The elements <code>win</code>, <code>wv</code> and <code>wu</code> were intended to be used for mouse control, one
+example would be to set res.s to -distance of mouse from a point you are 
+plotting (<code>res.s = -Math.pow(myX - p.mx,2) - Math.pow(myY - p.my,2)</code>)
+the next frame you could set <code>res.color = win ? 'blue': 'green'</code>.</p>
+<p>Other elements as listed.</p>
+<pre><code>ct: number Milliseconds since graph initialisation.
+dt: number Milliseconds since last frame.
+mx, my: number Mouse position
+cx, cy: number Mouse click positions (down and release).
+mdx, mdy: number Mouse down position (down).
+tmdx,tmdy: number Net displacement for all draging on the graph.
+cmdx,cmdy: number Displacement for present dragging operation.
+u,v: Parameters iterated over for parametric equations.
+win: Set to true for a fn if res.s was largest last frame.
+wv,wu: Set to the values v and u had when out.s was highest.
+</code></pre>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">height</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">height</span> <span class="o">||</span> <span class="mi">500</span><span class="p">,</span>     <span class="c1">// Set defaults for options not set.</span>
-      <span class="nx">width</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">width</span> <span class="o">||</span> <span class="mi">500</span><span class="p">,</span>
-      <span class="nx">zoom</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span> <span class="o">||</span> <span class="mi">2</span><span class="p">,</span>
-      <span class="nx">mouse</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">mouse</span> <span class="o">||</span> <span class="kc">true</span><span class="p">,</span>      <span class="c1">// Do we have mouse control?</span>
-      <span class="nx">animate</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">animate</span> <span class="o">||</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">// Animate?</span>
-      <span class="nx">cv</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span>                            <span class="c1">// canvas and context.</span>
-      <span class="nx">hcw</span><span class="p">,</span> <span class="nx">hch</span><span class="p">,</span>                           <span class="c1">// Halfwidth and halfheight.</span>
-      <span class="nx">ti</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">(),</span>          <span class="c1">// Initial time for animations.</span>
-      <span class="nx">elements</span> <span class="o">=</span> <span class="p">[],</span>
-      <span class="nx">strokeStyle</span><span class="p">,</span>
-      <span class="nx">fillStyle</span><span class="p">,</span>
-      <span class="nx">lineWidth</span><span class="p">,</span>
-      <span class="nx">maxScore</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="nx">p</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;mx&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;my&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;ct&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;dt&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;cx&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;cy&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;md&#39;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-        <span class="s1">&#39;tau&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;win&#39;</span><span class="o">:</span> <span class="kc">false</span>
-      <span class="p">};</span></pre></div>
+      <div class="highlight"><pre>      <span class="nx">p</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;ct&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>            
+        <span class="s1">&#39;dt&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>            
+        <span class="s1">&#39;mx&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;my&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>   
+        <span class="s1">&#39;cx&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;cy&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>   
+        <span class="s1">&#39;mdx&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;mdy&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> 
+        <span class="s1">&#39;tmdx&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;tmdy&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;cmdx&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;cmdy&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;md&#39;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>        
+        <span class="s1">&#39;mdStart&#39;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>   
+        <span class="s1">&#39;mdStop&#39;</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span>   
+        <span class="s1">&#39;u&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;v&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;win&#39;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="s1">&#39;wv&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;wu&#39;</span><span class="o">:</span> <span class="mi">0</span>
+      <span class="p">};</span>
+  <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="p">[];</span> <span class="c1">// Somewhere to store results so not every function call has to create an object.</span>
+  <span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nx">hcw</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">plotOptionDefs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;def&#39;</span><span class="o">:</span> <span class="p">{</span><span class="nx">uP</span><span class="o">:</span> <span class="p">{</span><span class="nx">min</span><span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">step</span><span class="o">:</span> <span class="mf">0.05</span><span class="p">},</span>
+            <span class="nx">vP</span><span class="o">:</span> <span class="p">{</span><span class="nx">min</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">step</span><span class="o">:</span> <span class="mi">1</span><span class="p">},</span> 
+            <span class="nx">color</span><span class="o">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="nx">size</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">dType</span><span class="o">:</span> <span class="s1">&#39;path&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;yOfx&#39;</span> <span class="o">:</span> <span class="p">{</span><span class="nx">uP</span><span class="o">:</span> <span class="p">{</span><span class="nx">min</span><span class="o">:</span> <span class="o">-</span><span class="nx">scale</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span>  <span class="nx">scale</span><span class="p">,</span> <span class="nx">step</span><span class="o">:</span> <span class="nx">scale</span> <span class="o">/</span> <span class="mi">200</span><span class="p">}},</span>
+    <span class="s1">&#39;contours&#39;</span> <span class="o">:</span> <span class="p">{</span><span class="nx">uP</span><span class="o">:</span> <span class="p">{</span><span class="nx">min</span><span class="o">:</span> <span class="o">-</span><span class="nx">scale</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span>  <span class="nx">scale</span><span class="p">,</span> <span class="nx">step</span><span class="o">:</span> <span class="nx">scale</span> <span class="o">/</span> <span class="mi">50</span><span class="p">},</span>
+                  <span class="nx">vP</span><span class="o">:</span> <span class="p">{</span><span class="nx">min</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="nx">scale</span><span class="p">,</span> <span class="nx">step</span><span class="o">:</span> <span class="nx">scale</span> <span class="o">/</span> <span class="mi">5</span><span class="p">}},</span>
+    <span class="s1">&#39;xyOfuv&#39;</span> <span class="o">:</span> <span class="p">{</span><span class="nx">vP</span><span class="o">:</span> <span class="p">{</span><span class="nx">min</span><span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">step</span><span class="o">:</span> <span class="mf">0.05</span><span class="p">}},</span>
+    <span class="s1">&#39;points&#39;</span> <span class="o">:</span> <span class="p">{</span><span class="nx">uP</span><span class="o">:</span> <span class="p">{</span><span class="nx">min</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">step</span><span class="o">:</span> <span class="mi">1</span><span class="p">},</span> <span class="nx">size</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">dType</span><span class="o">:</span> <span class="s1">&#39;points&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;crosses&#39;</span> <span class="o">:</span> <span class="p">{</span><span class="nx">uP</span><span class="o">:</span> <span class="p">{</span><span class="nx">min</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">step</span><span class="o">:</span> <span class="mi">1</span><span class="p">},</span> <span class="nx">size</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nx">dType</span><span class="o">:</span> <span class="s1">&#39;crosses&#39;</span><span class="p">}</span>
+  <span class="p">};</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -125,10 +147,14 @@ rather than creating a new one for each part of each frame.</p>
       <p>Insert canvas element.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span>
-    <span class="s1">&#39;&lt;canvas id=&quot;&#39;</span> <span class="o">+</span> <span class="nx">name</span> <span class="o">+</span> <span class="s1">&#39;canvas&quot; height=&quot;&#39;</span> <span class="o">+</span> <span class="nx">height</span> <span class="o">+</span> <span class="s1">&#39;&quot; width=&quot;&#39;</span> <span class="o">+</span> 
-    <span class="nx">width</span> <span class="o">+</span><span class="s1">&#39;&quot;&gt;&lt;/canvas&gt;&#39;</span>
-  <span class="p">);</span></pre></div>
+      <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">cvname</span> <span class="o">=</span> <span class="nx">name</span> <span class="o">+</span> <span class="nx">ts</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">holder</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span>
+  <span class="nx">holder</span> <span class="o">=</span> <span class="nx">holder</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">?</span> <span class="nx">holder</span> <span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">);</span>
+  <span class="nx">holder</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span>
+    <span class="s1">&#39;&lt;canvas id=&quot;&#39;</span> <span class="o">+</span> <span class="nx">cvname</span> <span class="o">+</span> <span class="s1">&#39;&quot; height=&quot;&#39;</span> <span class="o">+</span> <span class="nx">options</span><span class="p">.</span><span class="nx">height</span> <span class="o">+</span> <span class="s1">&#39;&quot; width=&quot;&#39;</span> <span class="o">+</span> 
+    <span class="nx">options</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span><span class="s1">&#39;&quot;&gt;&lt;/canvas&gt;&#39;</span><span class="p">);</span> 
+
+  <span class="nx">cv</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nx">cvname</span><span class="p">);</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -137,21 +163,54 @@ rather than creating a new one for each part of each frame.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-4'>#</a>
       </div>
-      <p>Mousemove TODO: Move this to a global mousemove somewhere else?
-TODO: Click/lastclick. Allow graphs to access last click location.</p>
+      <p>Only animate/redraw on mousemove if requested.
+TODO: Double check we can't wind up with multiple frame queues.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">mouse</span><span class="p">){</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="o">+</span><span class="nx">name</span><span class="p">).</span><span class="nx">mousemove</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
-      <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">-</span> <span class="nx">xOffset</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
-      <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="nx">yOffset</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
-      <span class="nx">ensureDraw</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="nx">y</span><span class="p">);</span>
-    <span class="p">});</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">).</span><span class="nx">onClick</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
-
+      <div class="highlight"><pre>  <span class="nx">cv</span><span class="p">.</span><span class="nx">mouseenter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">gotFocus</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">needFocus</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">animate</span><span class="p">)</span> <span class="p">{</span><span class="nx">requestAnimFrame</span><span class="p">(</span><span class="nx">draw</span><span class="p">);}</span>
+  <span class="p">});</span>
+  <span class="nx">cv</span><span class="p">.</span><span class="nx">mouseleave</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">gotFocus</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">tmdx</span> <span class="o">+=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdx</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">tmdy</span> <span class="o">+=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdy</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">cmdx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">cmdy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">mdStop</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">md</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">});</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">mouseMove</span><span class="p">){</span>
+    <span class="nx">cv</span><span class="p">.</span><span class="nx">mousemove</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">mx</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">-</span> <span class="nx">UI</span><span class="p">.</span><span class="nx">xOffset</span><span class="p">(</span><span class="k">this</span><span class="p">))</span> <span class="o">-</span> <span class="nx">hcw</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">my</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="nx">UI</span><span class="p">.</span><span class="nx">yOffset</span><span class="p">(</span><span class="k">this</span><span class="p">))</span> <span class="o">+</span> <span class="nx">hch</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">cmdx</span> <span class="o">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">md</span> <span class="o">?</span> <span class="nx">p</span><span class="p">.</span><span class="nx">mdx</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">mx</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">cmdy</span> <span class="o">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">md</span> <span class="o">?</span> <span class="nx">p</span><span class="p">.</span><span class="nx">mdy</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">my</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">animate</span><span class="p">)</span> <span class="p">{</span><span class="nx">requestAnimFrame</span><span class="p">(</span><span class="nx">draw</span><span class="p">);}</span>
     <span class="p">});</span>
   <span class="p">}</span>
-  <span class="nx">cv</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nx">name</span> <span class="o">+</span> <span class="s1">&#39;canvas&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span></pre></div>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">mouseClick</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">cv</span><span class="p">.</span><span class="nx">mousedown</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">mdx</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">-</span> <span class="nx">UI</span><span class="p">.</span><span class="nx">xOffset</span><span class="p">(</span><span class="k">this</span><span class="p">))</span> <span class="o">-</span> <span class="nx">hcw</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">mdy</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="nx">UI</span><span class="p">.</span><span class="nx">yOffset</span><span class="p">(</span><span class="k">this</span><span class="p">))</span> <span class="o">+</span> <span class="nx">hch</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">md</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">mdStart</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">animate</span><span class="p">)</span> <span class="p">{</span><span class="nx">requestAnimFrame</span><span class="p">(</span><span class="nx">draw</span><span class="p">);}</span>
+    <span class="p">});</span>
+    <span class="nx">cv</span><span class="p">.</span><span class="nx">mouseup</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">md</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">tmdx</span> <span class="o">+=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdx</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">tmdy</span> <span class="o">+=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdy</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">cmdx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">cmdy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">mdStop</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">animate</span><span class="p">)</span> <span class="p">{</span><span class="nx">requestAnimFrame</span><span class="p">(</span><span class="nx">draw</span><span class="p">);}</span>
+    <span class="p">});</span>
+    <span class="nx">cv</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">cx</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">-</span> <span class="nx">UI</span><span class="p">.</span><span class="nx">xOffset</span><span class="p">(</span><span class="k">this</span><span class="p">))</span> <span class="o">-</span> <span class="nx">hcw</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+      <span class="nx">p</span><span class="p">.</span><span class="nx">cy</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="nx">UI</span><span class="p">.</span><span class="nx">yOffset</span><span class="p">(</span><span class="k">this</span><span class="p">))</span> <span class="o">+</span> <span class="nx">hch</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">animate</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">requestAnimFrame</span><span class="p">(</span><span class="nx">draw</span><span class="p">);</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -160,20 +219,16 @@ TODO: Click/lastclick. Allow graphs to access last click location.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-5'>#</a>
       </div>
-      <h2>Private methods.</h2>
-<h3>line</h3>
-<p>Private method for drawing a single line segment.
-Input:</p>
-<pre><code>vec1: point, {x: x, y: y}
-vec2: point, format {x: x, y: y}
-ctx: canvas context
-options: object format {c: 'green', w: 1} containing optionally:
-  c: color '#rrbbggaa' or pre-set color names as strings.
-  w: lineWidth in screen coordinates
-</code></pre>
+      <p>Slightly hacky. Draw two frames, one to get the winner right
+and one to draw with the correct winner. Can't think of a better
+way that doesn't involve writing a dummy draw function or storing.
+lots more stuff than we need to.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">line</span><span class="p">(</span><span class="nx">vec1</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">style</span><span class="p">){</span></pre></div>
+      <div class="highlight"><pre>        <span class="nx">requestAnimFrame</span><span class="p">(</span><span class="nx">draw</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+  <span class="p">}</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -182,36 +237,31 @@ options: object format {c: 'green', w: 1} containing optionally:
       <div class='octowrap'>
         <a class='octothorpe' href='#section-6'>#</a>
       </div>
-      <p>Cache and compare local versions of ctx.strokeStyle and ctx.lineWidth</p>
+      <p>Array of functions, each of which takes input as the output from one of the
+  plotting elements in elements, a context, and a set of options. Each
+  element has a sub-element <code>main</code> which different values of the function are
+  passed toand optionally <code>init</code> and <code>fin</code> to start and stop the plotting
+  process as a special case. They are selected via the dType property in the
+  options passed into add().
+@property {Object} path Functions for plotting a continuous path.
+@property {Object} points For plotting series of dots ie. scatterplot.
+@property {Object} crosses As points, but for crosses.
+@property {Object} test Functions for plotting a series of strings.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span> <span class="nx">style</span> <span class="o">!==</span> <span class="nx">strokeStyle</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">strokeStyle</span> <span class="o">=</span> <span class="nx">style</span> <span class="o">||</span> <span class="s1">&#39;black&#39;</span><span class="p">;</span>
-      <span class="nx">ctx</span><span class="p">.</span><span class="nx">strokeStyle</span> <span class="o">=</span> <span class="nx">strokeStyle</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">width</span> <span class="o">!==</span> <span class="nx">lineWidth</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">lineWidth</span> <span class="o">=</span> <span class="nx">width</span> <span class="o">/</span> <span class="nx">zoom</span> <span class="o">||</span> <span class="mi">1</span> <span class="o">/</span> <span class="nx">zoom</span><span class="p">;</span>
-      <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineWidth</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="nx">ctx</span><span class="p">.</span><span class="nx">beginPath</span><span class="p">();</span>
-    <span class="nx">ctx</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="nx">vec1</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">vec1</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
-    <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="nx">vec2</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">vec2</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
-    <span class="nx">ctx</span><span class="p">.</span><span class="nx">stroke</span><span class="p">();</span>
-  <span class="p">}</span>
-  <span class="kd">function</span> <span class="nx">ensureDraw</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">draw</span><span class="p">();</span>
-  <span class="p">}</span>
-  <span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">ctx</span> <span class="o">=</span> <span class="nx">cv</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">&quot;2d&quot;</span><span class="p">);</span>
-    <span class="nx">hcw</span> <span class="o">=</span> <span class="nx">cv</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-    <span class="nx">hch</span> <span class="o">=</span> <span class="nx">cv</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-    <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
-  <span class="p">}</span>
-
-
-  <span class="kd">function</span> <span class="nx">draw</span><span class="p">(</span><span class="nx">mx</span><span class="p">,</span> <span class="nx">my</span><span class="p">){</span>
-    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span><span class="nx">j</span><span class="p">,</span><span class="nx">jj</span><span class="p">,</span> <span class="nx">f</span><span class="p">;</span></pre></div>
+      <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">dFuns</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">path</span><span class="o">:</span> <span class="p">{</span>
+      <span class="cm">/** @memberOf dFun.path*/</span>
+      <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">plotOpt</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">strokeStyle</span> <span class="o">=</span> <span class="nx">out</span><span class="p">.</span><span class="nx">color</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">color</span> <span class="o">||</span> <span class="s1">&#39;black&#39;</span><span class="p">;</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">strokeStyle</span> <span class="o">=</span> <span class="nx">strokeStyle</span><span class="p">;</span>
+        <span class="nx">lineWidth</span> <span class="o">=</span> <span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineWidth</span> <span class="o">=</span> <span class="nx">lineWidth</span><span class="p">;</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">beginPath</span><span class="p">();</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+        <span class="p">},</span>
+      <span class="nx">main</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">plotOpt</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">strokeNow</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -220,13 +270,71 @@ options: object format {c: 'green', w: 1} containing optionally:
       <div class='octowrap'>
         <a class='octothorpe' href='#section-7'>#</a>
       </div>
-      <p>Clear.</p>
+      <p>Cache and compare local ver of ctx.strokeStyle and ctx.lineWidth.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
-    <span class="nx">ctx</span><span class="p">.</span><span class="nx">clearRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="nx">hcw</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="nx">hch</span><span class="p">);</span>
-    <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
-    <span class="nx">ctx</span><span class="p">.</span><span class="nx">transform</span><span class="p">(</span><span class="nx">zoom</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="nx">zoom</span><span class="p">,</span><span class="nx">hcw</span><span class="p">,</span><span class="nx">hch</span><span class="p">);</span></pre></div>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span> <span class="nx">out</span><span class="p">.</span><span class="nx">color</span> <span class="o">!==</span> <span class="nx">strokeStyle</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">strokeStyle</span> <span class="o">=</span> <span class="nx">out</span><span class="p">.</span><span class="nx">color</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">color</span> <span class="o">||</span> <span class="s1">&#39;black&#39;</span><span class="p">;</span>
+          <span class="nx">ctx</span><span class="p">.</span><span class="nx">strokeStyle</span> <span class="o">=</span> <span class="nx">strokeStyle</span><span class="p">;</span>
+          <span class="nx">strokeNow</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">out</span><span class="p">.</span><span class="nx">size</span> <span class="o">!==</span> <span class="nx">lineWidth</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">lineWidth</span> <span class="o">=</span> <span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+          <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineWidth</span> <span class="o">=</span> <span class="nx">lineWidth</span><span class="p">;</span>
+          <span class="nx">strokeNow</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">strokeNow</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">ctx</span><span class="p">.</span><span class="nx">stroke</span><span class="p">();</span>
+          <span class="nx">ctx</span><span class="p">.</span><span class="nx">beginPath</span><span class="p">();</span>
+          <span class="nx">ctx</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nx">fin</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">out</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">plotOpt</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">strokeStyle</span> <span class="o">=</span> <span class="nx">out</span><span class="p">.</span><span class="nx">color</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">color</span> <span class="o">||</span> <span class="s1">&#39;black&#39;</span><span class="p">;</span>
+        <span class="nx">lineWidth</span> <span class="o">=</span> <span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineWidth</span> <span class="o">=</span> <span class="nx">lineWidth</span><span class="p">;</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">stroke</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nx">points</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">main</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">out</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">plotOpt</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillStyle</span> <span class="o">=</span> <span class="nx">out</span><span class="p">.</span><span class="nx">color</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">color</span> <span class="o">||</span> <span class="s1">&#39;blue&#39;</span><span class="p">;</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">beginPath</span><span class="p">();</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">arc</span><span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span> <span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="mi">2</span><span class="p">);</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">closePath</span><span class="p">();</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">fill</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nx">crosses</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">main</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">out</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">plotOpt</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span>
+            <span class="nx">y</span> <span class="o">=</span> <span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span>
+            <span class="nx">w</span> <span class="o">=</span> <span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="mi">5</span><span class="p">)</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">strokeStyle</span> <span class="o">=</span> <span class="nx">out</span><span class="p">.</span><span class="nx">color</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">color</span> <span class="o">||</span> <span class="s1">&#39;blue&#39;</span><span class="p">;</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineWidth</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">beginPath</span><span class="p">();</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">w</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="nx">w</span><span class="p">);</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">w</span><span class="p">,</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">w</span><span class="p">);</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">w</span><span class="p">,</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">w</span><span class="p">);</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">w</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="nx">w</span><span class="p">);</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">stroke</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nx">text</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">main</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">out</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">plotOpt</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">strokeStyle</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">;</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">font</span> <span class="o">=</span>  <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="nx">plotOpt</span><span class="p">.</span><span class="nx">size</span> <span class="o">||</span> <span class="mi">12</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;pt Arial&quot;</span><span class="p">);</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillText</span><span class="p">((</span><span class="nx">out</span><span class="p">.</span><span class="nx">text</span> <span class="o">||</span> <span class="s1">&#39;No text.&#39;</span><span class="p">),</span> <span class="nx">hcw</span> <span class="o">+</span> <span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">,</span>
+                                               <span class="nx">hch</span> <span class="o">-</span> <span class="nx">out</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span> <span class="o">*</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span> <span class="p">);</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">transform</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">,</span><span class="nx">hcw</span><span class="p">,</span><span class="nx">hch</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">};</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -235,12 +343,14 @@ options: object format {c: 'green', w: 1} containing optionally:
       <div class='octowrap'>
         <a class='octothorpe' href='#section-8'>#</a>
       </div>
-      <p>Axes.</p>
+      <p>Initialise, clear and draw axes on the canvas.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">line</span><span class="p">({</span><span class="nx">x</span><span class="o">:</span> <span class="o">-</span><span class="nx">hcw</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mi">0</span><span class="p">},</span>
-         <span class="p">{</span><span class="nx">x</span><span class="o">:</span> <span class="nx">hcw</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mi">0</span><span class="p">},</span> <span class="nx">ctx</span><span class="p">);</span>
-    <span class="nx">line</span><span class="p">({</span><span class="nx">x</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="o">-</span><span class="nx">hch</span><span class="p">},</span> <span class="p">{</span><span class="nx">x</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="nx">hch</span><span class="p">},</span><span class="nx">ctx</span><span class="p">);</span></pre></div>
+      <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">ctx</span> <span class="o">=</span> <span class="nx">cv</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">&quot;2d&quot;</span><span class="p">);</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+    <span class="nx">clear</span><span class="p">();</span>
+  <span class="p">}</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -249,11 +359,12 @@ options: object format {c: 'green', w: 1} containing optionally:
       <div class='octowrap'>
         <a class='octothorpe' href='#section-9'>#</a>
       </div>
-      <p>Calibrate mouse position to graph coordinates.</p>
+      <p>Clear canvas and redraw axes.
+TODO: Make the axes a regular plotting entity to cut down on redundancy and
+  make it more flexible. </p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="nx">mx</span> <span class="o">=</span> <span class="p">(</span><span class="nx">mx</span> <span class="o">-</span> <span class="nx">hcw</span><span class="p">)</span> <span class="o">/</span> <span class="nx">zoom</span><span class="p">;</span>
-    <span class="nx">my</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="nx">my</span> <span class="o">+</span> <span class="nx">hch</span><span class="p">)</span> <span class="o">/</span> <span class="nx">zoom</span><span class="p">;</span></pre></div>
+      <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">clear</span><span class="p">()</span> <span class="p">{</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -262,32 +373,15 @@ options: object format {c: 'green', w: 1} containing optionally:
       <div class='octowrap'>
         <a class='octothorpe' href='#section-10'>#</a>
       </div>
-      <p>Iterate over functions and plot.
-TODO: Provide options for:
-  Max/min parameter, color, width.
-The idiom used here:</p>
-<pre><code>for(i in functions) {
-  if (functions.hasOwnProperty(i)) {
-  }
-}
-</code></pre>
-<p>Is equivalent to forEach but is not an ECMAsctipt 5 feature
-and so is more consistently supported.
-The if statement is a guard against adding things to the prototype
-and encountering strange behavior.
-See Crockford's Javascript, The Good Parts.</p>
+      <p>Clear.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="nx">elements</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">elements</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">i</span><span class="p">))</span> <span class="p">{</span>
-        <span class="nx">f</span> <span class="o">=</span> <span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">func</span><span class="p">;</span>
-        <span class="nx">o</span> <span class="o">=</span> 
-        <span class="k">for</span><span class="p">(</span><span class="nx">j</span> <span class="o">=</span> <span class="o">-</span><span class="nx">hcw</span> <span class="o">/</span> <span class="nx">zoom</span><span class="p">,</span> <span class="nx">jj</span> <span class="o">=</span> <span class="nx">hcw</span> <span class="o">/</span> <span class="nx">zoom</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">jj</span><span class="p">;</span> <span class="nx">j</span><span class="o">+=</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">line</span><span class="p">(</span><span class="nx">f</span><span class="p">(</span><span class="nx">j</span><span class="p">,</span><span class="nx">mx</span><span class="p">,</span><span class="nx">my</span><span class="p">),</span> <span class="nx">f</span><span class="p">(</span><span class="nx">j</span><span class="o">+</span><span class="mi">2</span><span class="o">/</span><span class="nx">zoom</span><span class="p">,</span> <span class="nx">mx</span><span class="p">,</span> <span class="nx">my</span><span class="p">),</span> <span class="nx">ctx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="nx">functions</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">color</span><span class="p">);</span>
-        <span class="p">}</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span></pre></div>
+      <div class="highlight"><pre>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">clearRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="nx">hcw</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="nx">hch</span><span class="p">);</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">transform</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">,</span><span class="nx">hcw</span><span class="p">,</span><span class="nx">hch</span><span class="p">);</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">strokeStyle</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">;</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineWidth</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nx">options</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -296,49 +390,16 @@ See Crockford's Javascript, The Good Parts.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-11'>#</a>
       </div>
-      <h3>graph.addFunc</h3>
-<p>Adds a parametric function to be plotted.
-TODO: Update code to match intended/documented use case. At present the
-function is called with func(t, mx, my), expected to return {x: x, y: y}
-and color is handled separately (provided to addFunc rather than by the
-added function).</p>
-<p>Usage:</p>
-<pre><code>myGraph.addFunc(
-  function(p, dest) { 
-    return { x: p.tau, y: Math.pow(p.tau) };
-  }, options);
-</code></pre>
-<p>The function will be passed a number of parameters in the object p.
-These include:</p>
-<pre><code>tau: Parameter ranging from -1 to 1 as the graph is called a number of 
-  times. This is the parameter to use for parametric equations.
-t: The time since the graph was initialised in milliseconds.
-dt: How much time has elapsed between beginning of last frame
-  and beginning of this one?
-mx: x position of the mouse cursor in graph coordinates relative to the 
-origin
-my: as mx but for y.
-cx: x position of last click
-cy: y position of last click
-md: boolean, is the mouse down
-win: Did this function have the highest score when the mouse was clicked?
-  The function is expected to return an object which may contain:
-x: x coordinate to be plotted
-y: y coordinate to be plotted
-w: width of the line at that point
-c: color of the line at that point as hex in string format '#rrggbbaa'
-s: score. All functions, lines, points, and texts will have their s 
-  values from the last mousemove event compared. The one with the highest
-  value will be called with the win flag true (the others will have it
-  false) until the mouse button is clicked again.
-</code></pre>
-<p>Valid options are taumin, taumax, numsteps, color, width.
- Color and width will be overridden if c and w are provided.</p>
+      <p>Axes.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>  <span class="k">this</span><span class="p">.</span><span class="nx">add</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">func</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">elements</span><span class="p">[</span><span class="nx">elements</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">func</span><span class="o">:</span> <span class="nx">func</span><span class="p">,</span> <span class="nx">options</span><span class="o">:</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="nx">type</span><span class="p">};</span>
-  <span class="p">};</span></pre></div>
+      <div class="highlight"><pre>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">beginPath</span><span class="p">();</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="o">-</span><span class="nx">hcw</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span> <span class="nx">hcw</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="nx">hcw</span><span class="p">);</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="nx">hcw</span><span class="p">);</span>
+    <span class="nx">ctx</span><span class="p">.</span><span class="nx">stroke</span><span class="p">();</span>
+  <span class="p">}</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -347,29 +408,201 @@ s: score. All functions, lines, points, and texts will have their s
       <div class='octowrap'>
         <a class='octothorpe' href='#section-12'>#</a>
       </div>
-      <h3>Graph.addLine</h3>
-<p>Similar to addFunc, except it draws a single line between the points
-specified by a function.
-The function will recieve all the same inputs as those used for addFunc
-except tau.
-Output is expected to be:</p>
-<pre><code>p1: First point for line, format of {x: x, y: y}
-p2: First point for line, format of {x: x, y: y}
-w,c,s: same as addFunc
-</code></pre>
-<p>TODO: Expand addLine to expect a vector containing an arbitrary number of
-pairs of points.</p>
-<p>[{x: x, y: y, r: r}, ...]</p>
-<p>TODO: Write this.
-[{x: x, y: y, str: 'Hamster'},...]</p>
-<p>Text size, color, etc to be specified in options.</p>
+      <p>Most involved internal method.
+Iterates through all the objects in <code>elements</code>. Extracts the function type 
+and options from each one.<br />
+Type is used to choose a function from dFun. This is then fed the result of
+the function called with the parameter list <code>p</code> along with the options object
+options are also used to define the number of times the function is called
+and how the parameters <code>u</code> and <code>v</code> are updated for each call.<br />
+The function from <code>elements</code> will be fed the parameter list <code>p</code> along with an
+object in which the results can be stored. This is merely a garbage-reducing
+measure and it is not necessary to modify and return this object providing
+the function returns something with the correct format.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>  <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
-    <span class="nx">init</span><span class="p">();</span>
+      <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">draw</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span><span class="nx">ii</span><span class="p">,</span><span class="nx">j</span><span class="p">,</span><span class="nx">jj</span><span class="p">,</span><span class="nx">jjj</span><span class="p">,</span><span class="nx">f</span><span class="p">,</span><span class="nx">o</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span>
+        <span class="nx">el</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">dFun</span><span class="p">;</span>
+    <span class="nx">clear</span><span class="p">();</span>
+    <span class="nx">to</span> <span class="o">=</span> <span class="nx">tn</span><span class="p">;</span>
+    <span class="nx">tn</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">dt</span> <span class="o">=</span> <span class="p">(</span><span class="nx">tn</span> <span class="o">-</span> <span class="nx">to</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">ct</span> <span class="o">=</span> <span class="p">(</span><span class="nx">tn</span> <span class="o">-</span> <span class="nx">ts</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="nx">maxScore</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">wu</span> <span class="o">=</span> <span class="nx">winU</span><span class="p">;</span> 
+    <span class="nx">p</span><span class="p">.</span><span class="nx">wv</span> <span class="o">=</span> <span class="nx">winV</span><span class="p">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Calibrate mouse position to graph coordinates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span><span class="p">(</span><span class="nx">element</span> <span class="k">in</span> <span class="nx">elements</span><span class="p">)</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>TODO: protect anyone who happens to use this from themselves by
+Copying the parameter list fresh for each element.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">elements</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">element</span><span class="p">))</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Create a separate results object for each element but no more
+than one.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">results</span><span class="p">[</span><span class="nx">element</span><span class="p">]</span> <span class="o">=</span> <span class="nx">results</span><span class="p">[</span><span class="nx">element</span><span class="p">]</span> <span class="o">||</span> <span class="p">{</span><span class="nx">pt</span><span class="o">:</span> <span class="p">{}};</span>
+        <span class="nx">res</span> <span class="o">=</span> <span class="nx">results</span><span class="p">[</span><span class="nx">element</span><span class="p">];</span>
+        <span class="nx">el</span> <span class="o">=</span> <span class="nx">elements</span><span class="p">[</span><span class="nx">element</span><span class="p">];</span>
+        <span class="nx">f</span> <span class="o">=</span> <span class="nx">el</span><span class="p">.</span><span class="nx">func</span><span class="p">;</span>
+        <span class="nx">o</span> <span class="o">=</span> <span class="nx">el</span><span class="p">.</span><span class="nx">plotOpt</span><span class="p">;</span>
+        <span class="nx">dFun</span> <span class="o">=</span> <span class="nx">dFuns</span><span class="p">[</span><span class="nx">o</span><span class="p">.</span><span class="nx">dType</span><span class="p">].</span><span class="nx">main</span><span class="p">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Start changing parameters and calling the relevant drawing functions</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">p</span><span class="p">.</span><span class="nx">win</span> <span class="o">=</span> <span class="nx">winner</span> <span class="o">&amp;&amp;</span> <span class="nx">winner</span> <span class="o">===</span> <span class="nx">element</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">vP</span><span class="p">.</span><span class="nx">min</span><span class="p">,</span> <span class="nx">ii</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">vP</span><span class="p">.</span><span class="nx">max</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nx">ii</span><span class="p">;</span> <span class="nx">i</span><span class="o">+=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">vP</span><span class="p">.</span><span class="nx">step</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">p</span><span class="p">.</span><span class="nx">v</span> <span class="o">=</span> <span class="nx">i</span><span class="p">;</span>
+          <span class="nx">p</span><span class="p">.</span><span class="nx">u</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">uP</span><span class="p">.</span><span class="nx">min</span><span class="p">;</span>
+          <span class="k">if</span><span class="p">(</span><span class="nx">dFuns</span><span class="p">[</span><span class="nx">o</span><span class="p">.</span><span class="nx">dType</span><span class="p">].</span><span class="nx">init</span><span class="p">)</span> <span class="p">{</span><span class="nx">dFuns</span><span class="p">[</span><span class="nx">o</span><span class="p">.</span><span class="nx">dType</span><span class="p">].</span><span class="nx">init</span><span class="p">(</span><span class="nx">f</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="nx">res</span><span class="p">),</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">o</span><span class="p">);}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>From just after uP.min to just before uP.max in intervals of uP.step.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>          <span class="k">for</span><span class="p">(</span><span class="nx">j</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">uP</span><span class="p">.</span><span class="nx">min</span> <span class="o">+</span> <span class="nx">o</span><span class="p">.</span><span class="nx">uP</span><span class="p">.</span><span class="nx">step</span><span class="p">,</span> <span class="nx">jj</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">uP</span><span class="p">.</span><span class="nx">max</span> <span class="o">-</span> <span class="nx">o</span><span class="p">.</span><span class="nx">uP</span><span class="p">.</span><span class="nx">step</span><span class="p">,</span> <span class="nx">jjj</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">uP</span><span class="p">.</span><span class="nx">step</span><span class="p">;</span>
+              <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">jj</span><span class="p">;</span>
+              <span class="nx">j</span><span class="o">+=</span> <span class="nx">jjj</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">p</span><span class="p">.</span><span class="nx">u</span> <span class="o">=</span> <span class="nx">j</span><span class="p">;</span>
+            <span class="nx">res</span> <span class="o">=</span> <span class="nx">f</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="nx">res</span><span class="p">);</span>
+            <span class="nx">dFun</span><span class="p">(</span><span class="nx">res</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">o</span><span class="p">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>If the function returns a score, compare it with the current
+best. Winner gets told it has mouse control.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">s</span> <span class="o">&amp;&amp;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">s</span> <span class="o">&gt;</span> <span class="nx">maxScore</span><span class="p">)</span> <span class="p">{</span>
+              <span class="nx">cwin</span> <span class="o">=</span> <span class="nx">element</span><span class="p">;</span>
+              <span class="nx">winU</span> <span class="o">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">u</span><span class="p">;</span>
+              <span class="nx">winV</span> <span class="o">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">v</span><span class="p">;</span>
+              <span class="nx">maxScore</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">s</span><span class="p">;</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+          <span class="nx">p</span><span class="p">.</span><span class="nx">u</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">uP</span><span class="p">.</span><span class="nx">max</span><span class="p">;</span>
+          <span class="k">if</span><span class="p">(</span><span class="nx">dFuns</span><span class="p">[</span><span class="nx">o</span><span class="p">.</span><span class="nx">dType</span><span class="p">].</span><span class="nx">fin</span><span class="p">)</span> <span class="p">{</span><span class="nx">dFuns</span><span class="p">[</span><span class="nx">o</span><span class="p">.</span><span class="nx">dType</span><span class="p">].</span><span class="nx">fin</span><span class="p">(</span><span class="nx">f</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="nx">res</span><span class="p">),</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">o</span><span class="p">);}</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nx">winner</span> <span class="o">=</span> <span class="nx">cwin</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">mdStart</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">mdStop</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">((</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">needFocus</span> <span class="o">||</span> <span class="nx">gotFocus</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">animate</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">reqFrame</span><span class="p">,</span> <span class="mi">1000</span><span class="o">/</span><span class="nx">options</span><span class="p">.</span><span class="nx">frameRate</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>TODO: Document this after pinning down the defaults/functionality.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="k">this</span><span class="p">.</span><span class="nx">add</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">func</span><span class="p">,</span> <span class="nx">plotOpIn</span><span class="p">,</span> <span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">options</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">plotOpIn</span> <span class="o">||</span> <span class="k">typeof</span><span class="p">(</span><span class="nx">plotOpIn</span><span class="p">)</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">options</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,{},</span> <span class="nx">plotOptionDefs</span><span class="p">.</span><span class="nx">def</span><span class="p">,</span> <span class="nx">plotOptionDefs</span><span class="p">[</span><span class="nx">plotOpIn</span><span class="p">]);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">options</span> <span class="o">=</span>  <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,{},</span> <span class="nx">plotOptionDefs</span><span class="p">.</span><span class="nx">def</span><span class="p">,</span> <span class="nx">plotOptionDefs</span><span class="p">[</span><span class="nx">plotOpIn</span><span class="p">.</span><span class="nx">type</span><span class="p">],</span> <span class="nx">plotOpIn</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">elements</span><span class="p">[</span><span class="nx">elements</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">func</span><span class="o">:</span> <span class="nx">func</span><span class="p">,</span> <span class="nx">plotOpt</span><span class="o">:</span> <span class="nx">options</span><span class="p">};</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">plot</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">f1</span><span class="p">,</span> <span class="nx">f2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">f2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="nx">f1</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">f2</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="nx">res</span><span class="p">){</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">f1</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">u</span><span class="p">)</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">tmdx</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdx</span><span class="p">;</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">f2</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">u</span><span class="p">)</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">tmdy</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdy</span><span class="p">;</span>
+          <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+        <span class="p">},</span><span class="s1">&#39;yOfx&#39;</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">f1</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="nx">f2</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="nx">res</span><span class="p">){</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">f1</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">u</span><span class="p">,</span><span class="nx">p</span><span class="p">.</span><span class="nx">v</span><span class="p">)</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">tmdx</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdx</span><span class="p">;</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">f2</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">u</span><span class="p">,</span><span class="nx">p</span><span class="p">.</span><span class="nx">v</span><span class="p">)</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">tmdy</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdy</span><span class="p">;</span>
+          <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+        <span class="p">},</span><span class="s1">&#39;xyOfuv&#39;</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="nx">f1</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="nx">res</span><span class="p">){</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">u</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">tmdx</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdx</span><span class="p">;</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">f1</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">u</span><span class="p">)</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">tmdy</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdy</span><span class="p">;</span>
+          <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+        <span class="p">},</span> <span class="s1">&#39;yOfx&#39;</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">f1</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="nx">res</span><span class="p">){</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">u</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">tmdx</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdx</span><span class="p">;</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">pt</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">f1</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">u</span><span class="p">,</span><span class="nx">p</span><span class="p">.</span><span class="nx">v</span><span class="p">)</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">tmdy</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">cmdy</span><span class="p">;</span>
+          <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+        <span class="p">},</span> <span class="s1">&#39;contours&#39;</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
     <span class="nx">draw</span><span class="p">();</span>
-  <span class="p">});</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="kd">function</span> <span class="nx">reqFrame</span><span class="p">()</span> <span class="p">{</span><span class="nx">requestAnimFrame</span><span class="p">(</span><span class="nx">draw</span><span class="p">);}</span>
+  <span class="nx">init</span><span class="p">();</span>
+  <span class="nx">draw</span><span class="p">();</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">draw</span> <span class="o">=</span> <span class="nx">draw</span><span class="p">;</span>
+  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
 <span class="p">};</span>
+
+<span class="kd">function</span> <span class="nx">g</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">();</span>
+<span class="p">}</span>
 
 </pre></div>
     </div>

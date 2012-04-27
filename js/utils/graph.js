@@ -1,162 +1,283 @@
-/*
-##Graph
-TODO: Update behavior to match documented/intended syntax.
-yping a long comment to explain some stuff about Graph.
-Some stuff
-Takes functions defining lines or parametric equations
-$$[x,y] = f(u)$$
-There are other variables provided to the function for advanced features
-$$[x,y] = f(\u,t,m_x,m_y,c_x,c_y,...)$$
+/** *
+@fileoverview  
+Contains graphing utilities for use in jsphys educational physics
+  package.  
+@author  
+Matthew Watson, Copyright 2012
+** */
 
+/** *
+@module jsphys/utils/Graph
+** */
+/** *
+Constructs a new Graph object.
 
-Usage:
+@class  
+Graph class for putting a HTML canvas graph on a page.
+[Example](/test/utils/graph-test.html)  
+Features include animation, reaction to mouse movement, reaction to clicking,
+two-parameter equations with output of x, y, color, thickness.
 
-    var myGraph = new Graph('myGraph',
-      {height: 350, width: 350, zoom: 100}));
+@param  
+{String} name Name for the graph. Must match the id for some element in
+the html for which jQuery can access the html. 
 
-It will place a canvas in the element with the id matching the provided
-name string and then proceed to draw in it.
-Calls to addFunc, addLine etc may be chained together as they
-all return the original graph object. This allows it to be called
-anonymously, ie.
+@param  
+{{height: number, width: number, zoom: number, mouse: boolean,
+animate: boolean}} options Options governing the overall graph.
 
-    (new Graph('myGraph',{height: 50, width: 50, zoom: 1})).addFunc(
-      function(p){ return { x: p.u, y: Math.pow(p.u,2) };},{}).addLine(
-      function(p){ return { x: 0, y: 0};},
-      function(p){ return { x: p.mx, y: p.my };},{});
+@returns  
+{Graph} The graph object, and all public functions return the graph
+  object. This allows calls to be chained together.
 
-The graph will be re-drawn on a mousemove over the canvas, or at regular
-intervals while it is on screen.
-Primary use case is functional, but state and access to other apis may be
-provided with a closure:
+@example
 
-    function StateHolder() {
-      var myState = 1;
-      var aJQueryThing = $('#thing')
-      function lookAtOtherStuff(t) {
-        return anotherApi(t) + aJQueryThing.value;
-      }
-      this.publicFunction = function(p, dest) {
-        myState++;
-        desr.x = Math.sin(myState) * p.u;
-        dest.y = plookAtOtherStuff(p.u);
-        return dest;
-      };
-    }
-    myHolder = new StateHolder();
-    myGraph.addFunc(myHolder.publicFunction, {});
-
-If speed is a concern, provided functions can accept a dest object and alter it
-rather than creating a new one for each part of each frame.
-*/
-
-//
-var Graph = function(name, options){
-  // ####Protected variables.
-  options = options || {};
-  options.height = options.height || 500;     // Set defaults for options not set.
-  options.width = options.width || 500;
-  var zoom = options.zoom || 2;
-  options.mouse = options.mouse || true;      // Do we have mouse control?
-  options.animate = options.animate || true; // Animate?
-  var cv, ctx,                            // canvas and context.
-      hcw, hch,                           // Halfwidth and halfheight.
+    (new Graph('ham')).add(fun1(p){}).add(fun2(p){});
+@requires jsphys/lib/UI
+** */
+var Graph = function(name, optIn){
+  var defOps = {
+    frameRate: 24,
+    zoom: optIn ? (optIn.height || 250)/2 : 250,
+    height: 500, width: 1000,
+    mouseClick: false, mouseMove: false,
+    animate: false, needFocus: false
+  };
+  var options = $.extend(defOps, optIn),
+      cv, ctx,                            // canvas and context.
+      hcw = options.width / 2,
+      hch = options.height / 2,           // Halfwidth and halfheight.
       ts = new Date().getTime(),          // Initial time for animations.
       to = ts,
       tn = ts,
       elements = [],
       strokeStyle,
       lineWidth,
+      gotFocus,
       maxScore = 0,
-      winner, 
+      winner, winV, winU, cwin,
+      /** *
+      @description Parameter list. Passed to any functions.
+      The elements `win`, `wv` and `wu` were intended to be used for mouse control, one
+      example would be to set res.s to -distance of mouse from a point you are 
+      plotting (`res.s = -Math.pow(myX - p.mx,2) - Math.pow(myY - p.my,2)`)
+      the next frame you could set `res.color = win ? 'blue': 'green'`.
+
+      Other elements as listed.
+
+          ct: number Milliseconds since graph initialisation.
+          dt: number Milliseconds since last frame.
+          mx, my: number Mouse position
+          cx, cy: number Mouse click positions (down and release).
+          mdx, mdy: number Mouse down position (down).
+          tmdx,tmdy: number Net displacement for all draging on the graph.
+          cmdx,cmdy: number Displacement for present dragging operation.
+          u,v: Parameters iterated over for parametric equations.
+          win: Set to true for a fn if res.s was largest last frame.
+          wv,wu: Set to the values v and u had when out.s was highest.
+      ** */
       p = {
-        'mx': 0, 'my': 0,
-        'ct': 0, 'dt': 0,
-        'cx': 0, 'cy': 0,
-        'md': false,
+        'ct': 0,            
+        'dt': 0,            
+        'mx': 0, 'my': 0,   
+        'cx': 0, 'cy': 0,   
+        'mdx': 0, 'mdy': 0, 
+        'tmdx': 0, 'tmdy': 0,
+        'cmdx': 0, 'cmdy': 0,
+        'md': false,        
+        'mdStart': false,   
+        'mdStop' : false,   
         'u': 0,
         'v': 0,
-        'win': false
+        'win': false,
+        'wv': 0,
+        'wu': 0
       };
-
-
+  var results = []; // Somewhere to store results so not every function call has to create an object.
+  var scale = hcw / options.zoom;
+  var plotOptionDefs = {
+    'def': {uP: {min: -1, max: 1, step: 0.05},
+            vP: {min: 0, max: 0, step: 1}, 
+            color: 'blue', size: 2, dType: 'path'},
+    'yOfx' : {uP: {min: -scale, max:  scale, step: scale / 200}},
+    'contours' : {uP: {min: -scale, max:  scale, step: scale / 50},
+                  vP: {min: 0, max: scale, step: scale / 5}},
+    'xyOfuv' : {vP: {min: -1, max: 1, step: 0.05}},
+    'points' : {uP: {min: 0, max: 100, step: 1}, size: 2, dType: 'points'},
+    'crosses' : {uP: {min: 0, max: 100, step: 1}, size: 5, dType: 'crosses'}
+  };
   // Insert canvas element.
-  $('#' + name).html(
-    '<canvas id="' + name + 'canvas" height="' + options.height + '" width="' + 
-    options.width +'"></canvas>'
-  ); 
-  cv = $('#' + name + 'canvas');
+  var cvname = name + ts.toString(16);
+  var holder = $('#' + name);
+  holder = holder[0] ? holder : $('body');
+  holder.append(
+    '<canvas id="' + cvname + '" height="' + options.height + '" width="' + 
+    options.width +'"></canvas>'); 
 
-  if (options.mouse){
+  cv = $('#' + cvname);
+  // Only animate/redraw on mousemove if requested.
+  // TODO: Double check we can't wind up with multiple frame queues.
+  cv.mouseenter(function(e) {
+    gotFocus = true;
+    if(options.needFocus && options.animate) {requestAnimFrame(draw);}
+  });
+  cv.mouseleave(function(e) {
+    gotFocus = false;
+    p.tmdx += p.cmdx;
+    p.tmdy += p.cmdy;
+    p.cmdx = 0;
+    p.cmdy = 0;
+    p.mdStop = true;
+    p.md = false;
+  });
+  if (options.mouseMove){
     cv.mousemove(function(e){
-      p.mx = ( (e.pageX - xOffset(this)) - hcw) / zoom;
-      p.my = (-(e.pageY - yOffset(this)) + hch) / zoom;
-      if(options.mouse && !options.animate) {requestAnimFrame(draw);}
+      p.mx = ( (e.pageX - UI.xOffset(this)) - hcw) / options.zoom;
+      p.my = (-(e.pageY - UI.yOffset(this)) + hch) / options.zoom;
+      p.cmdx = p.md ? p.mdx - p.mx : 0;
+      p.cmdy = p.md ? p.mdy - p.my : 0;
+      if(!options.animate) {requestAnimFrame(draw);}
+    });
+  }
+  if (options.mouseClick) {
+    cv.mousedown(function(e){
+      p.mdx = ( (e.pageX - UI.xOffset(this)) - hcw) / options.zoom;
+      p.mdy = (-(e.pageY - UI.yOffset(this)) + hch) / options.zoom;
+      p.md = true;
+      p.mdStart = true;
+      if(!options.animate) {requestAnimFrame(draw);}
+    });
+    cv.mouseup(function(e){
+      p.md = false;
+      p.tmdx += p.cmdx;
+      p.tmdy += p.cmdy;
+      p.cmdx = 0;
+      p.cmdy = 0;
+      p.mdStop = true;
+      if(!options.animate) {requestAnimFrame(draw);}
     });
     cv.click(function(e){
-      p.cx = ( (e.pageX - xOffset(this)) - hcw) / zoom;
-      p.cy = (-(e.pageY - yOffset(this)) + hch) / zoom;
-      if(options.mouse && !options.animate) {requestAnimFrame(draw);}
+      p.cx = ( (e.pageX - UI.xOffset(this)) - hcw) / options.zoom;
+      p.cy = (-(e.pageY - UI.yOffset(this)) + hch) / options.zoom;
+      if(!options.animate) {
+        requestAnimFrame(draw);
+        // Slightly hacky. Draw two frames, one to get the winner right
+        // and one to draw with the correct winner. Can't think of a better
+        // way that doesn't involve writing a dummy draw function or storing.
+        // lots more stuff than we need to.
+        requestAnimFrame(draw);
+      }
     });
   }
-
-  dFuns = {
-    'pbeg': function(out, ctx, options) {
-      strokeStyle = out.c || 'black';
-      ctx.strokeStyle = strokeStyle;
-      lineWidth = out.w / zoom || 1 / zoom;
-      ctx.lineWidth = lineWidth;
-      ctx.closePath();
-      ctx.beginPath();
-      ctx.moveTo(out.pt.x, out.pt.y);
-    },
-    'path': function(out, ctx, options) {
-      var strokeNow = false;
-      // Cache and compare local versions of ctx.strokeStyle and ctx.lineWidth
-      if ( out.c !== strokeStyle ) {
-        strokeStyle = out.c || 'black';
-        ctx.strokeStyle = out.c;
-        strokeNow = true;
-      }
-      if ( out.w !== lineWidth ) {
-        lineWidth = out.w / zoom || 1 / zoom;
+  /** *
+  Array of functions, each of which takes input as the output from one of the
+    plotting elements in elements, a context, and a set of options. Each
+    element has a sub-element `main` which different values of the function are
+    passed toand optionally `init` and `fin` to start and stop the plotting
+    process as a special case. They are selected via the dType property in the
+    options passed into add().
+  @property {Object} path Functions for plotting a continuous path.
+  @property {Object} points For plotting series of dots ie. scatterplot.
+  @property {Object} crosses As points, but for crosses.
+  @property {Object} test Functions for plotting a series of strings.
+  ** */
+  var dFuns = {
+    path: {
+      /** @memberOf dFun.path*/
+      init: function(out, ctx, plotOpt) {
+        strokeStyle = out.color || plotOpt.color || 'black';
+        ctx.strokeStyle = strokeStyle;
+        lineWidth = (out.size || plotOpt.size || 1) / options.zoom;
         ctx.lineWidth = lineWidth;
-        strokeNow = true;
-      }
-      ctx.lineTo(out.pt.x, out.pt.y);
-      if (strokeNow) {
-        ctx.stroke();
         ctx.beginPath();
         ctx.moveTo(out.pt.x, out.pt.y);
+        },
+      main: function(out, ctx, plotOpt) {
+        var strokeNow = false;
+        // Cache and compare local ver of ctx.strokeStyle and ctx.lineWidth.
+        if ( out.color !== strokeStyle ) {
+          strokeStyle = out.color || plotOpt.color || 'black';
+          ctx.strokeStyle = strokeStyle;
+          strokeNow = true;
+        }
+        if ( out.size !== lineWidth ) {
+          lineWidth = (out.size || plotOpt.size || 1) / options.zoom;
+          ctx.lineWidth = lineWidth;
+          strokeNow = true;
+        }
+        ctx.lineTo(out.pt.x, out.pt.y);
+        if (strokeNow) {
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(out.pt.x, out.pt.y);
+        }
+      },
+      fin: function (out, ctx, plotOpt) {
+        ctx.strokeStyle = out.color || plotOpt.color || 'black';
+        lineWidth = (out.size || plotOpt.size || 1) / options.zoom;
+        ctx.lineWidth = lineWidth;
+        ctx.lineTo(out.pt.x, out.pt.y);
+        ctx.stroke();
       }
     },
-    'pend': function (out, ctx, options) {
-      ctx.strokeStyle = out.c || 'black';
-      ctx.lineWidth = out.w / zoom || 1 / zoom;
-      ctx.lineTo(out.pt.x, out.pt.y);
-      ctx.stroke();
+    points: {
+      main: function (out, ctx, plotOpt) {
+        ctx.fillStyle = out.color || plotOpt.color || 'blue';
+        ctx.beginPath();
+        ctx.arc(out.pt.x, out.pt.y, (out.size || plotOpt.size || 1) / options.zoom, 0, Math.PI*2);
+        ctx.closePath();
+        ctx.fill();
+      }
     },
-    'text': function (out, ctx, options) {
+    crosses: {
+      main: function (out, ctx, plotOpt) {
+        var x = out.pt.x,
+            y = out.pt.y,
+            w = (out.size || plotOpt.size || 5) / options.zoom;
+
+        ctx.strokeStyle = out.color || plotOpt.color || 'blue';
+        ctx.lineWidth = 1 / options.zoom;
+        ctx.beginPath();
+        ctx.moveTo(x - w, y - w);
+        ctx.lineTo(x + w, y + w);
+        ctx.moveTo(x - w, y + w);
+        ctx.lineTo(x + w, y - w);
+        ctx.stroke();
+      }
+    },
+    text: {
+      main: function (out, ctx, plotOpt) {
+        ctx.restore();
+        ctx.strokeStyle = 'black';
+        ctx.font =  (Math.round(out.size || plotOpt.size || 12) + "pt Arial");
+        ctx.fillText((out.text || 'No text.'), hcw + out.pt.x * options.zoom,
+                                               hch - out.pt.y * options.zoom );
+        ctx.save();
+        ctx.transform(options.zoom,0,0,-options.zoom,hcw,hch);
+      }
     }
   };
-  function ensureDraw() {
-    draw();
-  }
+  /** *
+  Initialise, clear and draw axes on the canvas.
+  ** */
   function init() {
     ctx = cv[0].getContext("2d");
-    hcw = cv[0].width / 2;
-    hch = cv[0].height / 2;
     ctx.save();
     clear();
   }
+  /** *
+  Clear canvas and redraw axes.
+  TODO: Make the axes a regular plotting entity to cut down on redundancy and
+    make it more flexible. 
+  ** */
   function clear() {
     // Clear.
     ctx.restore();
     ctx.clearRect(0,0,2*hcw,2*hch);
     ctx.save();
-    ctx.transform(zoom,0,0,-zoom,hcw,hch);
+    ctx.transform(options.zoom,0,0,-options.zoom,hcw,hch);
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 1 / zoom;
+    ctx.lineWidth = 1 / options.zoom;
     // Axes.
     ctx.beginPath();
     ctx.moveTo(-hcw, 0);
@@ -165,162 +286,131 @@ var Graph = function(name, options){
     ctx.lineTo(0,  hcw);
     ctx.stroke();
   }
-  function draw(mx, my){
-    var i,ii,j,jj,jjj,f,o,
+  /** *
+  Most involved internal method.
+  Iterates through all the objects in `elements`. Extracts the function type 
+  and options from each one.  
+  Type is used to choose a function from dFun. This is then fed the result of
+  the function called with the parameter list `p` along with the options object
+  options are also used to define the number of times the function is called
+  and how the parameters `u` and `v` are updated for each call.  
+  The function from `elements` will be fed the parameter list `p` along with an
+  object in which the results can be stored. This is merely a garbage-reducing
+  measure and it is not necessary to modify and return this object providing
+  the function returns something with the correct format.
+  ** */
+  function draw(){
+    var i,ii,j,jj,jjj,f,o, res,
         el, element, dFun;
-        res = {pt: {}}; // Somewhere to store results so not every function call has to create an object.
     clear();
     to = tn;
     tn = new Date().getTime();
     p.dt = (tn - to) / 1000;
     p.ct = (tn - ts) / 1000;
+    maxScore = 0;
+    p.wu = winU; 
+    p.wv = winV;
     // Calibrate mouse position to graph coordinates.
     for(element in elements) {
+      // TODO: protect anyone who happens to use this from themselves by
+      // Copying the parameter list fresh for each element.
       if (elements.hasOwnProperty(element)) {
+        // Create a separate results object for each element but no more
+        // than one.
+        results[element] = results[element] || {pt: {}};
+        res = results[element];
         el = elements[element];
         f = el.func;
-        o = el.options;
-        dFun = dFuns[el.type];
-        maxScore = 0;
-        p.win = winner === element;
-        for (i = o.vMin, ii = o.vMax; i <= ii; i+= o.vStep){
+        o = el.plotOpt;
+        dFun = dFuns[o.dType].main;
+
+        // Start changing parameters and calling the relevant drawing functions
+        p.win = winner && winner === element;
+        for (i = o.vP.min, ii = o.vP.max; i <= ii; i+= o.vP.step) {
           p.v = i;
-          p.u = o.uMin;
-          if (el.type === 'path') {dFuns.pbeg(f(p,res), ctx, o);}
-          for(j = o.uMin, jjj = o.uStep, jj = o.uMax - jjj; j < jj; j+= jjj) {
+          p.u = o.uP.min;
+          if(dFuns[o.dType].init) {dFuns[o.dType].init(f(p,res), ctx, o);}
+          // From just after uP.min to just before uP.max in intervals of uP.step.
+          for(j = o.uP.min + o.uP.step, jj = o.uP.max - o.uP.step, jjj = o.uP.step;
+              j < jj;
+              j+= jjj) {
             p.u = j;
             res = f(p,res);
             dFun(res, ctx, o);
-            if (res.s > maxScore) {
-              winner = element;
+            // If the function returns a score, compare it with the current
+            // best. Winner gets told it has mouse control.
+            if (res.s && res.s > maxScore) {
+              cwin = element;
+              winU = p.u;
+              winV = p.v;
               maxScore = res.s;
             }
           }
-          p.u = o.uMax;
-          if (el.type === 'path') {dFuns.pend(f(p,res), ctx, o);}
+          p.u = o.uP.max;
+          if(dFuns[o.dType].fin) {dFuns[o.dType].fin(f(p,res), ctx, o);}
         }
       }
     }
-    if(options.animate) {requestAnimFrame(draw);}
+    winner = cwin;
+    p.mdStart = false;
+    p.mdStop = false;
+    if((!options.needFocus || gotFocus) && options.animate) {
+      setTimeout(reqFrame, 1000/options.frameRate);
+    }
   }
-
-  this.add = function(func, options, type) {
-
-    options = options || {};
-    type = type || 'path';
-    var defaults = {
-      uMin: -1,
-      uStep: 0.1,
-      uMax: 1,
-      vMin: 0,
-      vStep: 1,
-      vMax: 1
-    };
-    var opin = {};
-    $.extend(opin, defaults, options);
-    elements[elements.length] = {func: func, options: opin, type: type};
+  /** *
+  TODO: Document this after pinning down the defaults/functionality.
+  ** */
+  this.add = function(func, plotOpIn, type) {
+    var options;
+    if (!plotOpIn || typeof(plotOpIn) === 'string') {
+      options = $.extend(true,{}, plotOptionDefs.def, plotOptionDefs[plotOpIn]);
+    } else {
+      options =  $.extend(true,{}, plotOptionDefs.def, plotOptionDefs[plotOpIn.type], plotOpIn);
+    }
+    elements[elements.length] = {func: func, plotOpt: options};
+    return this;
   };
-
-  $(document).ready(function(){
-    init();
+  this.plot = function(f1, f2) {
+    if(f2) {
+      if(f1.length === 1 && f2.length === 1) {
+      this.add(function(p,res){
+          res.pt.x = f1(p.u) - p.tmdx - p.cmdx;
+          res.pt.y = f2(p.u) - p.tmdy - p.cmdy;
+          return res;
+        },'yOfx');
+      } else if(f1.length <= 2 && f2.length <= 2) {
+        this.add(function(p,res){
+          res.pt.x = f1(p.u,p.v) - p.tmdx - p.cmdx;
+          res.pt.y = f2(p.u,p.v) - p.tmdy - p.cmdy;
+          return res;
+        },'xyOfuv');
+      }
+    } else {
+      if(f1.length === 1) {
+      this.add(function(p,res){
+          res.pt.x = p.u - p.tmdx - p.cmdx;
+          res.pt.y = f1(p.u) - p.tmdy - p.cmdy;
+          return res;
+        }, 'yOfx');
+      } else if (f1.length === 2) {
+        this.add(function(p,res){
+          res.pt.x = p.u - p.tmdx - p.cmdx;
+          res.pt.y = f1(p.u,p.v) - p.tmdy - p.cmdy;
+          return res;
+        }, 'contours');
+      }
+    }
     draw();
-  });
+    return this;
+  };
+  function reqFrame() {requestAnimFrame(draw);}
+  init();
+  draw();
+  this.draw = draw;
+  return this;
 };
 
-  /*
-  ###graph.addFunc
-  Adds a parametric function to be plotted.
-  TODO: Update code to match intended/documented use case. At present the
-  function is called with func(t, mx, my), expected to return {x: x, y: y}
-  and color is handled separately (provided to addFunc rather than by the
-  added function).
-    
-  Usage:
-
-      myGraph.addFunc(
-        function(p, dest) { 
-          return { x: p.u, y: Math.pow(p.u) };
-        }, options);
-
-  The function will be passed a number of parameters in the object p.
-  These include:
-
-      u: Parameter ranging from -1 to 1 as the graph is called a number of 
-        times. This is the parameter to use for parametric equations.
-      t: The time since the graph was initialised in milliseconds.
-      dt: How much time has elapsed between beginning of last frame
-        and beginning of this one?
-      mx: x position of the mouse cursor in graph coordinates relative to the 
-      origin
-      my: as mx but for y.
-      cx: x position of last click
-      cy: y position of last click
-      md: boolean, is the mouse down
-      win: Did this function have the highest score when the mouse was clicked?
-        The function is expected to return an object which may contain:
-      x: x coordinate to be plotted
-      y: y coordinate to be plotted
-      w: width of the line at that point
-      c: color of the line at that point as hex in string format '#rrggbbaa'
-      s: score. All functions, lines, points, and texts will have their s 
-        values from the last mousemove event compared. The one with the highest
-        value will be called with the win flag true (the others will have it
-        false) until the mouse button is clicked again.
-   
-   Valid options are umin, umax, numsteps, color, width.
-   Color and width will be overridden if c and w are provided.
-  */
-  /*
-  ###Graph.addLine
-  Similar to addFunc, except it draws a single line between the points
-  specified by a function.
-  The function will recieve all the same inputs as those used for addFunc
-  except u.
-  Output is expected to be:
-
-      p1: First point for line, format of {x: x, y: y}
-      p2: First point for line, format of {x: x, y: y}
-      w,c,s: same as addFunc
-
-  TODO: Expand addLine to expect a vector containing an arbitrary number of
-  pairs of points.
-  */
-  /*
-
-  [{x: x, y: y, r: r}, ...]
-
-  TODO: Write this.
-  [{x: x, y: y, str: 'Hamster'},...]
-
-  Text size, color, etc to be specified in options.
-  */
-
-  // ##Private methods.
-  /*
-  ###line
-  Private method for drawing a single line segment.
-  Input:
-
-      vec1: point, {x: x, y: y}
-      vec2: point, format {x: x, y: y}
-      ctx: canvas context
-      options: object format {c: 'green', w: 1} containing optionally:
-        c: color '#rrbbggaa' or pre-set color names as strings.
-        w: lineWidth in screen coordinates
-  */
-    /*
-    Iterate over functions and plot.
-    TODO: Provide options for:
-      Max/min parameter, color, width.
-    The idiom used here:
-
-        for(i in functions) {
-          if (functions.hasOwnProperty(i)) {
-          }
-        }
-    Is equivalent to forEach but is not an ECMAsctipt 5 feature
-    and so is more consistently supported.
-    The if statement is a guard against adding things to the prototype
-    and encountering strange behavior.
-    See Crockford's Javascript, The Good Parts.
-    */
+function g() {
+  return new Graph();
+}

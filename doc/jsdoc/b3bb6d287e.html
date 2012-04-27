@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: Graph</title>
+    
+    <script src="http://shjs.sourceforge.net/sh_main.min.js"> </script>
+    <script src="http://shjs.sourceforge.net/lang/sh_javascript.min.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/node-dark.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Class: Graph</h1>
+    
+    
+
+<section>
+    
+<header>
+    <h2>
+        <span class="ancestors"><a href="fb48721c37.html">jsphys/utils/Graph</a>~</span>
+    
+    Graph
+    </h2>
+    
+        <p class="class-description"><p>Graph class for putting a HTML canvas graph on a page.
+<a href="/test/utils/graph-test.html">Example</a><br></br>Features include animation, reaction to mouse movement, reaction to clicking,
+two-parameter equations with output of x, y, color, thickness.</p></p>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="Graph"><span class="type-signature"></span>new Graph</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        <p>Constructs a new Graph object.</p>
+    </p>
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Name for the graph. Must match the id for some element in
+the html for which jQuery can access the html.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                        {height: number, width: number, zoom: number, mouse: boolean,
+animate: boolean}
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Options governing the overall graph.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>graph.js, line 38</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    The graph object, and all public functions return the graph
+  object. This allows calls to be chained together.
+</div>
+
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+		<span class="param-type">Graph</span> 
+		
+	</dd>
+</dl>
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sh_javascript"><code>    (new Graph('ham')).add(fun1(p){}).add(fun2(p){});</code></pre>
+
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Requires</h3>
+        
+        <ul>
+            <li><a href="00bb9836f5.html">module:jsphys/lib/UI</a></li>
+        </ul>
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="dFuns"><span class="type-signature">&lt;inner> </span>dFuns<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <p class="description">
+        <p>Array of functions, each of which takes input as the output from one of the
+    plotting elements in elements, a context, and a set of options. Each
+    element has a sub-element <code>main</code> which different values of the function are
+    passed toand optionally <code>init</code> and <code>fin</code> to start and stop the plotting
+    process as a special case. They are selected via the dType property in the
+    options passed into add().</p>
+    </p>
+    
+    
+    
+<dl class="details">
+    
+        
+        <h5 class="subsection-title">Properties:</h5>
+        
+        <dl>
+
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Functions for plotting a continuous path.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>points</code></td>
+            
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">For plotting series of dots ie. scatterplot.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>crosses</code></td>
+            
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">As points, but for crosses.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>test</code></td>
+            
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Functions for plotting a series of strings.</td>
+        </tr>
+	
+	
+	</tbody>
+</table></dl>
+        
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>graph.js, line 179</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="p"><span class="type-signature">&lt;inner> </span>p<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <p class="description">
+        <p>Parameter list. Passed to any functions.
+      The elements <code>win</code>, <code>wv</code> and <code>wu</code> were intended to be used for mouse control, one
+      example would be to set res.s to -distance of mouse from a point you are 
+      plotting (<code>res.s = -Math.pow(myX - p.mx,2) - Math.pow(myY - p.my,2)</code>)
+      the next frame you could set <code>res.color = win ? 'blue': 'green'</code>.</p>
+
+<pre><code>  Other elements as listed.
+
+      ct: number Milliseconds since graph initialisation.
+      dt: number Milliseconds since last frame.
+      mx, my: number Mouse position
+      cx, cy: number Mouse click positions (down and release).
+      mdx, mdy: number Mouse down position (down).
+      tmdx,tmdy: number Net displacement for all draging on the graph.
+      cmdx,cmdy: number Displacement for present dragging operation.
+      u,v: Parameters iterated over for parametric equations.
+      win: Set to true for a fn if res.s was largest last frame.
+      wv,wu: Set to the values v and u had when out.s was highest.</code></pre>
+    </p>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>graph.js, line 77</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="add"><span class="type-signature"></span>add</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        <p>TODO: Document this after pinning down the defaults/functionality.</p>
+    </p>
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>graph.js, line 361</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="clear"><span class="type-signature">&lt;inner> </span>clear</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        <p>Clear canvas and redraw axes.
+  TODO: Make the axes a regular plotting entity to cut down on redundancy and
+    make it more flexible.</p>
+    </p>
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>graph.js, line 270</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="draw"><span class="type-signature">&lt;inner> </span>draw</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        <p>Most involved internal method.
+  Iterates through all the objects in <code>elements</code>. Extracts the function type 
+  and options from each one.<br></br>  Type is used to choose a function from dFun. This is then fed the result of
+  the function called with the parameter list <code>p</code> along with the options object
+  options are also used to define the number of times the function is called
+  and how the parameters <code>u</code> and <code>v</code> are updated for each call.<br></br>  The function from <code>elements</code> will be fed the parameter list <code>p</code> along with an
+  object in which the results can be stored. This is merely a garbage-reducing
+  measure and it is not necessary to modify and return this object providing
+  the function returns something with the correct format.</p>
+    </p>
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>graph.js, line 299</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="init"><span class="type-signature">&lt;inner> </span>init</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        <p>Initialise, clear and draw axes on the canvas.</p>
+    </p>
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>graph.js, line 258</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+</div>
+
+<nav>
+    <h3>Modules</h3><ul><li><a href="00bb9836f5.html">jsphys/lib/UI</a></li><li><a href="fb48721c37.html">jsphys/utils/Graph</a></li></ul><h3>Classes</h3><ul><li><a href="b3bb6d287e.html">Graph</a></li></ul><h3>Namespaces</h3><ul><li><a href="UI.html">UI</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/micmath/jsdoc">JSDoc 3</a> on Thu Apr 26 2012 23:23:23 GMT+1000 (EST)
+</footer>
+
+<script> sh_highlightDocument(); </script>
+</body>
+</html>
