@@ -17,7 +17,15 @@ AudioManager.prototype = {
      */
     load: function(track) {
         var a = document.createElement('audio');
-        a.setAttribute('src', 'demos/audio/' + track + '.ogg');
+        var src = document.createElement('source');
+        if (a.canPlayType('audio/ogg; codecs="vorbis"') != "") {
+            src.setAttribute('src', 'demos/audio/' + track + '.ogg');
+            src.setAttribute('type', 'audio/ogg; codecs="vorbis"');
+        } else {
+            src.setAttribute('src', 'demos/audio/' + track + '.mp3');
+            src.setAttribute('type', 'audio/mpeg; codecs="mp3"');
+        }
+        a.appendChild(src);
         a.load();
         this.tracks[track] = a;
     },
