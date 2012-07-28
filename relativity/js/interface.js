@@ -287,6 +287,11 @@ function nextStep(scene) {
         }
         $("#prevStep").prop('disabled', false);
         $("#nextStep").removeClass("button-highlight");
+        if (scene.audio.numTracks > 0) {
+            $("#narrated").removeClass("no-narration");
+        } else {
+            $("#narrated").addClass("no-narration");
+        }
     };
 }
 
@@ -303,6 +308,11 @@ function prevStep(scene) {
         }
         $("#nextStep").prop('disabled', false);
         $("#nextStep").removeClass("button-highlight");
+        if (scene.audio.numTracks > 0) {
+            $("#narrated").removeClass("no-narration");
+        } else {
+            $("#narrated").addClass("no-narration");
+        }
     };
 }
 
@@ -336,6 +346,11 @@ function loadDemo(demo, scene) {
             $("#prevStep").prop('disabled', true);
             $("#nextStep").prop('disabled', false);
             $("#demo-chooser").hide();
+            if (scene.audio.numTracks > 0) {
+                $("#narrated").removeClass("no-narration");
+            } else {
+                $("#narrated").addClass("no-narration");
+            }
             scene.startAnimation();
         });
 

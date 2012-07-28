@@ -28,6 +28,7 @@ AudioManager.prototype = {
         a.appendChild(src);
         a.load();
         this.tracks[track] = a;
+        this.numTracks += 1;
     },
     
     /**
@@ -104,5 +105,6 @@ AudioManager.prototype = {
         this.queue = [];
         this.paused = false;
         this.resumeTrack = false;
+        this.numTracks = 0;
     }
 };

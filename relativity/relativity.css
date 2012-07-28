@@ -138,6 +138,15 @@ header ul li:hover, li.nav-active {
     display: inline-block;
 }
 
+span#narrated {
+    padding: 0.5em 1em;
+    float: left;
+}
+
+.no-narration {
+    display: none;
+}
+
 /** Canvases **/
 #canvas-minkowski {
     display: none;
