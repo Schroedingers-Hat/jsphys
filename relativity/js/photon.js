@@ -33,7 +33,7 @@ function photon(X, V, label, options) {
      * Normalize V so it represents something akin to momentum
      * Is proportional to momentum with units of per metre for now.
      */
-    this.V[3] = 1/this.wavelength;
+    this.V[3] = 1 / this.wavelength;
     vec3.scale(this.V, this.V[3] / Math.sqrt(quat4.spaceDot(this.V, this.V)));
     this.displace = quat4.create();
 
@@ -48,9 +48,11 @@ function photon(X, V, label, options) {
 photon.prototype.update = function(timeStep) {
     // Bring it to now.
     quat4.scale(this.V, timeStep/this.V[3], this.displace);
-    // No c needed here, the speed of light dependance comes from timeStep being in metres.
+    // No c needed here, the speed of light dependance comes from timeStep
+    // being in metres.
     quat4.add(this.X0, this.displace);
-    // Move it back in time one timeStep (so we go forward in time and wind up at now)
+    // Move it back in time one timeStep (so we go forward in time and wind up
+    // at now)
     this.X0[3] = this.X0[3] - timeStep;
     this.initialPt[3] = this.initialPt[3] - timeStep;
     // If there's an end point, move that back in time, too.
@@ -161,18 +163,25 @@ photon.prototype.drawXT = function(scene) {
     var tvisE;
     var xvisE;
     var xvis  = this.initialPt[0] / scene.zoom;
-    var tvis  = this.initialPt[3] / scene.timeZoom / c;
+    var tvis  = (this.initialPt[3] + scene.t) / scene.timeZoom / c;
     if (this.endPt) {
         xvisE  = this.endPt[0] / scene.zoom;
-        tvisE  = this.endPt[3] / scene.timeZoom / c;
+        tvisE  = (this.endPt[3] + scene.t) / scene.timeZoom / c;
     }
+    
+    var offset = quat4.create();
+    var start = quat4.create();
+    quat4.scale(this.V, - scene.t / this.V[3], offset);
+    // No c needed here, the speed of light dependance comes from timeStep
+    // being in metres.
+    quat4.add(this.X0, offset, start);
 
     var xyScale = scene.mWidth / scene.mHeight;
     var dxdtVis = this.V[0] / this.V[3] * c * scene.timeZoom / scene.zoom;
     var tOfLinet = scene.origin[2];
-    var tOfLinex = tOfLinet * dxdtVis + this.X0[0] / scene.zoom;
+    var tOfLinex = tOfLinet * dxdtVis + start[0] / scene.zoom;
     var bOfLinet = -(scene.height + scene.origin[2]);
-    var bOfLinex = bOfLinet * dxdtVis + this.X0[0] / scene.zoom;
+    var bOfLinex = bOfLinet * dxdtVis + start[0] / scene.zoom;
 
     scene.h.strokeStyle = "#fff";
     if (scene.debug) {
@@ -184,7 +193,7 @@ photon.prototype.drawXT = function(scene) {
         scene.h.arc(this.X0[0] / scene.zoom + scene.origin[0],
                     -this.X0[3] / c / scene.timeZoom + scene.origin[2],
                     2, 0, twopi, true);
-        
+
         scene.h.fill();
     }
     scene.h.fillStyle = "#fff";

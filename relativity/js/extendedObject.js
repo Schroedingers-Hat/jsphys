@@ -638,21 +638,26 @@ extendedObject.prototype = {
         }
     },
 
+    /**
+     * Draw on the Minkowski diagram.
+     */
     drawXT: function(scene) {
         // Some relevant points scaled for zoom.
         var xvis  = this.COM.X0[0] / scene.zoom;
         var xvisP = this.COM.XView[0] / scene.zoom;
         var xvisF = this.COM.XFut[0] / scene.zoom;
-        var xyScale = scene.width / scene.height;
+        
         var tvisP = this.COM.XView[3] / scene.timeZoom;
         var tvisF = this.COM.XFut[3] / scene.timeZoom;
-        var dxdtVis = this.COM.V[0] / this.COM.V[3] * c * scene.timeZoom / scene.zoom;
+        var dxdtVis = this.COM.V[0] / this.COM.V[3] * c *
+                (scene.timeZoom / scene.zoom);
 
-        // Points in space time that represent the beginning and end of visible worldlines.
+        // Points in space time that represent the beginning and end of visible 
+        // worldlines.
         var tOfLinet = scene.origin[2];
-        var tOfLinex = tOfLinet * dxdtVis + this.COM.X0[0]  / scene.zoom;
+        var tOfLinex = tOfLinet * dxdtVis + this.COM.initialPt[0] / scene.zoom;
         var bOfLinet = -(scene.height + scene.origin[2]);
-        var bOfLinex = bOfLinet * dxdtVis + this.COM.X0[0]  / scene.zoom;
+        var bOfLinex = bOfLinet * dxdtVis + this.COM.initialPt[0] / scene.zoom;
 
         scene.h.strokeStyle = "#fff";
         scene.h.fillStyle = "#0a0";
@@ -683,10 +688,11 @@ extendedObject.prototype = {
         scene.h.stroke();
 
         // A dot at t=0.
-        if ((this.COM.initialPt[3] < 0) &&
+        if ((!this.created || this.COM.initialPt[3] < 0) &&
             (!this.COM.endPt || this.COM.endPt[3] > 0)) {
             scene.h.beginPath();
-            scene.h.arc(xvis + scene.origin[0], scene.origin[2],
+            scene.h.arc(xvis + scene.origin[0],
+                        scene.origin[2] - scene.t / scene.timeZoom / c,
                         5, 0, twopi, true);
             scene.h.fill();
         }
@@ -717,13 +723,13 @@ extendedObject.prototype = {
         }
 
         if (this.label !== "" && scene.curOptions.showText) {
-        if ((this.COM.initialPt[3] <= 0) &&
-            (!this.COM.endPt || this.COM.endPt[3] > 0)){
+        if ((!this.created || this.COM.initialPt[3] < 0) &&
+            (!this.COM.endPt || this.COM.endPt[3] > 0)) {
                 scene.h.beginPath();
                 scene.h.fillStyle = "#777";
                 scene.h.fillText(this.label,
                                   xvis + scene.origin[0] + 5,
-                                  -5 + scene.origin[2]);
+                                  -5 + scene.origin[2] - scene.t / scene.timeZoom / c);
             }
             if (scene.options.alwaysShowVisualPos ||
                 (this.options.showVisualPos && !scene.options.neverShowVisualPos)) {

@@ -126,8 +126,6 @@ Scene.prototype = {
         // Update c with the demo's chosen value
         c = this.curOptions.c;
 
-        drawLightCone(this, this.lCCtx);
-
         this.boost = {"left": boostFrom3Vel(-0.02 * c, 0, 0),
                       "right": boostFrom3Vel(0.02 * c, 0, 0),
                       "up": boostFrom3Vel(0, 0.02 * c, 0),
@@ -137,7 +135,8 @@ Scene.prototype = {
 
         this.pushCaption(demo.steps[step].caption);
 
-        // If the demo specifies an object whose frame is preferred, shift to that frame
+        // If the demo specifies an object whose frame is preferred, shift to
+        // that frame
         if (typeof demo.steps[step].frame === "number") {
             this.shiftToFrameOfObject(this.carray[demo.steps[step].frame],
                                       demo.steps[step].shift);
@@ -238,20 +237,11 @@ Scene.prototype = {
         
         this.clear();
         
-        // Draw the light cone; if we're using flashCanvas, don't use offscreen 
-        // canvas.
-        if (typeof FlashCanvas != "undefined") {
-            drawLightCone(this, this.h);
-        } else {
-            this.h.drawImage(this.lightConeCanvas, 0, 0);
-        }
         // Put axes labels on the light cone.
         // Doesn't seem to work in opera 9, not sure why.
         if (this.curOptions.showText) {
             this.h.fillStyle = "#fff";
-            this.h.fillText("x(m)", this.mWidth - 40, this.origin[2] - 10);
             this.h.fillText("t(s)", 5 + this.origin[0], 10);
-            this.h.fillText("Present", 5, this.origin[2] - 10);
         }
         
         // Advance every object forward in time, then draw it to the canvas.
@@ -341,8 +331,12 @@ Scene.prototype = {
         if (this.actions.rotateLeft)  boost = rotRight;
         if (this.actions.rotateRight) boost = rotLeft;
         
-        if (this.actions.rotateUp === true)    this.changeArrayFrame(nullQuat4, rotUp);
-        if (this.actions.rotateDown === true)  this.changeArrayFrame(nullQuat4, rotDown);
+        if (this.actions.rotateUp === true) {
+            this.changeArrayFrame(nullQuat4, rotUp);
+        }
+        if (this.actions.rotateDown === true) {
+            this.changeArrayFrame(nullQuat4, rotDown);
+        }
         if (boost !== false) {
             this.changeArrayFrame(nullQuat4, boost);
         }
@@ -354,11 +348,9 @@ Scene.prototype = {
         }
         if (this.actions.timeZoomIn === true) {
             this.timeZoom = this.timeZoom / 1.05;
-            drawLightCone(this, this.lCCtx);
         }
         if (this.actions.timeZoomOut === true) {
             this.timeZoom = this.timeZoom * 1.05;
-            drawLightCone(this, this.lCCtx);
         }
         if (this.actions.slowDown) {
             this.timeScale = this.timeScale / 1.1;
@@ -380,9 +372,15 @@ Scene.prototype = {
         
         this.g.fillStyle = "rgba(150,0,150,1)";
         this.g.fillText("Game Time: " + Math.round(this.t/c), 30, 30);
-        this.g.fillText("Real Time: " + Math.round((this.frameStartTime - this.initialTime)/c) / 1000, 30, 45);
-        this.g.fillText("Time speedup: " + Math.round(this.timeScale * 10000) / 10 + "x", 30, 60);
-        this.g.fillText("Fps: " + Math.round((1000 / (-this.oldFrameStartTime + this.frameStartTime))), 30, 75);
+        this.g.fillText("Real Time: " + 
+                        Math.round((this.frameStartTime - this.initialTime)/c) /
+                        1000, 30, 45);
+        this.g.fillText("Time speedup: " +
+                        Math.round(this.timeScale * 10000) / 10 + "x", 30, 60);
+        this.g.fillText("Fps: " +
+                        Math.round((1000 / 
+                                    (-this.oldFrameStartTime + this.frameStartTime))),
+                        30, 75);
         this.g.fillText("c: " + c, 30, 90);
     },
     
@@ -424,15 +422,13 @@ Scene.prototype = {
         this.lightConeCanvas.height = this.mHeight;
         this.hwidth = this.width / 2;
         this.hheight = this.height / 2;
-        this.origin = [this.hwidth, this.hheight, this.hheight];
+        this.origin = [this.hwidth, this.hheight, 3 * this.height / 4];
         
         var defFont = "0.8em Helvetiker, helvetica, arial, sans-serif";
         this.g.font = defFont;
         this.h.font = defFont;
         this.TDC.font = defFont;
         this.lCCtx.font = defFont;
-        
-        drawLightCone(this, this.lCCtx);
     },
 
     /** Animation and step control functions **/
@@ -544,49 +540,3 @@ function drawScene(scene) {
     };
 }
 
-/**
- * Function to draw a light cone. ctx is there for drawing either on an offscreen canvas
- * or onscreen (used if FlashCanvas is active). They are assumed to be the same size.
- */
-function drawLightCone(scene, ctx){
-    var size = Math.max(scene.origin[0], scene.origin[2]);
-    var ycoeff;
-    var xcoeff = Math.min(size, size * c / scene.zoom * scene.timeZoom);
-    if (xcoeff == size) ycoeff = size / c * scene.zoom / scene.timeZoom;
-    else ycoeff = size;
-    /*ctx.fillStyle = "#300";
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.lineTo(0,ycoeff + scene.origin[2]);
-    ctx.lineTo(-xcoeff+ scene.origin[0], ycoeff + scene.origin[2]);
-    ctx.lineTo( xcoeff+ scene.origin[0], -ycoeff + scene.origin[2]);
-    ctx.lineTo( scene.mWidth, -ycoeff + scene.origin[2]);
-    ctx.lineTo( scene.mWidth, ycoeff + scene.origin[2]);
-    ctx.lineTo( xcoeff+ scene.origin[0], ycoeff + scene.origin[2]);
-    ctx.lineTo(-xcoeff+ scene.origin[0], -ycoeff + scene.origin[2]);
-    ctx.lineTo(-xcoeff+ scene.origin[0], -ycoeff + scene.origin[2]);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = "#003";
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.lineTo(scene.mWidth,0);
-    ctx.lineTo( xcoeff+ scene.origin[0], -ycoeff + scene.origin[2]);
-    ctx.lineTo(-xcoeff+ scene.origin[0], ycoeff + scene.origin[2]);
-    ctx.lineTo(-xcoeff+ scene.origin[0],scene.mHeight);
-    ctx.lineTo( xcoeff+ scene.origin[0],scene.mHeight);
-    ctx.lineTo( xcoeff+ scene.origin[0], ycoeff + scene.origin[2]);
-    ctx.lineTo(-xcoeff+ scene.origin[0], -ycoeff + scene.origin[2]);
-    ctx.closePath();
-    ctx.fill();*/
-    ctx.strokeStyle = "#666";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(0, scene.origin[2]);
-    ctx.lineTo(scene.mWidth, scene.origin[2]);
-    ctx.moveTo(scene.origin[0], 0);
-    ctx.lineTo(scene.origin[0], scene.mHeight);
-    ctx.stroke();
-    ctx.lineWidth = 1;
-    ctx.fillStyle = "#fff";
-}
