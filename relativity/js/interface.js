@@ -479,7 +479,7 @@ $(document).ready(function() {
     
     $("#view-minkowski").click(switchToView('minkowski'));
     $("#view-2d").click(switchToView('2d'));
-    $("#view-3d").click(switchToView('3d'));
+    //$("#view-3d").click(switchToView('3d'));
     
     // Capture back/forward events and take them to the corresponding demo,
     // if they've viewed more than one.
