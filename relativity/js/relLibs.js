@@ -18,15 +18,15 @@ var tempQuat42 = quat4.create();
 var dopplerRoundVal = 20;
 var colorFilter = 2;
 // Some convenient matrices.
-var rotLeft  = mat4.create([ Math.cos(0.1),  Math.sin(0.1),0, 0,
-                             Math.sin(-0.1),  Math.cos(0.1), 0, 0,
-                             0,              0,             1, 0,
-                             0,              0,             0, 1]);
+var rotLeft  = mat4.create([Math.cos(0.02),  Math.sin(0.02), 0, 0,
+                            Math.sin(-0.02), Math.cos(0.02), 0, 0,
+                            0,               0,              1, 0,
+                            0,               0,              0, 1]);
 
-var rotRight = mat4.create([ Math.cos(0.1),  Math.sin(-0.1), 0, 0,
-                             Math.sin(0.1), Math.cos(0.1), 0, 0,
-                             0,              0,             1, 0,
-                             0,              0,             0, 1]);
+var rotRight = mat4.create([Math.cos(0.02), Math.sin(-0.02), 0, 0,
+                            Math.sin(0.02), Math.cos(0.02),  0, 0,
+                            0,              0,               1, 0,
+                            0,              0,               0, 1]);
 //Not needed for 2D, not right for A[3] is timelike.
 //var rotUp = mat4.create([1, 0, 0, 0,
 //                         0, 1, 0, 0,
@@ -37,11 +37,10 @@ var rotRight = mat4.create([ Math.cos(0.1),  Math.sin(-0.1), 0, 0,
 //                           0, 0, Math.cos(0.1), Math.sin(-0.1),
 //                           0, 0, Math.sin(0.1), Math.cos(0.1)]);
 
-//Convention of using Velocity not multiplied by gamma.
+// Convention of using Velocity not multiplied by gamma.
 
 // Take two points [x,y] and return the distance between them.
-function getDistance(pt1, pt2)
-{
+function getDistance(pt1, pt2) {
     return Math.sqrt(Math.pow(pt1[0] - pt2[0], 2) + Math.pow(pt1[1] - pt2[1], 2));
 }
 
@@ -49,12 +48,10 @@ function getDistance(pt1, pt2)
  * Takes a 3- or 4-velocity, (vx, vy, [vz,] t), and returns gamma.
  */
 function vToGamma(v) {
-    if (v.length == 3)
-    {
+    if (v.length == 3) {
         return Math.pow((1 - (v[0] * v[0] + v[1] * v[1])/(c*c) ), -0.5);
     }
-    if (v.length == 4)
-    {
+    if (v.length == 4) {
         return Math.pow((1 - (v[0] * v[0] + v[1] * v[1] + v[2] * v[2])/(c*c) ), -0.5);
     }
 }
@@ -64,13 +61,11 @@ function vToGamma(v) {
  * from the spatial elements.
  */
 function genEnergy(P,c,m) {
-    if (P.length == 3)
-    {
+    if (P.length == 3) {
         P[2] = Math.pow((c * c + P[0] * P[0] + P[1] * P[1]), 0.5);
     }
-    if (P.length == 4)
-    {
-        P[3] = Math.pow((c*c *  m*m + P[0] * P[0] + P[1] * P[1] + P[2] * P[2]), 0.5);
+    if (P.length == 4) {
+        P[3] = Math.pow((c*c * m*m + P[0] * P[0] + P[1] * P[1] + P[2] * P[2]), 0.5);
     }
     return P;
 }
