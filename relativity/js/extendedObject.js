@@ -739,7 +739,7 @@ extendedObject.prototype = {
                 scene.h.fill();
             }
         }
-        // Find a vector that points from intialPt to somewhere near now.
+        // Find a vector that points from initialPt to somewhere near now.
         scene.h.fillStyle = "#aaa";
         if (this.options.showTime || scene.options.showTime) {
             var dotScale  = 25 * Math.pow(2, Math.round(Math.log(scene.timeZoom) / 
@@ -769,7 +769,7 @@ extendedObject.prototype = {
                 } else {
                     dotR = dotScaleR;
                 }
-                //Rounding error somewhere causing flickering, hence the +1
+                // Rounding error somewhere causing flickering, hence the +1
                 if ((!this.COM.endPt || tempQuat42[3] <= this.COM.endPt[3] + 1) &&
                     (tempQuat42[3] >= this.COM.initialPt[3] - 1)) {
                     scene.h.moveTo(tempQuat42[0] / scene.zoom + scene.origin[0],
@@ -783,9 +783,8 @@ extendedObject.prototype = {
                         scene.h.fill();
                         scene.h.beginPath();
                         scene.h.fillStyle = "#0f0";
-                        scene.h.fillText("Tau: " + 
-                                         (this.COM.initialTau + Math.round((roundedTauParam + i * dotScale))) + "s",
-                                         xDotPos + 3, tDotPos + 3);
+                        scene.h.fillText((this.COM.initialTau + Math.round((roundedTauParam + i * dotScale))) + "s",
+                                         xDotPos + 7, tDotPos + 3);
 
                         if (scene.options.showPos || this.options.showPos){
                             scene.h.fillText("[x, t]: [" + 
