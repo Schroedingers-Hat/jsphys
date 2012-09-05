@@ -339,7 +339,7 @@ function loadDemo(demo, scene) {
                                           slide: zoomToSlider(scene),
                                           value: -(Math.log(scene.zoom) / Math.LN2),
                                           orientation: "vertical"});
-                $("#speed-slider").slider({min: -2 , max: 2, step: 0.001, 
+                $("#speed-slider").slider({min: -0.3, max: 0.3, step: 0.001, 
                                            slide: setAnimSpeed(scene),
                                            value: (Math.log(scene.timeScale + 1) / Math.LN2)});
             }
