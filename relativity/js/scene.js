@@ -125,7 +125,8 @@ Scene.prototype = {
 
         // Update c with the demo's chosen value
         c = this.curOptions.c;
-
+        this.timeZoom = this.zoom / c;
+        
         this.boost = {"left": boostFrom3Vel(-0.02 * c, 0, 0),
                       "right": boostFrom3Vel(0.02 * c, 0, 0),
                       "up": boostFrom3Vel(0, 0.02 * c, 0),

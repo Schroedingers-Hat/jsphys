@@ -659,12 +659,12 @@ extendedObject.prototype = {
         var bOfLinet = -(scene.height + scene.origin[2]);
         var bOfLinex = bOfLinet * dxdtVis + this.COM.initialPt[0] / scene.zoom;
 
-        scene.h.strokeStyle = "#fff";
+        scene.h.strokeStyle = "#aaa";
         scene.h.fillStyle = "#0a0";
 
         // A world Line.
         scene.h.beginPath();
-        
+
         // If this object begins existing at a specific point in time, draw
         // the worldline starting there. Otherwise, make the worldline begin at
         // the bottom of the diagram.

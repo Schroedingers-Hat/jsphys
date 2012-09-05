@@ -11,8 +11,8 @@ function inertialObject(X, P, m, endPt) {
     // origin of the current reference frame, where do objects appear to be?
     this.XView = quat4.create();
     
-    // Velocity (dX/dt?)
-    this.V = quat4.scale(quat4.create(P), 1 / m); 
+    // Velocity (dX/dtau)
+    this.V = quat4.scale(quat4.create(P), 1 / m);
     
     // The initial (t=0) 4-position of the object in the current reference frame
     this.initialPt = quat4.create(X);
@@ -71,11 +71,11 @@ inertialObject.prototype.updateX0 = function(timeStep) {
 inertialObject.prototype.changeFrame = function(translation1, rotation, translation2) {
     // Translate.
     quat4.subtract(this.X0, translation1);
-    
+
     // Boost both velocity and position vectors using the boost matrix.
     mat4.multiplyVec4(rotation, this.X0);
     mat4.multiplyVec4(rotation, this.V);
-    
+
     // Handle the same translation and boost with initial and ending locations.
     quat4.subtract(this.initialPt, translation1);
     mat4.multiplyVec4(rotation, this.initialPt);
@@ -88,7 +88,7 @@ inertialObject.prototype.changeFrame = function(translation1, rotation, translat
     // Point is now at wrong time.
     // Find displacement to current time.
     quat4.scale(this.V, -this.X0[3] / this.V[3], this.displace);
-    
+
     // Bring to current time.
     quat4.add(this.X0, this.displace);
     this.tau += this.displace[3] / this.V[3] * c;
@@ -97,7 +97,7 @@ inertialObject.prototype.changeFrame = function(translation1, rotation, translat
         // Wrong time again.
         // Find displacement to current time.
         quat4.scale(this.V, -this.X0[3] / this.V[3], this.displace);
-    
+
         // Bring to current time.
         quat4.add(this.X0, this.displace);
         this.tau += this.displace[3] / this.V[3] * c;

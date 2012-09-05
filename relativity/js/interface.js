@@ -73,6 +73,7 @@ function clickHandler(scene) {
  */
 function zoomTo(scene, zoom) {
     scene.zoom = zoom;
+    scene.timeZoom = zoom / c;
 
     scene.boost.right = boostFrom3Vel( 0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0, 0);
     scene.boost.left  = boostFrom3Vel(-0.01 * Math.min(1, Math.max(2, scene.zoom)) , 0, 0);
