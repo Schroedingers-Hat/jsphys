@@ -200,8 +200,8 @@ extendedObject.prototype = {
         }
         if ((scene.options.alwaysShowFramePos ||
              (!scene.options.neverShowFramePos && this.options.showFramePos)) &&
-            (!this.created || (!this.COM.endPt || 0 < this.COM.endPt[3]) &&
-             (0 > this.COM.initialPt[3])))  {
+            ((!this.COM.endPt || 0 < this.COM.endPt[3]) &&
+             (!this.created || 0 > this.COM.initialPt[3])))  {
             this.drawNow(scene);
             if (this.options.show3D || scene.curOptions.show3D) {
                 this.drawNow3D(scene);
