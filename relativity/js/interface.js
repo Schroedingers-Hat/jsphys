@@ -55,7 +55,7 @@ function bindKeys(scene) {
  */
 function clickHandler(scene) {
     return function (e) {
-        var offset = $('#canvas').offset();
+        var offset = $('#canvas-2d').offset();
         var x = e.pageX - offset.left;
         var y = e.pageY - offset.top;
 
@@ -64,6 +64,7 @@ function clickHandler(scene) {
         if (minElement !== false) {
             scene.shiftToFrameOfObject(minElement);
         }
+        scene.ensureUpdate();
     };
 }
 
@@ -414,6 +415,27 @@ function switchToView(view) {
 }
 
 /**
+ * Return mousemove handler for the canvas, which allows us to drag the origin
+ * about to navigate.
+ */
+function shiftOrigin(scene, startX, startY, startOrigin, view) {
+    return function(e) {
+        if (view == "2D") {
+            var newX = startOrigin[0] + e.pageX - startX;
+            var newY = startOrigin[1] + e.pageY - startY;
+            scene.origin[0] = newX;
+            scene.origin[1] = newY;
+        } else if (view == "minkowski") {
+            var newX = startOrigin[0] + e.pageX - startX;
+            var newT = startOrigin[2] + e.pageY - startY;
+            scene.origin[0] = newX;
+            scene.origin[2] = newT;
+        }
+        scene.ensureUpdate();
+    };
+}
+
+/**
  * Do not quite comprehend what this does, copypasta from Paul Irish's tutorial
  * requestAnim shim layer by Paul Irish
  */
@@ -440,7 +462,24 @@ $(document).ready(function() {
     loadDemoList(scene);
     bindKeys(scene);
     $('#pause').click(doPause(scene));
-    $("#canvas").click(clickHandler(scene));
+    //$("#canvas-2d").click(clickHandler(scene));
+    
+    $("#canvas-2d").mousedown(function(e) {
+        $("#canvas-2d").mousemove(shiftOrigin(scene, e.pageX, e.pageY,
+                                              scene.origin.slice(0), '2D'));
+    });
+    $("#canvas-2d").mouseup(function(e) {
+        $("#canvas-2d").unbind('mousemove');
+    });
+    
+    $("#canvas-minkowski").mousedown(function(e) {
+        $("#canvas-minkowski").mousemove(shiftOrigin(scene, e.pageX, e.pageY,
+                                                     scene.origin.slice(0),
+                                                     'minkowski'));
+    });
+    $("#canvas-minkowski").mouseup(function(e) {
+        $("#canvas-minkowski").unbind('mousemove');
+    });
 
     $("#doppler").change(dopplerChange(scene));
     $('#framePos').change(framePosChange(scene));
