@@ -3,7 +3,8 @@
   {"name": "Han and Greedo", "source": "han-greedo"},
   {"name": "Relativistic snake", "source": "snake"},
   {"name": "Relativistic ruler", "source": "ruler"},
-  {"name": "Speed of light", "source": "speed-light"}
+  {"name": "Speed of light", "source": "speed-light"},
+  {"name": "Johnny's got a gun", "source": "causality"}
  ],
  "Time dilation/length contraction":
  [{"name": "Muon decay", "source": "muons"},
